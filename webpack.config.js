@@ -11,7 +11,8 @@ const OUT_DIR     = path.join(ROOT_DIR, 'dist');
 
 module.exports = {
   entry: {
-    app: path.join(SRC_DIR, 'index.js'),
+    popup: path.join(SRC_DIR, 'popup/index.js'),
+    app: path.join(SRC_DIR, 'app/index.js'),
     background: path.join(SRC_DIR, 'background.js')
   },
   output: {
@@ -48,14 +49,17 @@ module.exports = {
     new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
       template: path.join(SRC_DIR, 'index.html'),
+      chunks: ['popup'],
       title: 'StoredSafe',
       favicon: path.join(ASSETS_DIR, 'favicon.ico'),
-      meta: {
-        charset: 'UTF-8',
-        viewport: 'width=device-width, initial-scale=1',
-        author: 'Oscar Mattsson',
-        description: 'Provides cats as a browser extension using TheCatAPI',
-      },
+      filename: 'popup.html',
+    }),
+    new HtmlWebpackPlugin({
+      template: path.join(SRC_DIR, 'index.html'),
+      chunks: ['app'],
+      title: 'StoredSafe',
+      favicon: path.join(ASSETS_DIR, 'favicon.ico'),
+      filename: 'app.html',
     }),
     new CopyPlugin([
       { from: './src/assets/' },
@@ -66,4 +70,9 @@ module.exports = {
   devServer: {
     contentBase: OUT_DIR,
   },
+
+  // externals: {
+    // react: 'React',
+    // 'react-dom': 'ReactDOM',
+  // },
 };
