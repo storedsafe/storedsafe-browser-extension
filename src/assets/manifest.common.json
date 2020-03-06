@@ -1,7 +1,6 @@
 {
   "manifest_version": 2,
   "name": "StoredSafe",
-  "version": "1.0",
 
   "description": "Password StoredSafe browser extension",
   "icons": {
@@ -15,7 +14,23 @@
   "content_scripts": [
     {
       "matches": ["https://*/*"],
-      "js": ["background.bundle.js"]
+      "js": [
+        "lib/browser-polyfill.js",
+        "content_script.bundle.js"
+      ]
     }
+  ],
+
+  "background": {
+    "scripts": [
+      "lib/browser-polyfill.js",
+      "background.bundle.js"
+    ],
+    "persistent": false
+  },
+
+  "permissions": [
+    "tabs",
+    "storage"
   ]
 }

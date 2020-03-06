@@ -1,0 +1,5 @@
+console.log("Hello background");
+
+browser.runtime.onInstalled.addListener(function() {
+  browser.tabs.create({ url: '/app.html' });
+});

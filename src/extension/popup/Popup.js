@@ -1,9 +1,17 @@
 import React, { useState } from 'react';
-import LoginContainer from './containers/LoginContainer';
-import MainContainer from './containers/MainContainer';
+import LoginContainer from './Login/LoginContainer';
+import MainContainer from './Main/MainContainer';
+
+import browser from 'webextension-polyfill';
 
 export default function Popup(props) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  browser.tabs.getCurrent().then(tab => {
+    console.log(tab);
+  }).catch(error => {
+    console.error(error.message);
+  });
 
   let page;
 
@@ -12,6 +20,10 @@ export default function Popup(props) {
   else
     page = <MainContainer onLogOut={() => setIsAuthenticated(false)} />;
 
-  return page;
+  return (
+    <main>
+      {page}
+    </main>
+  );
 };
 

@@ -11,7 +11,7 @@ export default function Login(props) {
       <input type="text" name="otp" id="otp" />
 
       <input type="checkbox" name="remember" id="remember" />
-      <label for="remember">Remember username</label>
+      <label htmlFor="remember">Remember username</label>
 
       <input type="submit" value="Log In" />
     </form>
