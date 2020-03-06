@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
-import Login from '../components/Login';
+import Login from './Login';
 
 export default function LoginContainer(props) {
   function onSubmit(event) {
     event.preventDefault();
 
-    // TODO: Implement authentication request
-    console.log(event.target.value);
+    const username = event.target.username.value;
+    const password = event.target.password.value;
+    const otp = event.target.otp.value;
 
-    // if successful
+    console.log(username, password, otp);
+
     props.onLogIn();
   }
 

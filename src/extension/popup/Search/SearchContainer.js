@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Search from '../components/Search';
+import Search from './Search';
 
 export default function SearchContainer(props) {
   function onSearchChange(event) {

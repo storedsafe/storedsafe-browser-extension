@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import SearchContainer from '../containers/SearchContainer';
-import ObjectListContainer from '../containers/ListContainer';
+import SearchContainer from '../Search/SearchContainer';
+import ObjectListContainer from '../List/ListContainer';
 
 export default function Main(props) {
   const [items, setItems] = useState([]);
