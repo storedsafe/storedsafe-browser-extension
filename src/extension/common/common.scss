@@ -7,6 +7,11 @@ $fg-dark: #232D33;
 $fg-medium: #B9C3C9;
 $fg-light: #FFFFFF;
 
+* {
+  padding: 0;
+  margin: 0;
+}
+
 body {
   background: $bg-dark;
   color: $fg-light;
