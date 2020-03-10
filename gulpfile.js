@@ -12,25 +12,22 @@ function clean() {
 }
 
 function copy_assets() {
-  return src([
-    'src/assets/*',
-    '!src/assets/manifest.common.json',
-  ])
+  return src('src/assets/*')
     .pipe(dest('build/'));
 }
 
 function manifest_chrome() {
   return src([
-    'src/assets/manifest.common.json',
-    'src/chrome/manifest.chrome.json',
+    'src/manifests/manifest.common.json',
+    'src/manifests/manifest.chrome.json',
   ]).pipe(merge({fileName: 'manifest.json'}))
     .pipe(dest('dist/chrome/'));
 }
 
 function manifest_firefox() {
   return src([
-    'src/assets/manifest.common.json',
-    'src/firefox/manifest.firefox.json',
+    'src/manifests/manifest.common.json',
+    'src/manifests/manifest.firefox.json',
   ]).pipe(merge({fileName: 'manifest.json'}))
     .pipe(dest('dist/firefox/'));
 }
@@ -38,14 +35,12 @@ function manifest_firefox() {
 function copy_chrome_files() {
   return src([
     'src/chrome/*',
-    '!src/chrome/manifest.chrome.json',
   ]).pipe(dest('dist/chrome/'));
 }
 
 function copy_firefox_files() {
   return src([
     'src/firefox/*',
-    '!src/firefox/manifest.firefox.json',
   ]).pipe(dest('dist/firefox/'));
 }
 
@@ -89,10 +84,9 @@ function build_common() {
     const config = {
       ...require('./webpack.config.js'),
       entry: {
-        popup: path.join(__dirname, 'src/extension/popup/index.js'),
-        app: path.join(__dirname, 'src/extension/app/index.js'),
-        background: path.join(__dirname, 'src/extension/background/background.js'),
-        content_script: path.join(__dirname, 'src/extension/content_script/content_script.js'),
+        extension: path.join(__dirname, 'src/extension/index.js'),
+        background: path.join(__dirname, 'src/extension/background.js'),
+        content_script: path.join(__dirname, 'src/extension/content_script.js'),
       },
       output: {
         filename: '[name].bundle.js',
