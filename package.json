@@ -40,6 +40,7 @@
   },
   "dependencies": {
     "react": "^16.13.0",
-    "react-dom": "^16.13.0"
+    "react-dom": "^16.13.0",
+    "storedsafe": "git+ssh://git@git.xpd.se:19922/oscar/storedsafe-javascript.git"
   }
 }
