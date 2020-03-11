@@ -7,12 +7,10 @@ $fg-dark: #232D33;
 $fg-medium: #B9C3C9;
 $fg-light: #FFFFFF;
 
-* {
-  padding: 0;
-  margin: 0;
-}
-
-body {
+.inject-storedsafe-button {
   background: $bg-dark;
   color: $fg-light;
+  border: none;
+  width: 100%;
+  padding: inherit;
 }

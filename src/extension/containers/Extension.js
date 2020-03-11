@@ -1,17 +1,27 @@
 import React from 'react';
+import Welcome from '../pages/Welcome';
+import Popup from '../pages/Popup';
+import Inject from '../pages/Inject';
+import './Extension.scss';
 
 export default function Extension(props) {
+  let page;
   const path = window.location.href.split('#')[1];
-  const breadcrumbs = path.split('/');
 
-  const breadcrumbsLi = breadcrumbs.map(crumb => {
-    return <li key={crumb.toLowerCase()}>{crumb}</li>;
-  });
+  switch(path) {
+    case 'popup':
+      page = <Popup />;
+      break;
+    case 'inject':
+      page = <Inject />;
+      break;
+    default:
+      page = <Welcome />;
+  }
 
   return (
     <main>
-      <p>Path</p>
-      <ul>{breadcrumbsLi}</ul>
+      {page}
     </main>
   );
 }

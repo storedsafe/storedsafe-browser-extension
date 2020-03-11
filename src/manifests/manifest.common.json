@@ -4,7 +4,7 @@
 
   "description": "Password StoredSafe browser extension",
   "icons": {
-    "64": "favicon.png"
+    "64": "icon.png"
   },
 
   "browser_action": {
@@ -34,5 +34,9 @@
     "storage",
     "cookies",
     "https://*/*"
+  ],
+
+  "web_accessible_resources": [
+    "icon.png"
   ]
 }
