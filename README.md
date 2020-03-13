@@ -43,7 +43,7 @@ Managed storage has two different versions of the settings object; `enforced` an
       ...
     },
     maxIdle: [int, minutes],
-    maxTokenLife: [int, minutes],
+    autoFill: [bool],
   },
 }
 ```
@@ -61,7 +61,8 @@ Managed storage has two different versions of the settings object; `enforced` an
     maxTokenLife: [int, minutes],
   },
   defaults: {
-    maxIdle: 10,
+    maxIdle: [int, minutes],
+    autoFill: [bool]
   },
 }
 ```
