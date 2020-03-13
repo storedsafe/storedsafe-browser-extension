@@ -3,8 +3,8 @@
 StoredSafe browser extension for Chrome and Firefox.
 
 ## Setup
-[https://www.chromium.org/administrators/policy-templates](Chrome managed policy templates)
-[https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Native_manifests#Managed_storage_manifests](Firefox managed policy templates)
+[Chrome managed policy templates](https://www.chromium.org/administrators/policy-templates)
+[Firefox managed policy templates](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Native_manifests#Managed_storage_manifests)
 
 ## Data Model
   The local storage contains information about the current session. It treats logins to different sites as separate sessions, meaning that an inactive session will not have its `lastActive` field updated and subsequently be terminated when the timer for that session runs out.
