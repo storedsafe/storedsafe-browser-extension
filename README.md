@@ -20,14 +20,17 @@ Managed storage has two different versions of the settings object; `enforced` an
 ### Local Storage
 ```javascript
 {
-  current: [url],
   sessions: {
-    [url]: {
-      token: [string],
-      createdAt: [time],
-      lastActive: [time],
+    current: [url],
+    sessions: {
+      [url]: {
+        token: [string],
+        createdAt: [time],
+        lastActive: [time],
+      },
+      ...
     },
-    ...
+  },
 }
 ```
 
@@ -51,18 +54,20 @@ Managed storage has two different versions of the settings object; `enforced` an
 ### Managed Storage
 ```javascript
 {
-  enforced: {
-    sites: {
-      [url]: {
-        apikey: [string],
+  settings: {
+    enforced: {
+      sites: {
+        [url]: {
+          apikey: [string],
+        },
+        ...
       },
-      ...
+      maxTokenLife: [int, minutes],
     },
-    maxTokenLife: [int, minutes],
-  },
-  defaults: {
-    maxIdle: [int, minutes],
-    autoFill: [bool]
+    defaults: {
+      maxIdle: [int, minutes],
+      autoFill: [bool]
+    },
   },
 }
 ```
