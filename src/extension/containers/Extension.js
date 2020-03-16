@@ -1,7 +1,7 @@
 import React from 'react';
 import Welcome from '../pages/Welcome';
 import Popup from '../pages/Popup';
-import Inject from '../pages/Inject';
+import Inline from '../pages/Inline';
 import './Extension.scss';
 
 export default function Extension(props) {
@@ -12,8 +12,8 @@ export default function Extension(props) {
     case 'popup':
       page = <Popup />;
       break;
-    case 'inject':
-      page = <Inject />;
+    case 'inline':
+      page = <Inline />;
       break;
     default:
       page = <Welcome />;

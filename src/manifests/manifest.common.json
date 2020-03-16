@@ -11,6 +11,11 @@
     "default_popup": "index.html#popup"
   },
 
+  "options_ui": {
+    "page": "index.html",
+    "open_in_tab": true
+  },
+
   "content_scripts": [
     {
       "matches": ["https://*/*"],
@@ -30,13 +35,9 @@
   },
 
   "permissions": [
-    "tabs",
+    "contextMenus",
     "storage",
-    "cookies",
+    "idle",
     "https://*/*"
-  ],
-
-  "web_accessible_resources": [
-    "icon.png"
   ]
 }

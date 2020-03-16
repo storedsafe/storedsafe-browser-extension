@@ -1,12 +1,13 @@
 import React from 'react';
-import './Inject.scss';
+import logo from '../../assets/icon.png'
+import './Inline.scss'
 
-export default function Inject(props) {
-  const logo = browser.runtime.getURL('/icon.png');
+export default function Inline(props) {
+  // const logo = browser.runtime.getURL('/icon.png');
 
   return (
     <button
-      className='storedsafe-inject-button'
+      className='storedsafe-inline-button'
       style={{backgroundImage: 'url(' + logo + ')',}}
       onClick={(event) => {
         event.preventDefault();

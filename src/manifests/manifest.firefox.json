@@ -1,3 +1,7 @@
 {
-  "version": "0.0.1"
+  "version": "0.0.1",
+
+  "options_ui": {
+    "browser_style": false
+  }
 }
