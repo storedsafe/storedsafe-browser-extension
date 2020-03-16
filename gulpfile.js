@@ -48,14 +48,10 @@ function copy_third_party_libs() {
   let files;
   if (devBuild) {
     files = [
-      'node_modules/react/umd/react.development.js',
-      'node_modules/react-dom/umd/react-dom.development.js',
       'node_modules/webextension-polyfill/dist/browser-polyfill.js',
     ];
   } else {
     files = [
-      'node_modules/react/umd/react.production.min.js',
-      'node_modules/react-dom/umd/react-dom.production.min.js',
       'node_modules/webextension-polyfill/dist/browser-polyfill.min.js',
     ];
   }
@@ -85,8 +81,8 @@ function build_common() {
       ...require('./webpack.config.js'),
       entry: {
         extension: path.join(__dirname, 'src/extension/index.js'),
-        background: path.join(__dirname, 'src/extension/background.js'),
-        content_script: path.join(__dirname, 'src/extension/content_script.js'),
+        background: path.join(__dirname, 'src/extension/scripts/background.js'),
+        content_script: path.join(__dirname, 'src/extension/scripts/content_script.js'),
       },
       output: {
         filename: '[name].bundle.js',

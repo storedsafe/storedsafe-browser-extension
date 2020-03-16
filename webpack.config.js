@@ -34,8 +34,6 @@ module.exports = {
   devtool: 'inline-source-map',
 
   externals: {
-    react: 'React',
-    'react-dom': 'ReactDOM',
     'webextension-polyfill': 'browser',
   },
 };
