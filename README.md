@@ -24,7 +24,7 @@ Managed storage has two different versions of the settings object; `enforced` an
     current: [url],
     sessions: {
       [url]: {
-        token: [string],
+        handler: [StoredSafe],
         createdAt: [time],
         lastActive: [time],
       },
