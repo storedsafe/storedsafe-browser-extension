@@ -1,4 +1,5 @@
 @use '../base.scss';
+@import url('https://fonts.googleapis.com/css?family=Montserrat|Roboto&display=swap');
 
 * {
   padding: 0;
@@ -8,4 +9,44 @@
 body {
   background-color: base.$bg-dark;
   color: base.$fg-light;
+  font-family: 'Roboto', Helvetica, sans-serif;
+  font-size: 14px;
+}
+
+label {
+  text-transform: uppercase;
+  font-family: 'Montserrat', Helvetica, sans-serif;
+}
+
+input, button, select, option {
+  padding: 1.0em;
+  background-color: base.$bg-light;
+  border: none;
+  border-bottom: 1px solid base.$fg-medium;
+  box-sizing: border-box;
+  margin-bottom: 1.2em;
+}
+
+input[type="submit"], button {
+  background: base.$bg-dark;
+  color: base.$fg-light;
+  border-radius: 4px;
+  font-weight: bold;
+  text-transform: uppercase;
+  transition: 0.2s;
+}
+
+input[type="submit"]:hover, button:hover {
+  background-color: base.$bg-light;
+  color: base.$fg-dark;
+  transition: 0.2s;
+}
+
+
+label, input:not([type="checkbox"]), select, option, button {
+  width: 100%;
+}
+
+li {
+  list-style: none;
 }
