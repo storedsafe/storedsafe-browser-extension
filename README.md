@@ -71,3 +71,6 @@ Managed storage has two different versions of the settings object; `enforced` an
   },
 }
 ```
+
+## Prototype UI
+![](graphics/prototype.png?raw=true)
