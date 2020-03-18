@@ -1,28 +1,38 @@
 global.browser = {
   storage: {
-    local: { get: jest.fn(), set: jest.fn(), remove: jest.fn(), clear: jest.fn() },
-    sync: { get: jest.fn(), set: jest.fn(), remove: jest.fn(), clear: jest.fn() },
-    managed: { get: jest.fn(), set: jest.fn(), remove: jest.fn(), clear: jest.fn() },
+    local: {
+      get: jest.fn(),
+      set: jest.fn(),
+      remove: jest.fn(),
+      clear: jest.fn(),
+    },
+    sync: {
+      get: jest.fn(),
+      set: jest.fn(),
+      remove: jest.fn(),
+      clear: jest.fn(),
+    },
+    managed: {
+      get: jest.fn(),
+      set: jest.fn(),
+      remove: jest.fn(),
+      clear: jest.fn(),
+    },
   },
 };
 
 const storage = require('./storage');
 const defaults = require('./defaults');
 
-const getStorageValue = (value) => {
-  return (key) => {
-    return new Promise((resolve, reject) => resolve({[key]: storage.merge(value, {})}));
-  };
-};
-const passPromise = (key) => new Promise((resolve, reject) => resolve({}));
+const getStorageValue = (value) => (key) => new Promise(
+  (resolve) => resolve({ [key]: storage.merge(value, {}) }),
+);
+
+const passPromise = () => new Promise((resolve) => resolve({}));
 
 const mockSystemSettings = {
   enforced: {
-    sites: {
-      'system.storedsafe.com': {
-        apikey: 'very-sercret-key',
-      },
-    },
+    sites: { 'system.storedsafe.com': { apikey: 'very-sercret-key' } },
     maxTokenLife: 180,
   },
   defaults: {
@@ -111,85 +121,86 @@ const newMockSessions = {
   current: 'system.storedsafe.com',
 };
 
-test(".merge(priorityObject, fillObject)", () => {
-  const result = storage.merge(mockSystemSettings.enforced.sites, mockUserSettings.sites);
+test('.merge(priorityObject, fillObject)', () => {
+  const result = storage.merge(
+    mockSystemSettings.enforced.sites, mockUserSettings.sites,
+  );
   expect(result).toEqual(mergedSites);
 });
 
-describe("Gets settings object", () => {
+describe('Gets settings object', () => {
   beforeEach(() => {
     browser.storage.managed.get
       .mockImplementationOnce(getStorageValue(mockSystemSettings));
     browser.storage.sync.get
       .mockImplementationOnce(getStorageValue(mockUserSettings));
-
   });
 
-  test(".getStorageValue(key), found in managed", () => {
-    return storage.getSettings('maxTokenLife').then(value => {
+  test('.getStorageValue(key), found in managed', () => {
+    storage.getSettings('maxTokenLife').then((value) => {
       expect(value).toBe(mockSystemSettings.enforced.maxTokenLife);
       expect(browser.storage.managed.get).toHaveBeenCalledWith('settings');
       expect(browser.storage.sync.get).not.toHaveBeenCalledWith('settings');
     });
-  })
+  });
 
-  test(".getStorageValue(key), fallback to sync", () => {
-    return storage.getSettings('maxIdle').then(value => {
+  test('.getStorageValue(key), fallback to sync', () => {
+    storage.getSettings('maxIdle').then((value) => {
       expect(value).toBe(mockUserSettings.maxIdle);
       expect(browser.storage.managed.get).toHaveBeenCalledWith('settings');
       expect(browser.storage.sync.get).toHaveBeenCalledWith('settings');
     });
-  })
+  });
 
-  test(".getStorageValue(key), fallback to managed default", () => {
-    return storage.getSettings('autoFill').then(value => {
+  test('.getStorageValue(key), fallback to managed default', () => {
+    storage.getSettings('autoFill').then((value) => {
       expect(value).toBe(mockSystemSettings.defaults.autoFill);
       expect(browser.storage.managed.get).toHaveBeenCalledWith('settings');
       expect(browser.storage.sync.get).toHaveBeenCalledWith('settings');
     });
-  })
+  });
 
-  test(".getStorageValue(key), fallback to hard coded default", () => {
-    return storage.getSettings('theme').then(value => {
+  test('.getStorageValue(key), fallback to hard coded default', () => {
+    storage.getSettings('theme').then((value) => {
       expect(value).toBe(defaults.settings.theme);
       expect(browser.storage.managed.get).toHaveBeenCalledWith('settings');
       expect(browser.storage.sync.get).toHaveBeenCalledWith('settings');
     });
-  })
+  });
 
-  test(".getStorageValue(key), throws error if no value is found", () => {
-    return storage.getSettings('mockfail').catch(error => {
+  test('.getStorageValue(key), throws error if no value is found', () => {
+    storage.getSettings('mockfail').catch((error) => {
       expect(error).toContain('mockfail');
       expect(browser.storage.managed.get).toHaveBeenCalledWith('settings');
       expect(browser.storage.sync.get).toHaveBeenCalledWith('settings');
     });
-  })
+  });
 
-  test(".getStorageValue(key), returns merged site object", () => {
-    return storage.getSettings('sites').then(value => {
+  test('.getStorageValue(key), returns merged site object', () => {
+    storage.getSettings('sites').then((value) => {
       expect(value).toEqual(mergedSites);
       expect(browser.storage.managed.get).toHaveBeenCalledWith('settings');
       expect(browser.storage.sync.get).toHaveBeenCalledWith('settings');
     });
-  })
+  });
 
-  test("getAllSettings()", () => {
-    return storage.getAllSettings().then(settings => {
+  test('getAllSettings()', () => {
+    storage.getAllSettings().then((settings) => {
       expect(settings).toHaveProperty('system');
       expect(settings.system).toEqual(mockSystemSettings.enforced);
       expect(settings).toHaveProperty('user');
       expect(settings.user).toEqual(mockUserSettings);
       expect(settings).toHaveProperty('defaults');
       expect(settings.defaults).toEqual(storage.merge(
-        mockSystemSettings.defaults, defaults.settings));
+        mockSystemSettings.defaults, defaults.settings,
+      ));
       expect(browser.storage.managed.get).toHaveBeenCalledWith('settings');
       expect(browser.storage.sync.get).toHaveBeenCalledWith('settings');
     });
   });
 });
 
-describe("Gets and sets sync", () => {
-
+describe('Gets and sets sync', () => {
   beforeEach(() => {
     browser.storage.sync.get
       .mockImplementationOnce(getStorageValue(mockUserSettings));
@@ -197,44 +208,41 @@ describe("Gets and sets sync", () => {
       .mockImplementationOnce(passPromise);
   });
 
-  test(".updateUserSettings(settingsObj)", () => {
-    return storage.updateUserSettings(alterUserSettings)
-      .then(newSettings => {
+  test('.updateUserSettings(settingsObj)', () => {
+    storage.updateUserSettings(alterUserSettings)
+      .then((newSettings) => {
         expect(newSettings).toEqual(newUserSettings);
         expect(browser.storage.sync.set)
           .toHaveBeenCalledWith({ settings: newSettings });
       });
   });
 
-  test(".removeUserSettingsField(fieldArray)", () => {
-    return storage.removeUserSettingsField(removeArray)
-      .then(newSettings => {
-        expect(newSettings).toEqual(reducedUserSettings)
+  test('.removeUserSettingsField(fieldArray)', () => {
+    storage.removeUserSettingsField(removeArray)
+      .then((newSettings) => {
+        expect(newSettings).toEqual(reducedUserSettings);
         expect(browser.storage.sync.set)
           .toHaveBeenCalledWith({ settings: newSettings });
       });
   });
 
-  test(".removeUserSettingsField(fieldArray), fails with invalid path", () => {
-    return storage.removeUserSettingsField(['mock', 'invalid'])
-      .catch(error => {
+  test('.removeUserSettingsField(fieldArray), fails with invalid path', () => {
+    storage.removeUserSettingsField(['mock', 'invalid'])
+      .catch((error) => {
         expect(error).toContain('mock, invalid');
       });
   });
 });
 
-test(".getActiveSession(), no existing sessions", () => {
-  browser.storage.local.get
-    .mockImplementationOnce(passPromise);
-  const site = mockSessions.current;
+test('.getActiveSession(), no existing sessions', () => {
+  browser.storage.local.get.mockImplementationOnce(passPromise);
   return storage.getActiveSession()
-    .then(session => {
+    .then((session) => {
       expect(session).toEqual(null);
     });
 });
 
-describe("Gets sessions object", () => {
-
+describe('Gets sessions object', () => {
   beforeEach(() => {
     browser.storage.local.get
       .mockImplementationOnce(getStorageValue(mockSessions));
@@ -244,47 +252,44 @@ describe("Gets sessions object", () => {
     expect(browser.storage.local.get).toHaveBeenCalledWith('sessions');
   });
 
-  test(".getActiveSession()", () => {
+  test('.getActiveSession()', () => {
     const site = mockSessions.current;
     return storage.getActiveSession()
-      .then(session => {
+      .then((session) => {
         expect(session).toEqual(mockSessions.sessions[site]);
       });
   });
 
-  test(".getAllSessions()", () => {
-    return storage.getAllSessions()
-      .then(sessions => {
-        expect(sessions).toEqual(mockSessions);
-      });
-  });
+  test('.getAllSessions()', () => storage.getAllSessions()
+    .then((sessions) => {
+      expect(sessions).toEqual(mockSessions);
+    }));
 
-  describe("Gets and sets local", () => {
-
+  describe('Gets and sets local', () => {
     beforeEach(() => {
       browser.storage.local.set
         .mockImplementationOnce(passPromise);
     });
 
-    test(".setActiveSession(site)", () => {
+    test('.setActiveSession(site)', () => {
       const site = newMockSessions.current;
       return storage.setActiveSession(site)
-        .then(newSession => {
+        .then((newSession) => {
           expect(newSession).toEqual(mockSessions.sessions[site]);
           expect(browser.storage.local.set)
-            .toHaveBeenCalledWith({ 'sessions': newMockSessions });
+            .toHaveBeenCalledWith({ sessions: newMockSessions });
         });
     });
 
     test(".setActiveSession(site), site doesn't exist", () => {
       const site = 'mock.storedsafe.com';
       return storage.setActiveSession(site)
-        .catch(error => {
+        .catch((error) => {
           expect(error).toContain(site);
         });
     });
 
-    test(".createSession(site, token)", () => {
+    test('.createSession(site, token)', () => {
       const site = 'new.storedsafe.com';
       const token = 'new-token';
       const createdAt = 5000;
@@ -298,19 +303,19 @@ describe("Gets sessions object", () => {
         sessions: {
           ...mockSessions.sessions,
           [site]: mockCreateSession,
-        }
+        },
       };
 
       Date.now = jest.fn().mockImplementationOnce(() => createdAt);
       return storage.createSession(site, token)
-        .then(session => {
-          expect(session).toEqual(newSessions)
+        .then((session) => {
+          expect(session).toEqual(newSessions);
           expect(browser.storage.local.set)
-            .toHaveBeenCalledWith({ 'sessions': newSessions });
+            .toHaveBeenCalledWith({ sessions: newSessions });
         });
     });
 
-    test(".updateSessionLastActive()", () => {
+    test('.updateSessionLastActive()', () => {
       const lastActive = 6500;
       Date.now = jest.fn().mockImplementationOnce(() => lastActive);
       const site = mockSessions.current;
@@ -318,31 +323,31 @@ describe("Gets sessions object", () => {
       updatedSessions.sessions[site].lastActive = lastActive;
 
       return storage.updateSessionLastActive()
-        .then(session => {
-          expect(session).toEqual({...mockSessions.sessions[site], lastActive});
+        .then((session) => {
+          expect(session).toEqual({
+            ...mockSessions.sessions[site], lastActive,
+          });
           expect(browser.storage.local.set)
-            .toHaveBeenCalledWith({ 'sessions': updatedSessions });
+            .toHaveBeenCalledWith({ sessions: updatedSessions });
         });
     });
 
-    test(".removeSession()", () => {
+    test('.removeSession()', () => {
       const site = 'user.storedsafe.com';
       const removedSessions = storage.merge(mockSessions, {});
       delete removedSessions.sessions[site];
       return storage.removeSession(site)
-        .then(session => {
+        .then((session) => {
           expect(session).toEqual(mockSessions.sessions[site]);
           expect(browser.storage.local.set)
-            .toHaveBeenCalledWith({ 'sessions': removedSessions });
+            .toHaveBeenCalledWith({ sessions: removedSessions });
         });
     });
 
-    test(".clearSessions()", () => {
-      return storage.clearSessions()
-        .then(() => {
-          expect(browser.storage.local.set)
-            .toHaveBeenCalledWith({ 'sessions': defaults.sessions });
-        });
-    });
+    test('.clearSessions()', () => storage.clearSessions()
+      .then(() => {
+        expect(browser.storage.local.set)
+          .toHaveBeenCalledWith({ sessions: defaults.sessions });
+      }));
   });
 });

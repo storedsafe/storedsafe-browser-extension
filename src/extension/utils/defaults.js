@@ -8,7 +8,7 @@ const settings = {
 
 const sessions = {
   current: null,
-  sessions: {}
+  sessions: {},
 };
 
 const managedSettings = {

@@ -1,16 +1,17 @@
 const path = require('path');
 
-const ROOT_DIR    = __dirname;
-const SRC_DIR     = path.join(ROOT_DIR, 'src');
-const ASSETS_DIR  = path.join(SRC_DIR, 'assets');
-const OUT_DIR     = path.join(ROOT_DIR, 'dist');
+const ROOT_DIR = __dirname;
+const SRC_DIR = path.join(ROOT_DIR, 'src');
 
 module.exports = {
+  resolve: {
+    extensions: ['.jsx', '.js', '.json'],
+  },
   module: {
     rules: [
       // BABEL
       {
-        test: /\.js$/,
+        test: /\.jsx?$/,
         include: [
           SRC_DIR,
         ],
@@ -33,7 +34,5 @@ module.exports = {
 
   devtool: 'inline-source-map',
 
-  externals: {
-    'webextension-polyfill': 'browser',
-  },
+  externals: { 'webextension-polyfill': 'browser' },
 };
