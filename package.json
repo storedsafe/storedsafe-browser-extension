@@ -6,8 +6,11 @@
   "main": "src/extension/index.jsx",
   "scripts": {
     "test": "jest",
+    "lint": "eslint .",
+    "clean": "gulp clean",
     "build": "NODE_ENV=production gulp",
-    "build:dev": "NODE_ENV=development gulp"
+    "build:dev": "NODE_ENV=development gulp",
+    "build:watch": "NODE_ENV=development gulp watch"
   },
   "keywords": [
     "browser-extension",

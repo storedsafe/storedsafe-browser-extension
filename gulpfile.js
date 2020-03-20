@@ -1,6 +1,5 @@
 /* eslint no-console: 'off' */
-const { series, parallel, src, dest } = require('gulp');
-const path = require('path');
+const { watch, series, parallel, src, dest } = require('gulp');
 const del = require('del');
 const merge = require('gulp-merge-json');
 const rename = require('gulp-rename');
@@ -83,23 +82,10 @@ function copyBuildToFirefox() {
     .pipe(dest('dist/firefox/'));
 }
 
-function buildCommon() {
+function buildWebpack() {
   return new Promise((resolve, reject) => {
     const config = {
       ...webpackConfig,
-      entry: {
-        extension: path.join(__dirname,
-          'src/extension/index.jsx'),
-        background: path.join(__dirname,
-          'src/extension/scripts/background.js'),
-        content_script: path.join(__dirname,
-          'src/extension/scripts/content_script.js'),
-      },
-      output: {
-        filename: '[name].bundle.js',
-        path: path.join(__dirname, 'build/'),
-      },
-      mode: devBuild ? 'development' : 'production',
     };
 
     webpack(config).run((err, stats) => {
@@ -115,22 +101,33 @@ function buildCommon() {
   });
 }
 
-const taskBuild = series(
+const copyStatic = parallel(
+  copyAssets,
+  copyThirdPartyLibs,
+  copyChromeFiles,
+  copyFirefoxFiles,
+  manifestChrome,
+  manifestFirefox,
+);
+
+const copyToDist = parallel(
+  copyBuildToChrome, copyBuildToFirefox,
+);
+
+const build = series(
   lint,
   clean,
   parallel(
-    buildCommon,
-    copyAssets,
-    copyThirdPartyLibs,
-    copyChromeFiles,
-    copyFirefoxFiles,
-    manifestChrome,
-    manifestFirefox,
+    buildWebpack,
+    copyStatic,
   ),
-  parallel(
-    copyBuildToChrome, copyBuildToFirefox,
-  ),
+  copyToDist,
 );
 
+const taskWatch = () => {
+  watch('./src/**/*', { ignoreInitial: false }, build);
+};
+
 exports.clean = clean;
-exports.default = taskBuild;
+exports.default = build;
+exports.watch = taskWatch;
