@@ -35,21 +35,21 @@ function merge(system, user) {
   return merged;
 }
 
-function getManagedSettings() {
+function _getManagedSettings() {
   return managed.get(Fields.SETTINGS).then((values) => {
     if (values.hasOwnProperty(Fields.SETTINGS)) return values[Fields.SETTINGS];
     return defaults.managedSettings;
   });
 }
 
-function getSyncSettings() {
+function _getSyncSettings() {
   return sync.get(Fields.SETTINGS).then((values) => {
     if (values.hasOwnProperty(Fields.SETTINGS)) return values[Fields.SETTINGS];
     return {};
   });
 }
 
-function setSyncSettings(settings) {
+function _setSyncSettings(settings) {
   return sync.set({ [Fields.SETTINGS]: settings }).then(() => settings);
 }
 
@@ -65,96 +65,122 @@ function _setLocalSessions(sessions) {
 }
 
 module.exports = Object.freeze({
-  getSettings: (key) => getManagedSettings().then((managedSettings) => {
-    let value;
-    if (managedSettings.enforced.hasOwnProperty(key)) {
-      value = managedSettings.enforced[key];
-      if (_isObject(value)) return value;
-    }
-    const managedDefaults = managedSettings.defaults;
-    return getSyncSettings().then((syncSettings) => {
-      if (syncSettings.hasOwnProperty(key)) {
-        if (_isObject(value)) return merge(value, syncSettings[key]);
-        return syncSettings[key];
+  getSettings: (key) => (
+    _getManagedSettings().then((managedSettings) => {
+      let value;
+      if (managedSettings.enforced.hasOwnProperty(key)) {
+        value = managedSettings.enforced[key];
+        if (!_isObject(value)) {
+          return value;
+        }
       }
-      if (managedDefaults.hasOwnProperty(key)) return managedDefaults[key];
-      if (defaults.settings.hasOwnProperty(key)) return defaults.settings[key];
-      throw new Error(`Invalid key: ${key}`);
-    });
-  }),
+      const managedDefaults = managedSettings.defaults;
+      return _getSyncSettings().then((syncSettings) => {
+        if (syncSettings.hasOwnProperty(key)) {
+          if (_isObject(value)) {
+            return merge(value, syncSettings[key]);
+          }
+          return syncSettings[key];
+        }
+        if (managedDefaults.hasOwnProperty(key)) {
+          return managedDefaults[key];
+        }
+        if (defaults.settings.hasOwnProperty(key)) {
+          return defaults.settings[key];
+        }
+        throw new Error(`Invalid key: ${key}`);
+      });
+    })
+  ),
 
-  getAllSettings: () => {
-    getManagedSettings().then((systemSettings) => {
-      getSyncSettings().then((userSettings) => ({
+  getAllSettings: () => (
+    _getManagedSettings().then((systemSettings) => (
+      _getSyncSettings().then((userSettings) => ({
         system: systemSettings.enforced,
         user: userSettings,
         defaults: merge(systemSettings.defaults, defaults.settings),
-      }));
-    });
-  },
+      }))
+    ))
+  ),
 
-  updateUserSettings: (newSettings) => {
-    getSyncSettings().then((settings) => {
-      setSyncSettings(merge(newSettings, settings));
-    });
-  },
+  updateUserSettings: (newSettings) => (
+    _getSyncSettings().then((settings) => (
+      _setSyncSettings(merge(newSettings, settings))
+    ))
+  ),
 
-  removeUserSettingsField: (fieldPath) => getSyncSettings().then((settings) => {
-    let parent = settings;
-    fieldPath.slice(0, -1).forEach((key) => {
-      if (!parent.hasOwnProperty(key)) {
-        throw new Error(`Invalid path: [${fieldPath.join(', ')}]`);
+  removeUserSettingsField: (fieldPath) => (
+    _getSyncSettings().then((settings) => {
+      let parent = settings;
+      fieldPath.slice(0, -1).forEach((key) => {
+        if (!parent.hasOwnProperty(key)) {
+          throw new Error(`Invalid path: [${fieldPath.join(', ')}]`);
+        }
+        parent = parent[key];
+      });
+      delete parent[fieldPath.pop()];
+      return _setSyncSettings(settings);
+    })
+  ),
+
+  getActiveSession: () => (
+    _getLocalSessions().then((sessions) => {
+      if (sessions.current !== null) return sessions.sessions[sessions.current];
+      return null;
+    })
+  ),
+
+  getAllSessions: () => (
+    _getLocalSessions()
+  ),
+
+  setActiveSession: (site) => (
+    _getLocalSessions().then((sessions) => {
+      if (sessions.sessions.hasOwnProperty(site)) {
+        sessions.current = site;
+        return _setLocalSessions(sessions).then(
+          (newSessions) => newSessions.sessions[site],
+        );
       }
-      parent = parent[key];
-    });
-    delete parent[fieldPath.pop()];
-    return setSyncSettings(settings);
-  }),
+      throw new Error(`No session for site ${site}`);
+    })
+  ),
 
-  getActiveSession: () => _getLocalSessions().then((sessions) => {
-    if (sessions.current !== null) return sessions.sessions[sessions.current];
-    return null;
-  }),
-
-  getAllSessions: () => _getLocalSessions(),
-
-  setActiveSession: (site) => _getLocalSessions().then((sessions) => {
-    if (sessions.sessions.hasOwnProperty(site)) {
+  createSession: (site, token) => (
+    _getLocalSessions().then((sessions) => {
+      const now = Date.now();
+      const newSession = {
+        token,
+        createdAt: now,
+        lastActive: now,
+      };
       sessions.current = site;
-      return _setLocalSessions(sessions).then(
-        (newSessions) => newSessions.sessions[site],
-      );
-    }
-    throw new Error(`No session for site ${site}`);
-  }),
+      sessions.sessions[site] = newSession;
+      return _setLocalSessions(sessions);
+    })
+  ),
 
-  createSession: (site, token) => _getLocalSessions().then((sessions) => {
-    const now = Date.now();
-    const newSession = {
-      token,
-      createdAt: now,
-      lastActive: now,
-    };
-    sessions.current = site;
-    sessions.sessions[site] = newSession;
-    return _setLocalSessions(sessions);
-  }),
+  updateSessionLastActive: () => (
+    _getLocalSessions().then((sessions) => {
+      sessions.sessions[sessions.current].lastActive = Date.now();
+      return _setLocalSessions(sessions)
+        .then((newSessions) => newSessions.sessions[sessions.current]);
+    })
+  ),
 
-  updateSessionLastActive: () => _getLocalSessions().then((sessions) => {
-    sessions.sessions[sessions.current].lastActive = Date.now();
-    return _setLocalSessions(sessions)
-      .then((newSessions) => newSessions.sessions[sessions.current]);
-  }),
+  removeSession: (site) => (
+    _getLocalSessions().then((sessions) => {
+      const removedSession = sessions.sessions[site];
+      delete sessions.sessions[site];
+      if (sessions.current === site) sessions.current = null;
+      return _setLocalSessions(sessions)
+        .then(() => removedSession);
+    })
+  ),
 
-  removeSession: (site) => _getLocalSessions().then((sessions) => {
-    const removedSession = sessions.sessions[site];
-    delete sessions.sessions[site];
-    if (sessions.current === site) sessions.current = null;
-    return _setLocalSessions(sessions)
-      .then(() => removedSession);
-  }),
-
-  clearSessions: () => _setLocalSessions(defaults.sessions),
+  clearSessions: () => (
+    _setLocalSessions(defaults.sessions)
+  ),
 
   merge,
 });

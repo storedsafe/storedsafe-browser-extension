@@ -1,7 +1,14 @@
-$bg-dark: #526A78;
-$bg-medium: #EBEEF0;
-$bg-light: #FFFFFF;
+$primary: #526a78;
+$accent: #03a386;
+$border: #ebeef0;
 
-$fg-dark: #232D33;
-$fg-medium: #B9C3C9;
-$fg-light: #FFFFFF;
+$bg-dark: $primary;
+$bg-medium: #ebeef0;
+$bg-light: #fff;
+
+$fg-dark: #232d33;
+$fg-medium: #b9c3c9;
+$fg-light: #fff;
+
+$border-radius: 0.25em;
+$animation-duration: 0.5s;

@@ -1,21 +1,21 @@
 import React from 'react';
 
-export default function Welcome(props) {
+export default function Welcome() {
   return (
-    <section>
+    <section class="card">
       <h1>Welcome</h1>
       <form>
-        <label>
-          Site
-          <input type="text" />
+        <label htmlFor="site">
+          <span>Site</span>
+          <input type="text" id="site" />
         </label>
-        <label>
-          API Key
-          <input type="text" />
+        <label htmlFor="apikey">
+          <span>API Key</span>
+          <input type="text" id="apikey" />
         </label>
-        <label>
-          Autofill
-          <input type="check" />
+        <label htmlFor="autofill">
+          <span>Autofill</span>
+          <input type="check" id="autofill" />
         </label>
       </form>
     </section>

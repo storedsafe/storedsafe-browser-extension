@@ -1,9 +1,9 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 
-import Extension from '../Extension';
-import Welcome from '../pages/Welcome';
-import Popup from '../pages/Popup';
+import Extension from '../../extension/containers/Extension';
+import Welcome from '../../extension/pages/Welcome';
+import Popup from '../../extension/pages/Popup';
 
 global.window = Object.create(window);
 Object.defineProperty(window, 'location', { value: { href: null } });

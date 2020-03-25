@@ -1,17 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import AuthForm from '../components/AuthForm';
-import FilterableVaultList from '../components/FilterableVaultList';
-import SaveLoginForm from '../components/SaveLoginForm';
-import logo from '../../assets/logo.png';
+import React from 'react';
+import Header from '../components/Header';
+import Auth from '../containers/Auth';
 import './Popup.scss';
 
-export default function Popup(props) {
+export default function Popup() {
   return (
-    <section className="popup">
-      <header><img src={logo} alt="StoredSafe" /></header>
-      <FilterableVaultList />
-      <SaveLoginForm />
-      <AuthForm />
-    </section>
+    <div className="popup">
+      <Header />
+      <Auth />
+    </div>
   );
 }

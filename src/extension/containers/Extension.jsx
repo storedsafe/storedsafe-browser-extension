@@ -3,7 +3,7 @@ import Welcome from '../pages/Welcome';
 import Popup from '../pages/Popup';
 import './Extension.scss';
 
-export default function Extension(props) {
+export default function Extension() {
   let page;
   const path = window.location.href.split('#')[1];
 
@@ -16,7 +16,7 @@ export default function Extension(props) {
   }
 
   return (
-    <main>
+    <main className="extension">
       {page}
     </main>
   );

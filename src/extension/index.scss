@@ -1,0 +1,193 @@
+@use './base.scss';
+@import url('https://fonts.googleapis.com/css?family=Montserrat|Roboto&display=swap');
+
+/*** General Styles ***/
+* {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: base.$bg-medium;
+  color: base.$fg-light;
+  font-family: 'Roboto', Helvetica, sans-serif;
+  font-size: 14px;
+}
+
+li {
+  list-style: none;
+}
+
+/*** Form Styles ***/
+
+/* Flow Styling */
+label {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1em;
+  width: 100%;
+
+  span {
+    font-family: 'Montserrat', Helvetica, sans-serif;
+    text-transform: uppercase;
+  }
+}
+
+/* Component Styling */
+input,
+button,
+select {
+  border: 0;
+  box-sizing: border-box;
+  outline: 0;
+  padding: 1em;
+}
+
+input:not([type=submit]):not([type=button]):not([type=checkbox]):not([type=radio]),
+select,
+option {
+  background-color: base.$bg-light;
+  border-bottom: 1px solid base.$border;
+  color: #000;
+  font-family: sans-serif;
+  font-size: 1em;
+  transition: base.$animation-duration ease;
+
+  &:hover,
+  &:focus {
+    border-bottom-color: base.$accent;
+  }
+
+  &:focus {
+    background-color: base.$bg-medium;
+  }
+}
+
+option {
+  // Chrome option inherits from select, firefox doesn't
+  background-color: base.$bg-light;
+}
+
+button,
+input[type=button],
+input[type=submit] {
+  background: base.$primary;
+  border: 1px solid base.$bg-light;
+  border-radius: base.$border-radius;
+  color: base.$fg-light;
+  font-weight: bold;
+  text-transform: uppercase;
+  transition: base.$animation-duration ease;
+  width: 100%;
+
+  &:hover,
+  &:focus,
+  &:active {
+    background-color: base.$bg-light;
+    border: 1px solid base.$accent;
+    color: base.$accent;
+  }
+
+  &:active {
+    background-color: base.$bg-medium;
+  }
+}
+
+/* Disable and replace default style */
+.checkbox-container {
+  align-items: center;
+  cursor: pointer;
+  flex-direction: row-reverse;
+  justify-content: flex-end;
+
+  // Disable default checkbox
+  input {
+    height: 0;
+    opacity: 0;
+    position: absolute;
+    width: 0;
+  }
+
+  // Create custom checkbox
+  .checkmark {
+    border: 1px solid base.$border;
+    border-radius: base.$border-radius;
+    height: 1.5em;
+    margin-right: 0.5em;
+    transition: base.$animation-duration ease;
+    width: 1.5em;
+  }
+
+  // Create checkmark
+  .checkmark::after {
+    border: solid base.$fg-light;
+    border-width: 0 0.2em 0.2em 0;
+    box-sizing: border-box;
+    // Ensure consistent size across browsers
+    // Firefox acts weirdly if using em units
+    font-size: 1rem;
+    height: 60%;
+    // Top margin less to prefer being pushed up rather than
+    // down with pixel errors
+    margin: 19% 35%;
+    transform: rotate(45deg);
+    width: 30%;
+  }
+
+  // Hide checkmark if not checked
+  .checkmark::after {
+    content: '';
+    display: none;
+  }
+
+  // Show checkmark if checked
+  input:checked ~ .checkmark::after {
+    display: block;
+  }
+
+  // General appearance based on state
+  &:hover input ~ .checkmark {
+    border: 1px solid base.$accent;
+  }
+
+  input:focus ~ .checkmark {
+    background-color: base.$bg-medium;
+    border-color: base.$accent;
+  }
+
+  &:active input ~ .checkmark {
+    background-color: base.$bg-medium;
+  }
+
+  input:checked ~ .checkmark {
+    background-color: base.$accent;
+  }
+}
+
+select {
+  -moz-appearance: none; // stylelint-disable-line
+  -webkit-appearance: none; // stylelint-disable-line
+  appearance: none;
+  padding-right: 2.25em;
+  width: 100%;
+}
+
+.select {
+  position: relative;
+
+  &::after {
+    border: solid transparent;
+    border-radius: base.$border-radius;
+    border-top-color: base.$bg-dark;
+    border-width: 0.7em 0.5em;
+    box-sizing: border-box;
+    content: '';
+    height: 1em;
+    margin-top: -0.35em;
+    position: absolute;
+    right: 0.75em;
+    top: 50%;
+    transition: base.$animation-duration;
+    width: 1em;
+  }
+}

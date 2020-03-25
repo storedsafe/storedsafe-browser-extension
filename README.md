@@ -73,4 +73,28 @@ Managed storage has two different versions of the settings object; `enforced` an
 ```
 
 ## Prototype UI
-![](graphics/prototype.png?raw=true)
+![GIF of login form interaction](graphics/preview_login.gif?raw=true)
+
+## TODO
+### WIP
+- [ ] Break down UI into React components
+  - [x] Login Form
+    - [ ] Write tests
+  - [ ] Vault List
+  - [ ] Save Item
+  - [ ] Sessions
+- [ ] Connect login form with authentication in StoredSafe API
+  - [ ] Handle sessions in background script
+  - [ ] Send message to background script or authenticate in popup?
+
+### Upcoming
+- [ ] Connect frontend with background scripts
+- [ ] Autofill
+
+### Future
+- [ ] Remember preferred login type
+- [ ] Turn custom checkbox and select into React components
+
+### Completed
+- [x] Fixed custom checkbox and select dropdown (25/03)
+

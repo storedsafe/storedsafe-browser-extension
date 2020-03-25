@@ -1,75 +1,8 @@
 @use '../base.scss';
 
 .popup {
-  width: 400px;
-  height: 600;
   box-sizing: border-box;
-
-  padding: .67em;
-
-  > section {
-    background: base.$bg-light;
-    color: base.$fg-dark;
-    padding: 1em;
-    border-radius: 4px;
-    margin-bottom: 1em;
-  }
-
-  header {
-    padding: 1em;
-    img {
-      width: 100%;
-      box-sizing: border-box;
-    }
-  }
-
-  .list {
-    .vault {
-      font-size: 1.1em;
-      .object {
-        padding: 0.5em;
-        background-color: base.$bg-medium;
-        color: base.$fg-dark;
-        .field {
-          background-color: base.$bg-light;
-          color: base.$fg-dark;
-          display: flex;
-          align-items: stretch;
-
-          > * {
-            box-sizing: border-box;
-            align-self: center;
-            padding: 0.5em;
-          }
-
-          .key {
-            margin-right: 0.5em;
-          }
-          .value {
-            flex-grow: 1;
-            flex-shrink: 1;
-            margin-right: 0.5em;
-          }
-
-          .button {
-            cursor: pointer;
-            background-color: base.$bg-dark;
-            color: base.$fg-light;
-            transition: 0.2s;
-          }
-
-          .button:hover {
-            background-color: base.$bg-light;
-            color: base.$fg-dark;
-            transition: 0.2s;
-          }
-        }
-
-        .field:not(:last-child) {
-          border-bottom: 1px solid base.$fg-medium;
-        }
-      }
-    }
-  }
+  overflow: auto;
+  width: 400px;
 }
 
