@@ -6,8 +6,8 @@ module.exports = {
     'jest/globals': true,
   },
   extends: [
-    'plugin:react/recommended',
     'airbnb',
+    'plugin:react/recommended',
   ],
   globals: {
     Atomics: 'readonly',
@@ -16,11 +16,11 @@ module.exports = {
     storedsafe: 'readonly',
   },
   parserOptions: {
+    sourceType: 'module',
+    ecmaVersion: 2018,
     ecmaFeatures: {
       jsx: true,
     },
-    ecmaVersion: 2018,
-    sourceType: 'module',
   },
   plugins: [
     'react',
@@ -41,6 +41,7 @@ module.exports = {
     'import/no-extraneous-dependencies': ['error', {
       'devDependencies': [
         '**/*.test.js',
+        '**/*.test.jsx',
         '**/setup_tests.js',
         '**/webpack.config.js',
         'gulpfile.js',

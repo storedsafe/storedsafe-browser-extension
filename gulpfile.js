@@ -58,16 +58,19 @@ function copyThirdPartyLibs() {
   if (devBuild) {
     files = [
       'node_modules/webextension-polyfill/dist/browser-polyfill.js',
+      'node_modules/webextension-polyfill/dist/browser-polyfill.js.map',
     ];
   } else {
     files = [
       'node_modules/webextension-polyfill/dist/browser-polyfill.min.js',
+      'node_modules/webextension-polyfill/dist/browser-polyfill.min.js.map',
     ];
   }
+  const removeRegex = /\.min|\.production|\.development|\.profiling/;
   return src(files)
     .pipe(rename((file) => ({
       dirname: file.dirname,
-      basename: file.basename.split('.')[0],
+      basename: file.basename.replace(removeRegex, ''),
       extname: file.extname,
     }))).pipe(dest('build/lib/'));
 }
@@ -125,7 +128,11 @@ const build = series(
 );
 
 const taskWatch = () => {
-  watch('./src/**/*', { ignoreInitial: false }, build);
+  watch([
+    './src/**/*',
+    '!./src/__mocks__/*',
+    '!./src/__tests__/*',
+  ], { ignoreInitial: false }, build);
 };
 
 exports.clean = clean;
