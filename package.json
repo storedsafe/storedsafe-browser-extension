@@ -7,6 +7,7 @@
   "scripts": {
     "test": "jest",
     "lint": "eslint . --ext js --ext jsx",
+    "lint:style": "styleline **/*.scss",
     "clean": "gulp clean",
     "build": "NODE_ENV=production gulp",
     "build:dev": "NODE_ENV=development gulp",
