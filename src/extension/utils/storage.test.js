@@ -21,8 +21,8 @@ global.browser = {
   },
 };
 
-const storage = require('../../extension/utils/storage');
-const defaults = require('../../extension/utils/defaults');
+const storage = require('./storage');
+const defaults = require('./defaults');
 
 const getStorageValue = (value) => (key) => new Promise(
   (resolve) => resolve({ [key]: storage.merge(value, {}) }),

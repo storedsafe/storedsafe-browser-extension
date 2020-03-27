@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import YubiKeyFields from './YubiKeyFields';
-import TOTPFields from './TOTPFields';
+import Input, { useForm } from '../Input';
 
+/**
+ * Enum containing the available login types.
+ * */
 const LoginType = Object.freeze({
   YUBIKEY: 'yubikey',
   TOTP: 'totp',
@@ -12,10 +14,50 @@ const LoginTypeData = Object.freeze({
   [LoginType.YUBIKEY]: {
     title: 'YubiKey',
     value: 'yubikey',
+    fields: (inputs, onChange) => [
+      <Input
+        key="keys"
+        type="password"
+        name="keys"
+        title="Passphrase + YubiKey"
+        value={inputs.keys || ''}
+        onChange={onChange}
+        pattern=".+.{44}"
+        required
+      />,
+    ],
+    onSubmit: ({ keys }) => ({
+      passphrase: keys.slice(0, -44),
+      otp: keys.slice(-44),
+    }),
   },
   [LoginType.TOTP]: {
     title: 'TOTP',
     value: 'totp',
+    fields: (inputs, onChange) => [
+      <Input
+        key="passphrase"
+        type="password"
+        name="passphrase"
+        title="Passphrase"
+        value={inputs.passphrase || ''}
+        onChange={onChange}
+        required
+      />,
+      <Input
+        key="otp"
+        type="password"
+        name="otp"
+        title="TOTP"
+        value={inputs.otp || ''}
+        onChange={onChange}
+        required
+      />,
+    ],
+    onSubmit: ({ passphrase, otp }) => ({
+      passphrase,
+      otp,
+    }),
   },
 });
 
@@ -24,53 +66,11 @@ function LoginForm({
   onLogin,
 }) {
   const [loginType, setLoginType] = useState(defaultLoginType);
-
-  // Assign selected password fields
-  let passwordFields;
-  switch (loginType) {
-    case LoginType.YUBIKEY:
-      passwordFields = <YubiKeyFields />;
-      break;
-    case LoginType.TOTP:
-      passwordFields = <TOTPFields />;
-      break;
-    default:
-      break;
-  }
+  const { inputs, onChange } = useForm();
 
   // Change password fields when login type changes
   const onLoginTypeChange = (event) => {
     setLoginType(event.target.value);
-  };
-
-  // Parse form before lifting state
-  const onSubmit = (event) => {
-    event.preventDefault();
-
-    const remember = event.target.remember.checked;
-    const username = event.target.username.value;
-
-    switch (loginType) {
-      case LoginType.YUBIKEY: {
-        const keys = event.target.keys.value;
-        onLogin(loginType, remember, {
-          username,
-          passphrase: keys.slice(0, -44),
-          otp: keys.slice(-44),
-        });
-        break;
-      }
-      case LoginType.TOTP: {
-        onLogin(loginType, remember, {
-          username,
-          passphrase: event.target.passphrase.value,
-          otp: event.target.otp.value,
-        });
-        break;
-      }
-      default:
-        break;
-    }
   };
 
   // Create login type options from enum
@@ -80,42 +80,47 @@ function LoginForm({
     </option>
   ));
 
-  const loginTypeID = 'logintype';
+  const onSubmit = (event) => {
+    event.preventDefault();
+    const { remember, username } = inputs;
+    onLogin(loginType, remember, {
+      username,
+      ...LoginTypeData[loginType].onSubmit(inputs),
+    });
+  };
+
   return (
     <form className="login" onSubmit={onSubmit}>
-      <label htmlFor={loginTypeID}>
-        <span>Login Type</span>
-        <div className="select">
-          <select
-            name={loginTypeID}
-            id={loginTypeID}
-            value={loginType}
-            onChange={onLoginTypeChange}
-          >
-            {loginOptions}
-          </select>
-        </div>
-      </label>
-      <label htmlFor="username">
-        <span>Username or e-mail</span>
-        <input
-          type="text"
-          name="username"
-          id="username"
-          required
-        />
-      </label>
-      {passwordFields}
-      <label className="checkbox-container" htmlFor="remember">
-        <span>Remember Username</span>
-        <input
-          type="checkbox"
-          name="remember"
-          id="remember"
-        />
-        <span className="checkmark" />
-      </label>
-      <input type="submit" value="Login to StoredSafe" />
+      <Input
+        type="select"
+        name="logintype"
+        title="Login Type"
+        onChange={onLoginTypeChange}
+      >
+        {loginOptions}
+      </Input>
+      <Input
+        type="text"
+        name="username"
+        title="Username or e-mail"
+        value={inputs.username || ''}
+        onChange={onChange}
+        required
+      />
+      {/* Password fields depending on login type */}
+      {LoginTypeData[loginType].fields(inputs, onChange)}
+      <Input
+        type="checkbox"
+        name="remember"
+        title="Remember Username"
+        checked={inputs.remember || false}
+        onChange={onChange}
+      />
+      <Input
+        type="submit"
+        name="submit"
+        title="Login to StoredSafe"
+      />
     </form>
   );
 }
@@ -129,4 +134,5 @@ LoginForm.propTypes = {
   onLogin: PropTypes.func.isRequired,
 };
 
+export { LoginType };
 export default LoginForm;

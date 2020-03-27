@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import Input from '../Input';
 
 function LogoutForm({ onLogout }) {
   const onSubmit = (event) => {
@@ -9,7 +10,7 @@ function LogoutForm({ onLogout }) {
 
   return (
     <form className="logout" onSubmit={onSubmit}>
-      <input type="submit" value="Logout from StoredSafe" />
+      <Input type="submit" name="submit" title="Logout from StoredSafe" />
     </form>
   );
 }

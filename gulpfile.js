@@ -132,6 +132,8 @@ const taskWatch = () => {
     './src/**/*',
     '!./src/__mocks__/*',
     '!./src/__tests__/*',
+    '!**/*.test.*',
+    '!__snapshots__/*',
   ], { ignoreInitial: false }, build);
 };
 

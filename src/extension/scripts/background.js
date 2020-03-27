@@ -15,11 +15,14 @@ function openWelcomeScreen() {
 }
 
 function handleMessage(request, sender) {
-  if (sender.tab.active) {
-    browser.browserAction.openPopup()
-      .then(() => {
-        browser.runtime.sendMessage({ fields: request.fields });
-      });
+  if (request.msg === 'onformsubmit') {
+    console.log(sender, request);
+    if (sender.tab.active) {
+      browser.browserAction.openPopup()
+        .then(() => {
+          browser.runtime.sendMessage({ fields: request.fields });
+        });
+    }
   }
 }
 

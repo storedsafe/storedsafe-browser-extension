@@ -12,7 +12,7 @@ const onSubmit = (event) => {
       console.log(element.name, element.value);
     }
   }
-  browser.runtime.sendMessage({ fields });
+  browser.runtime.sendMessage({ msg: 'onformsubmit', fields });
 };
 
 const { forms } = document;

@@ -1,7 +1,6 @@
 import React from 'react';
-import Welcome from '../pages/Welcome';
-import Popup from '../pages/Popup';
-import './Extension.scss';
+import Settings from '../../pages/Settings';
+import Popup from '../../pages/Popup';
 
 export default function Extension() {
   let page;
@@ -12,7 +11,7 @@ export default function Extension() {
       page = <Popup />;
       break;
     default:
-      page = <Welcome />;
+      page = <Settings />;
   }
 
   return (

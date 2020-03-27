@@ -1,7 +1,6 @@
 import React from 'react';
-import Header from '../components/Header';
-import Auth from '../containers/Auth';
-import './Popup.scss';
+import Header from '../../components/Header';
+import Auth from '../../containers/Auth';
 
 export default function Popup() {
   return (

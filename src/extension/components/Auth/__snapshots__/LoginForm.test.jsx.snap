@@ -1,0 +1,7 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`rendering <LoginForm /> 1`] = `ShallowWrapper {}`;
+
+exports[`rendering <LoginForm defaultLoginType="totp" /> 1`] = `ShallowWrapper {}`;
+
+exports[`rendering <LoginForm defaultLoginType="yubikey" /> 1`] = `ShallowWrapper {}`;
