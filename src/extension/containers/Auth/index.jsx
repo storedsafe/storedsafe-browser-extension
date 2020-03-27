@@ -1,23 +1,28 @@
 import React, { useState } from 'react';
 import { LoginForm, LogoutForm } from '../../components/Auth';
-import { LoginType } from '../../components/Auth/LoginForm';
+import Message from '../../utils/Message';
 
 export default function Auth() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   const onLogin = (loginType, remember, fields) => {
-    console.log(loginType, remember, fields);
-    if (loginType === LoginType.YUBIKEY) {
-      console.log('Authenticating with YubiKey... (placeholder)');
-    }
-    if (loginType === LoginType.TOTP) {
-      console.log('Authenticating with TOTP... (placeholder)');
-    }
-    setIsAuthenticated(true);
+    Message.login({
+      loginType,
+      remember,
+      fields,
+    }).then(() => {
+      setIsAuthenticated(true);
+    }).catch((error) => {
+      console.log('Logout failed', error);
+    });
   };
 
   const onLogout = () => {
-    setIsAuthenticated(false);
+    Message.logout().then(() => {
+      setIsAuthenticated(false);
+    }).catch((error) => {
+      console.log('Logout failed', error);
+    });
   };
 
   const form = isAuthenticated

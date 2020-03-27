@@ -1,29 +1,31 @@
-require('./expose_helpers');
+import { LoginType } from '../components/Auth';
+import { MessageType } from '../utils/Message';
 
-storedsafe.storage.getAllSessions().then((sessions) => {
-  const sites = Object.keys(sessions.sessions);
-  if (sites.length > 0) {
-    sites.forEach((site) => {
-      sessions.sessions[site].handler.logout();
-    });
-  }
-});
+require('./expose_helpers');
 
 // /// EVENT HANDLERS /////
 function openWelcomeScreen() {
   browser.runtime.openOptionsPage();
 }
 
-function handleMessage(request, sender) {
-  if (request.msg === 'onformsubmit') {
-    console.log(sender, request);
-    if (sender.tab.active) {
-      browser.browserAction.openPopup()
-        .then(() => {
-          browser.runtime.sendMessage({ fields: request.fields });
-        });
-    }
+function login({ loginType }) { // , remember, fields }) {
+  if (loginType === LoginType.YUBIKEY) {
+    return Promise.resolve();
   }
+  if (loginType === LoginType.YUBIKEY) {
+    return Promise.resolve();
+  }
+  return Promise.reject();
+}
+
+function logout() {
+  return Promise.resolve();
+}
+
+function handleMessage(request, sender) {
+  if (request.messageType === MessageType.LOGIN) return login(request);
+  if (request.messageType === MessageType.LOGOUT) return logout(request);
+  return Promise.reject(new Error('Invalid message', request, sender));
 }
 
 // /// SUBSCRIBE TO EVENTS /////

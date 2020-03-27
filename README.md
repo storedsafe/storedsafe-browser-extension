@@ -3,6 +3,33 @@
 StoredSafe browser extension for Chrome and Firefox.
 
 ## Setup
+
+### Install
+The `dist` folder contains the latest unpackaged builds for chrome and firefox.
+- To install in chrome, go to [](chrome://extensions) and click *Load Unpackaged*. Navigate to the `dist/chrome/` folder and click *open*.
+- To install in firefox, go to [](about:debugging) and click *This Firefox* followed by *Load Temporary Add-on...*. Navigate to the `dist/firefox/` folder and click *open*.
+
+### Build
+Requires npm or yarn to build. Currently depends on storedsafe-javascript package from this git server which requires an ssh-key to fetch. Future versions will fetch this from a public repository.
+
+```
+npm install
+npm run build # Production build
+npm run build:dev # Development build
+npm run build:watch # Continuous development build
+```
+
+or
+
+```
+yarn
+yarn build
+... # Same as npm but without run
+```
+
+Check package.json for all scripts or use `npx <command>` to use the installed tools directly.
+
+### Managed Storage
 [Chrome managed policy templates](https://www.chromium.org/administrators/policy-templates)
 
 [Firefox managed policy templates](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Native_manifests#Managed_storage_manifests)
@@ -76,25 +103,25 @@ Managed storage has two different versions of the settings object; `enforced` an
 ![GIF of login form interaction](graphics/preview_login.gif?raw=true)
 
 ## TODO
+
+### Roadmap
+- [ ] **0.0.1-alpha.1**: Able to authenticate through popup and retrieve token from StoredSafe
+
 ### WIP
 - [ ] Break down UI into React components
   - [x] Login Form
-    - [ ] Write tests
+    - [x] Write tests
+    - [ ] Handle login errors
   - [ ] Vault List
   - [ ] Save Item
   - [ ] Sessions
 - [ ] Connect login form with authentication in StoredSafe API
   - [ ] Handle sessions in background script
-  - [ ] Send message to background script or authenticate in popup?
-
-### Upcoming
-- [ ] Connect frontend with background scripts
-- [ ] Autofill
-
-### Future
-- [ ] Remember preferred login type
-- [ ] Turn custom checkbox and select into React components
+  - [x] Send message to background script from components
 
 ### Completed
+- [x] Wrote tests for previously finished components (27/03)
+- [x] Connect frontend with background scripts (27/03)
+- [x] Turned inputs into component (26/03)
 - [x] Fixed custom checkbox and select dropdown (25/03)
 
