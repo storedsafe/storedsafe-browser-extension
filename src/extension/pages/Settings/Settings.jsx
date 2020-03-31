@@ -2,57 +2,64 @@ import React, { useState, useEffect } from 'react';
 import Message from '../../lib/Message';
 import Input from '../../components/Input';
 import Header from '../../components/Header';
-import Loading from '../../components/Loading';
+
+const useSettings = (cb) => {
+  const [inputs, setInputs] = useState({});
+
+  const onChange = (event) => {
+    const { name, type } = event.target;
+    const value = ['checkbox'].includes(type)
+      ? event.target.checked
+      : event.target.value;
+    setInputs({ ...inputs, [name]: value });
+    cb(name, value);
+  };
+
+  const reset = (defaults) => {
+    setInputs(defaults);
+  };
+
+  return {
+    inputs,
+    onChange,
+    reset,
+  };
+};
+
+const onSettingChanged = (name, value) => {
+  Message.updateSettings({ [name]: value });
+};
 
 export default function Settings() {
-  const [isLoading, setIsLoading] = useState(true);
-  const [site, setSite] = useState(null);
-  const [apikey, setApikey] = useState(null);
+  const { inputs, onChange, reset } = useSettings(onSettingChanged);
 
   useEffect(() => {
-    Message.getSettings().then(({ site: savedSite, apikey: savedApikey }) => {
-      setSite(savedSite);
-      setApikey(savedApikey);
-      setIsLoading(false);
+    Message.getSettings().then((settings) => {
+      reset(settings);
     });
   }, []);
-
-  const onSiteChange = (event) => {
-    setSite(event.target.value);
-    setIsLoading(true);
-    Message.updateSettings({ site: event.target.value }).then(() => {
-      setIsLoading(false);
-    });
-  };
-
-  const onApikeyChange = (event) => {
-    setApikey(event.target.value);
-    setIsLoading(true);
-    Message.updateSettings({ apikey: event.target.value }).then(() => {
-      setIsLoading(false);
-    });
-  };
 
   return (
     <div className="settings">
       <Header />
       <section className="card">
         <h1>Settings</h1>
-        <Input
-          type="text"
-          name="site"
-          title="Site"
-          value={site || ''}
-          onChange={onSiteChange}
-        />
-        <Input
-          type="text"
-          name="apikey"
-          title="API Key"
-          value={apikey || ''}
-          onChange={onApikeyChange}
-        />
-        {isLoading && <Loading />}
+        <div className="site">
+          <Input
+            type="text"
+            name="site"
+            title="Site"
+            value={inputs.site || ''}
+            onChange={onChange}
+          />
+          <Input
+            type="text"
+            name="apikey"
+            title="API Key"
+            value={inputs.apikey || ''}
+            onChange={onChange}
+          />
+        </div>
       </section>
     </div>
   );
