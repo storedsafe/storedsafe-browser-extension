@@ -34,7 +34,7 @@ function login({ loginType, remember, fields }) {
       const { username, passphrase, otp } = fields;
       return storedSafe.authYubikey(username, passphrase, otp);
     }
-    if (loginType === LoginType.YUBIKEY) {
+    if (loginType === LoginType.TOTP) {
       const { username, passphrase, otp } = fields;
       return storedsafe.authTotp(username, passphrase, otp);
     }

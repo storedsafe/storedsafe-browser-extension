@@ -33,7 +33,8 @@ function Auth({ setAuthenticated }) {
       }
     }).catch((errorMessage) => {
       setIsLoading(false);
-      setError(errorMessage);
+      console.log(errorMessage);
+      setError(errorMessage.toString());
     });
   };
 
