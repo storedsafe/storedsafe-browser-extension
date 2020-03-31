@@ -30,7 +30,7 @@ module.exports = {
         include: [
           SRC_DIR,
         ],
-        use: 'babel-loader',
+        use: ['babel-loader'],
       },
       // SASS
       {
@@ -39,10 +39,8 @@ module.exports = {
       },
       // IMAGES
       {
-        test: /\.(png|svg|jpe?g|gif)$/,
-        use: [
-          'file-loader',
-        ],
+        test: /\.(png|jpe?g|gif|svg)$/,
+        use: ['file-loader'],
       },
     ],
   },

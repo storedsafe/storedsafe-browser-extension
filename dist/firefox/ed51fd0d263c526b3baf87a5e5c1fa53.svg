@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   id="Lager_1"
+   data-name="Lager 1"
+   viewBox="0 0 82.33 82.33"
+   version="1.1"
+   sodipodi:docname="padlock_unlocked.svg"
+   inkscape:version="0.92.4 5da689c313, 2019-01-14"
+   inkscape:export-filename="/home/oscar/work/storedsafe/browser_extension/storedsafe-browser-extension/src/assets/icon_unlocked.png"
+   inkscape:export-xdpi="74.620003"
+   inkscape:export-ydpi="74.620003">
+  <metadata
+     id="metadata913">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>padlock-white</dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="967"
+     inkscape:window-height="1003"
+     id="namedview911"
+     showgrid="false"
+     inkscape:pagecheckerboard="true"
+     inkscape:zoom="6.9568381"
+     inkscape:cx="59.791877"
+     inkscape:cy="38.499555"
+     inkscape:window-x="25"
+     inkscape:window-y="25"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="Lager_1"
+     showguides="false"
+     inkscape:snap-global="false" />
+  <defs
+     id="defs894">
+    <style
+       id="style884">
+      .cls-1 {
+        fill: url(#linear-gradient);
+      }
+
+      .cls-2, .cls-5 {
+        fill: #fff;
+      }
+
+      .cls-3 {
+        fill: #0067a6;
+      }
+
+      .cls-4 {
+        mask: url(#mask);
+      }
+
+      .cls-5 {
+        opacity: 0.79;
+      }
+    </style>
+    <linearGradient
+       id="linear-gradient"
+       x1="40.68"
+       y1="250.24"
+       x2="40.68"
+       y2="209.91"
+       gradientTransform="matrix(1, 0, 0, -1, 0, 257.03)"
+       gradientUnits="userSpaceOnUse">
+      <stop
+         offset="0"
+         stop-color="#fff"
+         id="stop886" />
+      <stop
+         offset="1"
+         id="stop888" />
+    </linearGradient>
+    <mask
+       id="mask"
+       x="16.61"
+       y="6.79"
+       width="48.14"
+       height="42.54"
+       maskUnits="userSpaceOnUse">
+      <ellipse
+         class="cls-1"
+         cx="40.68"
+         cy="26.96"
+         rx="24.07"
+         ry="20.17"
+         id="ellipse891" />
+    </mask>
+  </defs>
+  <title
+     id="title896">padlock-white</title>
+  <circle
+     class="cls-2"
+     cx="41.17"
+     cy="41.17"
+     r="41.17"
+     id="circle898" />
+  <circle
+     class="cls-3"
+     cx="40.68"
+     cy="41.17"
+     r="32.92"
+     id="circle900"
+     style="fill:#00bc00;fill-opacity:1" />
+  <g
+     class="cls-4"
+     mask="url(#mask)"
+     id="g904">
+    <ellipse
+       class="cls-5"
+       cx="40.68"
+       cy="29.17"
+       rx="24.07"
+       ry="20.17"
+       id="ellipse902" />
+  </g>
+  <path
+     class="cls-2"
+     d="M51.58,32.5,28.87,35.76l-2.19.32A1.88,1.88,0,0,0,24.9,38l3.23,22.5a1.88,1.88,0,0,0,2.26,1.36l24.9-3.58a1.89,1.89,0,0,0,1.78-1.94L53.83,33.85A1.88,1.88,0,0,0,51.58,32.5ZM44.13,51.2l-6.57.94.85-4.33a2.64,2.64,0,0,1-1.77-2c-.21-1.48,1.09-2.89,2.9-3.15s3.46.73,3.68,2.21a2.64,2.64,0,0,1-1.13,2.43Z"
+     id="path906" />
+  <path
+     style="fill:#ffffff"
+     d="M 37.552734 14.423828 C 36.836169 14.39519 36.07375 14.434531 35.265625 14.550781 C 27.365535 15.687222 25.8852 22.474176 25.910156 27.671875 L 25.894531 27.673828 C 25.895054 27.810154 25.905822 27.925494 25.908203 28.058594 C 25.910675 28.18891 25.902036 28.33111 25.90625 28.458984 L 25.923828 28.458984 C 25.95599 29.459565 26.022507 30.390569 26.121094 31.179688 L 30.736328 30.583984 C 30.600857 29.909294 30.4847 29.139311 30.414062 28.328125 C 30.378277 27.926528 30.352269 27.516227 30.345703 27.099609 C 30.292679 23.734933 31.343658 20.084076 35.966797 19.419922 C 40.715335 18.737753 42.832526 22.1291 43.791016 25.445312 C 44.165466 26.776629 45.204656 32.899115 45.3125 33.894531 L 49.648438 33.335938 C 49.503892 32.391517 48.501126 26.641239 48.097656 25.054688 L 48.115234 25.054688 C 48.098154 24.991778 48.072381 24.924686 48.054688 24.861328 C 48.052148 24.85209 48.047398 24.823256 48.044922 24.814453 L 48.041016 24.814453 C 46.766655 20.281964 43.918846 14.678252 37.552734 14.423828 z "
+     id="path908" />
+</svg>

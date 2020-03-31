@@ -105,21 +105,26 @@ Managed storage has two different versions of the settings object; `enforced` an
 ## TODO
 
 ### Roadmap
-- [ ] **0.0.1-alpha.1**: Able to authenticate through popup and retrieve token from StoredSafe
+- [x] **0.0.0-1**: Authenticate through popup and retrieve token from StoredSafe
+- [ ] **0.0.0-2**: Search for items in StoredSafe through popup
+- [ ] 0.0.0-3: Reveal/copy decrypted data in popup
+- [ ] 0.0.0-4: Find and fill relevant data in StoredSafe for active site from popup
+- [ ] 0.0.0-5: Autofill data in StoredSafe for active site
+- [ ] 0.0.0-6: Offer to save data after submit
 
-### WIP
-- [ ] Break down UI into React components
+#### WIP
+- [ ] UI
   - [x] Login Form
     - [x] Write tests
     - [ ] Handle login errors
-  - [ ] Vault List
-  - [ ] Save Item
   - [ ] Sessions
+  - [ ] Settings Page
+  - [ ] Loading icon
 - [ ] Connect login form with authentication in StoredSafe API
   - [ ] Handle sessions in background script
   - [x] Send message to background script from components
 
-### Completed
+#### Completed
 - [x] Wrote tests for previously finished components (27/03)
 - [x] Connect frontend with background scripts (27/03)
 - [x] Turned inputs into component (26/03)

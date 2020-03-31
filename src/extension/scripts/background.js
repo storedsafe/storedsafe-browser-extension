@@ -1,43 +1,82 @@
+import StoredSafe from 'storedsafe';
 import { LoginType } from '../components/Auth';
 import { MessageType } from '../utils/Message';
+
+let storedSafe;
 
 require('./expose_helpers');
 
 // /// EVENT HANDLERS /////
-function openWelcomeScreen() {
+function onInstalled() {
+  browser.contextMenus.create({
+    id: 'open-popup',
+    title: 'open popup',
+    contexts: ['editable'],
+  });
   browser.runtime.openOptionsPage();
 }
 
-function login({ loginType }) { // , remember, fields }) {
-  if (loginType === LoginType.YUBIKEY) {
-    return Promise.resolve();
-  }
-  if (loginType === LoginType.YUBIKEY) {
-    return Promise.resolve();
-  }
-  return Promise.reject();
+function getSettings() {
+  return browser.storage.local.get();
+}
+
+function updateSettings(data) {
+  return browser.storage.local.set(data);
+}
+
+function login({ loginType, fields }) { // , remember, fields }) {
+  return getSettings().then(({ site, apikey }) => {
+    storedSafe = new StoredSafe(site, apikey);
+    if (loginType === LoginType.YUBIKEY) {
+      const { username, passphrase, otp } = fields;
+      return storedSafe.authYubikey(username, passphrase, otp);
+    }
+    if (loginType === LoginType.YUBIKEY) {
+      const { username, passphrase, otp } = fields;
+      return storedsafe.authTotp(username, passphrase, otp);
+    }
+    return Promise.reject(new Error(`Unknown login type ${loginType}.`));
+  });
 }
 
 function logout() {
-  return Promise.resolve();
+  return storedSafe.logout();
+}
+
+function getToken() {
+  if (storedSafe !== undefined) {
+    return Promise.resolve({ token: storedSafe.token || null });
+  }
+  return Promise.resolve({ token: null });
 }
 
 function handleMessage(request, sender) {
-  if (request.messageType === MessageType.LOGIN) return login(request);
-  if (request.messageType === MessageType.LOGOUT) return logout(request);
-  return Promise.reject(new Error('Invalid message', request, sender));
+  switch (request.messageType) {
+    case MessageType.LOGIN:
+      return login(request.data);
+    case MessageType.LOGOUT:
+      return logout(request.data);
+    case MessageType.GET_SETTINGS:
+      return getSettings(request.data);
+    case MessageType.UPDATE_SETTINGS:
+      return updateSettings(request.data);
+    case MessageType.GET_TOKEN:
+      return getToken(request.data);
+    default:
+      return Promise.reject(new Error('Invalid message', request, sender));
+  }
 }
 
 // /// SUBSCRIBE TO EVENTS /////
-browser.runtime.onInstalled.addListener(openWelcomeScreen);
+browser.runtime.onInstalled.addListener(onInstalled);
 browser.runtime.onMessage.addListener(handleMessage);
 
-browser.contextMenus.create({
-  id: 'open-popup',
-  title: 'open popup',
-  contexts: ['editable'],
-});
-
-browser.contextMenus.onClicked.addListener(() => {
-  browser.browserAction.openPopup();
+browser.contextMenus.onClicked.addListener((info) => {
+  switch (info.menuItemId) {
+    case 'open-popup':
+      browser.browserAction.openPopup();
+      break;
+    default:
+      break;
+  }
 });

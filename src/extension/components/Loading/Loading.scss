@@ -1,0 +1,63 @@
+@use '../../base.scss';
+
+.loading {
+  height: 3em;
+  position: relative;
+  width: 3em;
+}
+
+.spinner {
+  &::after,
+  &::before {
+    border: 0.2em solid transparent;
+    border-radius: 100%;
+    border-top-color: base.$accent;
+    box-sizing: border-box;
+    content: '';
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+  }
+
+  &::before {
+    animation: spin 1s infinite;
+    transition: border base.$animation-duration;
+    z-index: 100;
+  }
+
+  &::after {
+    background-image: url('../../../../graphics/padlock.svg');
+    background-size: contain;
+    border-color: base.$bg-medium;
+    transition: base.$animation-duration;
+    transition-property: border-color, background-image;
+  }
+
+  &.error::before,
+  &.success::before {
+    animation: none;
+    border: 0;
+  }
+
+  &.error::after {
+    background-image: url('../../../../graphics/padlock-alert.svg');
+    border-color: #f00;
+  }
+
+  &.success::after {
+    background-image: url('../../../../graphics/padlock-unlocked.svg');
+    border-color: #0f0;
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
