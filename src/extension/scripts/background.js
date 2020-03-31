@@ -36,7 +36,7 @@ function login({ loginType, remember, fields }) {
     }
     if (loginType === LoginType.TOTP) {
       const { username, passphrase, otp } = fields;
-      return storedsafe.authTotp(username, passphrase, otp);
+      return storedSafe.authTotp(username, passphrase, otp);
     }
     return Promise.reject(new Error(`Unknown login type ${loginType}.`));
   });
