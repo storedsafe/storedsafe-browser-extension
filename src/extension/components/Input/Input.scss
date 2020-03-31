@@ -1,12 +1,6 @@
 @use '../../base.scss';
 
 /* Flow Styling */
-label,
-input[type='submit'],
-input[type='button'] {
-  margin-bottom: 1em;
-}
-
 label {
   display: flex;
   flex-direction: column;

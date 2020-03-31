@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Message from '../../utils/Message';
+import Message from '../../lib/Message';
 import Input from '../../components/Input';
 import Header from '../../components/Header';
 import Loading from '../../components/Loading';

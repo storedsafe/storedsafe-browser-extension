@@ -1,6 +1,6 @@
 import StoredSafe from 'storedsafe';
 import { LoginType } from '../components/Auth';
-import { MessageType } from '../utils/Message';
+import { MessageType } from '../lib/Message';
 
 let storedSafe;
 
@@ -24,8 +24,11 @@ function updateSettings(data) {
   return browser.storage.local.set(data);
 }
 
-function login({ loginType, fields }) { // , remember, fields }) {
+function login({ loginType, remember, fields }) {
   return getSettings().then(({ site, apikey }) => {
+    if (remember) {
+      updateSettings({ username: fields.username });
+    }
     storedSafe = new StoredSafe(site, apikey);
     if (loginType === LoginType.YUBIKEY) {
       const { username, passphrase, otp } = fields;

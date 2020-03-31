@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import Message from '../../utils/Message';
+import PropTypes from 'prop-types';
+import Message from '../../lib/Message';
 import { LoginForm, LogoutForm } from '../../components/Auth';
 import Loading from '../../components/Loading';
 
-export default function Auth() {
+function Auth({ setAuthenticated }) {
   const [token, setToken] = useState(null);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -11,6 +12,7 @@ export default function Auth() {
   useEffect(() => {
     Message.getToken().then(({ token: savedToken }) => {
       setToken(savedToken);
+      setAuthenticated(savedToken !== null);
     });
   }, []);
 
@@ -25,6 +27,7 @@ export default function Auth() {
       setIsLoading(false);
       if (response.status === 200) {
         setToken(response.data.CALLINFO.token);
+        setAuthenticated(true);
       } else {
         setError(response.data.ERRORS[0]);
       }
@@ -40,6 +43,7 @@ export default function Auth() {
     Message.logout().then(() => {
       setIsLoading(false);
       setToken(null);
+      setAuthenticated(false);
     }).catch((errorMessage) => {
       setIsLoading(false);
       setError(errorMessage);
@@ -56,10 +60,15 @@ export default function Auth() {
 
   return (
     <section className="card">
-      {token !== null && <p>{token}</p>}
       {form}
       {isLoading && <Loading />}
       {errorMessage}
     </section>
   );
 }
+
+Auth.propTypes = {
+  setAuthenticated: PropTypes.func.isRequired,
+};
+
+export default Auth;

@@ -32,3 +32,8 @@ body {
 .error {
   color: #f00;
 }
+
+.card > *:not(:last-child),
+form > *:not(:last-child) {
+  margin-bottom: 1em;
+}
