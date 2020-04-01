@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import Input, { useForm } from '../Input';
+import { useForm } from '../../hooks/CustomHooks';
+import Input from '../Input';
 
 /**
  * Enum containing the available login types.

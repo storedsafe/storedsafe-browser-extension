@@ -1,75 +1,66 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { usePromise } from '../../hooks/CustomHooks';
 import Message from '../../lib/Message';
 import { LoginForm, LogoutForm } from '../../components/Auth';
 import Loading from '../../components/Loading';
+import CustomError from '../../components/CustomError';
 
-function Auth({ setAuthenticated }) {
-  const [token, setToken] = useState(null);
-  const [error, setError] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
+function Auth({ children }) {
+  const { value: isAuthenticated, resolve, isLoading, error } = usePromise();
 
+  // Get initial state
   useEffect(() => {
-    Message.getToken().then(({ token: savedToken }) => {
-      setToken(savedToken);
-      setAuthenticated(savedToken !== null);
-    });
+    resolve(
+      Message.getToken().then(({ token }) => (
+        token !== null
+      )),
+    );
   }, []);
 
   const onLogin = (loginType, remember, fields) => {
-    setIsLoading(true);
-    setError(null);
-    Message.login({
-      loginType,
-      remember,
-      fields,
-    }).then((response) => {
-      setIsLoading(false);
-      if (response.status === 200) {
-        setToken(response.data.CALLINFO.token);
-        setAuthenticated(true);
-      } else {
-        setError(response.data.ERRORS[0]);
-      }
-    }).catch((errorMessage) => {
-      setIsLoading(false);
-      console.log(errorMessage);
-      setError(errorMessage.toString());
-    });
+    resolve(
+      Message.login({
+        loginType,
+        remember,
+        fields,
+      }).then((response) => {
+        if (response.status === 200) {
+          return response.data.CALLINFO.token !== null;
+        }
+        throw new Error(response.data.ERRORS[0]);
+      }),
+    );
   };
 
   const onLogout = () => {
-    setIsLoading(true);
-    setError(null);
-    Message.logout().then(() => {
-      setIsLoading(false);
-      setToken(null);
-      setAuthenticated(false);
-    }).catch((errorMessage) => {
-      setIsLoading(false);
-      setError(errorMessage);
-    });
+    resolve(
+      Message.logout().then(() => (false)),
+    );
   };
-
-  const form = token !== null
-    ? <LogoutForm onLogout={onLogout} />
-    : <LoginForm onLogin={onLogin} />;
-
-  const errorMessage = error === null
-    ? null
-    : <p className="error">{error}</p>;
 
   return (
     <section className="card">
-      {form}
+      {
+        isAuthenticated
+          ? [
+            children,
+            <LogoutForm key="logoutForm" onLogout={onLogout} />,
+          ]
+          : <LoginForm key="loginForm" onLogin={onLogin} />
+      }
       {isLoading && <Loading />}
-      {errorMessage}
+      {error !== null && <CustomError message={error.toString()} />}
     </section>
   );
 }
 
+Auth.defaultProps = {
+  children: null,
+};
+
 Auth.propTypes = {
-  setAuthenticated: PropTypes.func.isRequired,
+  children: PropTypes.node,
 };
 
 export default Auth;

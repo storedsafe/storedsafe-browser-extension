@@ -1,0 +1,5 @@
+@use '../../base.scss';
+
+.error {
+  color: base.$error;
+}
