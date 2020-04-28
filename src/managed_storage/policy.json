@@ -1,0 +1,23 @@
+{
+  "3rdparty": {
+    "extensions": {
+      "<addon-id>": {
+        "sites": [
+          {
+            "url": "safe.example.com",
+            "apikey": "my-api-key"
+          }
+        ],
+        "settings": {
+          "enforced": {
+            "maxTokenLife": 180
+          },
+          "defaults": {
+            "autoFill": false,
+            "idleMax": 10
+          }
+        }
+      }
+    }
+  }
+}
