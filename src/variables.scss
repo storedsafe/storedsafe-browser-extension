@@ -1,0 +1,63 @@
+$color-primary-0: #526a78;
+$color-primary-1: #f3f7f8;
+$color-primary-2: #8a9aa4;
+$color-primary-3: #2e424f;
+$color-primary-4: #102531;
+
+$color-accent-0: #03a388;
+$color-accent-1: #bff8ef;
+$color-accent-2: #43c1ac;
+$color-accent-3: #006352;
+$color-accent-4: #000706;
+
+$color-warning-0: #f59815;
+$color-warning-1: #fff3e2;
+$color-warning-2: #ffc16a;
+$color-warning-3: #b76b00;
+$color-warning-4: #754500;
+
+$color-error-0: #c5283e;
+$color-error-1: #fdd2d8;
+$color-error-2: #f27183;
+$color-error-3: #7e0314;
+$color-error-4: #120003;
+
+$primary: #526a78;
+$accent: #03a386;
+$border: #d4d7d8;
+$bg-error: #ffe5e6;
+$error: #d16569;
+$warning: #d19764;
+$bg-warning: #fff1e5;
+
+$bg-hover: #f9fbfc;
+$bg-focus: #f4f7f9;
+$bg-active: #ebeef0;
+
+$border-hover: #c7cacc;
+$border-focus: $accent;
+$border-active: #028c73;
+
+$bg: #fff;
+$fg: #232d33;
+
+$spacing: 1.2em;
+$input-spacing: 3 * $spacing / 4;
+$border-radius: 0.25em;
+$transition-duration: 0.1s;
+
+%arrow {
+  border: solid transparent;
+  border-top-color: $fg;
+  border-width: 0.4em 0.25em;
+  box-sizing: border-box;
+  content: '';
+  height: 0.8em;
+  margin-top: -0.2em;
+  position: absolute;
+  right: 0.75em;
+  top: 50%;
+  transform-origin: 0.2em 0.125em;
+  width: 0.5em;
+  pointer-events: none;
+}

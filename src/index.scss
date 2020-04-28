@@ -1,0 +1,41 @@
+@import url('https://fonts.googleapis.com/css?family=Montserrat|Roboto&display=swap');
+@import './variables';
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: $primary;
+  color: #fff;
+  font-size: 14px;
+  font-family: 'Roboto', sans-serif;
+  padding: $spacing;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: 'Montserrat', sans-serif;
+  margin-top: $spacing / 6;
+  margin-bottom: $spacing / 2;
+}
+
+.field {
+  margin-bottom: $spacing;
+}
+
+.card {
+  margin-bottom: $spacing;
+  background-color: $bg;
+  color: $fg;
+}
+
+ul {
+  padding-left: $spacing*2;
+}

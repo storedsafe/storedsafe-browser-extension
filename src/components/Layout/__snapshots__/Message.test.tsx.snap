@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Message /> 1`] = `ShallowWrapper {}`;
+
+exports[`<Message />, with children 1`] = `ShallowWrapper {}`;
+
+exports[`<Message type=error /> 1`] = `ShallowWrapper {}`;
+
+exports[`<Message type=info /> 1`] = `ShallowWrapper {}`;
+
+exports[`<Message type=warning /> 1`] = `ShallowWrapper {}`;

@@ -1,43 +1,47 @@
+/* eslint @typescript-eslint/no-var-requires: off */
 const path = require('path');
 
-const ROOT_DIR = __dirname;
-const SRC_DIR = path.join(ROOT_DIR, 'src');
-
-const devBuild = process.env.NODE_ENV !== 'production';
+const SRC_DIR = path.join(__dirname, 'src');
 
 module.exports = {
-  mode: devBuild ? 'development' : 'production',
-  resolve: {
-    extensions: ['.jsx', '.js', '.json'],
-  },
   entry: {
-    extension: path.join(__dirname,
-      'src/extension/index.jsx'),
-    background: path.join(__dirname,
-      'src/extension/scripts/background.js'),
-    content_script: path.join(__dirname,
-      'src/extension/scripts/content_script.js'),
+    'main': SRC_DIR + '/index.tsx',
+    'background': SRC_DIR + '/background.ts',
+    'content_script': SRC_DIR + '/content_script.ts',
   },
   output: {
-    filename: '[name].bundle.js',
-    path: path.join(__dirname, 'build/'),
+    path: path.resolve(__dirname, 'dist'),
+    filename: '[name].js',
   },
+
+  resolve: {
+    extensions: [
+      '.ts',
+      '.tsx',
+      '.js',
+    ],
+  },
+
   module: {
     rules: [
-      // BABEL
       {
-        test: /\.jsx?$/,
-        include: [
-          SRC_DIR,
+        test: /\.ts(x?)$/,
+        exclude: /node_modules/,
+        use: [
+          {
+            loader: 'ts-loader'
+          },
         ],
-        use: ['babel-loader'],
       },
-      // SASS
       {
-        test: /\.s[ac]ss$/i,
-        use: ['style-loader', 'css-loader', 'sass-loader'],
+        enforce: 'pre',
+        test: /\.js$/,
+        loader: 'source-map-loader'
       },
-      // IMAGES
+      {
+        test: /\.s[ac]ss$/,
+        use: [ 'style-loader', 'css-loader', 'postcss-loader', 'sass-loader' ],
+      },
       {
         test: /\.(png|jpe?g|gif|svg)$/,
         use: ['file-loader'],
@@ -45,12 +49,10 @@ module.exports = {
     ],
   },
 
-  devtool: 'inline-source-map',
-  devServer: {
-    lazy: true,
-    filename: 'extension.bundle.js',
-    contentBase: path.join(SRC_DIR, 'assets/'),
-  },
+  devtool: 'source-map',
 
-  externals: { 'webextension-polyfill': 'browser' },
+  externals: {
+    'react': 'React',
+    'react-dom': 'ReactDOM',
+  },
 };

@@ -1,0 +1,17 @@
+.card {
+  max-width: 80vw;
+  margin: auto;
+}
+
+.form {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  max-height: 100%;
+}
+
+.field {
+  width: 15em;
+  margin: 1em;
+}

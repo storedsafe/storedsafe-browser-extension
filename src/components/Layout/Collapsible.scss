@@ -1,0 +1,10 @@
+@import '../../variables';
+
+.collapsible {
+  overflow: hidden;
+  transition: max-height $transition-duration ease-out;
+
+  &.collapsed {
+    max-height: 0;
+  }
+}

@@ -1,0 +1,7 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Radio /> 1`] = `ShallowWrapper {}`;
+
+exports[`<Radio options=...x2 /> 1`] = `ShallowWrapper {}`;
+
+exports[`<Radio options=...x2 labelDir=left /> 1`] = `ShallowWrapper {}`;

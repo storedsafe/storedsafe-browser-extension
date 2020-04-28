@@ -1,0 +1,17 @@
+@import '../../variables';
+
+.collapse-list {
+  .collapse-box-children {
+    padding: 0 !important;
+  }
+}
+
+.collapse-list-item {
+  &.padded {
+    padding: $spacing/4;
+  }
+
+  &:nth-child(even) {
+    background-color: $color-primary-1;
+  }
+}

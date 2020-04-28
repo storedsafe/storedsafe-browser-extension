@@ -1,6 +1,7 @@
 {
   "extends": "stylelint-config-sass-guidelines",
   "rules": {
-    "selector-no-qualifying-type": [ true, { "ignore": "attribute" } ]
+    "order/properties-alphabetical-order": false,
+    "selector-max-compound-selectors": 4
   }
 }

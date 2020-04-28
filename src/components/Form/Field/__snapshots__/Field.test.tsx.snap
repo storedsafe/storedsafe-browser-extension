@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Button /> 1`] = `ReactWrapper {}`;
+
+exports[`<Checkbox /> 1`] = `ReactWrapper {}`;
+
+exports[`<Input /> 1`] = `ReactWrapper {}`;
+
+exports[`<Input type=password /> 1`] = `ReactWrapper {}`;
+
+exports[`<Radio /> 1`] = `ReactWrapper {}`;
+
+exports[`<Select /> 1`] = `ReactWrapper {}`;
+
+exports[`<TextArea /> 1`] = `ReactWrapper {}`;

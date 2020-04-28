@@ -1,53 +1,32 @@
 module.exports = {
+  root: true,
+  parser: '@typescript-eslint/parser',
   env: {
     node: true,
     browser: true,
-    es6: true,
-    'jest/globals': true,
-  },
-  extends: [
-    'airbnb',
-    'plugin:react/recommended',
-  ],
-  globals: {
-    Atomics: 'readonly',
-    SharedArrayBuffer: 'readonly',
-    browser: 'readonly',
-    storedsafe: 'readonly',
-  },
-  parserOptions: {
-    sourceType: 'module',
-    ecmaVersion: 2018,
-    ecmaFeatures: {
-      jsx: true,
-    },
   },
   plugins: [
+    '@typescript-eslint',
     'react',
-    'jest',
-    'jsx-a11y',
+    'react-hooks',
+  ],
+  rules: {
+    '@typescript-eslint/no-empty-interface': 'off',
+  },
+  extends: [
+    'eslint:recommended',
+    'plugin:@typescript-eslint/eslint-recommended',
+    'plugin:@typescript-eslint/recommended',
+    'plugin:react/recommended',
+    'plugin:react-hooks/recommended',
   ],
   ignorePatterns: [
     'node_modules/',
-    'dist/',
-    'build/',
-    'graphics/',
+    'dist',
   ],
-  rules: {
-    'no-prototype-builtins': 'off',
-    'no-underscore-dangle': 'off',
-    'no-param-reassign': 'off',
-    'max-len': ["error", { "code": 80 }],
-    'import/no-extraneous-dependencies': ['error', {
-      'devDependencies': [
-        '**/*.test.js',
-        '**/*.test.jsx',
-        '**/setup_tests.js',
-        '**/webpack.config.js',
-        'gulpfile.js',
-      ],
-    }],
-    'no-plusplus': ['error', { 'allowForLoopAfterthoughts': true }],
-    'object-curly-newline': ["error", { "consistent": true }],
+  settings: {
+    react: {
+      version: "detect",
+    },
   },
 };

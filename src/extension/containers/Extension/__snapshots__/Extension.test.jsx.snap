@@ -1,5 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`<Extension />, #popup => <Popup /> 1`] = `ShallowWrapper {}`;
-
-exports[`<Extension />, default => <Settings /> 1`] = `ShallowWrapper {}`;

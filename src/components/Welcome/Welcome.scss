@@ -1,0 +1,18 @@
+@import '../../variables';
+
+.welcome {
+  max-width: 800px;
+}
+
+.sites-form {
+  .form {
+    display: flex;
+    flex-direction: row;
+    justify-content: stretch;
+    align-items: flex-end;
+  }
+
+  .field {
+    width: 100%;
+  }
+}

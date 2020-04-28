@@ -1,0 +1,7 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Button button /> 1`] = `ShallowWrapper {}`;
+
+exports[`<Button reset /> 1`] = `ShallowWrapper {}`;
+
+exports[`<Button submit /> 1`] = `ShallowWrapper {}`;

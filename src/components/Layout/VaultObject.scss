@@ -1,0 +1,21 @@
+@import '../../variables';
+
+.vault-object-title {
+  font-weight: bold;
+  color: $color-primary-0;
+}
+
+.vault-object-field {
+  display: flex;
+  flex-direction: row;
+  padding: $spacing/4;
+
+  &:nth-child(even) {
+    background-color: $color-primary-1;
+  }
+}
+
+.vault-object-field-title {
+  color: $color-primary-2;
+  margin-right: $spacing / 4;
+}

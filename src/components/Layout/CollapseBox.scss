@@ -1,0 +1,44 @@
+@import '../../variables';
+
+.collapse-box {
+  .collapse-box-title {
+    position: relative;
+    overflow: auto;
+    border-radius: $border-radius $border-radius 0 $border-radius;
+    border: 0;
+    border-left: 4px solid $color-primary-0;
+    background-color: $color-primary-1;
+    cursor: pointer;
+    transition: $transition-duration ease-out;
+    transition-property: border-left-width;
+  }
+
+  .collapse-box-title {
+    padding: $spacing / 2;
+  }
+
+  .collapse-box-title::after {
+    @extend %arrow;
+    transition: transform $transition-duration ease-out;
+  }
+
+  .collapse-box-children {
+    border: 0 solid $color-primary-0;
+    border-width: 0 0 0 2px;
+    margin-left: 2px;
+  }
+
+  .collapse-box-children.padded {
+    padding: $spacing/4;
+  }
+}
+
+.collapse-box.collapsed {
+  .collapse-box-title::after {
+    transform: rotate(90deg);
+  }
+
+  .collapse-box-title {
+    border-left-width: 3px;
+  }
+}
