@@ -34,7 +34,8 @@
   "permissions": [
     "storage",
     "idle",
-    "contextMenus"
+    "contextMenus",
+    "activeTab"
   ],
   "storage": {
     "managed_schema": "schema.json"

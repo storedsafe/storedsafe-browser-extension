@@ -92,6 +92,26 @@ function onSuspend(): void {
   invalidateAllSessions();
 }
 
+function onMenuClick(
+  info: browser.contextMenus.OnClickData,
+  tab: browser.tabs.Tab,
+): void {
+  switch (info.menuItemId) {
+    case 'open-popup': {
+      browser.browserAction.openPopup().then().catch().then(() => {
+        browser.runtime.sendMessage({
+          type: 'popup-search',
+          data: { url: tab.url },
+        });
+      });
+      break;
+    }
+    default: {
+      break;
+    }
+  }
+}
+
 /**
  * Subscribe to events and initialization
  * */
@@ -113,3 +133,5 @@ browser.runtime.onSuspend.addListener(onSuspend);
 
 // Invalidate sessions after being idle for some time
 browser.idle.onStateChanged.addListener(onIdle);
+
+browser.contextMenus.onClicked.addListener(onMenuClick);

@@ -25710,7 +25710,7 @@ module.exports = exports;
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, ".popup {\n  display: flex;\n  flex-direction: column;\n  width: 300px;\n  height: 360px;\n}\n.popup header {\n  width: 100%;\n}\n.popup .logo {\n  margin: auto;\n  max-width: 100%;\n}\n.popup .popup-content {\n  flex-grow: 1;\n}", ""]);
+exports.push([module.i, ".popup {\n  display: flex;\n  flex-direction: column;\n  width: 360px;\n  height: 400px;\n  overflow: auto;\n}\n.popup header {\n  width: 100%;\n}\n.popup .logo {\n  margin: auto;\n  max-width: 100%;\n}\n.popup .popup-content {\n  flex-grow: 1;\n}", ""]);
 // Exports
 module.exports = exports;
 
@@ -29232,7 +29232,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = __importStar(__webpack_require__(/*! react */ "react"));
 const storedsafe_1 = __importDefault(__webpack_require__(/*! storedsafe */ "./node_modules/storedsafe/dist/index.js"));
 const StorageState_1 = __webpack_require__(/*! ../../../state/StorageState */ "./src/state/StorageState.ts");
-const VaultObject_1 = __webpack_require__(/*! ../../Layout/VaultObject */ "./src/components/Layout/VaultObject.tsx");
+const Layout_1 = __webpack_require__(/*! ../../Layout */ "./src/components/Layout/index.ts");
 __webpack_require__(/*! ./Search.scss */ "./src/components/Popup/Search/Search.scss");
 exports.Search = ({ selected, setActive, }) => {
     const [state] = StorageState_1.useStorage();
@@ -29240,14 +29240,23 @@ exports.Search = ({ selected, setActive, }) => {
     const [loading, setLoading] = react_1.useState(false);
     const [results, setResults] = react_1.useState({});
     react_1.useEffect(() => {
+        const onMessageListener = ({ type, data, }) => {
+            if (type === 'popup-search') {
+                const match = data.url.match(/https?:\/\/([^/]*)\//);
+                const searchTerm = match === null ? 'fail' : match[1];
+                setNeedle(searchTerm);
+            }
+        };
+        browser.runtime.onMessage.addListener(onMessageListener);
+        return () => { browser.runtime.onMessage.removeListener(onMessageListener); };
+    }, []);
+    react_1.useEffect(() => {
         const search = () => {
-            setLoading(true);
             const promises = [];
             Object.keys(state.sessions).forEach((url) => {
                 const { apikey, token } = state.sessions[url];
                 const storedSafe = new storedsafe_1.default(url, apikey, token);
                 const promise = storedSafe.find(needle).then((response) => {
-                    console.log(response.data);
                     if (response.status === 200) {
                         const ssResult = {
                             [url]: Object.keys(response.data.OBJECT).map((id) => {
@@ -29274,10 +29283,41 @@ exports.Search = ({ selected, setActive, }) => {
             });
         };
         if (needle !== '') {
+            setLoading(true);
             const id = setTimeout(search, 1000);
             return () => clearTimeout(id);
         }
+        else {
+            setLoading(false);
+        }
     }, [needle, state.sessions]);
+    const onClick = (url, id) => {
+        const { apikey, token } = state.sessions[url];
+        const storedSafe = new storedsafe_1.default(url, apikey, token);
+        storedSafe.objectDecrypt(id).then((response) => {
+            if (response.status === 200) {
+                const data = {};
+                const obj = response.data.OBJECT[id];
+                Object.keys(obj.public).forEach((field) => {
+                    data[field] = obj.public[field];
+                });
+                Object.keys(obj.crypted).forEach((field) => {
+                    data[field] = obj.crypted[field];
+                });
+                browser.tabs.query({ active: true }).then((tabs) => {
+                    const activeTab = tabs.find((tab) => tab.active);
+                    if (activeTab) {
+                        browser.tabs.sendMessage(activeTab.id, {
+                            type: 'fill',
+                            data,
+                        }).then(() => {
+                            window.close();
+                        });
+                    }
+                });
+            }
+        });
+    };
     return (react_1.default.createElement("section", { className: `search${selected ? ' selected' : ''}` },
         react_1.default.createElement("label", { className: "search-bar-label", htmlFor: "search" },
             "Search",
@@ -29285,11 +29325,13 @@ exports.Search = ({ selected, setActive, }) => {
         react_1.default.createElement("article", { className: "search-results" },
             needle === '' && (react_1.default.createElement("div", { className: "search-empty" }, "No results found")),
             needle !== '' && (react_1.default.createElement(react_1.Fragment, null,
-                loading && react_1.default.createElement("p", null, "Loading..."),
+                loading && react_1.default.createElement(Layout_1.LoadingSpinner, null),
                 !loading && Object.keys(results).map((url) => {
                     return (react_1.default.createElement("div", { key: url, className: "search-result" },
                         react_1.default.createElement("h3", { className: "search-result-url" }, url),
-                        results[url].map(([ssObject, ssTemplate], index) => (react_1.default.createElement(VaultObject_1.VaultObject, { key: index, ssObject: ssObject, ssTemplate: ssTemplate })))));
+                        results[url].map(([ssObject, ssTemplate], index) => (react_1.default.createElement(react_1.Fragment, { key: index },
+                            react_1.default.createElement(Layout_1.VaultObject, { ssObject: ssObject, ssTemplate: ssTemplate }),
+                            react_1.default.createElement(Layout_1.Button, { onClick: () => onClick(url, ssObject.id) }, "Fill"))))));
                 }))))));
 };
 

@@ -2346,6 +2346,22 @@ function onIdle(state) {
 function onSuspend() {
     invalidateAllSessions();
 }
+function onMenuClick(info, tab) {
+    switch (info.menuItemId) {
+        case 'open-popup': {
+            browser.browserAction.openPopup().then().catch().then(() => {
+                browser.runtime.sendMessage({
+                    type: 'popup-search',
+                    data: { url: tab.url },
+                });
+            });
+            break;
+        }
+        default: {
+            break;
+        }
+    }
+}
 /**
  * Subscribe to events and initialization
  * */
@@ -2361,6 +2377,7 @@ browser.runtime.onInstalled.addListener(onInstalled);
 browser.runtime.onSuspend.addListener(onSuspend);
 // Invalidate sessions after being idle for some time
 browser.idle.onStateChanged.addListener(onIdle);
+browser.contextMenus.onClicked.addListener(onMenuClick);
 
 
 /***/ }),

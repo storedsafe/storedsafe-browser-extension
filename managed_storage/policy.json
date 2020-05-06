@@ -1,0 +1,23 @@
+{
+  "3rdparty": {
+    "extensions": {
+      "<addon-id>": {
+        "sites": [
+          {
+            "url": "my-site",
+            "apikey": "my-api-key"
+          }
+        ],
+        "settings": {
+          "enforced": {
+            "maxTokenLife": 60
+          },
+          "defaults": {
+            "autoFill": false,
+            "idleMax": 10
+          }
+        }
+      }
+    }
+  }
+}

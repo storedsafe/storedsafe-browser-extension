@@ -1,7 +1,7 @@
 import React, { Fragment, useState, useEffect } from 'react';
 import StoredSafe, { StoredSafeObject, StoredSafeTemplate } from 'storedsafe';
 import { useStorage } from '../../../state/StorageState';
-import { VaultObject } from '../../Layout/VaultObject';
+import { LoadingSpinner, VaultObject, Button } from '../../Layout';
 import './Search.scss';
 
 type SearchResults = { [url: string]: [StoredSafeObject, StoredSafeTemplate][] };
@@ -21,14 +21,30 @@ export const Search: React.FunctionComponent<SearchProps> = ({
   const [results, setResults] = useState<SearchResults>({});
 
   useEffect(() => {
+    const onMessageListener = ({
+      type,
+      data,
+    }: {
+      type: string;
+      data: { url: string };
+    }): void => {
+      if (type === 'popup-search') {
+        const match = data.url.match(/https?:\/\/([^/]*)\//);
+          const searchTerm = match === null ? 'fail' : match[1];
+          setNeedle(searchTerm);
+      }
+    }
+    browser.runtime.onMessage.addListener(onMessageListener);
+    return (): void => { browser.runtime.onMessage.removeListener(onMessageListener) };
+  }, []);
+
+  useEffect(() => {
     const search = (): void => {
-      setLoading(true);
       const promises: Promise<SearchResults>[] = [];
       Object.keys(state.sessions).forEach((url) => {
         const { apikey, token } = state.sessions[url];
         const storedSafe = new StoredSafe(url, apikey, token);
         const promise = storedSafe.find(needle).then((response) => {
-          console.log(response.data);
           if (response.status === 200) {
             const ssResult: SearchResults = {
               [url]: Object.keys(response.data.OBJECT).map((id) => {
@@ -56,11 +72,42 @@ export const Search: React.FunctionComponent<SearchProps> = ({
     };
 
     if (needle !== '') {
+      setLoading(true);
       const id = setTimeout(search, 1000);
       return (): void => clearTimeout(id);
+    } else {
+      setLoading(false);
     }
 
   }, [needle, state.sessions]);
+
+  const onClick = (url: string, id: string): void => {
+    const { apikey, token } = state.sessions[url];
+    const storedSafe = new StoredSafe(url, apikey, token);
+    storedSafe.objectDecrypt(id).then((response) => {
+      if (response.status === 200) {
+        const data: { [field: string]: string } = {};
+        const obj = response.data.OBJECT[id];
+        Object.keys(obj.public).forEach((field) => {
+          data[field] = obj.public[field];
+        });
+        Object.keys(obj.crypted).forEach((field) => {
+          data[field] = obj.crypted[field];
+        });
+        browser.tabs.query({ active: true }).then((tabs) => {
+          const activeTab = tabs.find((tab) => tab.active)
+          if (activeTab) {
+            browser.tabs.sendMessage(activeTab.id, {
+              type: 'fill',
+              data,
+            }).then(() => {
+              window.close();
+            });
+          }
+        });
+      }
+    });
+  };
 
   return (
     <section className={`search${selected ? ' selected' : ''}`}>
@@ -82,13 +129,16 @@ export const Search: React.FunctionComponent<SearchProps> = ({
       )}
       {needle !== '' && (
         <Fragment>
-          {loading && <p>Loading...</p>}
+          {loading && <LoadingSpinner />}
           {!loading && Object.keys(results).map((url) => {
             return (
               <div key={url} className="search-result">
                 <h3 className="search-result-url">{url}</h3>
                 {results[url].map(([ssObject, ssTemplate], index) => (
-                  <VaultObject key={index} ssObject={ssObject} ssTemplate={ssTemplate} />
+                  <Fragment key={index}>
+                    <VaultObject ssObject={ssObject} ssTemplate={ssTemplate} />
+                    <Button onClick={(): void => onClick(url, ssObject.id)}>Fill</Button>
+                  </Fragment>
                 ))}
               </div>
             );
