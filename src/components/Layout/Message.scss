@@ -6,7 +6,6 @@
   border-left-width: 6px;
   background-color: $color-accent-1;
   color: $color-accent-3;
-  border-radius: $border-radius;
 
   &.warning {
     border-color: $color-warning-0;
@@ -15,8 +14,8 @@
   }
 
   &.error {
-    border-color: $color-error-0;
-    background-color: $color-error-1;
-    color: $color-error-3;
+    border-color: $color-danger-0;
+    background-color: $color-danger-1;
+    color: $color-danger-3;
   }
 }

@@ -46,7 +46,6 @@ describe('uses mocked browser.storage', () => {
         apikey: 'mockapikey',
         token: 'mocktoken',
         createdAt: 0,
-        lastActive: 0,
       },
     };
     localGetMock.mockImplementationOnce(mockGet(mockSessions));
@@ -61,7 +60,6 @@ describe('uses mocked browser.storage', () => {
         apikey: 'mockapikey',
         token: 'mocktoken',
         createdAt: 0,
-        lastActive: 0,
       },
     };
     return Sessions.set(mockSessions).then(() => {

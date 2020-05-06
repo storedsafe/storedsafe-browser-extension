@@ -10697,7 +10697,7 @@ store2@^2.7.1:
 
 "storedsafe@git+ssh://git@git.xpd.se:19922/oscar/storedsafe-javascript.git":
   version "0.0.3-2"
-  resolved "git+ssh://git@git.xpd.se:19922/oscar/storedsafe-javascript.git#0475d76c7b27b769caa307aa20897bf7f2aa8d0a"
+  resolved "git+ssh://git@git.xpd.se:19922/oscar/storedsafe-javascript.git#8549ef3689f07d1e910052b20a2c20c9e1da3fa9"
   dependencies:
     axios "^0.19.2"
 

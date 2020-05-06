@@ -25384,135 +25384,45 @@ module.exports = {
 
 /***/ }),
 
-/***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/Form/Field/Button.scss":
-/*!**************************************************************************************************************************************************************!*\
-  !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src!./node_modules/sass-loader/dist/cjs.js!./src/components/Form/Field/Button.scss ***!
-  \**************************************************************************************************************************************************************/
+/***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/Form/Checkbox.scss":
+/*!**********************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src!./node_modules/sass-loader/dist/cjs.js!./src/components/Form/Checkbox.scss ***!
+  \**********************************************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Imports
-var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, ".field-button .field-control {\n  border: 2px solid #526a78;\n  border-radius: 0.25em;\n  background-color: #526a78;\n  color: #fff;\n  font-weight: 800;\n  text-transform: uppercase;\n}\n.field-button .field-control:hover, .field-button .field-control:focus, .field-button .field-control:active {\n  color: #03a386;\n  box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.1);\n}\n.field-button .field-control:hover {\n  border-color: #c7cacc;\n  background-color: #f9fbfc;\n}\n.field-button .field-control:focus {\n  border-color: #03a386;\n  background-color: #f4f7f9;\n}\n.field-button .field-control:active {\n  border-color: #028c73;\n  background-color: #ebeef0;\n}", ""]);
+exports.push([module.i, ".checkbox input {\n  height: 0;\n  opacity: 0;\n  position: absolute;\n  width: 0;\n}\n.checkbox .custom-checkbox {\n  padding: 2px;\n  position: relative;\n  border: 1px solid #d4d7d8;\n  border-radius: 2px;\n  box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.1) inset;\n  width: 20px;\n  height: 20px;\n  cursor: pointer;\n}\n.checkbox .custom-checkbox::before {\n  display: none;\n  position: absolute;\n  content: \"\";\n  width: 14px;\n  height: 14px;\n  background-color: #03a388;\n  box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.1);\n  border-radius: 2px;\n}\n.checkbox input:checked ~ .custom-checkbox::before {\n  display: block;\n}\n.checkbox input:hover ~ .custom-checkbox,\n.checkbox input:active ~ .custom-checkbox,\n.checkbox input:focus ~ .custom-checkbox {\n  box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.1) inset, 0 0 3px 0 rgba(0, 0, 0, 0.1);\n}\n.checkbox input:hover ~ .custom-checkbox {\n  border-color: #c7cacc;\n  background-color: #f9fbfc;\n}\n.checkbox input:focus ~ .custom-checkbox {\n  border-color: #03a388;\n  background-color: #f9fbfc;\n}\n.checkbox input:active ~ .custom-checkbox {\n  border-color: #d4d7d8;\n  background-color: #ebeef0;\n}", ""]);
 // Exports
 module.exports = exports;
 
 
 /***/ }),
 
-/***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/Form/Field/Checkbox.scss":
-/*!****************************************************************************************************************************************************************!*\
-  !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src!./node_modules/sass-loader/dist/cjs.js!./src/components/Form/Field/Checkbox.scss ***!
-  \****************************************************************************************************************************************************************/
+/***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/Form/Radio.scss":
+/*!*******************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src!./node_modules/sass-loader/dist/cjs.js!./src/components/Form/Radio.scss ***!
+  \*******************************************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Imports
-var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, ".field-checkbox .field-container {\n  display: flex;\n  flex-direction: column;\n  border: 0;\n}\n.field-checkbox label {\n  display: flex;\n  align-items: center;\n}\n.field-checkbox input {\n  height: 0;\n  opacity: 0;\n  position: absolute;\n  width: 0;\n}\n.field-checkbox .custom-checkbox {\n  padding: 2px;\n  position: relative;\n  border: 2px solid #d4d7d8;\n  border-radius: 0.25em;\n  box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.1) inset;\n  width: 20px;\n  height: 20px;\n  margin-right: 0.5em;\n}\n.field-checkbox .custom-checkbox::before {\n  display: none;\n  position: absolute;\n  content: \"\";\n  width: 12px;\n  height: 12px;\n  background-color: #03a386;\n  box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.1);\n  border-radius: 0.25em;\n}\n.field-checkbox input:checked ~ .custom-checkbox::before {\n  display: block;\n}\n.field-checkbox input:hover ~ .custom-checkbox,\n.field-checkbox input:active ~ .custom-checkbox,\n.field-checkbox input:focus ~ .custom-checkbox {\n  box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.1) inset, 0 0 3px 0 rgba(0, 0, 0, 0.1);\n}\n.field-checkbox input:hover ~ .custom-checkbox {\n  border-color: #c7cacc;\n  background-color: #f9fbfc;\n}\n.field-checkbox input:focus ~ .custom-checkbox {\n  border-color: #03a386;\n  background-color: #f4f7f9;\n}\n.field-checkbox input:active ~ .custom-checkbox {\n  border-color: #028c73;\n  background-color: #ebeef0;\n}", ""]);
+exports.push([module.i, ".radio input {\n  height: 0;\n  opacity: 0;\n  position: absolute;\n  width: 0;\n}\n.radio .custom-radio {\n  padding: 2px;\n  position: relative;\n  border-radius: 100%;\n  border: 1px solid #d4d7d8;\n  box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.1) inset;\n  width: 16px;\n  height: 16px;\n}\n.radio .custom-radio::after {\n  display: none;\n  position: absolute;\n  border-radius: 100%;\n  content: \"\";\n  width: 10px;\n  height: 10px;\n  background-color: #03a388;\n}\n.radio input:checked ~ .custom-radio::after {\n  display: block;\n}\n.radio input:hover ~ .custom-radio,\n.radio input:active ~ .custom-radio,\n.radio input:focus ~ .custom-radio {\n  box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.1) inset, 0 0 3px 0 rgba(0, 0, 0, 0.1);\n}\n.radio input:hover ~ .custom-radio {\n  border-color: #c7cacc;\n  background-color: #f9fbfc;\n}\n.radio input:focus ~ .custom-radio {\n  border-color: #03a388;\n  background-color: #f9fbfc;\n}\n.radio input:active ~ .custom-radio {\n  border-color: #028c73;\n  background-color: #ebeef0;\n}", ""]);
 // Exports
 module.exports = exports;
 
 
 /***/ }),
 
-/***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/Form/Field/Field.scss":
-/*!*************************************************************************************************************************************************************!*\
-  !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src!./node_modules/sass-loader/dist/cjs.js!./src/components/Form/Field/Field.scss ***!
-  \*************************************************************************************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-// Imports
-var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
-exports = ___CSS_LOADER_API_IMPORT___(false);
-// Module
-exports.push([module.i, ".field-label {\n  text-transform: uppercase;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n}\n\n.field-control {\n  border: 0;\n  border-bottom: 2px solid #d4d7d8;\n  padding: 0.9em;\n  box-sizing: border-box;\n  outline: 0;\n  width: 100%;\n  transition: 0.1s;\n}\n.field-control:hover, .field-control:focus, .field-control:active {\n  box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.1);\n}\n.field-control:hover {\n  border-color: #c7cacc;\n  background-color: #f9fbfc;\n}\n.field-control:focus {\n  border-color: #03a386;\n  background-color: #f4f7f9;\n}\n\n.field label,\n.field input,\n.field textarea,\n.field select,\n.field option,\n.field button {\n  font-size: 1rem;\n  font-family: \"Roboto\", sans-serif;\n}", ""]);
-// Exports
-module.exports = exports;
-
-
-/***/ }),
-
-/***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/Form/Field/Input.scss":
-/*!*************************************************************************************************************************************************************!*\
-  !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src!./node_modules/sass-loader/dist/cjs.js!./src/components/Form/Field/Input.scss ***!
-  \*************************************************************************************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-// Imports
-var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
-exports = ___CSS_LOADER_API_IMPORT___(false);
-// Module
-exports.push([module.i, "", ""]);
-// Exports
-module.exports = exports;
-
-
-/***/ }),
-
-/***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/Form/Field/Radio.scss":
-/*!*************************************************************************************************************************************************************!*\
-  !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src!./node_modules/sass-loader/dist/cjs.js!./src/components/Form/Field/Radio.scss ***!
-  \*************************************************************************************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-// Imports
-var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
-exports = ___CSS_LOADER_API_IMPORT___(false);
-// Module
-exports.push([module.i, ".field-radio .field-container {\n  display: flex;\n  flex-direction: column;\n}\n.field-radio label {\n  display: flex;\n  align-items: center;\n}\n.field-radio input {\n  height: 0;\n  opacity: 0;\n  position: absolute;\n  width: 0;\n}\n.field-radio .custom-radio {\n  padding: 2px;\n  position: relative;\n  border-radius: 100%;\n  border: 2px solid #d4d7d8;\n  box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.1) inset;\n  width: 20px;\n  height: 20px;\n  margin-right: 0.5em;\n}\n.field-radio .custom-radio::after {\n  display: none;\n  position: absolute;\n  border-radius: 100%;\n  content: \"\";\n  width: 12px;\n  height: 12px;\n  background-color: #03a386;\n}\n.field-radio input:checked ~ .custom-radio::after {\n  display: block;\n}\n.field-radio input:hover ~ .custom-radio,\n.field-radio input:active ~ .custom-radio,\n.field-radio input:focus ~ .custom-radio {\n  box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.1) inset, 0 0 3px 0 rgba(0, 0, 0, 0.1);\n}\n.field-radio input:hover ~ .custom-radio {\n  border-color: #c7cacc;\n  background-color: #f9fbfc;\n}\n.field-radio input:focus ~ .custom-radio {\n  border-color: #03a386;\n  background-color: #f4f7f9;\n}\n.field-radio input:active ~ .custom-radio {\n  border-color: #028c73;\n  background-color: #ebeef0;\n}", ""]);
-// Exports
-module.exports = exports;
-
-
-/***/ }),
-
-/***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/Form/Field/Select.scss":
-/*!**************************************************************************************************************************************************************!*\
-  !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src!./node_modules/sass-loader/dist/cjs.js!./src/components/Form/Field/Select.scss ***!
-  \**************************************************************************************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-// Imports
-var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
-exports = ___CSS_LOADER_API_IMPORT___(false);
-// Module
-exports.push([module.i, ".field-select .field-control {\n  -moz-appearance: none;\n  -webkit-appearance: none;\n  appearance: none;\n  padding-right: 2.9em;\n  width: 100%;\n  border: 2px solid #d4d7d8;\n  border-radius: 0.25em;\n  background-color: #fff;\n  color: #232d33;\n  font-weight: 800;\n}\n.field-select .field-control:hover, .field-select .field-control:focus, .field-select .field-control:active {\n  box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.1);\n}\n.field-select .field-control:hover {\n  border-color: #c7cacc;\n  background-color: #f9fbfc;\n}\n.field-select .field-control:focus {\n  border-color: #03a386;\n  background-color: #f4f7f9;\n}\n.field-select .field-control:active {\n  border-color: #028c73;\n  background-color: #ebeef0;\n}\n.field-select .field-control option {\n  background: #fff;\n  color: #232d33;\n}\n\n.custom-select {\n  position: relative;\n}\n.custom-select::after {\n  border: solid transparent;\n  border-top-color: #232d33;\n  border-width: 0.4em 0.25em;\n  box-sizing: border-box;\n  content: \"\";\n  height: 0.8em;\n  margin-top: -0.2em;\n  position: absolute;\n  right: 0.75em;\n  top: 50%;\n  transition: 0.1s;\n  width: 0.5em;\n  pointer-events: none;\n}", ""]);
-// Exports
-module.exports = exports;
-
-
-/***/ }),
-
-/***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/Form/Field/TextArea.scss":
-/*!****************************************************************************************************************************************************************!*\
-  !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src!./node_modules/sass-loader/dist/cjs.js!./src/components/Form/Field/TextArea.scss ***!
-  \****************************************************************************************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-// Imports
-var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
-exports = ___CSS_LOADER_API_IMPORT___(false);
-// Module
-exports.push([module.i, ".field-textarea .field-control {\n  border: 2px solid #d4d7d8;\n  border-radius: 0.25em;\n}", ""]);
-// Exports
-module.exports = exports;
-
-
-/***/ }),
-
-/***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/Layout/Card.scss":
+/***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/Form/Select.scss":
 /*!********************************************************************************************************************************************************!*\
-  !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src!./node_modules/sass-loader/dist/cjs.js!./src/components/Layout/Card.scss ***!
+  !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src!./node_modules/sass-loader/dist/cjs.js!./src/components/Form/Select.scss ***!
   \********************************************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
@@ -25521,7 +25431,43 @@ module.exports = exports;
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, ".card {\n  padding: 1.2em;\n  background-color: #fff;\n  border-radius: 0.25em;\n  box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.1);\n}", ""]);
+exports.push([module.i, ".select .custom-select::after {\n  border: solid transparent;\n  border-top-color: #526a78;\n  border-radius: 0.4em;\n  border-width: 0.5em 0.3125em;\n  box-sizing: border-box;\n  content: \"\";\n  height: 1em;\n  margin-top: -0.2em;\n  position: absolute;\n  right: 0.6em;\n  top: 50%;\n  transform-origin: 0.25em 0.15625em;\n  width: 0.625em;\n  pointer-events: none;\n}\n\n.select .custom-select select {\n  -moz-appearance: none;\n  -webkit-appearance: none;\n  appearance: none;\n  padding-right: 1.7em;\n  width: 100%;\n}\n.select .custom-select {\n  position: relative;\n  width: 100%;\n}\n.select .custom-select::after {\n  transition: 0.1s;\n}", ""]);
+// Exports
+module.exports = exports;
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/Layout/Banner.scss":
+/*!**********************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src!./node_modules/sass-loader/dist/cjs.js!./src/components/Layout/Banner.scss ***!
+  \**********************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// Imports
+var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+exports = ___CSS_LOADER_API_IMPORT___(false);
+// Module
+exports.push([module.i, ".banner {\n  background-color: #526a78;\n  padding: 1.2em;\n  width: 100%;\n}", ""]);
+// Exports
+module.exports = exports;
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/Layout/Button.scss":
+/*!**********************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src!./node_modules/sass-loader/dist/cjs.js!./src/components/Layout/Button.scss ***!
+  \**********************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// Imports
+var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+exports = ___CSS_LOADER_API_IMPORT___(false);
+// Module
+exports.push([module.i, ".button {\n  border: 0;\n  outline: 0;\n  background: none;\n}\n\n.button {\n  display: inline-flex;\n  flex-direction: row;\n  align-items: center;\n  justify-content: center;\n  transition: 0.1s;\n  transition-property: border-color, background-color, color, width;\n  font-family: \"Roboto\", sans-serif;\n  padding: 0.6em;\n  border: 1px solid #526a78;\n  background-color: #526a78;\n  color: #fff;\n  cursor: pointer;\n  font-weight: 600;\n}\n.button.button-loading .button-spinner {\n  position: relative;\n  margin-left: 0.6em;\n  width: 1em;\n  height: 1em;\n}\n.button.button-loading .button-spinner::after {\n  position: absolute;\n  content: \"\";\n  border-radius: 100%;\n  box-sizing: border-box;\n  left: 0;\n  top: 0;\n  height: 100%;\n  width: 100%;\n  border: 0.1666666667em solid #fff;\n  border-top-color: #03a388;\n  -webkit-animation: spin 1s infinite;\n          animation: spin 1s infinite;\n  transition: all 0.3s;\n}\n@-webkit-keyframes spin {\n  from {\n    transform: rotate(0deg);\n  }\n  to {\n    transform: rotate(360deg);\n  }\n}\n@keyframes spin {\n  from {\n    transform: rotate(0deg);\n  }\n  to {\n    transform: rotate(360deg);\n  }\n}\n.button:disabled {\n  cursor: arrow;\n}\n.button:hover:not(:disabled) {\n  background-color: #fff;\n  color: #526a78;\n}\n.button:focus:not(:disabled) {\n  background-color: #fff;\n  color: #526a78;\n}\n.button:active:not(:disabled) {\n  background-color: #f3f7f8;\n}\n.button.button-accent {\n  background-color: #03a388;\n  border-color: #03a388;\n}\n.button.button-accent:hover {\n  color: #03a388;\n}\n.button.button-accent:focus {\n  color: #03a388;\n}\n.button.button-accent:active {\n  background-color: #bff8ef;\n}\n.button.button-warning {\n  background-color: #f59815;\n  border-color: #f59815;\n}\n.button.button-warning:hover {\n  color: #f59815;\n}\n.button.button-warning:focus {\n  color: #f59815;\n}\n.button.button-warning:active {\n  background-color: #fff3e2;\n}\n.button.button-danger {\n  background-color: #c5283e;\n  border-color: #c5283e;\n}\n.button.button-danger:hover {\n  color: #c5283e;\n}\n.button.button-danger:focus {\n  color: #c5283e;\n}\n.button.button-danger:active {\n  background-color: #fdd2d8;\n}", ""]);
 // Exports
 module.exports = exports;
 
@@ -25539,7 +25485,7 @@ module.exports = exports;
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, ".collapse-box .collapse-box-title::after {\n  border: solid transparent;\n  border-top-color: #232d33;\n  border-width: 0.4em 0.25em;\n  box-sizing: border-box;\n  content: \"\";\n  height: 0.8em;\n  margin-top: -0.2em;\n  position: absolute;\n  right: 0.75em;\n  top: 50%;\n  transform-origin: 0.2em 0.125em;\n  width: 0.5em;\n  pointer-events: none;\n}\n\n.collapse-box .collapse-box-title {\n  position: relative;\n  overflow: auto;\n  border-radius: 0.25em 0.25em 0 0.25em;\n  border: 0;\n  border-left: 4px solid #526a78;\n  background-color: #f3f7f8;\n  cursor: pointer;\n  transition: 0.1s ease-out;\n  transition-property: border-left-width;\n}\n.collapse-box .collapse-box-title {\n  padding: 0.6em;\n}\n.collapse-box .collapse-box-title::after {\n  transition: transform 0.1s ease-out;\n}\n.collapse-box .collapse-box-children {\n  border: 0 solid #526a78;\n  border-width: 0 0 0 2px;\n  margin-left: 2px;\n}\n.collapse-box .collapse-box-children.padded {\n  padding: 0.3em;\n}\n\n.collapse-box.collapsed .collapse-box-title::after {\n  transform: rotate(90deg);\n}\n.collapse-box.collapsed .collapse-box-title {\n  border-left-width: 3px;\n}", ""]);
+exports.push([module.i, ".collapse-box .collapse-box-title::after {\n  border: solid transparent;\n  border-top-color: #526a78;\n  border-radius: 0.4em;\n  border-width: 0.5em 0.3125em;\n  box-sizing: border-box;\n  content: \"\";\n  height: 1em;\n  margin-top: -0.2em;\n  position: absolute;\n  right: 0.6em;\n  top: 50%;\n  transform-origin: 0.25em 0.15625em;\n  width: 0.625em;\n  pointer-events: none;\n}\n\n.collapse-box .collapse-box-title {\n  position: relative;\n  overflow: auto;\n  border: 0;\n  border-left: 4px solid #526a78;\n  background-color: #f3f7f8;\n  cursor: pointer;\n  transition: border-left-width 0.1s ease-out;\n}\n.collapse-box .collapse-box-title {\n  padding: 0.6em;\n}\n.collapse-box .collapse-box-title::after {\n  transition: transform 0.1s ease-out;\n}\n.collapse-box .collapse-box-children {\n  border: 0 solid #526a78;\n  border-width: 0 0 0 2px;\n  margin-left: 2px;\n}\n.collapse-box .collapse-box-children.padded {\n  padding: 0.3em;\n}\n\n.collapse-box.collapsed .collapse-box-title::after {\n  transform: rotate(90deg);\n}\n.collapse-box.collapsed .collapse-box-title {\n  border-left-width: 3px;\n}", ""]);
 // Exports
 module.exports = exports;
 
@@ -25557,7 +25503,7 @@ module.exports = exports;
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, ".collapse-list .collapse-box-children {\n  padding: 0 !important;\n}\n\n.collapse-list-item.padded {\n  padding: 0.3em;\n}\n.collapse-list-item:nth-child(even) {\n  background-color: #f3f7f8;\n}", ""]);
+exports.push([module.i, ".collapse-list-item {\n  background-color: #fff;\n}\n.collapse-list-item.padded {\n  padding: 0.6em;\n}\n.collapse-list-item:nth-child(even) {\n  background-color: #f9f9f9;\n}\n.collapse-list-item:last-child {\n  border-bottom: 1px solid #fff;\n}", ""]);
 // Exports
 module.exports = exports;
 
@@ -25575,7 +25521,7 @@ module.exports = exports;
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, ".collapsible {\n  overflow: hidden;\n  transition: max-height 0.1s ease-out;\n}\n.collapsible.collapsed {\n  max-height: 0;\n}", ""]);
+exports.push([module.i, ".collapsible {\n  overflow: hidden;\n  transition: max-height 0.1s ease-out 0ms, visibility 0ms ease-out 0ms;\n}\n.collapsible.collapsed {\n  visibility: hidden;\n  transition: max-height 0.1s ease-out 0ms, visibility 0ms ease-out 0.1s;\n}\n.collapsible.vertical.collapsed {\n  max-height: 0;\n}\n.collapsible.horizontal.collapsed {\n  max-width: 0;\n}\n\n.collapsible.fixed {\n  overflow: auto;\n}", ""]);
 // Exports
 module.exports = exports;
 
@@ -25602,7 +25548,25 @@ var ___CSS_LOADER_URL_REPLACEMENT_1___ = ___CSS_LOADER_GET_URL_IMPORT___(___CSS_
 var ___CSS_LOADER_URL_REPLACEMENT_2___ = ___CSS_LOADER_GET_URL_IMPORT___(___CSS_LOADER_URL_IMPORT_2___);
 var ___CSS_LOADER_URL_REPLACEMENT_3___ = ___CSS_LOADER_GET_URL_IMPORT___(___CSS_LOADER_URL_IMPORT_3___);
 // Module
-exports.push([module.i, ".loading-spinner {\n  position: relative;\n  height: 3em;\n  width: 3em;\n  margin: auto;\n}\n\n.spinner::after, .spinner::before {\n  border: 0.2em solid transparent;\n  border-radius: 100%;\n  border-top-color: #03a388;\n  box-sizing: border-box;\n  content: \"\";\n  height: 100%;\n  left: 0;\n  position: absolute;\n  top: 0;\n  width: 100%;\n}\n.spinner::before {\n  -webkit-animation: spin 1s infinite;\n          animation: spin 1s infinite;\n  transition: all 0.3s;\n  z-index: 100;\n}\n.spinner::after {\n  background-image: url(" + ___CSS_LOADER_URL_REPLACEMENT_0___ + ");\n  background-size: contain;\n  border-color: #f3f7f8;\n  transition: all 0.3s;\n}\n.spinner.error::before, .spinner.warning::before, .spinner.success::before {\n  -webkit-animation: none;\n          animation: none;\n  border: 0;\n}\n.spinner.error::after {\n  background-image: url(" + ___CSS_LOADER_URL_REPLACEMENT_1___ + ");\n  border-color: #c5283e;\n}\n.spinner.warning::after {\n  background-image: url(" + ___CSS_LOADER_URL_REPLACEMENT_2___ + ");\n  border-color: #f59815;\n}\n.spinner.success::after {\n  background-image: url(" + ___CSS_LOADER_URL_REPLACEMENT_3___ + ");\n  border-color: #03a388;\n}\n\n@-webkit-keyframes spin {\n  from {\n    transform: rotate(0deg);\n  }\n  to {\n    transform: rotate(360deg);\n  }\n}\n\n@keyframes spin {\n  from {\n    transform: rotate(0deg);\n  }\n  to {\n    transform: rotate(360deg);\n  }\n}", ""]);
+exports.push([module.i, ".loading-spinner {\n  position: relative;\n  height: 3em;\n  width: 3em;\n  margin: auto;\n}\n.loading-spinner .spinner::after, .loading-spinner .spinner::before {\n  position: absolute;\n  content: \"\";\n  border-radius: 100%;\n  box-sizing: border-box;\n  left: 0;\n  top: 0;\n  height: 100%;\n  width: 100%;\n}\n.loading-spinner .spinner::after {\n  border: 0.3em solid #fff;\n  border-top-color: #03a388;\n  -webkit-animation: spin 1s infinite;\n          animation: spin 1s infinite;\n  transition: all 0.3s;\n  z-index: 100;\n}\n.loading-spinner .spinner::before {\n  background-image: url(" + ___CSS_LOADER_URL_REPLACEMENT_0___ + ");\n  background-size: contain;\n  border: 0;\n  transition: all 0.3s;\n}\n.loading-spinner .spinner.error::after, .loading-spinner .spinner.warning::after, .loading-spinner .spinner.success::after {\n  -webkit-animation: none;\n          animation: none;\n  border: 0;\n}\n.loading-spinner .spinner.error::before {\n  background-image: url(" + ___CSS_LOADER_URL_REPLACEMENT_1___ + ");\n  border-color: #c5283e;\n}\n.loading-spinner .spinner.warning::before {\n  background-image: url(" + ___CSS_LOADER_URL_REPLACEMENT_2___ + ");\n  border-color: #f59815;\n}\n.loading-spinner .spinner.success::before {\n  background-image: url(" + ___CSS_LOADER_URL_REPLACEMENT_3___ + ");\n  border-color: #03a388;\n}\n\n@-webkit-keyframes spin {\n  from {\n    transform: rotate(0deg);\n  }\n  to {\n    transform: rotate(360deg);\n  }\n}\n\n@keyframes spin {\n  from {\n    transform: rotate(0deg);\n  }\n  to {\n    transform: rotate(360deg);\n  }\n}", ""]);
+// Exports
+module.exports = exports;
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/Layout/Logo.scss":
+/*!********************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src!./node_modules/sass-loader/dist/cjs.js!./src/components/Layout/Logo.scss ***!
+  \********************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// Imports
+var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+exports = ___CSS_LOADER_API_IMPORT___(false);
+// Module
+exports.push([module.i, ".logo {\n  display: block;\n  max-width: 220px;\n}", ""]);
 // Exports
 module.exports = exports;
 
@@ -25620,7 +25584,7 @@ module.exports = exports;
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, ".message {\n  padding: 1.2em;\n  border: 0 solid #03a388;\n  border-left-width: 6px;\n  background-color: #bff8ef;\n  color: #006352;\n  border-radius: 0.25em;\n}\n.message.warning {\n  border-color: #f59815;\n  background-color: #fff3e2;\n  color: #b76b00;\n}\n.message.error {\n  border-color: #c5283e;\n  background-color: #fdd2d8;\n  color: #7e0314;\n}", ""]);
+exports.push([module.i, ".message {\n  padding: 0.6em;\n  border: 0 solid #03a388;\n  border-left-width: 6px;\n  background-color: #bff8ef;\n  color: #006352;\n}\n.message.warning {\n  border-color: #f59815;\n  background-color: #fff3e2;\n  color: #b76b00;\n}\n.message.error {\n  border-color: #c5283e;\n  background-color: #fdd2d8;\n  color: #7e0314;\n}", ""]);
 // Exports
 module.exports = exports;
 
@@ -25638,7 +25602,7 @@ module.exports = exports;
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, ".online-indicator {\n  width: 0.8em;\n  height: 0.8em;\n  border-radius: 100%;\n  transition: 0.3s;\n  transition-property: background-color, box-shadow;\n  margin: 0.5em;\n}\n.online-indicator.online {\n  background-color: #03a388;\n  box-shadow: 0 0 0.2em 0.2em #bff8ef, 0 0 0.1em 0.1em rgba(0, 0, 0, 0.1) inset;\n}\n.online-indicator.offline {\n  background-color: #c5283e;\n  box-shadow: 0 0 0.2em 0.2em #fdd2d8, 0 0 0.1em 0.1em rgba(0, 0, 0, 0.1) inset;\n}", ""]);
+exports.push([module.i, ".online-indicator {\n  width: 10px;\n  height: 10px;\n  border-radius: 100%;\n  transition: 0.3s;\n  transition-property: background-color, box-shadow;\n  margin: 0.5em;\n}\n.online-indicator.online {\n  background-color: #03a388;\n  box-shadow: 0 0 2.5px 2.5px #bff8ef, 0 0 1.25px 1.25px rgba(0, 0, 0, 0.1) inset;\n}\n.online-indicator.offline {\n  background-color: #c5283e;\n  box-shadow: 0 0 2.5px 2.5px #fdd2d8, 0 0 1.25px 1.25px rgba(0, 0, 0, 0.1) inset;\n}", ""]);
 // Exports
 module.exports = exports;
 
@@ -25656,7 +25620,79 @@ module.exports = exports;
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, ".vault-object-title {\n  font-weight: bold;\n  color: #526a78;\n}\n\n.vault-object-field {\n  display: flex;\n  flex-direction: row;\n  padding: 0.3em;\n}\n.vault-object-field:nth-child(even) {\n  background-color: #f3f7f8;\n}\n\n.vault-object-field-title {\n  color: #8a9aa4;\n  margin-right: 0.3em;\n}", ""]);
+exports.push([module.i, ".vault-object-title {\n  font-weight: bold;\n  color: #526a78;\n}\n\n.vault-object-field {\n  display: flex;\n  flex-direction: row;\n  padding: 0.6em;\n}\n\n.vault-object-field-title {\n  color: #8a9aa4;\n  margin-right: 0.6em;\n}", ""]);
+// Exports
+module.exports = exports;
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/Options/GeneralSettings.scss":
+/*!********************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src!./node_modules/sass-loader/dist/cjs.js!./src/components/Options/GeneralSettings.scss ***!
+  \********************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// Imports
+var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+exports = ___CSS_LOADER_API_IMPORT___(false);
+// Module
+exports.push([module.i, ".general-settings .general-settings-article .general-settings-form {\n  display: flex;\n  flex-direction: column;\n  align-items: stretch;\n  width: 100%;\n  padding: 0.6em;\n}\n.general-settings .general-settings-article label {\n  margin-bottom: 0.6em;\n}\n.general-settings .general-settings-article input {\n  width: 100%;\n}", ""]);
+// Exports
+module.exports = exports;
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/Options/Options.scss":
+/*!************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src!./node_modules/sass-loader/dist/cjs.js!./src/components/Options/Options.scss ***!
+  \************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// Imports
+var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+exports = ___CSS_LOADER_API_IMPORT___(false);
+// Module
+exports.push([module.i, ".options .options-content {\n  max-width: 800px;\n  margin: auto;\n  padding: 2.4em;\n}\n.options .options-article .options-article-header,\n.options .options-article .options-article-footer {\n  padding: 1.2em;\n  border-bottom: 1px solid #d4d7d8;\n}", ""]);
+// Exports
+module.exports = exports;
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/Options/Sites.scss":
+/*!**********************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src!./node_modules/sass-loader/dist/cjs.js!./src/components/Options/Sites.scss ***!
+  \**********************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// Imports
+var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+exports = ___CSS_LOADER_API_IMPORT___(false);
+// Module
+exports.push([module.i, ".sites .sites-article .sites-article-header {\n  padding: 0.6em 1.2em;\n  background-color: #f3f7f8;\n  color: #526a78;\n}\n.sites .sites-list > li {\n  list-style: none;\n  display: flex;\n  flex-direction: row;\n  align-items: space-between;\n  justify-content: space-between;\n  padding-left: 1.2em;\n}\n.sites .sites-list > li:nth-child(odd) {\n  background-color: #f9fbfc;\n}\n.sites .sites-list span {\n  padding: 0.6em;\n}\n.sites .sites-add .sites-add-form {\n  display: flex;\n  flex-direction: column;\n  align-items: stretch;\n  width: 100%;\n  padding: 0.6em;\n}\n.sites .sites-add label {\n  margin-bottom: 0.6em;\n}\n.sites .sites-add input {\n  width: 100%;\n}\n\n@media (min-width: 500px) {\n  .sites .sites-article .sites-article-header {\n    min-width: -webkit-max-content;\n    min-width: -moz-max-content;\n    min-width: max-content;\n  }\n  .sites .sites-add {\n    display: flex;\n    flex-direction: row;\n  }\n}", ""]);
+// Exports
+module.exports = exports;
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/Popup/Auth/Auth.scss":
+/*!************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src!./node_modules/sass-loader/dist/cjs.js!./src/components/Popup/Auth/Auth.scss ***!
+  \************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// Imports
+var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+exports = ___CSS_LOADER_API_IMPORT___(false);
+// Module
+exports.push([module.i, ".login .form {\n  display: flex;\n  flex-direction: column;\n  padding: 0.6em;\n}\n.login label {\n  display: flex;\n  flex-direction: column;\n  margin-bottom: 0.6em;\n}\n.login .label-checkbox {\n  flex-direction: row;\n  justify-content: space-between;\n}\n\n.logout button {\n  width: 100%;\n}", ""]);
 // Exports
 module.exports = exports;
 
@@ -25674,52 +25710,16 @@ module.exports = exports;
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, ".popup .popup-search {\n  margin-bottom: 0.6em;\n  width: 100%;\n  display: flex;\n}\n.popup .popup-search-input {\n  border: 0;\n  width: 100%;\n  background-color: #f3f7f8;\n  border-bottom: 1px solid #526a78;\n  padding: 0.6em;\n}\n.popup .popup-search-button {\n  border: 0;\n  background-color: #526a78;\n  border-bottom: 1px solid #8a9aa4;\n  color: #fff;\n  padding: 0.6em;\n}\n.popup .card > *:not(:last-child) {\n  margin-bottom: 0.6em;\n}", ""]);
+exports.push([module.i, ".popup {\n  display: flex;\n  flex-direction: column;\n  width: 300px;\n  height: 360px;\n}\n.popup header {\n  width: 100%;\n}\n.popup .logo {\n  margin: auto;\n  max-width: 100%;\n}\n.popup .popup-content {\n  flex-grow: 1;\n}", ""]);
 // Exports
 module.exports = exports;
 
 
 /***/ }),
 
-/***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/SessionManager/SessionManager.scss":
-/*!**************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src!./node_modules/sass-loader/dist/cjs.js!./src/components/SessionManager/SessionManager.scss ***!
-  \**************************************************************************************************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-// Imports
-var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
-exports = ___CSS_LOADER_API_IMPORT___(false);
-// Module
-exports.push([module.i, ".session-manager-site {\n  display: flex;\n  flex-direction: row;\n  justify-content: space-between;\n  align-items: center;\n  padding: 0.6em;\n  background-color: #f3f7f8;\n  border-radius: 0.25em;\n  border-left: 4px solid #526a78;\n}\n.session-manager-site .field.field-button {\n  margin-bottom: 0;\n}\n.session-manager-site .field.field-button .field-container {\n  padding: 0.3em;\n}\n\n.session-manager-icons {\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n}", ""]);
-// Exports
-module.exports = exports;
-
-
-/***/ }),
-
-/***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/SessionManager/SessionManagerPreview.scss":
-/*!*********************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src!./node_modules/sass-loader/dist/cjs.js!./src/components/SessionManager/SessionManagerPreview.scss ***!
-  \*********************************************************************************************************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-// Imports
-var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
-exports = ___CSS_LOADER_API_IMPORT___(false);
-// Module
-exports.push([module.i, ".session-manager-preview {\n  display: flex;\n  flex-direction: column;\n  align-items: stretch;\n  width: 100%;\n  outline: 0;\n  border: 0;\n  background: transparent;\n  cursor: pointer;\n}\n.session-manager-preview .session-manager-preview-info {\n  width: 100%;\n  display: flex;\n  flex-direction: row;\n  justify-content: space-between;\n  align-items: center;\n  padding: 0.6em;\n  border-radius: 0.25em;\n  background: #f3f7f8;\n  color: #526a78;\n  font-weight: bold;\n  box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.1);\n}\n.session-manager-preview .session-manager-preview-target {\n  width: 90%;\n  border-radius: 0 0 0.25em 0.25em;\n  background-color: #fff;\n  margin: auto;\n  box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.1), 0 1px 1px 0 rgba(0, 0, 0, 0.1) inset;\n}", ""]);
-// Exports
-module.exports = exports;
-
-
-/***/ }),
-
-/***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/Welcome/Welcome.scss":
+/***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/Popup/PopupMain.scss":
 /*!************************************************************************************************************************************************************!*\
-  !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src!./node_modules/sass-loader/dist/cjs.js!./src/components/Welcome/Welcome.scss ***!
+  !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src!./node_modules/sass-loader/dist/cjs.js!./src/components/Popup/PopupMain.scss ***!
   \************************************************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
@@ -25728,7 +25728,61 @@ module.exports = exports;
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, ".welcome {\n  max-width: 800px;\n}\n\n.sites-form .form {\n  display: flex;\n  flex-direction: row;\n  justify-content: stretch;\n  align-items: flex-end;\n}\n.sites-form .field {\n  width: 100%;\n}", ""]);
+exports.push([module.i, ".popup-main {\n  height: 100%;\n}\n.popup-main .popup-main-accordion {\n  display: flex;\n  flex-direction: column;\n  justify-content: stretch;\n  height: 100%;\n}", ""]);
+// Exports
+module.exports = exports;
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/Popup/Search/Search.scss":
+/*!****************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src!./node_modules/sass-loader/dist/cjs.js!./src/components/Popup/Search/Search.scss ***!
+  \****************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// Imports
+var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+exports = ___CSS_LOADER_API_IMPORT___(false);
+// Module
+exports.push([module.i, ".search {\n  display: flex;\n  flex-direction: column;\n}\n.search.selected {\n  height: 100%;\n  flex-grow: 1;\n}\n.search .search-bar-label {\n  padding: 0.6em;\n}\n.search .search-bar {\n  width: 100%;\n  box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.1);\n}\n.search .search-empty {\n  display: flex;\n  width: 100%;\n  align-items: center;\n  font-size: 1.4em;\n  font-weight: bold;\n  color: #8a9aa4;\n  justify-content: center;\n  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);\n  cursor: arrow;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n}\n.search .search-results {\n  display: none;\n}\n.search.selected .search-results {\n  flex-grow: 1;\n  display: flex;\n  flex-direction: column;\n  align-items: stretch;\n  padding: 0.6em;\n}\n.search .search-result {\n  display: flex;\n  flex-direction: column;\n  align-items: stretch;\n}\n.search .search-result .search-result-label {\n  text-align: center;\n}", ""]);
+// Exports
+module.exports = exports;
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/Popup/Sessions/Sessions.scss":
+/*!********************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src!./node_modules/sass-loader/dist/cjs.js!./src/components/Popup/Sessions/Sessions.scss ***!
+  \********************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// Imports
+var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+exports = ___CSS_LOADER_API_IMPORT___(false);
+// Module
+exports.push([module.i, ".sessions {\n  display: flex;\n  flex-direction: column;\n}\n.sessions.selected {\n  height: 100%;\n  flex-grow: 1;\n}\n.sessions .sessions-menu {\n  display: none;\n}\n.sessions.selected .sessions-menu {\n  flex-grow: 1;\n  display: flex;\n  flex-direction: column;\n}\n.sessions.selected .sessions-menu .session-item {\n  display: flex;\n  flex-direction: column;\n  overflow: auto;\n}\n.sessions.selected .sessions-menu .session-item-button {\n  padding: 0.6em;\n  cursor: pointer;\n  outline: 0;\n  border: 0;\n  background-color: #fff;\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  justify-content: space-between;\n}\n.sessions .sessions-toggle {\n  cursor: pointer;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n  box-shadow: 0 -1px 1px 0 rgba(0, 0, 0, 0.1);\n}\n.sessions .sessions-status {\n  background-color: #526a78;\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  padding: 0.6em;\n  width: 100%;\n}\n.sessions .sessions-status span {\n  color: #f3f7f8;\n  font-size: 1.1em;\n  font-weight: bold;\n  flex-grow: 1;\n  text-align: center;\n}\n.sessions .sessions-open {\n  background-color: #f3f7f8;\n  color: #526a78;\n  text-align: center;\n  padding: 0.3em;\n}", ""]);
+// Exports
+module.exports = exports;
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/Popup/Toolbar.scss":
+/*!**********************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src!./node_modules/sass-loader/dist/cjs.js!./src/components/Popup/Toolbar.scss ***!
+  \**********************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// Imports
+var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+exports = ___CSS_LOADER_API_IMPORT___(false);
+// Module
+exports.push([module.i, ".toolbar .toolbar-button {\n  background-color: #2e424f;\n  width: 100%;\n  padding: 0.3em;\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  justify-content: center;\n  color: #f3f7f8;\n  border: 0;\n  cursor: pointer;\n}\n.toolbar .toolbar-button svg {\n  width: 20px;\n  height: 20px;\n  fill: #f3f7f8;\n  margin-left: 0.6em;\n}", ""]);
 // Exports
 module.exports = exports;
 
@@ -25747,7 +25801,7 @@ var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../node_modules/css-lo
 exports = ___CSS_LOADER_API_IMPORT___(false);
 exports.push([module.i, "@import url(https://fonts.googleapis.com/css?family=Montserrat|Roboto&display=swap);"]);
 // Module
-exports.push([module.i, "* {\n  padding: 0;\n  margin: 0;\n  box-sizing: border-box;\n}\n\nbody {\n  background-color: #526a78;\n  color: #fff;\n  font-size: 14px;\n  font-family: \"Roboto\", sans-serif;\n  padding: 1.2em;\n}\n\nh1,\nh2,\nh3,\nh4,\nh5,\nh6 {\n  font-family: \"Montserrat\", sans-serif;\n  margin-top: 0.2em;\n  margin-bottom: 0.6em;\n}\n\n.field {\n  margin-bottom: 1.2em;\n}\n\n.card {\n  margin-bottom: 1.2em;\n  background-color: #fff;\n  color: #232d33;\n}\n\nul {\n  padding-left: 2.4em;\n}", ""]);
+exports.push([module.i, ".card {\n  background-color: #fff;\n  color: #232d33;\n  border-radius: 0.8em;\n  box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.1);\n  margin: 0.6em;\n}\n.card > *:first-child {\n  padding-top: 0.8em;\n  border-top-left-radius: 0.8em;\n  border-top-right-radius: 0.8em;\n}\n.card > *:last-child {\n  padding-bottom: 0.8em;\n  border-bottom-left-radius: 0.8em;\n  border-bottom-right-radius: 0.8em;\n}\n\ninput,\nselect,\ntextarea,\nfieldset {\n  border: 0;\n  outline: 0;\n  background: none;\n  transition: 0.1s;\n  transition-property: border-color, background-color, color;\n  font-family: \"Roboto\", sans-serif;\n  background-color: #fff;\n  color: #232d33;\n  padding: 0.6em;\n  transition-duration: 0.1s;\n  transition-property: background-color, color, border-color;\n  font-size: 1em;\n}\ninput::-webkit-input-placeholder, select::-webkit-input-placeholder, textarea::-webkit-input-placeholder, fieldset::-webkit-input-placeholder {\n  font-size: 1em;\n}\ninput::-moz-placeholder, select::-moz-placeholder, textarea::-moz-placeholder, fieldset::-moz-placeholder {\n  font-size: 1em;\n}\ninput:-ms-input-placeholder, select:-ms-input-placeholder, textarea:-ms-input-placeholder, fieldset:-ms-input-placeholder {\n  font-size: 1em;\n}\ninput::-ms-input-placeholder, select::-ms-input-placeholder, textarea::-ms-input-placeholder, fieldset::-ms-input-placeholder {\n  font-size: 1em;\n}\ninput::placeholder,\nselect::placeholder,\ntextarea::placeholder,\nfieldset::placeholder {\n  font-size: 1em;\n}\ninput:disabled,\nselect:disabled,\ntextarea:disabled,\nfieldset:disabled {\n  cursor: arrow;\n}\n\nlabel {\n  color: #526a78;\n  font-family: \"Montserrat\", sans-serif;\n  text-transform: uppercase;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n}\n\n.label-disabled {\n  color: #ad9f9f;\n  background-color: #f9f9f9;\n}\n.label-disabled input,\n.label-disabled input:hover,\n.label-disabled input:focus,\n.label-disabled input:active {\n  background-color: #f9f9f9;\n  border-color: #d4d7d8;\n  color: #ad9f9f;\n}\n\n.label-checkbox {\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  cursor: pointer;\n}\n.label-checkbox :first-child {\n  margin-right: 0.6em;\n}\n\ninput {\n  border: 0;\n  border-bottom: 1px solid #d4d7d8;\n}\ninput:focus {\n  border-bottom-color: #03a388;\n}\ninput:active {\n  border-bottom-color: #d4d7d8;\n}\n\n* {\n  padding: 0;\n  margin: 0;\n  box-sizing: border-box;\n}\n\nbody {\n  background-color: #f2f2f2;\n  color: #232d33;\n  font-family: \"Roboto\", sans-serif;\n  font-size: 14px;\n}\n\nh1,\nh2 {\n  font-family: \"Montserrat\", sans-serif;\n  color: #526a78;\n}\n\nh3,\nh4,\nh5,\nh6 {\n  font-weight: 500;\n}\n\nh1 {\n  font-size: 1.8em;\n}\n\nh2 {\n  font-size: 1.35em;\n}\n\nh3 {\n  font-size: 1.2em;\n}\n\nh4 {\n  font-size: 1.1em;\n}\n\nh5 {\n  font-size: 1.05em;\n}\n\nh6 {\n  font-size: 1.02em;\n}\n\n.menu-item {\n  position: relative;\n  cursor: pointer;\n  padding-left: inherit;\n  transition: padding-left 0.1s ease-out;\n}\n.menu-item.selected {\n  padding-left: 0.6em;\n}", ""]);
 // Exports
 module.exports = exports;
 
@@ -26720,9 +26774,6 @@ var StoredSafe = /** @class */ (function () {
         this.axios = axios_1.default.create({
             baseURL: "https://" + site + "/api/" + version + "/",
             timeout: 5000,
-            validateStatus: function (status) {
-                return status >= 200 && status <= 403;
-            },
         });
         this.apikey = apikey;
         this.token = token;
@@ -27186,575 +27237,6 @@ module.exports = function(module) {
 
 /***/ }),
 
-/***/ "./src/App.tsx":
-/*!*********************!*\
-  !*** ./src/App.tsx ***!
-  \*********************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
-};
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const react_1 = __importStar(__webpack_require__(/*! react */ "react"));
-const Welcome_1 = __importDefault(__webpack_require__(/*! ./components/Welcome */ "./src/components/Welcome/index.ts"));
-const Popup_1 = __importDefault(__webpack_require__(/*! ./components/Popup */ "./src/components/Popup/index.ts"));
-const DebugStorage_1 = __importDefault(__webpack_require__(/*! ./components/DebugStorage */ "./src/components/DebugStorage.tsx"));
-const Layout_1 = __webpack_require__(/*! ./components/Layout */ "./src/components/Layout/index.ts");
-const StorageState_1 = __webpack_require__(/*! ./state/StorageState */ "./src/state/StorageState.ts");
-var Page;
-(function (Page) {
-    Page["Welcome"] = "welcome";
-    Page["Popup"] = "popup";
-    Page["Test"] = "test";
-})(Page || (Page = {}));
-const App = () => {
-    const [page, setPage] = react_1.useState(Page.Welcome);
-    react_1.default.useEffect(() => {
-        const path = window.location.href.split('#')[1];
-        switch (path) {
-            case Page.Popup: {
-                setPage(Page.Popup);
-                break;
-            }
-            case Page.Test: {
-                setPage(Page.Test);
-                break;
-            }
-            default: {
-                setPage(Page.Welcome);
-            }
-        }
-    }, []);
-    const baseUrl = window.location.href.split('#')[0];
-    const locationCard = (react_1.default.createElement(Layout_1.Card, null,
-        react_1.default.createElement("h2", null, "Location"),
-        react_1.default.createElement("p", null,
-            react_1.default.createElement("strong", null, "Location: "),
-            page),
-        react_1.default.createElement("button", { onClick: () => { window.location.href = `${baseUrl}#welcome`; window.location.reload(false); } }, "Welcome"),
-        react_1.default.createElement("button", { onClick: () => { window.location.href = `${baseUrl}#popup`; window.location.reload(false); } }, "Popup"),
-        react_1.default.createElement("button", { onClick: () => { window.location.href = `${baseUrl}#test`; window.location.reload(false); } }, "Test")));
-    return (react_1.default.createElement("section", { style: page === Page.Popup ? { width: '400px' } : {} },
-        react_1.default.createElement("h1", null, "StoredSafe"),
-        react_1.default.createElement(StorageState_1.StorageProvider, null,
-            page === Page.Test && react_1.default.createElement(DebugStorage_1.default, null),
-            page === Page.Popup && react_1.default.createElement(Popup_1.default, null),
-            page === Page.Welcome && react_1.default.createElement(Welcome_1.default, null))));
-};
-exports.default = App;
-
-
-/***/ }),
-
-/***/ "./src/components/Auth/Login/Login.tsx":
-/*!*********************************************!*\
-  !*** ./src/components/Auth/Login/Login.tsx ***!
-  \*********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __rest = (this && this.__rest) || function (s, e) {
-    var t = {};
-    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
-        t[p] = s[p];
-    if (s != null && typeof Object.getOwnPropertySymbols === "function")
-        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
-            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
-                t[p[i]] = s[p[i]];
-        }
-    return t;
-};
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
-};
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const React = __importStar(__webpack_require__(/*! react */ "react"));
-const Layout_1 = __webpack_require__(/*! ../../Layout */ "./src/components/Layout/index.ts");
-const LoginTypeSelector_1 = __importDefault(__webpack_require__(/*! ./LoginTypeSelector */ "./src/components/Auth/Login/LoginTypeSelector/index.ts"));
-const LoginForms_1 = __webpack_require__(/*! ./LoginForms */ "./src/components/Auth/Login/LoginForms/index.ts");
-exports.Login = (_a) => {
-    var { errors } = _a, props = __rest(_a, ["errors"]);
-    const loginTypes = {
-        yubikey: {
-            title: 'YubiKey',
-            element: LoginForms_1.YubiKeyLogin,
-        },
-        totp: {
-            title: 'TOTP',
-            element: LoginForms_1.TOTPLogin,
-        },
-    };
-    const options = Object.keys(loginTypes).map((key) => ({
-        title: loginTypes[key].title,
-        value: key,
-    }));
-    return (React.createElement(React.Fragment, null,
-        React.createElement(LoginTypeSelector_1.default, { loginTypes: options, render: ((loginType) => (React.createElement(loginTypes[loginType].element, Object.assign({}, props)))) }),
-        errors.length > 0 && errors.map((error, i) => React.createElement(Layout_1.Message, { key: i, type: "error" }, error))));
-};
-exports.Login.defaultProps = {
-    username: '',
-};
-
-
-/***/ }),
-
-/***/ "./src/components/Auth/Login/LoginContainer.tsx":
-/*!******************************************************!*\
-  !*** ./src/components/Auth/Login/LoginContainer.tsx ***!
-  \******************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const React = __importStar(__webpack_require__(/*! react */ "react"));
-const Login_1 = __webpack_require__(/*! ./Login */ "./src/components/Auth/Login/Login.tsx");
-const Layout_1 = __webpack_require__(/*! ../../Layout */ "./src/components/Layout/index.ts");
-const StorageState_1 = __webpack_require__(/*! ../../../state/StorageState */ "./src/state/StorageState.ts");
-exports.LoginContainer = (props) => {
-    const [errors, setErrors] = React.useState([]);
-    const [isLoading, setIsLoading] = React.useState();
-    const [state, dispatch] = StorageState_1.useStorage();
-    const site = state.sites.list.find(({ url }) => url === props.url);
-    const username = state.authState.usernames[props.url];
-    const onLogin = (promise, username) => {
-        setIsLoading(true);
-        promise.then((res) => {
-            console.log(res, username);
-            if (res.status === 200) {
-                let authStateAction = {};
-                const { apikey } = site;
-                const { token } = res.data.CALLINFO;
-                const sessionsAction = {
-                    sessions: {
-                        type: 'add',
-                        url: props.url,
-                        session: {
-                            apikey,
-                            token,
-                            createdAt: Date.now(),
-                            lastActive: Date.now(),
-                        }
-                    }
-                };
-                if (username !== undefined) {
-                    authStateAction = {
-                        authState: {
-                            type: 'addUsername',
-                            url: props.url,
-                            username,
-                        }
-                    };
-                }
-                const actions = Object.assign(Object.assign({}, sessionsAction), authStateAction);
-                console.log(actions);
-                dispatch(actions);
-                setIsLoading(false);
-            }
-            else {
-                setIsLoading(false);
-                setErrors(res.data.ERRORS);
-            }
-        });
-    };
-    return (React.createElement(React.Fragment, null,
-        React.createElement(Login_1.Login, { site: site, errors: errors, onLogin: onLogin, username: username }),
-        isLoading && React.createElement(Layout_1.LoadingSpinner, null)));
-};
-
-
-/***/ }),
-
-/***/ "./src/components/Auth/Login/LoginForms/TOTPLogin.tsx":
-/*!************************************************************!*\
-  !*** ./src/components/Auth/Login/LoginForms/TOTPLogin.tsx ***!
-  \************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
-};
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const React = __importStar(__webpack_require__(/*! react */ "react"));
-const storedsafe_1 = __importDefault(__webpack_require__(/*! storedsafe */ "./node_modules/storedsafe/dist/index.js"));
-const TOTPLoginForm_1 = __webpack_require__(/*! ./TOTPLoginForm */ "./src/components/Auth/Login/LoginForms/TOTPLoginForm.tsx");
-exports.TOTPLogin = ({ onLogin, site, username, }) => {
-    const onSubmit = (values) => {
-        const { url, apikey } = site;
-        const storedSafe = new storedsafe_1.default(url, apikey);
-        const { username, passphrase, otp, remember } = values;
-        const promise = storedSafe.authTotp(username, passphrase, otp);
-        onLogin(promise, remember ? username : undefined);
-    };
-    return React.createElement(TOTPLoginForm_1.TOTPLoginForm, { onSubmit: onSubmit, username: username });
-};
-
-
-/***/ }),
-
-/***/ "./src/components/Auth/Login/LoginForms/TOTPLoginForm.tsx":
-/*!****************************************************************!*\
-  !*** ./src/components/Auth/Login/LoginForms/TOTPLoginForm.tsx ***!
-  \****************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const React = __importStar(__webpack_require__(/*! react */ "react"));
-const Form = __importStar(__webpack_require__(/*! ../../../Form */ "./src/components/Form/index.ts"));
-exports.TOTPLoginForm = ({ onSubmit, username, }) => {
-    const initialValues = {
-        username,
-        passphrase: '',
-        otp: '',
-        remember: username !== '',
-    };
-    return (React.createElement(Form.Form, { initialValues: initialValues, handleSubmit: onSubmit, render: (values, onChange) => (React.createElement(React.Fragment, null,
-            React.createElement(Form.Field, { type: "text", label: "Username", name: "username", value: values.username, onChange: onChange, required: true }),
-            React.createElement(Form.Field, { type: "password", label: "Passphrase", name: "passphrase", value: values.passphrase, onChange: onChange, required: true }),
-            React.createElement(Form.Field, { type: "password", label: "OTP", name: "otp", value: values.otp, onChange: onChange, required: true }),
-            React.createElement(Form.Field, { type: "checkbox", label: "Remember Username", name: "remember", value: values.remember, onChange: onChange }),
-            React.createElement(Form.Field, { type: "submit", label: "Login", name: "login" }))) }));
-};
-exports.TOTPLoginForm.defaultProps = {
-    username: '',
-};
-
-
-/***/ }),
-
-/***/ "./src/components/Auth/Login/LoginForms/YubiKeyLogin.tsx":
-/*!***************************************************************!*\
-  !*** ./src/components/Auth/Login/LoginForms/YubiKeyLogin.tsx ***!
-  \***************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
-};
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const React = __importStar(__webpack_require__(/*! react */ "react"));
-const storedsafe_1 = __importDefault(__webpack_require__(/*! storedsafe */ "./node_modules/storedsafe/dist/index.js"));
-const YubiKeyLoginForm_1 = __webpack_require__(/*! ./YubiKeyLoginForm */ "./src/components/Auth/Login/LoginForms/YubiKeyLoginForm.tsx");
-exports.YubiKeyLogin = ({ onLogin, site, username, }) => {
-    const onSubmit = (values) => {
-        const { url, apikey } = site;
-        const storedSafe = new storedsafe_1.default(url, apikey);
-        const { username, keys, remember } = values;
-        const passphrase = keys.slice(0, -44);
-        const otp = keys.slice(-44);
-        const promise = storedSafe.authYubikey(username, passphrase, otp);
-        onLogin(promise, remember ? username : undefined);
-    };
-    return React.createElement(YubiKeyLoginForm_1.YubiKeyLoginForm, { onSubmit: onSubmit, username: username });
-};
-
-
-/***/ }),
-
-/***/ "./src/components/Auth/Login/LoginForms/YubiKeyLoginForm.tsx":
-/*!*******************************************************************!*\
-  !*** ./src/components/Auth/Login/LoginForms/YubiKeyLoginForm.tsx ***!
-  \*******************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const React = __importStar(__webpack_require__(/*! react */ "react"));
-const Form = __importStar(__webpack_require__(/*! ../../../Form */ "./src/components/Form/index.ts"));
-exports.YubiKeyLoginForm = ({ onSubmit, username, }) => {
-    const initialValues = {
-        username,
-        remember: username !== '',
-    };
-    return (React.createElement(Form.Form, { initialValues: initialValues, handleSubmit: onSubmit, render: (values, onChange) => (React.createElement(React.Fragment, null,
-            React.createElement(Form.Field, { type: "text", label: "Username", name: "username", value: values.username, onChange: onChange, required: true }),
-            React.createElement(Form.Field, { type: "password", label: "Keys", name: "keys", value: values.keys, onChange: onChange, pattern: ".+.{44}", title: "Passphrase + YubiKey Press", required: true }),
-            React.createElement(Form.Field, { type: "checkbox", label: "Remember Username", name: "remember", value: values.remember, onChange: onChange }),
-            React.createElement(Form.Field, { type: "submit", label: "Login", name: "login" }))) }));
-};
-exports.YubiKeyLoginForm.defaultProps = {
-    username: '',
-};
-
-
-/***/ }),
-
-/***/ "./src/components/Auth/Login/LoginForms/index.ts":
-/*!*******************************************************!*\
-  !*** ./src/components/Auth/Login/LoginForms/index.ts ***!
-  \*******************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var YubiKeyLogin_1 = __webpack_require__(/*! ./YubiKeyLogin */ "./src/components/Auth/Login/LoginForms/YubiKeyLogin.tsx");
-exports.YubiKeyLogin = YubiKeyLogin_1.YubiKeyLogin;
-var TOTPLogin_1 = __webpack_require__(/*! ./TOTPLogin */ "./src/components/Auth/Login/LoginForms/TOTPLogin.tsx");
-exports.TOTPLogin = TOTPLogin_1.TOTPLogin;
-
-
-/***/ }),
-
-/***/ "./src/components/Auth/Login/LoginTypeSelector/LoginTypeSelector.tsx":
-/*!***************************************************************************!*\
-  !*** ./src/components/Auth/Login/LoginTypeSelector/LoginTypeSelector.tsx ***!
-  \***************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const React = __importStar(__webpack_require__(/*! react */ "react"));
-const Form_1 = __webpack_require__(/*! ../../../Form */ "./src/components/Form/index.ts");
-exports.LoginTypeSelector = ({ loginTypes, value, onChange, }) => (React.createElement(Form_1.Field, { type: "select", name: "loginType", label: "Login Type", value: value, onChange: onChange, options: loginTypes }));
-
-
-/***/ }),
-
-/***/ "./src/components/Auth/Login/LoginTypeSelector/LoginTypeSelectorContainer.tsx":
-/*!************************************************************************************!*\
-  !*** ./src/components/Auth/Login/LoginTypeSelector/LoginTypeSelectorContainer.tsx ***!
-  \************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __rest = (this && this.__rest) || function (s, e) {
-    var t = {};
-    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
-        t[p] = s[p];
-    if (s != null && typeof Object.getOwnPropertySymbols === "function")
-        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
-            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
-                t[p[i]] = s[p[i]];
-        }
-    return t;
-};
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const React = __importStar(__webpack_require__(/*! react */ "react"));
-const LoginTypeSelector_1 = __webpack_require__(/*! ./LoginTypeSelector */ "./src/components/Auth/Login/LoginTypeSelector/LoginTypeSelector.tsx");
-exports.LoginTypeSelectorContainer = (_a) => {
-    var { onSiteChangeCallback, render } = _a, props = __rest(_a, ["onSiteChangeCallback", "render"]);
-    const [selected, setSelected] = React.useState(props.loginTypes[0].value);
-    const onChange = (selected) => {
-        onSiteChangeCallback && onSiteChangeCallback(selected);
-        setSelected(selected);
-    };
-    return (React.createElement(React.Fragment, null,
-        React.createElement(LoginTypeSelector_1.LoginTypeSelector, Object.assign({ value: selected, onChange: onChange }, props)),
-        render(selected)));
-};
-
-
-/***/ }),
-
-/***/ "./src/components/Auth/Login/LoginTypeSelector/index.ts":
-/*!**************************************************************!*\
-  !*** ./src/components/Auth/Login/LoginTypeSelector/index.ts ***!
-  \**************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-const LoginTypeSelectorContainer_1 = __webpack_require__(/*! ./LoginTypeSelectorContainer */ "./src/components/Auth/Login/LoginTypeSelector/LoginTypeSelectorContainer.tsx");
-exports.default = LoginTypeSelectorContainer_1.LoginTypeSelectorContainer;
-
-
-/***/ }),
-
-/***/ "./src/components/Auth/Login/index.ts":
-/*!********************************************!*\
-  !*** ./src/components/Auth/Login/index.ts ***!
-  \********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-const LoginContainer_1 = __webpack_require__(/*! ./LoginContainer */ "./src/components/Auth/Login/LoginContainer.tsx");
-exports.default = LoginContainer_1.LoginContainer;
-
-
-/***/ }),
-
-/***/ "./src/components/Auth/Logout/Logout.tsx":
-/*!***********************************************!*\
-  !*** ./src/components/Auth/Logout/Logout.tsx ***!
-  \***********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const React = __importStar(__webpack_require__(/*! react */ "react"));
-const Form_1 = __webpack_require__(/*! ../../Form */ "./src/components/Form/index.ts");
-exports.Logout = ({ onLogout }) => (React.createElement(Form_1.Field, { type: "button", name: "logout", label: "Logout", onClick: onLogout }));
-
-
-/***/ }),
-
-/***/ "./src/components/Auth/Logout/LogoutContainer.tsx":
-/*!********************************************************!*\
-  !*** ./src/components/Auth/Logout/LogoutContainer.tsx ***!
-  \********************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
-};
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const React = __importStar(__webpack_require__(/*! react */ "react"));
-const storedsafe_1 = __importDefault(__webpack_require__(/*! storedsafe */ "./node_modules/storedsafe/dist/index.js"));
-const StorageState_1 = __webpack_require__(/*! ../../../state/StorageState */ "./src/state/StorageState.ts");
-const Logout_1 = __webpack_require__(/*! ./Logout */ "./src/components/Auth/Logout/Logout.tsx");
-exports.LogoutContainer = (props) => {
-    const [state, dispatch] = StorageState_1.useStorage();
-    const onLogout = () => {
-        const url = props.url;
-        const { apikey, token } = state.sessions[url];
-        const storedSafe = new storedsafe_1.default(url, apikey, token);
-        storedSafe.logout().then((res) => {
-            if (res.status !== 200) {
-                console.error(res.data.ERRORS);
-            }
-        }).catch((err) => {
-            if (!err.isAxiosError) {
-                console.error(`${err.response.status}: ${err.response.statusText}`);
-            }
-            else {
-                console.error(err);
-            }
-        }).then(() => dispatch({ sessions: { type: 'remove', url } }));
-    };
-    return (React.createElement(Logout_1.Logout, { onLogout: onLogout }));
-};
-
-
-/***/ }),
-
-/***/ "./src/components/Auth/Logout/index.ts":
-/*!*********************************************!*\
-  !*** ./src/components/Auth/Logout/index.ts ***!
-  \*********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-const LogoutContainer_1 = __webpack_require__(/*! ./LogoutContainer */ "./src/components/Auth/Logout/LogoutContainer.tsx");
-exports.default = LogoutContainer_1.LogoutContainer;
-
-
-/***/ }),
-
 /***/ "./src/components/DebugStorage.tsx":
 /*!*****************************************!*\
   !*** ./src/components/DebugStorage.tsx ***!
@@ -27817,22 +27299,17 @@ const DebugStorage = () => {
             react_1.default.createElement("strong", null, "Created At: "),
             createdAt));
     });
-    const usernames = Object.keys(state.authState.usernames).map((url) => {
-        const username = state.authState.usernames[url];
+    const sitePrefs = Object.keys(state.sitePrefs).map((url) => {
+        const { username, loginType } = state.sitePrefs[url];
         return (react_1.default.createElement(react_1.default.Fragment, { key: url },
-            react_1.default.createElement("strong", null, "URL: "),
-            url,
-            react_1.default.createElement("br", null),
             react_1.default.createElement("strong", null, "Username: "),
-            username));
+            username,
+            react_1.default.createElement("br", null),
+            react_1.default.createElement("strong", null, "Login Type: "),
+            loginType,
+            react_1.default.createElement("br", null)));
     });
-    const authState = [
-        (react_1.default.createElement(react_1.default.Fragment, { key: "selected" },
-            react_1.default.createElement("strong", { key: "selected" }, "Selected: "),
-            state.authState.selected || 'none')),
-        react_1.default.createElement(Layout_1.CollapseList, { key: "children", startCollapsed: false, title: react_1.default.createElement("h3", null, "Usernames"), items: usernames })
-    ];
-    return (react_1.default.createElement(Layout_1.Card, null,
+    return (react_1.default.createElement("section", { className: "card" },
         react_1.default.createElement("h2", null, "Storage"),
         react_1.default.createElement("h3", null, "State"),
         react_1.default.createElement("p", null,
@@ -27852,615 +27329,16 @@ const DebugStorage = () => {
             react_1.default.createElement(Layout_1.CollapseList, { startCollapsed: false, title: react_1.default.createElement("h3", null, "System Sites"), items: systemSites }),
             react_1.default.createElement(Layout_1.CollapseList, { startCollapsed: false, title: react_1.default.createElement("h3", null, "User Sites"), items: userSites }),
             react_1.default.createElement(Layout_1.CollapseList, { startCollapsed: false, title: react_1.default.createElement("h3", null, "Sessions"), items: sessions }),
-            react_1.default.createElement(Layout_1.CollapseList, { startCollapsed: false, title: react_1.default.createElement("h3", null, "Auth State"), items: authState })))));
+            react_1.default.createElement(Layout_1.CollapseList, { startCollapsed: false, title: react_1.default.createElement("h3", null, "Site Prefs"), items: sitePrefs })))));
 };
 exports.default = DebugStorage;
 
 
 /***/ }),
 
-/***/ "./src/components/Form/Field/Button.scss":
-/*!***********************************************!*\
-  !*** ./src/components/Form/Field/Button.scss ***!
-  \***********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-var api = __webpack_require__(/*! ../../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
-            var content = __webpack_require__(/*! !../../../../node_modules/css-loader/dist/cjs.js!../../../../node_modules/postcss-loader/src!../../../../node_modules/sass-loader/dist/cjs.js!./Button.scss */ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/Form/Field/Button.scss");
-
-            content = content.__esModule ? content.default : content;
-
-            if (typeof content === 'string') {
-              content = [[module.i, content, '']];
-            }
-
-var options = {};
-
-options.insert = "head";
-options.singleton = false;
-
-var update = api(content, options);
-
-var exported = content.locals ? content.locals : {};
-
-
-
-module.exports = exported;
-
-/***/ }),
-
-/***/ "./src/components/Form/Field/Button.tsx":
-/*!**********************************************!*\
-  !*** ./src/components/Form/Field/Button.tsx ***!
-  \**********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __rest = (this && this.__rest) || function (s, e) {
-    var t = {};
-    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
-        t[p] = s[p];
-    if (s != null && typeof Object.getOwnPropertySymbols === "function")
-        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
-            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
-                t[p[i]] = s[p[i]];
-        }
-    return t;
-};
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const React = __importStar(__webpack_require__(/*! react */ "react"));
-__webpack_require__(/*! ./Button.scss */ "./src/components/Form/Field/Button.scss");
-exports.Button = (_a) => {
-    var { name, type, label, value, onBlur } = _a, attributes = __rest(_a, ["name", "type", "label", "value", "onBlur"]);
-    return (React.createElement("div", { className: "field field-button" },
-        React.createElement("button", Object.assign({ className: "field-container field-control", id: name, name: name, defaultValue: value, type: type, onBlur: () => {
-                onBlur && onBlur(value, name);
-            } }, attributes), label)));
-};
-
-
-/***/ }),
-
-/***/ "./src/components/Form/Field/Checkbox.scss":
-/*!*************************************************!*\
-  !*** ./src/components/Form/Field/Checkbox.scss ***!
-  \*************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-var api = __webpack_require__(/*! ../../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
-            var content = __webpack_require__(/*! !../../../../node_modules/css-loader/dist/cjs.js!../../../../node_modules/postcss-loader/src!../../../../node_modules/sass-loader/dist/cjs.js!./Checkbox.scss */ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/Form/Field/Checkbox.scss");
-
-            content = content.__esModule ? content.default : content;
-
-            if (typeof content === 'string') {
-              content = [[module.i, content, '']];
-            }
-
-var options = {};
-
-options.insert = "head";
-options.singleton = false;
-
-var update = api(content, options);
-
-var exported = content.locals ? content.locals : {};
-
-
-
-module.exports = exported;
-
-/***/ }),
-
-/***/ "./src/components/Form/Field/Checkbox.tsx":
-/*!************************************************!*\
-  !*** ./src/components/Form/Field/Checkbox.tsx ***!
-  \************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __rest = (this && this.__rest) || function (s, e) {
-    var t = {};
-    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
-        t[p] = s[p];
-    if (s != null && typeof Object.getOwnPropertySymbols === "function")
-        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
-            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
-                t[p[i]] = s[p[i]];
-        }
-    return t;
-};
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const React = __importStar(__webpack_require__(/*! react */ "react"));
-__webpack_require__(/*! ./Checkbox.scss */ "./src/components/Form/Field/Checkbox.scss");
-exports.Checkbox = (_a) => {
-    var { name, value, label, labelDir, onChange, onBlur } = _a, attributes = __rest(_a, ["name", "value", "label", "labelDir", "onChange", "onBlur"]);
-    return (React.createElement("div", { className: "field field-checkbox" },
-        React.createElement("div", { className: "field-container" },
-            React.createElement("label", { htmlFor: name, className: "field-label" },
-                labelDir === 'left' && (React.createElement("span", { className: "field-label" }, label)),
-                React.createElement("input", Object.assign({ id: name, name: name, type: "checkbox", checked: value, onChange: ({ target }) => {
-                        onChange && onChange(target.checked, target.name);
-                    }, onBlur: ({ target }) => {
-                        onBlur && onBlur(target.checked, target.name);
-                    } }, attributes)),
-                React.createElement("div", { className: "custom-checkbox" }),
-                labelDir === 'right' && (React.createElement("span", { className: "field-label" }, label))))));
-};
-exports.Checkbox.defaultProps = {
-    value: false,
-    labelDir: 'right',
-};
-
-
-/***/ }),
-
-/***/ "./src/components/Form/Field/Field.scss":
-/*!**********************************************!*\
-  !*** ./src/components/Form/Field/Field.scss ***!
-  \**********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-var api = __webpack_require__(/*! ../../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
-            var content = __webpack_require__(/*! !../../../../node_modules/css-loader/dist/cjs.js!../../../../node_modules/postcss-loader/src!../../../../node_modules/sass-loader/dist/cjs.js!./Field.scss */ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/Form/Field/Field.scss");
-
-            content = content.__esModule ? content.default : content;
-
-            if (typeof content === 'string') {
-              content = [[module.i, content, '']];
-            }
-
-var options = {};
-
-options.insert = "head";
-options.singleton = false;
-
-var update = api(content, options);
-
-var exported = content.locals ? content.locals : {};
-
-
-
-module.exports = exported;
-
-/***/ }),
-
-/***/ "./src/components/Form/Field/Field.tsx":
-/*!*********************************************!*\
-  !*** ./src/components/Form/Field/Field.tsx ***!
-  \*********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __rest = (this && this.__rest) || function (s, e) {
-    var t = {};
-    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
-        t[p] = s[p];
-    if (s != null && typeof Object.getOwnPropertySymbols === "function")
-        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
-            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
-                t[p[i]] = s[p[i]];
-        }
-    return t;
-};
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const React = __importStar(__webpack_require__(/*! react */ "react"));
-const Input_1 = __webpack_require__(/*! ./Input */ "./src/components/Form/Field/Input.tsx");
-const Checkbox_1 = __webpack_require__(/*! ./Checkbox */ "./src/components/Form/Field/Checkbox.tsx");
-const Select_1 = __webpack_require__(/*! ./Select */ "./src/components/Form/Field/Select.tsx");
-const TextArea_1 = __webpack_require__(/*! ./TextArea */ "./src/components/Form/Field/TextArea.tsx");
-const Radio_1 = __webpack_require__(/*! ./Radio */ "./src/components/Form/Field/Radio.tsx");
-const Button_1 = __webpack_require__(/*! ./Button */ "./src/components/Form/Field/Button.tsx");
-__webpack_require__(/*! ./Field.scss */ "./src/components/Form/Field/Field.scss");
-exports.Field = (_a) => {
-    var { type } = _a, attributes = __rest(_a, ["type"]);
-    if (type === 'select') {
-        return React.createElement(Select_1.Select, Object.assign({}, attributes));
-    }
-    if (type === 'textarea') {
-        return React.createElement(TextArea_1.TextArea, Object.assign({}, attributes));
-    }
-    if (type === 'checkbox') {
-        return React.createElement(Checkbox_1.Checkbox, Object.assign({}, attributes));
-    }
-    if (type === 'radio') {
-        return React.createElement(Radio_1.Radio, Object.assign({}, attributes));
-    }
-    if (['button', 'submit', 'reset'].includes(type)) {
-        return React.createElement(Button_1.Button, Object.assign({ type: type }, attributes));
-    }
-    return React.createElement(Input_1.Input, Object.assign({ type: type }, attributes));
-};
-exports.Field.defaultProps = {
-    type: 'text',
-};
-
-
-/***/ }),
-
-/***/ "./src/components/Form/Field/Input.scss":
-/*!**********************************************!*\
-  !*** ./src/components/Form/Field/Input.scss ***!
-  \**********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-var api = __webpack_require__(/*! ../../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
-            var content = __webpack_require__(/*! !../../../../node_modules/css-loader/dist/cjs.js!../../../../node_modules/postcss-loader/src!../../../../node_modules/sass-loader/dist/cjs.js!./Input.scss */ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/Form/Field/Input.scss");
-
-            content = content.__esModule ? content.default : content;
-
-            if (typeof content === 'string') {
-              content = [[module.i, content, '']];
-            }
-
-var options = {};
-
-options.insert = "head";
-options.singleton = false;
-
-var update = api(content, options);
-
-var exported = content.locals ? content.locals : {};
-
-
-
-module.exports = exported;
-
-/***/ }),
-
-/***/ "./src/components/Form/Field/Input.tsx":
-/*!*********************************************!*\
-  !*** ./src/components/Form/Field/Input.tsx ***!
-  \*********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __rest = (this && this.__rest) || function (s, e) {
-    var t = {};
-    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
-        t[p] = s[p];
-    if (s != null && typeof Object.getOwnPropertySymbols === "function")
-        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
-            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
-                t[p[i]] = s[p[i]];
-        }
-    return t;
-};
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const React = __importStar(__webpack_require__(/*! react */ "react"));
-__webpack_require__(/*! ./Input.scss */ "./src/components/Form/Field/Input.scss");
-exports.Input = (_a) => {
-    var { name, type, value, label, onChange, onBlur } = _a, attributes = __rest(_a, ["name", "type", "value", "label", "onChange", "onBlur"]);
-    return (React.createElement("div", { className: `field field-input field-input-${type}` },
-        React.createElement("label", { htmlFor: name },
-            React.createElement("span", { className: "field-label" }, label),
-            React.createElement("div", { className: "field-container" },
-                React.createElement("input", Object.assign({ className: "field-control", id: name, name: name, type: type, value: ['number', 'range'].includes(type) && isNaN(value) ? '' : value, onChange: ({ target }) => {
-                        if (['number', 'range'].includes(type)) {
-                            onChange && onChange(target.valueAsNumber, name);
-                        }
-                        else {
-                            onChange && onChange(target.value, name);
-                        }
-                    }, onBlur: ({ target }) => {
-                        if (['number', 'range'].includes(type)) {
-                            onBlur && onBlur(target.valueAsNumber, name);
-                        }
-                        else {
-                            onBlur && onBlur(target.value, name);
-                        }
-                    } }, attributes))))));
-};
-exports.Input.defaultProps = {
-    type: 'text',
-    value: '',
-};
-
-
-/***/ }),
-
-/***/ "./src/components/Form/Field/Radio.scss":
-/*!**********************************************!*\
-  !*** ./src/components/Form/Field/Radio.scss ***!
-  \**********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-var api = __webpack_require__(/*! ../../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
-            var content = __webpack_require__(/*! !../../../../node_modules/css-loader/dist/cjs.js!../../../../node_modules/postcss-loader/src!../../../../node_modules/sass-loader/dist/cjs.js!./Radio.scss */ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/Form/Field/Radio.scss");
-
-            content = content.__esModule ? content.default : content;
-
-            if (typeof content === 'string') {
-              content = [[module.i, content, '']];
-            }
-
-var options = {};
-
-options.insert = "head";
-options.singleton = false;
-
-var update = api(content, options);
-
-var exported = content.locals ? content.locals : {};
-
-
-
-module.exports = exported;
-
-/***/ }),
-
-/***/ "./src/components/Form/Field/Radio.tsx":
-/*!*********************************************!*\
-  !*** ./src/components/Form/Field/Radio.tsx ***!
-  \*********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __rest = (this && this.__rest) || function (s, e) {
-    var t = {};
-    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
-        t[p] = s[p];
-    if (s != null && typeof Object.getOwnPropertySymbols === "function")
-        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
-            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
-                t[p[i]] = s[p[i]];
-        }
-    return t;
-};
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const React = __importStar(__webpack_require__(/*! react */ "react"));
-__webpack_require__(/*! ./Radio.scss */ "./src/components/Form/Field/Radio.scss");
-exports.Radio = (_a) => {
-    var { name, value, label, labelDir, options, onChange, onBlur } = _a, attributes = __rest(_a, ["name", "value", "label", "labelDir", "options", "onChange", "onBlur"]);
-    return (React.createElement("div", { className: "field field-radio" },
-        React.createElement("fieldset", { className: "field-control" },
-            React.createElement("legend", { className: "field-label" }, label),
-            React.createElement("div", { className: "field-container" }, options.map((option) => (React.createElement("label", { key: option.value, htmlFor: `${name}-${option.value}` },
-                labelDir === 'left' && option.title,
-                React.createElement("input", Object.assign({ id: `${name}-${option.value}`, name: name, type: "radio", value: option.value, checked: value === option.value, onChange: ({ target }) => {
-                        onChange && onChange(target.value, name);
-                    }, onBlur: ({ target }) => {
-                        onBlur && onBlur(target.value, name);
-                    } }, attributes)),
-                React.createElement("div", { className: "custom-radio" }),
-                labelDir === 'right' && option.title)))))));
-};
-exports.Radio.defaultProps = {
-    options: [],
-    labelDir: 'right',
-};
-
-
-/***/ }),
-
-/***/ "./src/components/Form/Field/Select.scss":
-/*!***********************************************!*\
-  !*** ./src/components/Form/Field/Select.scss ***!
-  \***********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-var api = __webpack_require__(/*! ../../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
-            var content = __webpack_require__(/*! !../../../../node_modules/css-loader/dist/cjs.js!../../../../node_modules/postcss-loader/src!../../../../node_modules/sass-loader/dist/cjs.js!./Select.scss */ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/Form/Field/Select.scss");
-
-            content = content.__esModule ? content.default : content;
-
-            if (typeof content === 'string') {
-              content = [[module.i, content, '']];
-            }
-
-var options = {};
-
-options.insert = "head";
-options.singleton = false;
-
-var update = api(content, options);
-
-var exported = content.locals ? content.locals : {};
-
-
-
-module.exports = exported;
-
-/***/ }),
-
-/***/ "./src/components/Form/Field/Select.tsx":
-/*!**********************************************!*\
-  !*** ./src/components/Form/Field/Select.tsx ***!
-  \**********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __rest = (this && this.__rest) || function (s, e) {
-    var t = {};
-    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
-        t[p] = s[p];
-    if (s != null && typeof Object.getOwnPropertySymbols === "function")
-        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
-            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
-                t[p[i]] = s[p[i]];
-        }
-    return t;
-};
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const React = __importStar(__webpack_require__(/*! react */ "react"));
-__webpack_require__(/*! ./Select.scss */ "./src/components/Form/Field/Select.scss");
-exports.Select = (_a) => {
-    var { name, options, value, label, onChange, onBlur } = _a, attributes = __rest(_a, ["name", "options", "value", "label", "onChange", "onBlur"]);
-    return (React.createElement("div", { className: "field field-select" },
-        React.createElement("label", { htmlFor: name },
-            React.createElement("span", { className: "field-label" }, label),
-            React.createElement("div", { className: "field-container" },
-                React.createElement("div", { className: "custom-select" },
-                    React.createElement("select", Object.assign({ className: "field-control", id: name, name: name, value: value, onChange: ({ target }) => {
-                            onChange && onChange(target.value, name);
-                        }, onBlur: ({ target }) => {
-                            onBlur && onBlur(target.value, name);
-                        } }, attributes), options.map((option) => (React.createElement("option", { key: option.value, value: option.value }, option.title)))))))));
-};
-exports.Select.defaultProps = {
-    options: [],
-};
-
-
-/***/ }),
-
-/***/ "./src/components/Form/Field/TextArea.scss":
-/*!*************************************************!*\
-  !*** ./src/components/Form/Field/TextArea.scss ***!
-  \*************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-var api = __webpack_require__(/*! ../../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
-            var content = __webpack_require__(/*! !../../../../node_modules/css-loader/dist/cjs.js!../../../../node_modules/postcss-loader/src!../../../../node_modules/sass-loader/dist/cjs.js!./TextArea.scss */ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/Form/Field/TextArea.scss");
-
-            content = content.__esModule ? content.default : content;
-
-            if (typeof content === 'string') {
-              content = [[module.i, content, '']];
-            }
-
-var options = {};
-
-options.insert = "head";
-options.singleton = false;
-
-var update = api(content, options);
-
-var exported = content.locals ? content.locals : {};
-
-
-
-module.exports = exported;
-
-/***/ }),
-
-/***/ "./src/components/Form/Field/TextArea.tsx":
-/*!************************************************!*\
-  !*** ./src/components/Form/Field/TextArea.tsx ***!
-  \************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __rest = (this && this.__rest) || function (s, e) {
-    var t = {};
-    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
-        t[p] = s[p];
-    if (s != null && typeof Object.getOwnPropertySymbols === "function")
-        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
-            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
-                t[p[i]] = s[p[i]];
-        }
-    return t;
-};
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const React = __importStar(__webpack_require__(/*! react */ "react"));
-__webpack_require__(/*! ./TextArea.scss */ "./src/components/Form/Field/TextArea.scss");
-exports.TextArea = (_a) => {
-    var { name, value, label, onChange, onBlur } = _a, attributes = __rest(_a, ["name", "value", "label", "onChange", "onBlur"]);
-    return (React.createElement("div", { className: "field field-textarea" },
-        React.createElement("label", { htmlFor: name },
-            React.createElement("span", { className: "form-label" }, label),
-            React.createElement("div", { className: "field-container" },
-                React.createElement("textarea", Object.assign({ className: "field-control", id: name, name: name, value: value, onChange: ({ target }) => {
-                        onChange && onChange(target.value, name);
-                    }, onBlur: ({ target }) => {
-                        onBlur && onBlur(target.value, name);
-                    } }, attributes))))));
-};
-
-
-/***/ }),
-
-/***/ "./src/components/Form/Field/index.ts":
-/*!********************************************!*\
-  !*** ./src/components/Form/Field/index.ts ***!
-  \********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-function __export(m) {
-    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
-}
-Object.defineProperty(exports, "__esModule", { value: true });
-__export(__webpack_require__(/*! ./Field */ "./src/components/Form/Field/Field.tsx"));
-
-
-/***/ }),
-
-/***/ "./src/components/Form/Form.tsx":
+/***/ "./src/components/Extension.tsx":
 /*!**************************************!*\
-  !*** ./src/components/Form/Form.tsx ***!
+  !*** ./src/components/Extension.tsx ***!
   \**************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
@@ -28474,41 +27352,317 @@ var __importStar = (this && this.__importStar) || function (mod) {
     result["default"] = mod;
     return result;
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const react_1 = __importStar(__webpack_require__(/*! react */ "react"));
+const StorageState_1 = __webpack_require__(/*! ../state/StorageState */ "./src/state/StorageState.ts");
+const DebugStorage_1 = __importDefault(__webpack_require__(/*! ./DebugStorage */ "./src/components/DebugStorage.tsx"));
+const Options_1 = __importDefault(__webpack_require__(/*! ./Options */ "./src/components/Options/index.ts"));
+const Popup_1 = __importDefault(__webpack_require__(/*! ./Popup */ "./src/components/Popup/index.ts"));
+var Page;
+(function (Page) {
+    Page["Options"] = "options";
+    Page["Popup"] = "popup";
+    Page["Debug"] = "debug";
+})(Page || (Page = {}));
+const Extension = () => {
+    const [page, setPage] = react_1.useState(Page.Options);
+    react_1.default.useEffect(() => {
+        const path = window.location.href.split('#')[1];
+        switch (path) {
+            case Page.Popup: {
+                setPage(Page.Popup);
+                break;
+            }
+            case Page.Debug: {
+                setPage(Page.Debug);
+                break;
+            }
+            default: {
+                setPage(Page.Options);
+            }
+        }
+    }, []);
+    return (react_1.default.createElement("section", { className: "extension" },
+        react_1.default.createElement(StorageState_1.StorageProvider, null,
+            page === Page.Options && react_1.default.createElement(Options_1.default, null),
+            page === Page.Debug && react_1.default.createElement(DebugStorage_1.default, null),
+            page === Page.Popup && react_1.default.createElement(Popup_1.default, null))));
+};
+exports.default = Extension;
+
+
+/***/ }),
+
+/***/ "./src/components/Form/Checkbox.scss":
+/*!*******************************************!*\
+  !*** ./src/components/Form/Checkbox.scss ***!
+  \*******************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var api = __webpack_require__(/*! ../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
+            var content = __webpack_require__(/*! !../../../node_modules/css-loader/dist/cjs.js!../../../node_modules/postcss-loader/src!../../../node_modules/sass-loader/dist/cjs.js!./Checkbox.scss */ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/Form/Checkbox.scss");
+
+            content = content.__esModule ? content.default : content;
+
+            if (typeof content === 'string') {
+              content = [[module.i, content, '']];
+            }
+
+var options = {};
+
+options.insert = "head";
+options.singleton = false;
+
+var update = api(content, options);
+
+var exported = content.locals ? content.locals : {};
+
+
+
+module.exports = exported;
+
+/***/ }),
+
+/***/ "./src/components/Form/Checkbox.tsx":
+/*!******************************************!*\
+  !*** ./src/components/Form/Checkbox.tsx ***!
+  \******************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const React = __importStar(__webpack_require__(/*! react */ "react"));
+__webpack_require__(/*! ./Checkbox.scss */ "./src/components/Form/Checkbox.scss");
+exports.Checkbox = (props) => (React.createElement(React.Fragment, null,
+    React.createElement("div", { style: { display: 'inline-block' }, className: "checkbox" },
+        React.createElement("input", Object.assign({ type: "checkbox" }, props)),
+        React.createElement("div", { className: "custom-checkbox" }))));
+
+
+/***/ }),
+
+/***/ "./src/components/Form/Form.tsx":
+/*!**************************************!*\
+  !*** ./src/components/Form/Form.tsx ***!
+  \**************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __rest = (this && this.__rest) || function (s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+                t[p[i]] = s[p[i]];
+        }
+    return t;
+};
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __importStar(__webpack_require__(/*! react */ "react"));
 /**
  * Custom hook to handle interaction with the form fields
  * */
-const useForm = (initialValues, onChangeCB, onResetCB) => {
-    const [values, setValues] = React.useState(initialValues || {});
-    const onChange = (value, name) => {
+const useForm = (initialValues, onChangeCB, onBlurCB, onResetCB) => {
+    const [values, setValues] = React.useState(initialValues);
+    const onFieldEvent = (target) => {
+        const { name } = target;
+        let value;
+        if (target instanceof HTMLInputElement) {
+            if (target.type === 'checkbox') {
+                value = target.checked;
+            }
+            else if (['number', 'range'].includes(target.type)) {
+                value = target.valueAsNumber;
+            }
+            else {
+                value = target.value;
+            }
+        }
+        else {
+            value = target.value;
+        }
         setValues(Object.assign(Object.assign({}, values), { [name]: value }));
+        return { value, name };
+    };
+    const onChange = ({ target }) => {
+        const { value, name } = onFieldEvent(target);
         onChangeCB && onChangeCB(value, name);
+    };
+    const onBlur = ({ target }) => {
+        const { value, name } = onFieldEvent(target);
+        onBlurCB && onBlurCB(value, name);
     };
     const reset = () => {
         setValues(initialValues);
         onResetCB && onResetCB(values, initialValues);
     };
-    return { values, onChange, reset };
+    return { values, onChange, onBlur, reset };
 };
 /**
- * Form wrapper for {Field} type fields.
- * The change and blur events are handled in the {Field} elements and
- * the {Form} element only expects the relevant values to be returned,
- * meaning this {Form} is incompatible with change and blur events of
- * regular input elements.
+ * Wraps state of form and does pre-processing on field
+ * events to avoid boilerplate event handling.
  * */
-exports.Form = ({ initialValues, handleChange, handleBlur, handleSubmit, handleReset, render, }) => {
-    const { values, onChange, reset } = useForm(initialValues, handleChange, handleReset);
+exports.Form = (_a) => {
+    var { initialValues, onChange: changeCB, onBlur: blurCB, onSubmit: submitCB, onReset: resetCB, render, className } = _a, props = __rest(_a, ["initialValues", "onChange", "onBlur", "onSubmit", "onReset", "render", "className"]);
+    const { values, onChange, onBlur, reset, } = useForm(initialValues, changeCB, blurCB, resetCB);
     const onSubmit = (event) => {
         event.preventDefault();
-        handleSubmit && handleSubmit(values);
+        submitCB && submitCB(values, reset);
     };
     const onReset = (event) => {
         event.preventDefault();
         reset();
     };
-    return (React.createElement("form", { className: "form", onSubmit: onSubmit, onReset: onReset }, render && render(values, onChange, handleBlur)));
+    return (React.createElement("form", Object.assign({ className: `form${className !== undefined ? ' ' + className : ''}`, onSubmit: onSubmit, onReset: onReset }, props), render && render(values, { onChange, onBlur })));
+};
+
+
+/***/ }),
+
+/***/ "./src/components/Form/Radio.scss":
+/*!****************************************!*\
+  !*** ./src/components/Form/Radio.scss ***!
+  \****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var api = __webpack_require__(/*! ../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
+            var content = __webpack_require__(/*! !../../../node_modules/css-loader/dist/cjs.js!../../../node_modules/postcss-loader/src!../../../node_modules/sass-loader/dist/cjs.js!./Radio.scss */ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/Form/Radio.scss");
+
+            content = content.__esModule ? content.default : content;
+
+            if (typeof content === 'string') {
+              content = [[module.i, content, '']];
+            }
+
+var options = {};
+
+options.insert = "head";
+options.singleton = false;
+
+var update = api(content, options);
+
+var exported = content.locals ? content.locals : {};
+
+
+
+module.exports = exported;
+
+/***/ }),
+
+/***/ "./src/components/Form/Radio.tsx":
+/*!***************************************!*\
+  !*** ./src/components/Form/Radio.tsx ***!
+  \***************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const React = __importStar(__webpack_require__(/*! react */ "react"));
+__webpack_require__(/*! ./Radio.scss */ "./src/components/Form/Radio.scss");
+exports.Radio = (props) => (React.createElement(React.Fragment, null,
+    React.createElement("div", { style: { display: 'inline-block' }, className: "radio" },
+        React.createElement("input", Object.assign({ type: "radio" }, props)),
+        React.createElement("div", { className: "custom-radio" }))));
+
+
+/***/ }),
+
+/***/ "./src/components/Form/Select.scss":
+/*!*****************************************!*\
+  !*** ./src/components/Form/Select.scss ***!
+  \*****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var api = __webpack_require__(/*! ../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
+            var content = __webpack_require__(/*! !../../../node_modules/css-loader/dist/cjs.js!../../../node_modules/postcss-loader/src!../../../node_modules/sass-loader/dist/cjs.js!./Select.scss */ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/Form/Select.scss");
+
+            content = content.__esModule ? content.default : content;
+
+            if (typeof content === 'string') {
+              content = [[module.i, content, '']];
+            }
+
+var options = {};
+
+options.insert = "head";
+options.singleton = false;
+
+var update = api(content, options);
+
+var exported = content.locals ? content.locals : {};
+
+
+
+module.exports = exported;
+
+/***/ }),
+
+/***/ "./src/components/Form/Select.tsx":
+/*!****************************************!*\
+  !*** ./src/components/Form/Select.tsx ***!
+  \****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __rest = (this && this.__rest) || function (s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+                t[p[i]] = s[p[i]];
+        }
+    return t;
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const react_1 = __importDefault(__webpack_require__(/*! react */ "react"));
+__webpack_require__(/*! ./Select.scss */ "./src/components/Form/Select.scss");
+exports.Select = (_a) => {
+    var { children } = _a, props = __rest(_a, ["children"]);
+    return (react_1.default.createElement("div", { className: "select" },
+        react_1.default.createElement("div", { className: "custom-select" },
+            react_1.default.createElement("select", Object.assign({}, props), children))));
 };
 
 
@@ -28527,21 +27681,24 @@ function __export(m) {
     for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-__export(__webpack_require__(/*! ./Field */ "./src/components/Form/Field/index.ts"));
+const Checkbox_1 = __webpack_require__(/*! ./Checkbox */ "./src/components/Form/Checkbox.tsx");
+const Radio_1 = __webpack_require__(/*! ./Radio */ "./src/components/Form/Radio.tsx");
+const Select_1 = __webpack_require__(/*! ./Select */ "./src/components/Form/Select.tsx");
+exports.Input = { Checkbox: Checkbox_1.Checkbox, Radio: Radio_1.Radio, Select: Select_1.Select };
 __export(__webpack_require__(/*! ./Form */ "./src/components/Form/Form.tsx"));
 
 
 /***/ }),
 
-/***/ "./src/components/Layout/Card.scss":
-/*!*****************************************!*\
-  !*** ./src/components/Layout/Card.scss ***!
-  \*****************************************/
+/***/ "./src/components/Layout/Banner.scss":
+/*!*******************************************!*\
+  !*** ./src/components/Layout/Banner.scss ***!
+  \*******************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 var api = __webpack_require__(/*! ../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
-            var content = __webpack_require__(/*! !../../../node_modules/css-loader/dist/cjs.js!../../../node_modules/postcss-loader/src!../../../node_modules/sass-loader/dist/cjs.js!./Card.scss */ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/Layout/Card.scss");
+            var content = __webpack_require__(/*! !../../../node_modules/css-loader/dist/cjs.js!../../../node_modules/postcss-loader/src!../../../node_modules/sass-loader/dist/cjs.js!./Banner.scss */ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/Layout/Banner.scss");
 
             content = content.__esModule ? content.default : content;
 
@@ -28564,26 +27721,98 @@ module.exports = exported;
 
 /***/ }),
 
-/***/ "./src/components/Layout/Card.tsx":
-/*!****************************************!*\
-  !*** ./src/components/Layout/Card.tsx ***!
-  \****************************************/
+/***/ "./src/components/Layout/Banner.tsx":
+/*!******************************************!*\
+  !*** ./src/components/Layout/Banner.tsx ***!
+  \******************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const React = __importStar(__webpack_require__(/*! react */ "react"));
-__webpack_require__(/*! ./Card.scss */ "./src/components/Layout/Card.scss");
-exports.Card = ({ children, className = '', }) => React.createElement("section", { className: `card ${className}` }, children);
+const react_1 = __importDefault(__webpack_require__(/*! react */ "react"));
+const Logo_1 = __webpack_require__(/*! ./Logo */ "./src/components/Layout/Logo.tsx");
+__webpack_require__(/*! ./Banner.scss */ "./src/components/Layout/Banner.scss");
+exports.Banner = () => (react_1.default.createElement("div", { className: "banner" },
+    react_1.default.createElement(Logo_1.Logo, null)));
+
+
+/***/ }),
+
+/***/ "./src/components/Layout/Button.scss":
+/*!*******************************************!*\
+  !*** ./src/components/Layout/Button.scss ***!
+  \*******************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var api = __webpack_require__(/*! ../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
+            var content = __webpack_require__(/*! !../../../node_modules/css-loader/dist/cjs.js!../../../node_modules/postcss-loader/src!../../../node_modules/sass-loader/dist/cjs.js!./Button.scss */ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/Layout/Button.scss");
+
+            content = content.__esModule ? content.default : content;
+
+            if (typeof content === 'string') {
+              content = [[module.i, content, '']];
+            }
+
+var options = {};
+
+options.insert = "head";
+options.singleton = false;
+
+var update = api(content, options);
+
+var exported = content.locals ? content.locals : {};
+
+
+
+module.exports = exported;
+
+/***/ }),
+
+/***/ "./src/components/Layout/Button.tsx":
+/*!******************************************!*\
+  !*** ./src/components/Layout/Button.tsx ***!
+  \******************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __rest = (this && this.__rest) || function (s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+                t[p[i]] = s[p[i]];
+        }
+    return t;
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const react_1 = __importDefault(__webpack_require__(/*! react */ "react"));
+__webpack_require__(/*! ./Button.scss */ "./src/components/Layout/Button.scss");
+exports.Button = (_a) => {
+    var { color, isLoading, children, className } = _a, props = __rest(_a, ["color", "isLoading", "children", "className"]);
+    const classNames = `button button-${color}${isLoading ? ' button-loading' : ''}${className === '' ? '' : ` ${className} `}`;
+    return (react_1.default.createElement("button", Object.assign({ className: classNames }, props),
+        children,
+        react_1.default.createElement("div", { className: "button-spinner" })));
+};
+exports.Button.defaultProps = {
+    color: 'primary',
+    isLoading: false,
+    children: null,
+    className: '',
+};
 
 
 /***/ }),
@@ -28768,30 +27997,59 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __importStar(__webpack_require__(/*! react */ "react"));
 __webpack_require__(/*! ./Collapsible.scss */ "./src/components/Layout/Collapsible.scss");
-exports.Collapsible = ({ collapsed, children, }) => {
+exports.Collapsible = ({ collapsed, children, maxSize, horizontal, }) => {
     const collapsibleRef = React.useRef();
     const childRef = React.useRef();
     React.useEffect(() => {
         const child = childRef.current;
         const collapsible = collapsibleRef.current;
         const resize = () => {
-            if (!collapsed) {
-                collapsible.style.maxHeight = `${child.clientHeight}px`;
+            if (horizontal) {
+                if (!collapsed) {
+                    if (maxSize) {
+                        collapsible.style.maxWidth = maxSize;
+                    }
+                    else {
+                        collapsible.style.maxWidth = `${child.clientWidth}px`;
+                    }
+                }
+                else {
+                    collapsible.style.maxWidth = '0';
+                }
             }
             else {
-                collapsible.style.maxHeight = '0';
+                if (!collapsed) {
+                    if (maxSize) {
+                        collapsible.style.maxHeight = maxSize;
+                    }
+                    else {
+                        collapsible.style.maxHeight = `${child.clientHeight}px`;
+                    }
+                }
+                else {
+                    collapsible.style.maxHeight = '0';
+                }
             }
         };
         resize();
-        const resizeObserver = new ResizeObserver(() => resize());
-        resizeObserver.observe(child);
-        return () => resizeObserver.unobserve(child);
-    }, [collapsed]);
-    return (React.createElement("div", { className: `collapsible${collapsed ? ' collapsed' : ''}`, ref: collapsibleRef },
+        if (maxSize === undefined) {
+            const resizeObserver = new ResizeObserver(() => resize());
+            resizeObserver.observe(child);
+            return () => resizeObserver.unobserve(child);
+        }
+    }, [collapsed, maxSize, horizontal]);
+    const className = [
+        'collapsible',
+        horizontal ? 'horizontal' : 'vertical',
+        maxSize === undefined ? '' : 'fixed',
+        collapsed ? 'collapsed' : '',
+    ].filter((name) => name !== '').join(' ');
+    return (React.createElement("div", { className: className, ref: collapsibleRef },
         React.createElement("div", { className: "collapsible-children", ref: childRef }, children)));
 };
 exports.Collapsible.defaultProps = {
     collapsed: false,
+    horizontal: false,
 };
 
 
@@ -28852,6 +28110,58 @@ exports.LoadingSpinner.defaultProps = {
 
 /***/ }),
 
+/***/ "./src/components/Layout/Logo.scss":
+/*!*****************************************!*\
+  !*** ./src/components/Layout/Logo.scss ***!
+  \*****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var api = __webpack_require__(/*! ../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
+            var content = __webpack_require__(/*! !../../../node_modules/css-loader/dist/cjs.js!../../../node_modules/postcss-loader/src!../../../node_modules/sass-loader/dist/cjs.js!./Logo.scss */ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/Layout/Logo.scss");
+
+            content = content.__esModule ? content.default : content;
+
+            if (typeof content === 'string') {
+              content = [[module.i, content, '']];
+            }
+
+var options = {};
+
+options.insert = "head";
+options.singleton = false;
+
+var update = api(content, options);
+
+var exported = content.locals ? content.locals : {};
+
+
+
+module.exports = exported;
+
+/***/ }),
+
+/***/ "./src/components/Layout/Logo.tsx":
+/*!****************************************!*\
+  !*** ./src/components/Layout/Logo.tsx ***!
+  \****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const react_1 = __importDefault(__webpack_require__(/*! react */ "react"));
+const logo_png_1 = __importDefault(__webpack_require__(/*! ./logo.png */ "./src/components/Layout/logo.png"));
+__webpack_require__(/*! ./Logo.scss */ "./src/components/Layout/Logo.scss");
+exports.Logo = () => (react_1.default.createElement("img", { src: logo_png_1.default, alt: "StoredSafe", className: "logo" }));
+
+
+/***/ }),
+
 /***/ "./src/components/Layout/Message.scss":
 /*!********************************************!*\
   !*** ./src/components/Layout/Message.scss ***!
@@ -28892,18 +28202,14 @@ module.exports = exported;
 
 "use strict";
 
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const React = __importStar(__webpack_require__(/*! react */ "react"));
+const react_1 = __importDefault(__webpack_require__(/*! react */ "react"));
 __webpack_require__(/*! ./Message.scss */ "./src/components/Layout/Message.scss");
 exports.Message = ({ type, children, }) => {
-    return (React.createElement("div", { className: `message ${type}` }, children));
+    return (react_1.default.createElement("div", { className: `message ${type}` }, children));
 };
 exports.Message.defaultProps = {
     type: 'info',
@@ -29044,8 +28350,6 @@ exports.VaultObject = ({ ssObject, ssTemplate, }) => {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var Card_1 = __webpack_require__(/*! ./Card */ "./src/components/Layout/Card.tsx");
-exports.Card = Card_1.Card;
 var Message_1 = __webpack_require__(/*! ./Message */ "./src/components/Layout/Message.tsx");
 exports.Message = Message_1.Message;
 var LoadingSpinner_1 = __webpack_require__(/*! ./LoadingSpinner */ "./src/components/Layout/LoadingSpinner.tsx");
@@ -29060,6 +28364,663 @@ var CollapseList_1 = __webpack_require__(/*! ./CollapseList */ "./src/components
 exports.CollapseList = CollapseList_1.CollapseList;
 var VaultObject_1 = __webpack_require__(/*! ./VaultObject */ "./src/components/Layout/VaultObject.tsx");
 exports.VaultObject = VaultObject_1.VaultObject;
+var Logo_1 = __webpack_require__(/*! ./Logo */ "./src/components/Layout/Logo.tsx");
+exports.Logo = Logo_1.Logo;
+var Banner_1 = __webpack_require__(/*! ./Banner */ "./src/components/Layout/Banner.tsx");
+exports.Banner = Banner_1.Banner;
+var Button_1 = __webpack_require__(/*! ./Button */ "./src/components/Layout/Button.tsx");
+exports.Button = Button_1.Button;
+
+
+/***/ }),
+
+/***/ "./src/components/Layout/logo.png":
+/*!****************************************!*\
+  !*** ./src/components/Layout/logo.png ***!
+  \****************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = (__webpack_require__.p + "bd3d7d5043031cb2b1ccbe362679afc1.png");
+
+/***/ }),
+
+/***/ "./src/components/Options/GeneralSettings.scss":
+/*!*****************************************************!*\
+  !*** ./src/components/Options/GeneralSettings.scss ***!
+  \*****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var api = __webpack_require__(/*! ../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
+            var content = __webpack_require__(/*! !../../../node_modules/css-loader/dist/cjs.js!../../../node_modules/postcss-loader/src!../../../node_modules/sass-loader/dist/cjs.js!./GeneralSettings.scss */ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/Options/GeneralSettings.scss");
+
+            content = content.__esModule ? content.default : content;
+
+            if (typeof content === 'string') {
+              content = [[module.i, content, '']];
+            }
+
+var options = {};
+
+options.insert = "head";
+options.singleton = false;
+
+var update = api(content, options);
+
+var exported = content.locals ? content.locals : {};
+
+
+
+module.exports = exported;
+
+/***/ }),
+
+/***/ "./src/components/Options/GeneralSettings.tsx":
+/*!****************************************************!*\
+  !*** ./src/components/Options/GeneralSettings.tsx ***!
+  \****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const react_1 = __importStar(__webpack_require__(/*! react */ "react"));
+const StorageState_1 = __webpack_require__(/*! ../../state/StorageState */ "./src/state/StorageState.ts");
+const Settings_1 = __webpack_require__(/*! ../../model/Settings */ "./src/model/Settings.ts");
+const Layout_1 = __webpack_require__(/*! ../Layout */ "./src/components/Layout/index.ts");
+const Form_1 = __webpack_require__(/*! ../Form */ "./src/components/Form/index.ts");
+__webpack_require__(/*! ./GeneralSettings.scss */ "./src/components/Options/GeneralSettings.scss");
+exports.GeneralSettings = () => {
+    const [state, dispatch] = StorageState_1.useStorage();
+    if (!state.isInitialized)
+        return react_1.default.createElement("p", null, "Loading...");
+    const initialValues = {};
+    Object.keys(state.settings).forEach((field) => initialValues[field] = state.settings[field].value);
+    const renderGeneralSettings = (values, events) => {
+        const settingsFields = Object.keys(Settings_1.fields).map((field) => {
+            const { label, attributes } = Settings_1.fields[field];
+            const disabled = state.settings[field].managed;
+            attributes.id = field;
+            attributes.name = field;
+            attributes.disabled = disabled;
+            attributes.title = disabled ? 'This field is managed by your organization' : '';
+            const labelClassNames = [
+                disabled ? 'label-disabled' : '',
+                attributes.type === 'checkbox' ? 'label-checkbox' : '',
+            ].join(' ');
+            if (attributes.type === 'checkbox') {
+                return (react_1.default.createElement("label", { key: field, htmlFor: field, className: labelClassNames },
+                    react_1.default.createElement(Form_1.Input.Checkbox, Object.assign({ checked: values[field] }, events, attributes)),
+                    react_1.default.createElement("span", null, label)));
+            }
+            else {
+                return (react_1.default.createElement("label", { key: field, htmlFor: field, className: labelClassNames },
+                    react_1.default.createElement("span", null, label),
+                    react_1.default.createElement("input", Object.assign({ value: values[field] }, events, attributes))));
+            }
+        });
+        return (react_1.default.createElement(react_1.Fragment, null,
+            settingsFields,
+            react_1.default.createElement(Layout_1.Button, { type: "submit" }, "Save")));
+    };
+    const onSave = (values) => {
+        const newSettings = Object.assign({}, state.settings);
+        Object.keys(values).forEach((field) => {
+            if (!state.settings[field].managed) {
+                newSettings[field].value = values[field];
+            }
+        });
+        dispatch({
+            settings: {
+                type: 'set',
+                settings: newSettings,
+            }
+        });
+    };
+    return (react_1.default.createElement("section", { className: "general-settings" },
+        react_1.default.createElement("article", { className: "general-settings-article" },
+            react_1.default.createElement(Form_1.Form, { className: "general-settings-form", initialValues: initialValues, onSubmit: onSave, render: renderGeneralSettings }))));
+};
+
+
+/***/ }),
+
+/***/ "./src/components/Options/Options.scss":
+/*!*********************************************!*\
+  !*** ./src/components/Options/Options.scss ***!
+  \*********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var api = __webpack_require__(/*! ../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
+            var content = __webpack_require__(/*! !../../../node_modules/css-loader/dist/cjs.js!../../../node_modules/postcss-loader/src!../../../node_modules/sass-loader/dist/cjs.js!./Options.scss */ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/Options/Options.scss");
+
+            content = content.__esModule ? content.default : content;
+
+            if (typeof content === 'string') {
+              content = [[module.i, content, '']];
+            }
+
+var options = {};
+
+options.insert = "head";
+options.singleton = false;
+
+var update = api(content, options);
+
+var exported = content.locals ? content.locals : {};
+
+
+
+module.exports = exported;
+
+/***/ }),
+
+/***/ "./src/components/Options/Options.tsx":
+/*!********************************************!*\
+  !*** ./src/components/Options/Options.tsx ***!
+  \********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const react_1 = __importDefault(__webpack_require__(/*! react */ "react"));
+const Layout_1 = __webpack_require__(/*! ../Layout */ "./src/components/Layout/index.ts");
+const Sites_1 = __webpack_require__(/*! ./Sites */ "./src/components/Options/Sites.tsx");
+const GeneralSettings_1 = __webpack_require__(/*! ./GeneralSettings */ "./src/components/Options/GeneralSettings.tsx");
+__webpack_require__(/*! ./Options.scss */ "./src/components/Options/Options.scss");
+exports.Options = () => {
+    return (react_1.default.createElement("section", { className: "options" },
+        react_1.default.createElement("header", null,
+            react_1.default.createElement(Layout_1.Banner, null)),
+        react_1.default.createElement("section", { className: "options-content" },
+            react_1.default.createElement("h1", null, "Properties"),
+            react_1.default.createElement("article", { className: "options-article card" },
+                react_1.default.createElement("header", { className: "options-article-header" },
+                    react_1.default.createElement("h2", null, "General")),
+                react_1.default.createElement(GeneralSettings_1.GeneralSettings, null)),
+            react_1.default.createElement("article", { className: "options-article card" },
+                react_1.default.createElement("header", { className: "options-article-header" },
+                    react_1.default.createElement("h2", null, "Sites")),
+                react_1.default.createElement(Sites_1.Sites, null)))));
+};
+
+
+/***/ }),
+
+/***/ "./src/components/Options/Sites.scss":
+/*!*******************************************!*\
+  !*** ./src/components/Options/Sites.scss ***!
+  \*******************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var api = __webpack_require__(/*! ../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
+            var content = __webpack_require__(/*! !../../../node_modules/css-loader/dist/cjs.js!../../../node_modules/postcss-loader/src!../../../node_modules/sass-loader/dist/cjs.js!./Sites.scss */ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/Options/Sites.scss");
+
+            content = content.__esModule ? content.default : content;
+
+            if (typeof content === 'string') {
+              content = [[module.i, content, '']];
+            }
+
+var options = {};
+
+options.insert = "head";
+options.singleton = false;
+
+var update = api(content, options);
+
+var exported = content.locals ? content.locals : {};
+
+
+
+module.exports = exported;
+
+/***/ }),
+
+/***/ "./src/components/Options/Sites.tsx":
+/*!******************************************!*\
+  !*** ./src/components/Options/Sites.tsx ***!
+  \******************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const react_1 = __importStar(__webpack_require__(/*! react */ "react"));
+const StorageState_1 = __webpack_require__(/*! ../../state/StorageState */ "./src/state/StorageState.ts");
+const Layout_1 = __webpack_require__(/*! ../Layout */ "./src/components/Layout/index.ts");
+const Form_1 = __webpack_require__(/*! ../Form */ "./src/components/Form/index.ts");
+__webpack_require__(/*! ./Sites.scss */ "./src/components/Options/Sites.scss");
+exports.Sites = () => {
+    const [state, dispatch] = StorageState_1.useStorage();
+    if (!state.isInitialized)
+        return react_1.default.createElement("p", null, "Loading...");
+    const { system, user } = state.sites.collections;
+    /**
+     * List of sites managed by the system administrator
+     * */
+    const managedSites = system.map((site) => (react_1.default.createElement("li", { key: site.url },
+        react_1.default.createElement("span", null, site.url))));
+    /**
+     * Creates a closure around a url to be used as a callback
+     * funtion for a button click to remove a site from storage.
+     * */
+    const onRemove = (removeUrl) => () => {
+        const id = user.findIndex(({ url }) => url === removeUrl);
+        dispatch({
+            sites: {
+                type: 'remove', id
+            },
+        });
+    };
+    /**
+     * List of sites managed by the user.
+     * */
+    const userSites = user.map((site) => (react_1.default.createElement("li", { key: site.url },
+        react_1.default.createElement("span", null, site.url),
+        react_1.default.createElement(Layout_1.Button, { color: "danger", onClick: onRemove(site.url) }, "Delete"))));
+    /**
+     * Initial values for the add site form.
+     * */
+    const addSiteValues = { url: '', apikey: '' };
+    /**
+     * Callback function to add site after the add site form
+     * is submitted.
+     * */
+    const onAdd = ({ url, apikey }, reset) => {
+        reset();
+        dispatch({
+            sites: {
+                type: 'add',
+                site: { url, apikey },
+            },
+        });
+    };
+    /**
+     * Form for adding a site to the collection of sites
+     * managed by the user.
+     * */
+    const addSite = (values, events) => (react_1.default.createElement(react_1.Fragment, null,
+        react_1.default.createElement("label", { htmlFor: "url" },
+            "URL",
+            react_1.default.createElement("input", Object.assign({ type: "text", name: "url", id: "url", placeholder: "URL", required: true, value: values.url }, events))),
+        react_1.default.createElement("label", { htmlFor: "apikey" },
+            "API Key",
+            react_1.default.createElement("input", Object.assign({ type: "text", name: "apikey", id: "apikey", placeholder: "API Key", required: true, value: values.apikey }, events))),
+        react_1.default.createElement(Layout_1.Button, { color: "accent", type: "submit" }, "Add Site")));
+    return (react_1.default.createElement("section", { className: "sites" },
+        react_1.default.createElement("article", { className: "sites-article sites-add" },
+            react_1.default.createElement("header", { className: "sites-article-header" },
+                react_1.default.createElement("h3", null, "Add new site")),
+            react_1.default.createElement(Form_1.Form, { className: "sites-add-form", initialValues: addSiteValues, onSubmit: onAdd, render: addSite })),
+        userSites.length > 0 && (react_1.default.createElement("article", { className: "sites-article sites-user" },
+            react_1.default.createElement("header", { className: "sites-article-header" },
+                react_1.default.createElement("h3", null, "Sites managed by user")),
+            react_1.default.createElement("ul", { className: "sites-list sites-user-list" }, userSites))),
+        managedSites.length > 0 && (react_1.default.createElement("article", { className: "sites-article sites-managed" },
+            react_1.default.createElement("header", { className: "sites-article-header" },
+                react_1.default.createElement("h3", null, "Sites managed by organization")),
+            react_1.default.createElement("ul", { className: "sites-list sites-managed-list" }, managedSites)))));
+};
+
+
+/***/ }),
+
+/***/ "./src/components/Options/index.ts":
+/*!*****************************************!*\
+  !*** ./src/components/Options/index.ts ***!
+  \*****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const Options_1 = __webpack_require__(/*! ./Options */ "./src/components/Options/Options.tsx");
+exports.default = Options_1.Options;
+
+
+/***/ }),
+
+/***/ "./src/components/Popup/Auth/Auth.scss":
+/*!*********************************************!*\
+  !*** ./src/components/Popup/Auth/Auth.scss ***!
+  \*********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var api = __webpack_require__(/*! ../../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
+            var content = __webpack_require__(/*! !../../../../node_modules/css-loader/dist/cjs.js!../../../../node_modules/postcss-loader/src!../../../../node_modules/sass-loader/dist/cjs.js!./Auth.scss */ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/Popup/Auth/Auth.scss");
+
+            content = content.__esModule ? content.default : content;
+
+            if (typeof content === 'string') {
+              content = [[module.i, content, '']];
+            }
+
+var options = {};
+
+options.insert = "head";
+options.singleton = false;
+
+var update = api(content, options);
+
+var exported = content.locals ? content.locals : {};
+
+
+
+module.exports = exported;
+
+/***/ }),
+
+/***/ "./src/components/Popup/Auth/Auth.tsx":
+/*!********************************************!*\
+  !*** ./src/components/Popup/Auth/Auth.tsx ***!
+  \********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const react_1 = __importDefault(__webpack_require__(/*! react */ "react"));
+const StorageState_1 = __webpack_require__(/*! ../../../state/StorageState */ "./src/state/StorageState.ts");
+const Login_1 = __webpack_require__(/*! ./Login */ "./src/components/Popup/Auth/Login.tsx");
+const Logout_1 = __webpack_require__(/*! ./Logout */ "./src/components/Popup/Auth/Logout.tsx");
+__webpack_require__(/*! ./Auth.scss */ "./src/components/Popup/Auth/Auth.scss");
+exports.Auth = ({ url, }) => {
+    const [state] = StorageState_1.useStorage();
+    const isOnline = state.sessions[url] !== undefined;
+    if (isOnline) {
+        return react_1.default.createElement(Logout_1.Logout, { url: url });
+    }
+    else {
+        return react_1.default.createElement(Login_1.Login, { url: url });
+    }
+};
+
+
+/***/ }),
+
+/***/ "./src/components/Popup/Auth/Login.tsx":
+/*!*********************************************!*\
+  !*** ./src/components/Popup/Auth/Login.tsx ***!
+  \*********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const react_1 = __importStar(__webpack_require__(/*! react */ "react"));
+const storedsafe_1 = __importDefault(__webpack_require__(/*! storedsafe */ "./node_modules/storedsafe/dist/index.js"));
+const StorageState_1 = __webpack_require__(/*! ../../../state/StorageState */ "./src/state/StorageState.ts");
+const Form_1 = __webpack_require__(/*! ../../Form */ "./src/components/Form/index.ts");
+const Layout_1 = __webpack_require__(/*! ../../Layout */ "./src/components/Layout/index.ts");
+const YubiKey = __importStar(__webpack_require__(/*! ./YubiKey */ "./src/components/Popup/Auth/YubiKey.tsx"));
+const TOTP = __importStar(__webpack_require__(/*! ./TOTP */ "./src/components/Popup/Auth/TOTP.tsx"));
+exports.Login = ({ url, }) => {
+    const [state, dispatch] = StorageState_1.useStorage();
+    const [errors, setErrors] = react_1.useState([]);
+    const [isLoading, setIsLoading] = react_1.useState(false);
+    react_1.useEffect(() => {
+        setErrors([]);
+    }, []);
+    const site = state.sites.list.find(({ url: siteUrl }) => siteUrl === url);
+    const sitePrefs = state.sitePrefs[site.url] || {};
+    const { username, loginType } = sitePrefs;
+    const initialValues = {
+        loginType: loginType || 'yubikey',
+        username: username || '',
+        remember: username !== undefined,
+        keys: '',
+        passphrase: '',
+        otp: '',
+    };
+    const onSubmit = (values) => {
+        const { loginType } = values;
+        const storedSafe = new storedsafe_1.default(site.url, site.apikey);
+        let promise;
+        if (loginType === 'yubikey') {
+            const { username, keys } = values;
+            const passphrase = keys.slice(0, -44);
+            const otp = keys.slice(-44);
+            promise = storedSafe.authYubikey(username, passphrase, otp);
+        }
+        else if (loginType === 'totp') {
+            const { username, passphrase, otp } = values;
+            promise = storedSafe.authTotp(username, passphrase, otp);
+        }
+        setIsLoading(true);
+        promise.then((response) => {
+            if (response.status === 200) {
+                const { remember, username } = values;
+                dispatch({
+                    sessions: {
+                        type: 'add',
+                        url: site.url,
+                        session: {
+                            apikey: site.apikey,
+                            token: response.data.CALLINFO.token,
+                            createdAt: Date.now(),
+                        },
+                    },
+                    sitePrefs: {
+                        type: 'update',
+                        url: site.url,
+                        username: remember && username,
+                        loginType: loginType,
+                    },
+                });
+            }
+            else {
+                setErrors(response.data.ERRORS);
+            }
+        }).catch((error) => {
+            if (error.response) {
+                setErrors(error.response.data.ERRORS);
+            }
+            else if (error.request) {
+                setErrors([`Network error: (${error.request.status}) ${error.request.statusText}`]);
+            }
+            else {
+                setErrors(['Unexpected error.']);
+                console.log('Login error: ', error.message);
+            }
+        }).then(() => setIsLoading(false));
+    };
+    const render = (values, events) => (react_1.default.createElement(react_1.Fragment, null,
+        react_1.default.createElement("label", { htmlFor: "loginType" },
+            react_1.default.createElement("span", null, "Login Type"),
+            react_1.default.createElement(Form_1.Input.Select, Object.assign({ id: "loginType", name: "loginType", value: values.loginType }, events),
+                react_1.default.createElement("option", { value: "yubikey" }, "YubiKey"),
+                react_1.default.createElement("option", { value: "totp" }, "TOTP"))),
+        react_1.default.createElement("label", { htmlFor: "username" },
+            react_1.default.createElement("span", null, "Username"),
+            react_1.default.createElement("input", Object.assign({ type: "text", id: "username", name: "username", value: values.username }, events))),
+        values.loginType === 'yubikey' && YubiKey.renderFields(values, events),
+        values.loginType === 'totp' && TOTP.renderFields(values, events),
+        react_1.default.createElement("label", { htmlFor: "remember", className: "label-checkbox" },
+            react_1.default.createElement("span", null, "Remember Username"),
+            react_1.default.createElement(Form_1.Input.Checkbox, Object.assign({ id: "remember", name: "remember", checked: values.remember }, events))),
+        react_1.default.createElement(Layout_1.Button, { type: "submit", isLoading: isLoading }, "Login")));
+    return (react_1.default.createElement("section", { className: "login" },
+        react_1.default.createElement(Form_1.Form, { initialValues: initialValues, onSubmit: onSubmit, render: render, onFocus: () => setErrors([]) }),
+        errors.length > 0 && (react_1.default.createElement(Layout_1.Message, { type: "error" }, errors.map((error, index) => (react_1.default.createElement("p", { key: index }, error)))))));
+};
+
+
+/***/ }),
+
+/***/ "./src/components/Popup/Auth/Logout.tsx":
+/*!**********************************************!*\
+  !*** ./src/components/Popup/Auth/Logout.tsx ***!
+  \**********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const react_1 = __importStar(__webpack_require__(/*! react */ "react"));
+const storedsafe_1 = __importDefault(__webpack_require__(/*! storedsafe */ "./node_modules/storedsafe/dist/index.js"));
+const StorageState_1 = __webpack_require__(/*! ../../../state/StorageState */ "./src/state/StorageState.ts");
+const Layout_1 = __webpack_require__(/*! ../../Layout */ "./src/components/Layout/index.ts");
+exports.Logout = ({ url, }) => {
+    const [state, dispatch] = StorageState_1.useStorage();
+    const [isLoading, setIsLoading] = react_1.useState(false);
+    const session = state.sessions[url];
+    const logout = () => {
+        setIsLoading(true);
+        const { apikey, token } = session;
+        const storedSafe = new storedsafe_1.default(url, apikey, token);
+        storedSafe.logout().then((response) => {
+            if (response.status !== 200) {
+                console.log('Logout error: ', response.data.ERRORS);
+            }
+        }).catch((error) => {
+            if (error.response) {
+                console.log('Logout error: ', error.response.data.ERRORS);
+            }
+            else if (error.request) {
+                console.log('Logout error: ', error.request.status, error.request.statusText);
+            }
+            else {
+                console.log('Logout error: ', error.message);
+            }
+        }).then(() => {
+            setIsLoading(false);
+            dispatch({
+                sessions: {
+                    type: 'remove',
+                    url,
+                },
+            });
+        });
+    };
+    return (react_1.default.createElement("section", { className: "logout" },
+        react_1.default.createElement(Layout_1.Button, { type: "button", onClick: logout, color: "danger", isLoading: isLoading }, "Logout")));
+};
+
+
+/***/ }),
+
+/***/ "./src/components/Popup/Auth/TOTP.tsx":
+/*!********************************************!*\
+  !*** ./src/components/Popup/Auth/TOTP.tsx ***!
+  \********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const react_1 = __importStar(__webpack_require__(/*! react */ "react"));
+exports.renderFields = (values, events) => (react_1.default.createElement(react_1.Fragment, null,
+    react_1.default.createElement("label", { htmlFor: "passphrase" },
+        react_1.default.createElement("span", null, "Passphrase"),
+        react_1.default.createElement("input", Object.assign({ type: "password", name: "passphrase", id: "passphrase", required: true, value: values.passphrase }, events))),
+    react_1.default.createElement("label", { htmlFor: "otp" },
+        react_1.default.createElement("span", null, "OTP"),
+        react_1.default.createElement("input", Object.assign({ type: "text", name: "otp", id: "otp", required: true, value: values.otp }, events)))));
+
+
+/***/ }),
+
+/***/ "./src/components/Popup/Auth/YubiKey.tsx":
+/*!***********************************************!*\
+  !*** ./src/components/Popup/Auth/YubiKey.tsx ***!
+  \***********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const react_1 = __importStar(__webpack_require__(/*! react */ "react"));
+exports.renderFields = (values, events) => (react_1.default.createElement(react_1.Fragment, null,
+    react_1.default.createElement("label", { htmlFor: "keys" },
+        react_1.default.createElement("span", null, "Passphrase + YubiKey"),
+        react_1.default.createElement("input", Object.assign({ type: "password", name: "keys", id: "keys", required: true, title: "Passphrase + YubiKey", value: values.keys }, events)))));
+
+
+/***/ }),
+
+/***/ "./src/components/Popup/Auth/index.ts":
+/*!********************************************!*\
+  !*** ./src/components/Popup/Auth/index.ts ***!
+  \********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const Auth_1 = __webpack_require__(/*! ./Auth */ "./src/components/Popup/Auth/Auth.tsx");
+exports.default = Auth_1.Auth;
 
 
 /***/ }),
@@ -29113,117 +29074,400 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = __importStar(__webpack_require__(/*! react */ "react"));
-const StorageState_1 = __webpack_require__(/*! ../../state/StorageState */ "./src/state/StorageState.ts");
 const Layout_1 = __webpack_require__(/*! ../Layout */ "./src/components/Layout/index.ts");
-const SessionManager_1 = __webpack_require__(/*! ../SessionManager */ "./src/components/SessionManager/index.ts");
+const PopupMain_1 = __webpack_require__(/*! ./PopupMain */ "./src/components/Popup/PopupMain.tsx");
 __webpack_require__(/*! ./Popup.scss */ "./src/components/Popup/Popup.scss");
-const Layout_2 = __webpack_require__(/*! ../Layout */ "./src/components/Layout/index.ts");
-const ssObject = {
-    "id": "490",
-    "parentid": "0",
-    "templateid": "1",
-    "groupid": "179",
-    "status": "128",
-    "objectname": "firewall.za.example.com",
-    "filename": "",
-    "children": "0",
-    "notes": "false",
-    "tags": "",
-    "alarmed": "false",
-    "public": {
-        "host": "firewall.za.example.com",
-        "username": "root",
-        "info": "The pfSense fw protecting the ZA branch."
-    }
-};
-const ssTemplate = {
-    "INFO": {
-        "id": "1",
-        "name": "Server",
-        "ico": "server",
-        "active": true,
-        "wb": true
-    },
-    "STRUCTURE": {
-        "host": {
-            "translation": "Host / IP",
-            "type": "text",
-            "encrypted": false,
-            "show": true,
-            "policy": false,
-            "alarm": false,
-            "opt": false,
-            "cc": false,
-            "nc": false
-        },
-        "username": {
-            "translation": "Username",
-            "type": "text",
-            "encrypted": false,
-            "show": true,
-            "policy": false,
-            "alarm": false,
-            "opt": false,
-            "cc": false,
-            "nc": false
-        },
-        "password": {
-            "translation": "Password",
-            "type": "text-passwdgen",
-            "encrypted": true,
-            "show": true,
-            "policy": true,
-            "alarm": true,
-            "opt": false,
-            "cc": true,
-            "nc": true
-        },
-        "info": {
-            "translation": "Information",
-            "type": "textarea",
-            "encrypted": false,
-            "show": true,
-            "policy": false,
-            "alarm": false,
-            "opt": true,
-            "cc": false,
-            "nc": false
-        },
-        "cryptedinfo": {
-            "translation": "Sensitive info",
-            "type": "textarea",
-            "encrypted": true,
-            "show": false,
-            "policy": false,
-            "alarm": false,
-            "opt": true,
-            "cc": false,
-            "nc": false
-        }
-    }
-};
+const PageContext = react_1.createContext({
+    pages: [],
+    addPage: (page) => { return; },
+    popPage: () => { return; }
+});
 exports.Popup = () => {
+    const [pages, setPages] = react_1.useState([]);
+    const addPage = (page) => {
+        setPages([...pages, page]);
+    };
+    const popPage = () => {
+        setPages(pages.slice(0, -1));
+    };
+    const page = pages.length > 0 ? pages[pages.length - 1] : undefined;
+    return (react_1.default.createElement("section", { className: "popup" },
+        react_1.default.createElement("header", null,
+            react_1.default.createElement(Layout_1.Banner, null)),
+        react_1.default.createElement("section", { className: "popup-content" },
+            react_1.default.createElement(PageContext.Provider, { value: { pages, addPage, popPage } },
+                page === undefined && react_1.default.createElement(PopupMain_1.PopupMain, null),
+                page && page))));
+};
+
+
+/***/ }),
+
+/***/ "./src/components/Popup/PopupMain.scss":
+/*!*********************************************!*\
+  !*** ./src/components/Popup/PopupMain.scss ***!
+  \*********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var api = __webpack_require__(/*! ../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
+            var content = __webpack_require__(/*! !../../../node_modules/css-loader/dist/cjs.js!../../../node_modules/postcss-loader/src!../../../node_modules/sass-loader/dist/cjs.js!./PopupMain.scss */ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/Popup/PopupMain.scss");
+
+            content = content.__esModule ? content.default : content;
+
+            if (typeof content === 'string') {
+              content = [[module.i, content, '']];
+            }
+
+var options = {};
+
+options.insert = "head";
+options.singleton = false;
+
+var update = api(content, options);
+
+var exported = content.locals ? content.locals : {};
+
+
+
+module.exports = exported;
+
+/***/ }),
+
+/***/ "./src/components/Popup/PopupMain.tsx":
+/*!********************************************!*\
+  !*** ./src/components/Popup/PopupMain.tsx ***!
+  \********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const react_1 = __importStar(__webpack_require__(/*! react */ "react"));
+const StorageState_1 = __webpack_require__(/*! ../../state/StorageState */ "./src/state/StorageState.ts");
+const Search_1 = __importDefault(__webpack_require__(/*! ./Search */ "./src/components/Popup/Search/index.ts"));
+const Sessions_1 = __importDefault(__webpack_require__(/*! ./Sessions */ "./src/components/Popup/Sessions/index.ts"));
+const Toolbar_1 = __webpack_require__(/*! ./Toolbar */ "./src/components/Popup/Toolbar.tsx");
+__webpack_require__(/*! ./PopupMain.scss */ "./src/components/Popup/PopupMain.scss");
+exports.PopupMain = () => {
     const [state] = StorageState_1.useStorage();
-    const [managingSessions, setManagingSessions] = react_1.useState(true);
+    const [active, setActive] = react_1.useState('search');
     react_1.useEffect(() => {
-        if (Object.keys(state.sessions).length === 0) {
-            setManagingSessions(true);
-        }
-        else {
-            setManagingSessions(false);
+        if (state.isInitialized) {
+            setActive(Object.keys(state.sessions).length > 0 ? 'search' : 'sessions');
         }
     }, [state]);
-    return (react_1.default.createElement("section", { className: "popup" },
-        react_1.default.createElement(Layout_1.Card, null,
-            react_1.default.createElement(Layout_1.Collapsible, { collapsed: managingSessions },
-                react_1.default.createElement("div", { className: "popup-search" },
-                    react_1.default.createElement("input", { type: "search", className: "popup-search-input" }),
-                    react_1.default.createElement("button", { className: "popup-search-button" }, "Search")),
-                react_1.default.createElement(Layout_2.VaultObject, { ssObject: ssObject, ssTemplate: ssTemplate })),
-            react_1.default.createElement(Layout_1.Collapsible, { collapsed: !managingSessions },
-                react_1.default.createElement(SessionManager_1.SessionManager, null))),
-        react_1.default.createElement(SessionManager_1.SessionManagerPreview, { onClick: () => setManagingSessions(!managingSessions) })));
+    return (react_1.default.createElement("section", { className: "popup-main" },
+        react_1.default.createElement("div", { className: "popup-main-accordion" },
+            react_1.default.createElement(Search_1.default, { selected: active === 'search', setActive: () => setActive('search') }),
+            react_1.default.createElement(Sessions_1.default, { selected: active === 'sessions', toggleActive: () => setActive(active === 'sessions' ? 'search' : 'sessions') })),
+        react_1.default.createElement(Toolbar_1.Toolbar, null)));
 };
+
+
+/***/ }),
+
+/***/ "./src/components/Popup/Search/Search.scss":
+/*!*************************************************!*\
+  !*** ./src/components/Popup/Search/Search.scss ***!
+  \*************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var api = __webpack_require__(/*! ../../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
+            var content = __webpack_require__(/*! !../../../../node_modules/css-loader/dist/cjs.js!../../../../node_modules/postcss-loader/src!../../../../node_modules/sass-loader/dist/cjs.js!./Search.scss */ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/Popup/Search/Search.scss");
+
+            content = content.__esModule ? content.default : content;
+
+            if (typeof content === 'string') {
+              content = [[module.i, content, '']];
+            }
+
+var options = {};
+
+options.insert = "head";
+options.singleton = false;
+
+var update = api(content, options);
+
+var exported = content.locals ? content.locals : {};
+
+
+
+module.exports = exported;
+
+/***/ }),
+
+/***/ "./src/components/Popup/Search/Search.tsx":
+/*!************************************************!*\
+  !*** ./src/components/Popup/Search/Search.tsx ***!
+  \************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const react_1 = __importStar(__webpack_require__(/*! react */ "react"));
+const storedsafe_1 = __importDefault(__webpack_require__(/*! storedsafe */ "./node_modules/storedsafe/dist/index.js"));
+const StorageState_1 = __webpack_require__(/*! ../../../state/StorageState */ "./src/state/StorageState.ts");
+const VaultObject_1 = __webpack_require__(/*! ../../Layout/VaultObject */ "./src/components/Layout/VaultObject.tsx");
+__webpack_require__(/*! ./Search.scss */ "./src/components/Popup/Search/Search.scss");
+exports.Search = ({ selected, setActive, }) => {
+    const [state] = StorageState_1.useStorage();
+    const [needle, setNeedle] = react_1.useState('');
+    const [loading, setLoading] = react_1.useState(false);
+    const [results, setResults] = react_1.useState({});
+    react_1.useEffect(() => {
+        const search = () => {
+            setLoading(true);
+            const promises = [];
+            Object.keys(state.sessions).forEach((url) => {
+                const { apikey, token } = state.sessions[url];
+                const storedSafe = new storedsafe_1.default(url, apikey, token);
+                const promise = storedSafe.find(needle).then((response) => {
+                    console.log(response.data);
+                    if (response.status === 200) {
+                        const ssResult = {
+                            [url]: Object.keys(response.data.OBJECT).map((id) => {
+                                const ssObject = response.data.OBJECT[id];
+                                const ssTemplate = response.data.TEMPLATESINFO[ssObject.templateid];
+                                return [ssObject, ssTemplate];
+                            }),
+                        };
+                        return ssResult;
+                    }
+                    console.log(response.status, response.statusText);
+                    return { [url]: [] };
+                }).catch((error) => {
+                    console.log(error);
+                    return { [url]: [] };
+                });
+                promises.push(promise);
+            });
+            Promise.all(promises).then((promiseResults) => {
+                setLoading(false);
+                let searchResults = {};
+                promiseResults.forEach((result) => searchResults = Object.assign(Object.assign({}, searchResults), result));
+                setResults(searchResults);
+            });
+        };
+        if (needle !== '') {
+            const id = setTimeout(search, 1000);
+            return () => clearTimeout(id);
+        }
+    }, [needle, state.sessions]);
+    return (react_1.default.createElement("section", { className: `search${selected ? ' selected' : ''}` },
+        react_1.default.createElement("label", { className: "search-bar-label", htmlFor: "search" },
+            "Search",
+            react_1.default.createElement("input", { className: "search-bar", id: "search", type: "search", placeholder: "search", value: needle, onFocus: setActive, onChange: ({ target }) => setNeedle(target.value) })),
+        react_1.default.createElement("article", { className: "search-results" },
+            needle === '' && (react_1.default.createElement("div", { className: "search-empty" }, "No results found")),
+            needle !== '' && (react_1.default.createElement(react_1.Fragment, null,
+                loading && react_1.default.createElement("p", null, "Loading..."),
+                !loading && Object.keys(results).map((url) => {
+                    return (react_1.default.createElement("div", { key: url, className: "search-result" },
+                        react_1.default.createElement("h3", { className: "search-result-url" }, url),
+                        results[url].map(([ssObject, ssTemplate], index) => (react_1.default.createElement(VaultObject_1.VaultObject, { key: index, ssObject: ssObject, ssTemplate: ssTemplate })))));
+                }))))));
+};
+
+
+/***/ }),
+
+/***/ "./src/components/Popup/Search/index.ts":
+/*!**********************************************!*\
+  !*** ./src/components/Popup/Search/index.ts ***!
+  \**********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const Search_1 = __webpack_require__(/*! ./Search */ "./src/components/Popup/Search/Search.tsx");
+exports.default = Search_1.Search;
+
+
+/***/ }),
+
+/***/ "./src/components/Popup/Sessions/Sessions.scss":
+/*!*****************************************************!*\
+  !*** ./src/components/Popup/Sessions/Sessions.scss ***!
+  \*****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var api = __webpack_require__(/*! ../../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
+            var content = __webpack_require__(/*! !../../../../node_modules/css-loader/dist/cjs.js!../../../../node_modules/postcss-loader/src!../../../../node_modules/sass-loader/dist/cjs.js!./Sessions.scss */ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/Popup/Sessions/Sessions.scss");
+
+            content = content.__esModule ? content.default : content;
+
+            if (typeof content === 'string') {
+              content = [[module.i, content, '']];
+            }
+
+var options = {};
+
+options.insert = "head";
+options.singleton = false;
+
+var update = api(content, options);
+
+var exported = content.locals ? content.locals : {};
+
+
+
+module.exports = exported;
+
+/***/ }),
+
+/***/ "./src/components/Popup/Sessions/Sessions.tsx":
+/*!****************************************************!*\
+  !*** ./src/components/Popup/Sessions/Sessions.tsx ***!
+  \****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const react_1 = __importStar(__webpack_require__(/*! react */ "react"));
+const StorageState_1 = __webpack_require__(/*! ../../../state/StorageState */ "./src/state/StorageState.ts");
+const Layout_1 = __webpack_require__(/*! ../../Layout */ "./src/components/Layout/index.ts");
+const Auth_1 = __importDefault(__webpack_require__(/*! ../Auth */ "./src/components/Popup/Auth/index.ts"));
+__webpack_require__(/*! ./Sessions.scss */ "./src/components/Popup/Sessions/Sessions.scss");
+const SessionItem = ({ site, session, }) => {
+    const [showAuth, setShowAuth] = react_1.useState(false);
+    const { url } = site;
+    const isOnline = session !== undefined;
+    const minutesActive = isOnline && Math.floor((Date.now() - session.createdAt) / (1000 * 60));
+    return (react_1.default.createElement("article", { className: "session-item" },
+        react_1.default.createElement("button", { type: "button", className: "session-item-button", onClick: () => setShowAuth(!showAuth) },
+            react_1.default.createElement("span", null,
+                url,
+                isOnline && minutesActive !== undefined && ` (${minutesActive} min)` || ''),
+            react_1.default.createElement(Layout_1.OnlineIndicator, { online: isOnline })),
+        showAuth && react_1.default.createElement(Auth_1.default, { url: url })));
+};
+exports.Sessions = ({ selected, toggleActive, }) => {
+    const [state] = StorageState_1.useStorage();
+    const numberOfSessions = Object.keys(state.sessions).length;
+    let sessionsText = 'No active sessions';
+    if (numberOfSessions > 0) {
+        sessionsText = `${numberOfSessions} active session${numberOfSessions === 1 ? '' : 's'}`;
+    }
+    return (react_1.default.createElement("section", { className: `sessions${selected ? ' selected' : ''}` },
+        react_1.default.createElement("article", { className: "sessions-menu" }, state.sites.list.map((site) => (react_1.default.createElement(SessionItem, { key: site.url, site: site, session: state.sessions[site.url] })))),
+        react_1.default.createElement("article", { className: "sessions-toggle", onClick: toggleActive },
+            react_1.default.createElement("div", { className: "sessions-open" },
+                react_1.default.createElement("span", null, "show/hide sessions")),
+            react_1.default.createElement("div", { className: "sessions-status" },
+                react_1.default.createElement("span", null, sessionsText),
+                react_1.default.createElement(Layout_1.OnlineIndicator, { online: numberOfSessions > 0 })))));
+};
+
+
+/***/ }),
+
+/***/ "./src/components/Popup/Sessions/index.ts":
+/*!************************************************!*\
+  !*** ./src/components/Popup/Sessions/index.ts ***!
+  \************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const Sessions_1 = __webpack_require__(/*! ./Sessions */ "./src/components/Popup/Sessions/Sessions.tsx");
+exports.default = Sessions_1.Sessions;
+
+
+/***/ }),
+
+/***/ "./src/components/Popup/Toolbar.scss":
+/*!*******************************************!*\
+  !*** ./src/components/Popup/Toolbar.scss ***!
+  \*******************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var api = __webpack_require__(/*! ../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
+            var content = __webpack_require__(/*! !../../../node_modules/css-loader/dist/cjs.js!../../../node_modules/postcss-loader/src!../../../node_modules/sass-loader/dist/cjs.js!./Toolbar.scss */ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/Popup/Toolbar.scss");
+
+            content = content.__esModule ? content.default : content;
+
+            if (typeof content === 'string') {
+              content = [[module.i, content, '']];
+            }
+
+var options = {};
+
+options.insert = "head";
+options.singleton = false;
+
+var update = api(content, options);
+
+var exported = content.locals ? content.locals : {};
+
+
+
+module.exports = exported;
+
+/***/ }),
+
+/***/ "./src/components/Popup/Toolbar.tsx":
+/*!******************************************!*\
+  !*** ./src/components/Popup/Toolbar.tsx ***!
+  \******************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const react_1 = __importDefault(__webpack_require__(/*! react */ "react"));
+__webpack_require__(/*! ./Toolbar.scss */ "./src/components/Popup/Toolbar.scss");
+exports.Toolbar = () => (react_1.default.createElement("section", { className: "toolbar" },
+    react_1.default.createElement("button", { type: "button", className: "toolbar-button toolbar-settings", onClick: () => { browser.runtime.openOptionsPage(); } },
+        "Settings",
+        react_1.default.createElement("svg", { viewBox: "0 0 40 40" },
+            react_1.default.createElement("path", { d: "M 18.642578 1.921875 C 18.034144 1.9134926 17.629139 2.093617 17.236328 3.109375 C 16.60783 4.7345878 16.008062 6.5008512 14.642578 7.0664062 C 13.277094 7.6319613 11.603409 6.8064719 10.009766 6.1015625 C 8.4161221 5.3966531 8.3029109 6.2127141 7.2578125 7.2578125 C 6.2127141 8.3029109 5.3966531 8.4161221 6.1015625 10.009766 C 6.8064719 11.603409 7.6319613 13.277094 7.0664062 14.642578 C 6.5008512 16.008062 4.7345878 16.60783 3.109375 17.236328 C 1.4841622 17.864825 2 18.522051 2 20 C 2 21.477949 1.4841622 22.135175 3.109375 22.763672 C 4.7345878 23.39217 6.5008512 23.991938 7.0664062 25.357422 C 7.6319613 26.722906 6.8064719 28.39659 6.1015625 29.990234 C 5.3966531 31.583877 6.2127141 31.697088 7.2578125 32.742188 C 8.3029109 33.787287 8.4161221 34.603347 10.009766 33.898438 C 11.603409 33.193527 13.277094 32.368039 14.642578 32.933594 C 16.008062 33.499149 16.60783 35.265412 17.236328 36.890625 C 17.864825 38.515838 18.522051 38 20 38 C 21.477949 38 22.135175 38.515838 22.763672 36.890625 C 23.39217 35.265412 23.991938 33.499149 25.357422 32.933594 C 26.722906 32.368039 28.39659 33.193527 29.990234 33.898438 C 31.583877 34.603347 31.697088 33.787287 32.742188 32.742188 C 33.787286 31.697088 34.603347 31.583877 33.898438 29.990234 C 33.193527 28.39659 32.368039 26.722906 32.933594 25.357422 C 33.499149 23.991938 35.265412 23.39217 36.890625 22.763672 C 38.515838 22.135175 38 21.477949 38 20 C 38 18.522051 38.515838 17.864825 36.890625 17.236328 C 35.265412 16.60783 33.499149 16.008062 32.933594 14.642578 C 32.368039 13.277094 33.193527 11.603409 33.898438 10.009766 C 34.603347 8.4161221 33.787287 8.3029109 32.742188 7.2578125 C 31.697089 6.2127141 31.583877 5.3966531 29.990234 6.1015625 C 28.39659 6.8064719 26.722906 7.6319613 25.357422 7.0664062 C 23.991938 6.5008512 23.390342 4.7345878 22.761719 3.109375 C 22.133097 1.4841622 21.477448 2 20 2 C 19.445769 2 19.007638 1.9269045 18.642578 1.921875 z M 20 11.558594 A 8.4419423 8.4419423 0 0 1 28.441406 20 A 8.4419423 8.4419423 0 0 1 20 28.441406 A 8.4419423 8.4419423 0 0 1 11.558594 20 A 8.4419423 8.4419423 0 0 1 20 11.558594 z" })))));
 
 
 /***/ }),
@@ -29240,406 +29484,6 @@ exports.Popup = () => {
 Object.defineProperty(exports, "__esModule", { value: true });
 const Popup_1 = __webpack_require__(/*! ./Popup */ "./src/components/Popup/Popup.tsx");
 exports.default = Popup_1.Popup;
-
-
-/***/ }),
-
-/***/ "./src/components/SessionManager/SessionManager.scss":
-/*!***********************************************************!*\
-  !*** ./src/components/SessionManager/SessionManager.scss ***!
-  \***********************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-var api = __webpack_require__(/*! ../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
-            var content = __webpack_require__(/*! !../../../node_modules/css-loader/dist/cjs.js!../../../node_modules/postcss-loader/src!../../../node_modules/sass-loader/dist/cjs.js!./SessionManager.scss */ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/SessionManager/SessionManager.scss");
-
-            content = content.__esModule ? content.default : content;
-
-            if (typeof content === 'string') {
-              content = [[module.i, content, '']];
-            }
-
-var options = {};
-
-options.insert = "head";
-options.singleton = false;
-
-var update = api(content, options);
-
-var exported = content.locals ? content.locals : {};
-
-
-
-module.exports = exported;
-
-/***/ }),
-
-/***/ "./src/components/SessionManager/SessionManager.tsx":
-/*!**********************************************************!*\
-  !*** ./src/components/SessionManager/SessionManager.tsx ***!
-  \**********************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
-};
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const react_1 = __importStar(__webpack_require__(/*! react */ "react"));
-const StorageState_1 = __webpack_require__(/*! ../../state/StorageState */ "./src/state/StorageState.ts");
-const Layout_1 = __webpack_require__(/*! ../Layout */ "./src/components/Layout/index.ts");
-const Login_1 = __importDefault(__webpack_require__(/*! ../Auth/Login */ "./src/components/Auth/Login/index.ts"));
-const Logout_1 = __importDefault(__webpack_require__(/*! ../Auth/Logout */ "./src/components/Auth/Logout/index.ts"));
-__webpack_require__(/*! ./SessionManager.scss */ "./src/components/SessionManager/SessionManager.scss");
-exports.SessionManager = () => {
-    const [state] = StorageState_1.useStorage();
-    const [selected, setSelected] = react_1.useState();
-    react_1.useEffect(() => {
-        setSelected(undefined);
-    }, [state]);
-    return (react_1.default.createElement(react_1.default.Fragment, null, state.isInitialized && (state.sites.list.map((site) => {
-        const isOnline = Object.keys(state.sessions).includes(site.url);
-        const isSelected = selected === site.url;
-        return (react_1.default.createElement(Layout_1.Collapsible, { key: site.url, collapsed: selected && !isSelected },
-            react_1.default.createElement("div", { className: "session-manager-site", onClick: () => !isOnline && setSelected(isSelected ? undefined : site.url) },
-                react_1.default.createElement("p", null, site.url),
-                react_1.default.createElement("div", { className: "session-manager-icons" },
-                    isOnline && react_1.default.createElement(Logout_1.default, { url: site.url }),
-                    react_1.default.createElement(Layout_1.OnlineIndicator, { online: isOnline }))),
-            react_1.default.createElement(Layout_1.Collapsible, { collapsed: !isSelected },
-                react_1.default.createElement(Login_1.default, { url: site.url }))));
-    }))));
-};
-
-
-/***/ }),
-
-/***/ "./src/components/SessionManager/SessionManagerPreview.scss":
-/*!******************************************************************!*\
-  !*** ./src/components/SessionManager/SessionManagerPreview.scss ***!
-  \******************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-var api = __webpack_require__(/*! ../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
-            var content = __webpack_require__(/*! !../../../node_modules/css-loader/dist/cjs.js!../../../node_modules/postcss-loader/src!../../../node_modules/sass-loader/dist/cjs.js!./SessionManagerPreview.scss */ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/SessionManager/SessionManagerPreview.scss");
-
-            content = content.__esModule ? content.default : content;
-
-            if (typeof content === 'string') {
-              content = [[module.i, content, '']];
-            }
-
-var options = {};
-
-options.insert = "head";
-options.singleton = false;
-
-var update = api(content, options);
-
-var exported = content.locals ? content.locals : {};
-
-
-
-module.exports = exported;
-
-/***/ }),
-
-/***/ "./src/components/SessionManager/SessionManagerPreview.tsx":
-/*!*****************************************************************!*\
-  !*** ./src/components/SessionManager/SessionManagerPreview.tsx ***!
-  \*****************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const react_1 = __importDefault(__webpack_require__(/*! react */ "react"));
-const StorageState_1 = __webpack_require__(/*! ../../state/StorageState */ "./src/state/StorageState.ts");
-const Layout_1 = __webpack_require__(/*! ../Layout */ "./src/components/Layout/index.ts");
-__webpack_require__(/*! ./SessionManagerPreview.scss */ "./src/components/SessionManager/SessionManagerPreview.scss");
-exports.SessionManagerPreview = ({ onClick, }) => {
-    const [state] = StorageState_1.useStorage();
-    const numberOfSessions = Object.keys(state.sessions).length;
-    if (state.isInitialized) {
-        return (react_1.default.createElement("button", { onClick: onClick, className: "session-manager-preview" },
-            react_1.default.createElement("div", { className: "session-manager-preview-info" },
-                numberOfSessions === 0 && react_1.default.createElement(react_1.default.Fragment, null, "No active sessions"),
-                numberOfSessions === 1 && react_1.default.createElement(react_1.default.Fragment, null, "1 active session"),
-                numberOfSessions >= 2 && react_1.default.createElement(react_1.default.Fragment, null,
-                    numberOfSessions,
-                    " active sessions"),
-                react_1.default.createElement(Layout_1.OnlineIndicator, { online: numberOfSessions > 0 })),
-            react_1.default.createElement("div", { className: "session-manager-preview-target" }, "Show / Hide Sessions")));
-    }
-    return null;
-};
-
-
-/***/ }),
-
-/***/ "./src/components/SessionManager/index.ts":
-/*!************************************************!*\
-  !*** ./src/components/SessionManager/index.ts ***!
-  \************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var SessionManager_1 = __webpack_require__(/*! ./SessionManager */ "./src/components/SessionManager/SessionManager.tsx");
-exports.SessionManager = SessionManager_1.SessionManager;
-var SessionManagerPreview_1 = __webpack_require__(/*! ./SessionManagerPreview */ "./src/components/SessionManager/SessionManagerPreview.tsx");
-exports.SessionManagerPreview = SessionManagerPreview_1.SessionManagerPreview;
-
-
-/***/ }),
-
-/***/ "./src/components/Settings/SettingsForm.tsx":
-/*!**************************************************!*\
-  !*** ./src/components/Settings/SettingsForm.tsx ***!
-  \**************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __rest = (this && this.__rest) || function (s, e) {
-    var t = {};
-    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
-        t[p] = s[p];
-    if (s != null && typeof Object.getOwnPropertySymbols === "function")
-        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
-            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
-                t[p[i]] = s[p[i]];
-        }
-    return t;
-};
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const react_1 = __importStar(__webpack_require__(/*! react */ "react"));
-const Settings_1 = __webpack_require__(/*! ../../model/Settings */ "./src/model/Settings.ts");
-const Layout_1 = __webpack_require__(/*! ../Layout */ "./src/components/Layout/index.ts");
-const StorageState_1 = __webpack_require__(/*! ../../state/StorageState */ "./src/state/StorageState.ts");
-const Form = __importStar(__webpack_require__(/*! ../Form */ "./src/components/Form/index.ts"));
-exports.SettingsForm = () => {
-    const [_a, dispatch] = StorageState_1.useStorage(), { settings } = _a, state = __rest(_a, ["settings"]);
-    const [unsavedChanges, setUnsavedChanges] = react_1.useState(false);
-    if (!state.isInitialized) {
-        return react_1.default.createElement(Layout_1.Message, { type: "info" }, "Loading...");
-    }
-    const initialValues = {};
-    Object.keys(settings).forEach((field) => (initialValues[field] = settings[field].value));
-    const handleChange = () => {
-        setUnsavedChanges(true);
-    };
-    const handleSubmit = (values) => {
-        const newSettings = {};
-        Object.keys(values).forEach((field) => {
-            if ((settings[field] === undefined) ||
-                (settings[field] && settings[field].managed === false)) {
-                newSettings[field] = { value: values[field], managed: false };
-            }
-        });
-        dispatch({ settings: { type: 'set', settings: newSettings } });
-        setUnsavedChanges(false);
-    };
-    return (react_1.default.createElement(react_1.default.Fragment, null,
-        react_1.default.createElement("h3", null, "Settings"),
-        react_1.default.createElement(Form.Form, { initialValues: initialValues, handleChange: handleChange, handleSubmit: handleSubmit, render: (values, onChange) => (react_1.default.createElement(react_1.default.Fragment, null,
-                Object.keys(Settings_1.Fields).map((field) => {
-                    const value = (Settings_1.Fields[field].attributes.type === 'checkbox'
-                        ? { checked: values[field] }
-                        : { value: values[field] });
-                    return (react_1.default.createElement(Form.Field, Object.assign({ key: field, name: field, label: Settings_1.Fields[field].label, onChange: onChange, disabled: settings[field].managed }, value, Settings_1.Fields[field].attributes)));
-                }),
-                react_1.default.createElement(Form.Field, { name: "saveSettings", label: "save", type: "submit" }))) }),
-        unsavedChanges && react_1.default.createElement(Layout_1.Message, { type: "warning" }, "Unsaved changes"),
-        state.isLoading && react_1.default.createElement(Layout_1.Message, { type: "info" }, "Loading..."),
-        state.hasError && (react_1.default.createElement(Layout_1.Message, { type: "error" },
-            "Error: ",
-            state.error && state.error.toString()))));
-};
-
-
-/***/ }),
-
-/***/ "./src/components/Settings/SitesForm.tsx":
-/*!***********************************************!*\
-  !*** ./src/components/Settings/SitesForm.tsx ***!
-  \***********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const react_1 = __importDefault(__webpack_require__(/*! react */ "react"));
-const Layout_1 = __webpack_require__(/*! ../Layout */ "./src/components/Layout/index.ts");
-const StorageState_1 = __webpack_require__(/*! ../../state/StorageState */ "./src/state/StorageState.ts");
-const Form = __importStar(__webpack_require__(/*! ../Form */ "./src/components/Form/index.ts"));
-exports.SitesForm = () => {
-    const [state, dispatch] = StorageState_1.useStorage();
-    if (!state.isInitialized) {
-        return react_1.default.createElement(Layout_1.Message, { type: "info" }, "Loading...");
-    }
-    const onRemove = (values) => {
-        const id = values.index;
-        dispatch({ sites: { type: 'remove', id } });
-    };
-    const onAdd = (values) => {
-        const site = {
-            url: values.url,
-            apikey: values.apikey,
-        };
-        dispatch({ sites: { type: 'add', site } });
-    };
-    return (react_1.default.createElement("section", { className: "sites-form" },
-        react_1.default.createElement("h3", null, "Sites"),
-        state.sites.collections.system.map((site, index) => (react_1.default.createElement(Form.Form, { key: index, initialValues: Object.assign(Object.assign({}, site), { index }), handleSubmit: onRemove, render: (values) => (react_1.default.createElement(react_1.default.Fragment, null,
-                react_1.default.createElement(Form.Field, { type: "text", name: `system-url-${index}`, label: "URL", value: values.url, disabled: true }),
-                react_1.default.createElement(Form.Field, { type: "apikey", name: `system-apikey-${index}`, label: "API Key", value: values.apikey, disabled: true }))) }))),
-        state.sites.collections.user.map((site, index) => (react_1.default.createElement(Form.Form, { key: index, initialValues: Object.assign(Object.assign({}, site), { index }), handleSubmit: onRemove, render: (values) => (react_1.default.createElement(react_1.default.Fragment, null,
-                react_1.default.createElement(Form.Field, { type: "text", name: `user-url-${index}`, label: "URL", value: values.url, disabled: true }),
-                react_1.default.createElement(Form.Field, { type: "apikey", name: `user-apikey-${index}`, label: "API Key", value: values.apikey, disabled: true }),
-                react_1.default.createElement("input", { name: "index", type: "hidden", value: index }),
-                react_1.default.createElement(Form.Field, { name: `remove-${index}`, label: "Delete", type: "submit" }))) }))),
-        react_1.default.createElement(Form.Form, { handleSubmit: onAdd, render: (values, onChange) => (react_1.default.createElement(react_1.default.Fragment, null,
-                react_1.default.createElement(Form.Field, { type: "text", name: "url", label: "URL", value: values.url, onChange: onChange }),
-                react_1.default.createElement(Form.Field, { type: "apikey", name: "apikey", label: "API Key", value: values.apikey, onChange: onChange }),
-                react_1.default.createElement(Form.Field, { name: "addSites", label: "Add Site", type: "submit" }))) }),
-        state.isLoading && react_1.default.createElement(Layout_1.Message, { type: "info" }, "Loading..."),
-        state.hasError && (react_1.default.createElement(Layout_1.Message, { type: "error" },
-            "Error: ",
-            state.error && state.error.toString()))));
-};
-
-
-/***/ }),
-
-/***/ "./src/components/Settings/index.ts":
-/*!******************************************!*\
-  !*** ./src/components/Settings/index.ts ***!
-  \******************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var SettingsForm_1 = __webpack_require__(/*! ./SettingsForm */ "./src/components/Settings/SettingsForm.tsx");
-exports.SettingsForm = SettingsForm_1.SettingsForm;
-var SitesForm_1 = __webpack_require__(/*! ./SitesForm */ "./src/components/Settings/SitesForm.tsx");
-exports.SitesForm = SitesForm_1.SitesForm;
-
-
-/***/ }),
-
-/***/ "./src/components/Welcome/Welcome.scss":
-/*!*********************************************!*\
-  !*** ./src/components/Welcome/Welcome.scss ***!
-  \*********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-var api = __webpack_require__(/*! ../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
-            var content = __webpack_require__(/*! !../../../node_modules/css-loader/dist/cjs.js!../../../node_modules/postcss-loader/src!../../../node_modules/sass-loader/dist/cjs.js!./Welcome.scss */ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/Welcome/Welcome.scss");
-
-            content = content.__esModule ? content.default : content;
-
-            if (typeof content === 'string') {
-              content = [[module.i, content, '']];
-            }
-
-var options = {};
-
-options.insert = "head";
-options.singleton = false;
-
-var update = api(content, options);
-
-var exported = content.locals ? content.locals : {};
-
-
-
-module.exports = exported;
-
-/***/ }),
-
-/***/ "./src/components/Welcome/Welcome.tsx":
-/*!********************************************!*\
-  !*** ./src/components/Welcome/Welcome.tsx ***!
-  \********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const react_1 = __importDefault(__webpack_require__(/*! react */ "react"));
-const StorageState_1 = __webpack_require__(/*! ../../state/StorageState */ "./src/state/StorageState.ts");
-const Settings_1 = __webpack_require__(/*! ../Settings/ */ "./src/components/Settings/index.ts");
-const Layout_1 = __webpack_require__(/*! ../Layout */ "./src/components/Layout/index.ts");
-__webpack_require__(/*! ./Welcome.scss */ "./src/components/Welcome/Welcome.scss");
-exports.Welcome = () => {
-    const [state] = StorageState_1.useStorage();
-    return (react_1.default.createElement("section", { className: "welcome" },
-        react_1.default.createElement(Layout_1.Card, null,
-            !state.isInitialized && react_1.default.createElement("p", null, "Loading..."),
-            state.isInitialized && (react_1.default.createElement(react_1.default.Fragment, null,
-                react_1.default.createElement(Settings_1.SitesForm, null),
-                react_1.default.createElement(Settings_1.SettingsForm, null))))));
-};
-
-
-/***/ }),
-
-/***/ "./src/components/Welcome/index.ts":
-/*!*****************************************!*\
-  !*** ./src/components/Welcome/index.ts ***!
-  \*****************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-const Welcome_1 = __webpack_require__(/*! ./Welcome */ "./src/components/Welcome/Welcome.tsx");
-exports.default = Welcome_1.Welcome;
 
 
 /***/ }),
@@ -29698,7 +29542,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const React = __importStar(__webpack_require__(/*! react */ "react"));
 const ReactDOM = __importStar(__webpack_require__(/*! react-dom */ "react-dom"));
 __webpack_require__(/*! ./index.scss */ "./src/index.scss");
-const App_1 = __importDefault(__webpack_require__(/*! ./App */ "./src/App.tsx"));
+const Extension_1 = __importDefault(__webpack_require__(/*! ./components/Extension */ "./src/components/Extension.tsx"));
 /**
  * Launch axe accessibility helper in dev mode.
  * Appears in browser console.
@@ -29708,40 +29552,7 @@ if (true) {
     const axe = __webpack_require__(/*! react-axe */ "./node_modules/react-axe/index.js");
     axe(React, ReactDOM, 1000);
 }
-ReactDOM.render(React.createElement(App_1.default, null), document.getElementById('app'));
-
-
-/***/ }),
-
-/***/ "./src/model/AuthState.ts":
-/*!********************************!*\
-  !*** ./src/model/AuthState.ts ***!
-  \********************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-/**
- * Get settings related to the Auth component from local storage.
- * @return AuthState Promise containing AuthState object.
- * */
-exports.get = () => (browser.storage.local.get('authState').then(({ authState }) => {
-    if (authState) {
-        const { usernames, selected } = authState;
-        return {
-            usernames: usernames || {},
-            selected,
-        };
-    }
-    return { usernames: {} };
-}));
-/**
- * Commit AuthState object to local storage.
- * @param authState New AuthState object.
- * */
-exports.set = (authState) => (browser.storage.local.set({ authState }));
+ReactDOM.render(React.createElement(Extension_1.default, null), document.getElementById('app'));
 
 
 /***/ }),
@@ -29762,10 +29573,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
  * */
 exports.get = () => (browser.storage.local.get('sessions')
     .then(({ sessions }) => {
-    if (sessions) {
-        return sessions || {};
-    }
-    return {};
+    return sessions || {};
 }));
 /**
  * Commit Sessions object to sync storage.
@@ -29795,7 +29603,7 @@ exports.defaults = {
     idleMax: { value: 15, managed: false },
     maxTokenLife: { value: 180, managed: false },
 };
-exports.Fields = {
+exports.fields = {
     autoFill: {
         label: 'Auto Fill',
         attributes: {
@@ -29874,6 +29682,32 @@ exports.set = (settings) => {
 
 /***/ }),
 
+/***/ "./src/model/SitePrefs.ts":
+/*!********************************!*\
+  !*** ./src/model/SitePrefs.ts ***!
+  \********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+/**
+ * Get preferences relating to a certain site from local storage.
+ * @return SitePrefs Promise containing SitePrefs object.
+ * */
+exports.get = () => (browser.storage.local.get('sitePrefs').then(({ sitePrefs }) => {
+    return sitePrefs || {};
+}));
+/**
+ * Commit SitePrefs object to local storage.
+ * @param authState New SitePrefs object.
+ * */
+exports.set = (sitePrefs) => (browser.storage.local.set({ sitePrefs }));
+
+
+/***/ }),
+
 /***/ "./src/model/Sites.ts":
 /*!****************************!*\
   !*** ./src/model/Sites.ts ***!
@@ -29905,56 +29739,6 @@ exports.get = () => {
 exports.set = (sites) => {
     return userStorage.set({ sites: sites.user });
 };
-
-
-/***/ }),
-
-/***/ "./src/state/AuthStateReducer.ts":
-/*!***************************************!*\
-  !*** ./src/state/AuthStateReducer.ts ***!
-  \***************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const AuthState = __importStar(__webpack_require__(/*! ../model/AuthState */ "./src/model/AuthState.ts"));
-exports.reducer = (state, action) => {
-    switch (action.type) {
-        case 'addUsername': {
-            return AuthState.get().then((authState) => {
-                const newAuthState = Object.assign(Object.assign({}, authState), { usernames: Object.assign(Object.assign({}, authState.usernames), { [action.url]: action.username }) });
-                return AuthState.set(newAuthState).then(() => ({ authState: newAuthState }));
-            });
-        }
-        case 'setSelected': {
-            return AuthState.get().then((authState) => {
-                const newAuthState = Object.assign(Object.assign({}, authState), { selected: action.url });
-                return AuthState.set(newAuthState).then(() => ({ authState: newAuthState }));
-            });
-        }
-        case 'fetch': {
-            return AuthState.get().then((authState) => {
-                return { authState };
-            });
-        }
-        default: {
-            throw new Error(`Invalid type: ${action.type}`);
-        }
-    }
-};
-exports.emptyState = {
-    authState: { usernames: {} },
-};
-exports.init = () => (exports.reducer(exports.emptyState, { type: 'fetch' }));
 
 
 /***/ }),
@@ -30091,6 +29875,53 @@ exports.init = () => (exports.reducer(exports.emptyState, { type: 'fetch' }));
 
 /***/ }),
 
+/***/ "./src/state/SitePrefsReducer.ts":
+/*!***************************************!*\
+  !*** ./src/state/SitePrefsReducer.ts ***!
+  \***************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const SitePrefs = __importStar(__webpack_require__(/*! ../model/SitePrefs */ "./src/model/SitePrefs.ts"));
+exports.reducer = (state, action) => {
+    switch (action.type) {
+        case 'update': {
+            return SitePrefs.get().then((sitePrefs) => {
+                const { url, username, loginType } = action;
+                const urlSitePrefs = (username !== undefined
+                    || loginType !== undefined) ? { [url]: { username, loginType } } : {};
+                const newSitePrefs = Object.assign(Object.assign({}, sitePrefs), urlSitePrefs);
+                return SitePrefs.set(newSitePrefs).then(() => ({ sitePrefs: newSitePrefs }));
+            });
+        }
+        case 'fetch': {
+            return SitePrefs.get().then((sitePrefs) => {
+                return { sitePrefs };
+            });
+        }
+        default: {
+            throw new Error(`Invalid type: ${action.type}`);
+        }
+    }
+};
+exports.emptyState = {
+    sitePrefs: {},
+};
+exports.init = () => (exports.reducer(exports.emptyState, { type: 'fetch' }));
+
+
+/***/ }),
+
 /***/ "./src/state/SitesReducer.ts":
 /*!***********************************!*\
   !*** ./src/state/SitesReducer.ts ***!
@@ -30185,30 +30016,30 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const SettingsReducer = __importStar(__webpack_require__(/*! ./SettingsReducer */ "./src/state/SettingsReducer.ts"));
 const SitesReducer = __importStar(__webpack_require__(/*! ./SitesReducer */ "./src/state/SitesReducer.ts"));
 const SessionsReducer = __importStar(__webpack_require__(/*! ./SessionsReducer */ "./src/state/SessionsReducer.ts"));
-const AuthStateReducer = __importStar(__webpack_require__(/*! ./AuthStateReducer */ "./src/state/AuthStateReducer.ts"));
+const SitePrefsReducer = __importStar(__webpack_require__(/*! ./SitePrefsReducer */ "./src/state/SitePrefsReducer.ts"));
 exports.reducer = (state, _a) => {
     var { type = 'actions' } = _a, action = __rest(_a, ["type"]);
-    let settingsPromise, sitesPromise, sessionsPromise, authStatePromise;
+    let settingsPromise, sitesPromise, sessionsPromise, sitePrefsPromise;
     if (type === 'init') {
         settingsPromise = SettingsReducer.init();
         sitesPromise = SitesReducer.init();
         sessionsPromise = SessionsReducer.init();
-        authStatePromise = AuthStateReducer.init();
+        sitePrefsPromise = SitePrefsReducer.init();
     }
     else {
         settingsPromise = action.settings && SettingsReducer.reducer(state, action.settings);
         sitesPromise = action.sites && SitesReducer.reducer(state, action.sites);
         sessionsPromise = action.sessions && SessionsReducer.reducer(state, action.sessions);
-        authStatePromise = action.authState && AuthStateReducer.reducer(state, action.authState);
+        sitePrefsPromise = action.sitePrefs && SitePrefsReducer.reducer(state, action.sitePrefs);
     }
     return Promise.all([
         settingsPromise,
         sitesPromise,
         sessionsPromise,
-        authStatePromise
-    ]).then(([settings, sites, sessions, authState]) => (Object.assign(Object.assign(Object.assign(Object.assign({}, settings), sites), sessions), authState)));
+        sitePrefsPromise
+    ]).then(([settings, sites, sessions, sitePrefs]) => (Object.assign(Object.assign(Object.assign(Object.assign({}, settings), sites), sessions), sitePrefs)));
 };
-exports.emptyState = Object.assign(Object.assign(Object.assign(Object.assign({}, SettingsReducer.emptyState), SitesReducer.emptyState), SessionsReducer.emptyState), AuthStateReducer.emptyState);
+exports.emptyState = Object.assign(Object.assign(Object.assign(Object.assign({}, SettingsReducer.emptyState), SitesReducer.emptyState), SessionsReducer.emptyState), SitePrefsReducer.emptyState);
 
 
 /***/ }),
@@ -30262,14 +30093,28 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = __importStar(__webpack_require__(/*! react */ "react"));
 const PromiseReducer_1 = __webpack_require__(/*! ./PromiseReducer */ "./src/state/PromiseReducer.ts");
-const createState = (initialState, getInitialState, reducer) => {
+const createState = (initialState, getInitialState, reducer, mockReducer) => {
+    /**
+     * Initialize with empty state.
+     * */
     const StateContext = react_1.createContext([
         Object.assign(Object.assign({}, initialState), PromiseReducer_1.defaultLoadState),
-        (action) => { } // eslint-disable-line
+        () => { } // eslint-disable-line @typescript-eslint/no-empty-function
     ]);
+    /**
+     * React context provider component.
+     * */
     const StateProvider = ({ children, }) => (react_1.default.createElement(StateContext.Provider, { value: PromiseReducer_1.usePromiseReducer(initialState, getInitialState, reducer) }, children));
+    /**
+     * React mock context provider component for testing components without
+     * relying on external APIs.
+     * */
+    const MockStateProvider = ({ children, }) => (react_1.default.createElement(StateContext.Provider, { value: PromiseReducer_1.usePromiseReducer(initialState, getInitialState, mockReducer) }, children));
+    /**
+     * Custom context hook to use state.
+     * */
     const useStateValue = () => react_1.useContext(StateContext);
-    return [StateProvider, useStateValue];
+    return [StateProvider, useStateValue, MockStateProvider];
 };
 exports.default = createState;
 

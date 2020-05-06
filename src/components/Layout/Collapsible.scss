@@ -2,9 +2,22 @@
 
 .collapsible {
   overflow: hidden;
-  transition: max-height $transition-duration ease-out;
+  transition: max-height $transition-duration ease-out 0ms, visibility 0ms ease-out 0ms;
 
   &.collapsed {
+    visibility: hidden;
+    transition: max-height $transition-duration ease-out 0ms, visibility 0ms ease-out $transition-duration;
+  }
+
+  &.vertical.collapsed {
     max-height: 0;
   }
+
+  &.horizontal.collapsed {
+    max-width: 0;
+  }
+}
+
+.collapsible.fixed {
+  overflow: auto;
 }

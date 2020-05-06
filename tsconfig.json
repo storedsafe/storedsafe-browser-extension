@@ -6,6 +6,7 @@
     "esModuleInterop": true,
     "module": "commonjs",
     "target": "es6",
-    "jsx": "react"
+    "jsx": "react",
+    "typeRoots": ["./node_modules/@types", "./src/custom_typings"]
   }
 }

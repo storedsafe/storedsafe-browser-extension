@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import './index.scss';
 
-import App from './App';
+import Extension from './components/Extension';
 
 /**
  * Launch axe accessibility helper in dev mode.
@@ -15,6 +15,6 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 ReactDOM.render(
-  <App />,
+  <Extension />,
   document.getElementById('app')
 );

@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css?family=Montserrat|Roboto&display=swap');
 @import './variables';
+@import './inputs';
 
 * {
   padding: 0;
@@ -8,34 +9,43 @@
 }
 
 body {
-  background-color: $primary;
-  color: #fff;
-  font-size: 14px;
+  background-color: $color-bg-body;
+  color: $color-fg;
   font-family: 'Roboto', sans-serif;
-  padding: $spacing;
+  font-size: 14px;
 }
 
 h1,
-h2,
+h2 {
+  font-family: 'Montserrat', sans-serif;
+  color: $color-primary-0;
+}
+
 h3,
 h4,
 h5,
 h6 {
-  font-family: 'Montserrat', sans-serif;
-  margin-top: $spacing / 6;
-  margin-bottom: $spacing / 2;
+  font-weight: 500;
 }
 
-.field {
-  margin-bottom: $spacing;
-}
+h1 { font-size: 1.8em; }
+h2 { font-size: 1.35em; }
+h3 { font-size: 1.2em; }
+h4 { font-size: 1.1em; }
+h5 { font-size: 1.05em; }
+h6 { font-size: 1.02em; }
 
 .card {
-  margin-bottom: $spacing;
-  background-color: $bg;
-  color: $fg;
+  @extend %card;
 }
 
-ul {
-  padding-left: $spacing*2;
+.menu-item {
+  position: relative;
+  cursor: pointer;
+  padding-left: inherit;
+  transition: padding-left $transition-duration ease-out;
+
+  &.selected {
+    padding-left: $spacing;
+  }
 }

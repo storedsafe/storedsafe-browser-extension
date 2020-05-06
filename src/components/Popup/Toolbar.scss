@@ -1,0 +1,23 @@
+@import '../../variables';
+
+.toolbar {
+  .toolbar-button {
+    background-color: $color-primary-3;
+    width: 100%;
+    padding: $spacing / 2;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    color: $color-primary-1;
+    border: 0;
+    cursor: pointer;
+
+    svg {
+      width: 20px;
+      height: 20px;
+      fill: $color-primary-1;
+      margin-left: $spacing;
+    }
+  }
+}

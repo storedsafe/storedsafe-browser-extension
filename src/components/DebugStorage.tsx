@@ -1,6 +1,6 @@
 import React from 'react';
 import { useStorage } from '../state/StorageState';
-import { Card, CollapseList } from './Layout';
+import { CollapseList } from './Layout';
 
 const DebugStorage: React.FC = () => {
   const [state] = useStorage();
@@ -45,28 +45,20 @@ const DebugStorage: React.FC = () => {
         <strong>Created At: </strong>{createdAt}
       </React.Fragment>
     );
-  })
+  });
 
-  const usernames = Object.keys(state.authState.usernames).map((url) => {
-    const username = state.authState.usernames[url];
+  const sitePrefs = Object.keys(state.sitePrefs).map((url) => {
+    const { username, loginType } = state.sitePrefs[url];
     return (
       <React.Fragment key={url}>
-        <strong>URL: </strong>{url}<br />
-        <strong>Username: </strong>{username}
+        <strong>Username: </strong>{username}<br />
+        <strong>Login Type: </strong>{loginType}<br />
       </React.Fragment>
     );
-  })
-
-  const authState = [
-    (<React.Fragment key="selected">
-      <strong key="selected">Selected: </strong>
-      {state.authState.selected || 'none'}
-    </React.Fragment>),
-    <CollapseList key="children" startCollapsed={false} title={<h3>Usernames</h3>} items={usernames} />
-  ];
+  });
 
   return (
-    <Card>
+    <section className="card">
       <h2>Storage</h2>
       <h3>State</h3>
       <p>Is Initialized: {state.isInitialized.toString()}</p>
@@ -79,10 +71,10 @@ const DebugStorage: React.FC = () => {
           <CollapseList startCollapsed={false} title={<h3>System Sites</h3>} items={systemSites} />
           <CollapseList startCollapsed={false} title={<h3>User Sites</h3>} items={userSites} />
           <CollapseList startCollapsed={false} title={<h3>Sessions</h3>} items={sessions} />
-          <CollapseList startCollapsed={false} title={<h3>Auth State</h3>} items={authState} />
+          <CollapseList startCollapsed={false} title={<h3>Site Prefs</h3>} items={sitePrefs} />
         </React.Fragment>
       )}
-    </Card>
+    </section>
   );
 };
 

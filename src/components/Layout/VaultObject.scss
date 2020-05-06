@@ -8,14 +8,10 @@
 .vault-object-field {
   display: flex;
   flex-direction: row;
-  padding: $spacing/4;
-
-  &:nth-child(even) {
-    background-color: $color-primary-1;
-  }
+  padding: $spacing;
 }
 
 .vault-object-field-title {
   color: $color-primary-2;
-  margin-right: $spacing / 4;
+  margin-right: $spacing;
 }

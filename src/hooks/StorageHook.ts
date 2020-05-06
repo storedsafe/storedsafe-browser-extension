@@ -1,11 +1,11 @@
 import * as React from 'react';
-import * as AuthState from '../model/AuthState';
+import * as SitePrefs from '../model/SitePrefs';
 import * as Sessions from '../model/Sessions';
 import * as Settings from '../model/Settings';
 import * as Sites from '../model/Sites';
 
 type Action = 'INIT' | 'SUCCESS' | 'FAILURE';
-type Loader = 'AuthState' | 'Sessions' | 'Settings' | 'Sites';
+type Loader = 'SitePrefs' | 'Sessions' | 'Settings' | 'Sites';
 
 interface ReducerAction {
   type: Action;
@@ -23,19 +23,19 @@ type StorageState = {
 }
 
 export interface StorageFields {
-  authState: AuthState.AuthState;
+  sitePrefs: SitePrefs.SitePrefs;
   sessions: Sessions.Sessions;
   settings: Settings.Settings;
   sites: Sites.SiteCollection;
 }
 
 export interface StorageMutators {
-  fetchAuthState: () => void;
+  fetchSitePrefs: () => void;
   fetchSessions: () => void;
   fetchSettings: () => void;
   fetchSites: () => void;
   fetchAll: () => void;
-  updateAuthState: (authState: AuthState.AuthState) => void;
+  updateSitePrefs: (sitePrefs: SitePrefs.SitePrefs) => void;
   updateSessions: (sessions: Sessions.Sessions) => void;
   updateSettings: (settings: Settings.Settings) => void;
   updateSites: (siteCollection: Sites.SiteCollection) => void;
@@ -88,7 +88,7 @@ const defaultLoaderState: LoaderState = {
 }
 
 const defaultState: StorageState = {
-  AuthState: defaultLoaderState,
+  SitePrefs: defaultLoaderState,
   Sessions: defaultLoaderState,
   Settings: defaultLoaderState,
   Sites: defaultLoaderState,
@@ -96,17 +96,17 @@ const defaultState: StorageState = {
 
 export const useStorage = (): StorageHook => {
   const [state, dispatch] = React.useReducer(storageReducer, defaultState);
-  const [authState, setAuthState] = React.useState<AuthState.AuthState>({ usernames: {} });
+  const [sitePrefs, setSitePrefs] = React.useState<SitePrefs.SitePrefs>({ usernames: {} });
   const [sessions, setSessions] = React.useState<Sessions.Sessions>({});
   const [settings, setSettings] = React.useState<Settings.Settings>({});
   const [sites, setSites] = React.useState<Sites.SiteCollection>({ system: [], user: [] });
 
-  const fetchAuthState = (): void => {
-    dispatch({ type: 'INIT', loader: 'AuthState' });
-    AuthState.get().then((newAuthState) => {
-      dispatch({ type: 'SUCCESS', loader: 'AuthState' });
-      setAuthState(newAuthState)
-    }).catch(() => dispatch({ type: 'FAILURE', loader: 'AuthState' }));
+  const fetchSitePrefs = (): void => {
+    dispatch({ type: 'INIT', loader: 'SitePrefs' });
+    SitePrefs.get().then((newSitePrefs) => {
+      dispatch({ type: 'SUCCESS', loader: 'SitePrefs' });
+      setSitePrefs(newSitePrefs)
+    }).catch(() => dispatch({ type: 'FAILURE', loader: 'SitePrefs' }));
   };
 
   const fetchSessions = (): void => {
@@ -133,12 +133,12 @@ export const useStorage = (): StorageHook => {
     }).catch(() => dispatch({ type: 'FAILURE', loader: 'Sites' }));
   };
 
-  const updateAuthState = (authState: AuthState.AuthState): void => {
-    dispatch({ type: 'INIT', loader: 'AuthState' });
-    AuthState.set(authState).then(() => {
-      dispatch({ type: 'SUCCESS', loader: 'AuthState' });
-      setAuthState(authState)
-    }).catch(() => dispatch({ type: 'FAILURE', loader: 'AuthState' }));
+  const updateSitePrefs = (sitePrefs: SitePrefs.SitePrefs): void => {
+    dispatch({ type: 'INIT', loader: 'SitePrefs' });
+    SitePrefs.set(sitePrefs).then(() => {
+      dispatch({ type: 'SUCCESS', loader: 'SitePrefs' });
+      setSitePrefs(sitePrefs)
+    }).catch(() => dispatch({ type: 'FAILURE', loader: 'SitePrefs' }));
   };
 
   const updateSessions = (sessions: Sessions.Sessions): void => {
@@ -166,28 +166,24 @@ export const useStorage = (): StorageHook => {
   };
 
   const fetchAll = (): void => {
-    fetchAuthState();
+    fetchSitePrefs();
     fetchSessions();
     fetchSettings();
     fetchSites();
   };
 
-  React.useEffect(() => {
-
-  });
-
   return [{
-    authState,
+    sitePrefs,
     sessions,
     settings,
     sites,
   }, {
-    fetchAuthState,
+    fetchSitePrefs,
     fetchSessions,
     fetchSettings,
     fetchSites,
     fetchAll,
-    updateAuthState,
+    updateSitePrefs,
     updateSessions,
     updateSettings,
     updateSites,

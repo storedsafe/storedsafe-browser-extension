@@ -2,8 +2,8 @@ const path = require('path');
 
 module.exports = {
   stories: [
-    '../src/**/*.stories.[jt]s',
-    '../src/**/*.stories.[jt]sx',
+    '../src/stories/*.stories.[jt]s',
+    '../src/stories/*.stories.[jt]sx',
   ],
   addons: [
     '@storybook/preset-typescript',

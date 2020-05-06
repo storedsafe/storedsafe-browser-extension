@@ -9,7 +9,7 @@ export interface CollapseListProps {
   padded?: boolean;
 }
 
-export const CollapseList: React.FC<CollapseListProps> = ({
+export const CollapseList: React.FunctionComponent<CollapseListProps> = ({
   startCollapsed,
   title,
   items,

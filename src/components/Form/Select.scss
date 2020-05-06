@@ -1,0 +1,21 @@
+@import '../../variables';
+
+.select {
+  .custom-select select {
+    -moz-appearance: none; // stylelint-disable-line
+    -webkit-appearance: none; // stylelint-disable-line
+    appearance: none;
+    padding-right: $spacing * 2 + $arrow-width;
+    width: 100%;
+  }
+
+  .custom-select {
+    position: relative;
+    width: 100%;
+  }
+
+  .custom-select::after {
+    @extend %arrow;
+    transition: $transition-duration;
+  }
+}

@@ -29,7 +29,8 @@ export interface FieldsProps {
     };
   };
 }
-export const Fields: FieldsProps = {
+
+export const fields: FieldsProps = {
   autoFill: {
     label: 'Auto Fill',
     attributes: {

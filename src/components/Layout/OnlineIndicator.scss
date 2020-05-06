@@ -1,20 +1,24 @@
 @import '../../variables';
 
 .online-indicator {
-  width: 0.8em;
-  height: 0.8em;
+  $size: 10px;
+
+  width: $size;
+  height: $size;
   border-radius: 100%;
   transition: $transition-duration*3;
   transition-property: background-color, box-shadow;
   margin: 0.5em;
 
   &.online {
+    $shadow: $size / 4;
     background-color: $color-accent-0;
-    box-shadow: 0 0 0.2em 0.2em $color-accent-1, 0 0 0.1em 0.1em rgba(0, 0, 0, 0.1) inset;
+    box-shadow: 0 0 $shadow $shadow $color-accent-1, 0 0 $shadow / 2 $shadow / 2 rgba(0, 0, 0, 0.1) inset;
   }
 
   &.offline {
-    background-color: $color-error-0;
-    box-shadow: 0 0 0.2em 0.2em $color-error-1, 0 0 0.1em 0.1em rgba(0, 0, 0, 0.1) inset;
+    $shadow: $size / 4;
+    background-color: $color-danger-0;
+    box-shadow: 0 0 $shadow $shadow $color-danger-1, 0 0 $shadow / 2 $shadow / 2 rgba(0, 0, 0, 0.1) inset;
   }
 }

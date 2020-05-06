@@ -1,0 +1,12 @@
+@import '../../variables';
+
+.popup-main {
+  height: 100%;
+
+  .popup-main-accordion {
+    display: flex;
+    flex-direction: column;
+    justify-content: stretch;
+    height: 100%;
+  }
+}

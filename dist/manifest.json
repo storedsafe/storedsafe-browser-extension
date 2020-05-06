@@ -3,6 +3,9 @@
   "name": "StoredSafe",
   "version": "0.0.1",
   "description": "StoredSafe browser integration",
+  "icons": {
+    "64": "icon.png"
+  },
   "browser_action": {
     "default_title": "StoredSafe",
     "default_popup": "index.html#popup"
@@ -29,7 +32,9 @@
     "open_in_tab": true
   },
   "permissions": [
-    "storage"
+    "storage",
+    "idle",
+    "contextMenus"
   ],
   "storage": {
     "managed_schema": "schema.json"

@@ -1,5 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`<Checkbox /> 1`] = `ShallowWrapper {}`;
-
-exports[`<Checkbox labelDir=left/> 1`] = `ShallowWrapper {}`;

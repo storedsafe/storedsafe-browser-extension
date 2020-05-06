@@ -2,7 +2,6 @@ export interface Session {
   apikey: string;
   token: string;
   createdAt: number;
-  lastActive: number;
 }
 
 /**
@@ -19,10 +18,7 @@ export interface Sessions {
 export const get = (): Promise<Sessions> => (
   browser.storage.local.get('sessions')
   .then(({ sessions }) => {
-    if (sessions) {
-      return sessions || {};
-    }
-    return {};
+    return sessions || {};
   })
 )
 

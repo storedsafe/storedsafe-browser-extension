@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<LoadingSpinner /> 1`] = `ShallowWrapper {}`;
+
+exports[`<LoadingSpinner error /> 1`] = `ShallowWrapper {}`;
+
+exports[`<LoadingSpinner loading /> 1`] = `ShallowWrapper {}`;
+
+exports[`<LoadingSpinner success /> 1`] = `ShallowWrapper {}`;
+
+exports[`<LoadingSpinner warning /> 1`] = `ShallowWrapper {}`;

@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import './Message.scss';
 
 interface MessageProps {
@@ -6,7 +6,7 @@ interface MessageProps {
   children?: React.ReactNode;
 }
 
-export const Message: React.FC<MessageProps> = ({
+export const Message: React.FunctionComponent<MessageProps> = ({
   type,
   children,
 }: MessageProps) => {

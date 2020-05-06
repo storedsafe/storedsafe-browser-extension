@@ -9,7 +9,7 @@ export interface CollapseBoxProps {
   padded?: boolean;
 }
 
-export const CollapseBox: React.FC<CollapseBoxProps> = ({
+export const CollapseBox: React.FunctionComponent<CollapseBoxProps> = ({
   startCollapsed,
   title,
   children,

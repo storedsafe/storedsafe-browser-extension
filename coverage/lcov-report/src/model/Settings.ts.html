@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/23</span>
+                <span class='fraction'>0/25</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/23</span>
+                <span class='fraction'>0/25</span>
             </div>
         
             
@@ -167,19 +167,11 @@
 <a name='L108'></a><a href='#L108'>108</a>
 <a name='L109'></a><a href='#L109'>109</a>
 <a name='L110'></a><a href='#L110'>110</a>
-<a name='L111'></a><a href='#L111'>111</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L111'></a><a href='#L111'>111</a>
+<a name='L112'></a><a href='#L112'>112</a>
+<a name='L113'></a><a href='#L113'>113</a>
+<a name='L114'></a><a href='#L114'>114</a>
+<a name='L115'></a><a href='#L115'>115</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -211,6 +203,22 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -277,7 +285,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">export interface Field {
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">const systemStorage = <span class="cstat-no" title="statement not covered" >browser.storage.managed;</span>
+const userStorage = <span class="cstat-no" title="statement not covered" >browser.storage.sync;</span>
+&nbsp;
+export interface Field {
   managed: boolean;
   value: string | number | boolean;
 }
@@ -301,10 +312,11 @@ export interface FieldsProps {
     label: string;
     attributes: {
       type: string;
-      [attr: string]: any;
+      [attr: string]: string | number | boolean;
     };
   };
 }
+&nbsp;
 export const <span class="cstat-no" title="statement not covered" >Fields: FieldsProps = {</span>
   autoFill: {
     label: 'Auto Fill',
@@ -356,13 +368,13 @@ const populate = <span class="cstat-no" title="statement not covered" ><span cla
  * storage are set as managed.
  * @return Settings Promise containing Settings object.
  * */
-export const <span class="cstat-no" title="statement not covered" >getSettings = <span class="fstat-no" title="function not covered" >(): Promise&lt;Settings&gt; =</span>&gt; {</span>
+export const <span class="cstat-no" title="statement not covered" >get = <span class="fstat-no" title="function not covered" >(): Promise&lt;Settings&gt; =</span>&gt; {</span>
   const settings: Settings = <span class="cstat-no" title="statement not covered" >{};</span>
-<span class="cstat-no" title="statement not covered" >  return browser.storage.managed.get('settings').then(<span class="fstat-no" title="function not covered" >({</span> settings: system }) =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >  return systemStorage.get('settings').then(<span class="fstat-no" title="function not covered" >({</span> settings: system }) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >    if (system &amp;&amp; system.enforced) {</span>
 <span class="cstat-no" title="statement not covered" >      populate(settings, system.enforced, true);</span>
     }
-<span class="cstat-no" title="statement not covered" >    return browser.storage.sync.get('settings').then(<span class="fstat-no" title="function not covered" >({</span> settings: user }) =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >    return userStorage.get('settings').then(<span class="fstat-no" title="function not covered" >({</span> settings: user }) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >      if (user) {</span>
 <span class="cstat-no" title="statement not covered" >        populate(settings, user);</span>
       }
@@ -378,14 +390,14 @@ export const <span class="cstat-no" title="statement not covered" >getSettings =
  * Commit settings object to sync storage.
  * @param settings New settings object.
  * */
-export const <span class="cstat-no" title="statement not covered" >commit = <span class="fstat-no" title="function not covered" >(s</span>ettings: Settings): Promise&lt;void&gt; =&gt; {</span>
+export const <span class="cstat-no" title="statement not covered" >set = <span class="fstat-no" title="function not covered" >(s</span>ettings: Settings): Promise&lt;void&gt; =&gt; {</span>
   const userSettings: Dict = <span class="cstat-no" title="statement not covered" >{};</span>
 <span class="cstat-no" title="statement not covered" >  Object.keys(settings).forEach(<span class="fstat-no" title="function not covered" >(f</span>ield) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >    if (settings[field].managed === false) {</span>
 <span class="cstat-no" title="statement not covered" >      userSettings[field] = settings[field].value;</span>
     }
   });
-<span class="cstat-no" title="statement not covered" >  return browser.storage.sync.set({ settings: userSettings });</span>
+<span class="cstat-no" title="statement not covered" >  return userStorage.set({ settings: userSettings });</span>
 }
 &nbsp;</pre></td></tr></table></pre>
 
@@ -394,7 +406,7 @@ export const <span class="cstat-no" title="statement not covered" >commit = <spa
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Tue Apr 21 2020 13:27:49 GMT+0200 (Central European Summer Time)
+                at Wed Apr 29 2020 14:49:13 GMT+0200 (Central European Summer Time)
             </div>
         </div>
         <script src="../../prettify.js"></script>

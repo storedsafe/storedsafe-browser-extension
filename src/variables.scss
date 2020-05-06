@@ -16,48 +16,76 @@ $color-warning-2: #ffc16a;
 $color-warning-3: #b76b00;
 $color-warning-4: #754500;
 
-$color-error-0: #c5283e;
-$color-error-1: #fdd2d8;
-$color-error-2: #f27183;
-$color-error-3: #7e0314;
-$color-error-4: #120003;
+$color-danger-0: #c5283e;
+$color-danger-1: #fdd2d8;
+$color-danger-2: #f27183;
+$color-danger-3: #7e0314;
+$color-danger-4: #120003;
 
-$primary: #526a78;
-$accent: #03a386;
-$border: #d4d7d8;
-$bg-error: #ffe5e6;
-$error: #d16569;
-$warning: #d19764;
-$bg-warning: #fff1e5;
+$color-border: #d4d7d8;
+$color-border-hover: #c7cacc;
+$color-border-focus: $color-accent-0;
+$color-border-active: #028c73;
 
-$bg-hover: #f9fbfc;
-$bg-focus: #f4f7f9;
-$bg-active: #ebeef0;
+$color-bg: #fff;
+$color-bg-alt: #f9f9f9;
+$color-bg-alt-2: #d4d7d9;
+$color-bg-hover: #f9fbfc;
+$color-bg-focus: #f4f7f9;
+$color-bg-active: #ebeef0;
+$color-bg-banner: $color-primary-0;
+$color-bg-body: #f2f2f2;
 
-$border-hover: #c7cacc;
-$border-focus: $accent;
-$border-active: #028c73;
+$color-fg: #232d33;
+$color-fg-alt: #fff;
 
-$bg: #fff;
-$fg: #232d33;
+$color-bg-disabled: $color-bg-alt;
+$color-border-disabled: $color-border;
+$color-fg-disabled: #ad9f9f;
+$color-bg-input-disabled: $color-bg-disabled;
+$color-fg-input-disabled: $color-fg-disabled;
+$color-border-input-disabled: $color-border-disabled;
 
-$spacing: 1.2em;
-$input-spacing: 3 * $spacing / 4;
-$border-radius: 0.25em;
+$spacing: 0.6em;
+$border-radius: 0.8em;
+$border-width: 1px;
 $transition-duration: 0.1s;
 
+$arrow-width: 0.5em;
+$arrow-height: $arrow-width * 0.625;
 %arrow {
   border: solid transparent;
-  border-top-color: $fg;
-  border-width: 0.4em 0.25em;
+  border-top-color: $color-primary-0;
+  border-radius: $border-radius / 2;
+  border-width: $arrow-width $arrow-height;
   box-sizing: border-box;
   content: '';
-  height: 0.8em;
+  height: $arrow-width * 2;
   margin-top: -0.2em;
   position: absolute;
-  right: 0.75em;
+  right: $spacing;
   top: 50%;
-  transform-origin: 0.2em 0.125em;
-  width: 0.5em;
+  transform-origin: $arrow-width / 2 $arrow-height / 2;
+  width: $arrow-height * 2;
   pointer-events: none;
+}
+
+%card {
+  background-color: $color-bg;
+  color: $color-fg;
+  border-radius: $border-radius;
+  box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.1);
+  margin: $spacing;
+
+  > *:first-child {
+    padding-top: $border-radius;
+    border-top-left-radius: $border-radius;
+    border-top-right-radius: $border-radius;
+  }
+
+  > *:last-child {
+    padding-bottom: $border-radius;
+    border-bottom-left-radius: $border-radius;
+    border-bottom-right-radius: $border-radius;
+  }
 }

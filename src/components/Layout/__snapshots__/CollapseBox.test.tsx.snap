@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<CollapseBox /> 1`] = `ShallowWrapper {}`;
+
+exports[`<CollapseBox collapsed=false /> 1`] = `ShallowWrapper {}`;
+
+exports[`<CollapseBox collapsed=true /> 1`] = `ShallowWrapper {}`;
+
+exports[`<CollapseBox padded=false /> 1`] = `ShallowWrapper {}`;
+
+exports[`<CollapseBox padded=true /> 1`] = `ShallowWrapper {}`;

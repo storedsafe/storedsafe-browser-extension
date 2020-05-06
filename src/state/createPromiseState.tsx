@@ -16,21 +16,34 @@ type CreateState = <State, Action>(
   emptyState: State,
   getInitialState: () => Promise<State>,
   reducer: PromiseReducer<State, Action>,
-) => [React.FC<StateProviderProps>, () => StateContext<PromiseState<State>, Action>];
+  mockReducer?: PromiseReducer<State, Action>,
+) => [
+  React.FC<StateProviderProps>,
+  () => StateContext<PromiseState<State>, Action>,
+  React.FC<StateProviderProps>,
+];
 
 const createState: CreateState = <State, Action>(
   initialState: State,
   getInitialState: () => Promise<State>,
   reducer: PromiseReducer<State, Action>,
+  mockReducer: PromiseReducer<State, Action>,
 ) => {
+
+  /**
+   * Initialize with empty state.
+   * */
   const StateContext = createContext<StateContext<PromiseState<State>, Action>>([
     {
       ...initialState, ...defaultLoadState
     },
-    (action: Action) => {} // eslint-disable-line
+    (): void => {} // eslint-disable-line @typescript-eslint/no-empty-function
   ]);
 
-  const StateProvider: React.FC<StateProviderProps> = ({
+  /**
+   * React context provider component.
+   * */
+  const StateProvider: React.FunctionComponent<StateProviderProps> = ({
     children,
   }: StateProviderProps) => (
     <StateContext.Provider
@@ -40,9 +53,26 @@ const createState: CreateState = <State, Action>(
     </StateContext.Provider>
   );
 
+  /**
+   * React mock context provider component for testing components without
+   * relying on external APIs.
+   * */
+  const MockStateProvider: React.FunctionComponent<StateProviderProps> = ({
+    children,
+  }: StateProviderProps) => (
+    <StateContext.Provider
+      value={usePromiseReducer(initialState, getInitialState, mockReducer)}
+    >
+      {children}
+    </StateContext.Provider>
+  );
+
+  /**
+   * Custom context hook to use state.
+   * */
   const useStateValue = (): StateContext<PromiseState<State>, Action> => useContext(StateContext);
 
-  return [StateProvider, useStateValue];
+  return [StateProvider, useStateValue, MockStateProvider];
 };
 
 export default createState;

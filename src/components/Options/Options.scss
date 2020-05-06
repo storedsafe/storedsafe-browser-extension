@@ -1,0 +1,17 @@
+@import '../../variables';
+
+.options {
+  .options-content {
+    max-width: 800px;
+    margin: auto;
+    padding: $spacing * 4;
+  }
+
+  .options-article {
+    .options-article-header,
+    .options-article-footer {
+      padding: $spacing * 2;
+      border-bottom: 1px solid $color-border;
+    }
+  }
+}

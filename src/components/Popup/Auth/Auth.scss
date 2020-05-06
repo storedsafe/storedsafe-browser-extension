@@ -1,0 +1,26 @@
+@import '../../../variables';
+
+.login {
+  .form {
+    display: flex;
+    flex-direction: column;
+    padding: $spacing;
+  }
+
+  label {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: $spacing;
+  }
+
+  .label-checkbox {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+}
+
+.logout {
+  button {
+    width: 100%;
+  }
+}

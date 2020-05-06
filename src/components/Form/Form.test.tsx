@@ -1,16 +1,15 @@
 import * as React from 'react';
 import { shallow, mount } from 'enzyme';
 import { Form } from './Form';
-import { Field } from './Field';
 
-const handleChange = jest.fn();
-const handleSubmit = jest.fn();
-const handleReset = jest.fn();
+const onChange = jest.fn();
+const onSubmit = jest.fn();
+const onReset = jest.fn();
 
 beforeEach(() => {
-  handleChange.mockClear();
-  handleSubmit.mockClear();
-  handleReset.mockClear();
+  onChange.mockClear();
+  onSubmit.mockClear();
+  onReset.mockClear();
 });
 
 test('<Form />', () => {
@@ -20,20 +19,20 @@ test('<Form />', () => {
 
 test('<Form />, change', () => {
   const wrapper = mount(
-    <Form handleChange={handleChange} render={(values: { foo: string }, onChange): React.ReactNode => (
-      <Field name="foo" label="Foo" value={values.foo} onChange={onChange} />
+    <Form onChange={onChange} render={(values: { foo: string }, events): React.ReactNode => (
+      <input name="foo" id="foo" value={values.foo} {...events} />
     )} />
   );
   wrapper.find('input#foo').simulate('change', { target: { name: 'foo', value: 'bar' } });
-  expect(handleChange).toHaveBeenCalledWith('bar', 'foo');
+  expect(onChange).toHaveBeenCalledWith('bar', 'foo');
 });
 
 test('<Form />, submit', () => {
   const wrapper = mount(
-    <Form handleSubmit={handleSubmit} />
+    <Form onSubmit={onSubmit} />
   );
   wrapper.find('form').simulate('submit');
-  expect(handleSubmit).toHaveBeenCalledWith({});
+  expect(onSubmit).toHaveBeenCalledWith({});
 });
 
 test('<Form />, reset', () => {
@@ -41,11 +40,11 @@ test('<Form />, reset', () => {
   const wrapper = mount(
     <Form
       initialValues={initialValues}
-      handleReset={handleReset}
-      render={(values: { foo: string }, onChange): React.ReactNode => (
-      <Field id="foo" label="Foo" value={values.foo} onChange={onChange} />
+      onReset={onReset}
+      render={(values: { foo: string }, events): React.ReactNode => (
+      <input id="foo" name="foo" value={values.foo} {...events} />
     )} />
   );
   wrapper.find('form').simulate('reset');
-  expect(handleReset).toHaveBeenCalledWith(initialValues, initialValues);
+  expect(onReset).toHaveBeenCalledWith(initialValues, initialValues);
 });

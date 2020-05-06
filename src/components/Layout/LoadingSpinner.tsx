@@ -5,7 +5,7 @@ interface LoadingSpinnerProps {
   status?: 'loading' | 'success' | 'error' | 'warning';
 }
 
-export const LoadingSpinner: React.SFC<LoadingSpinnerProps> = ({
+export const LoadingSpinner: React.FunctionComponent<LoadingSpinnerProps> = ({
   status,
 }: LoadingSpinnerProps) => (
   <div className="loading-spinner">

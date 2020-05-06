@@ -1,7 +1,6 @@
 import createPromiseState from './createPromiseState';
 import * as StorageReducer from './StorageReducer';
 
-
 const getInitialState = (): Promise<StorageReducer.State> => (
   StorageReducer.reducer(StorageReducer.emptyState, { type: 'init' })
 );

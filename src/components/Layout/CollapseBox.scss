@@ -4,17 +4,15 @@
   .collapse-box-title {
     position: relative;
     overflow: auto;
-    border-radius: $border-radius $border-radius 0 $border-radius;
     border: 0;
     border-left: 4px solid $color-primary-0;
     background-color: $color-primary-1;
     cursor: pointer;
-    transition: $transition-duration ease-out;
-    transition-property: border-left-width;
+    transition: border-left-width $transition-duration ease-out;
   }
 
   .collapse-box-title {
-    padding: $spacing / 2;
+    padding: $spacing;
   }
 
   .collapse-box-title::after {
@@ -29,7 +27,7 @@
   }
 
   .collapse-box-children.padded {
-    padding: $spacing/4;
+    padding: $spacing / 2;
   }
 }
 
