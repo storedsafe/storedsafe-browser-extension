@@ -86,6 +86,7 @@
 /************************************************************************/
 /******/ ({
 
+<<<<<<< HEAD
 /***/ "./node_modules/axios/index.js":
 /*!*************************************!*\
   !*** ./node_modules/axios/index.js ***!
@@ -2249,11 +2250,14 @@ exports.default = StoredSafe;
 
 /***/ }),
 
+=======
+>>>>>>> master
 /***/ "./src/background.ts":
 /*!***************************!*\
   !*** ./src/background.ts ***!
   \***************************/
 /*! no static exports found */
+<<<<<<< HEAD
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2504,6 +2508,11 @@ exports.set = (settings) => {
     return userStorage.set({ settings: userSettings });
 };
 
+=======
+/***/ (function(module, exports) {
+
+throw new Error("Module build failed (from ./node_modules/ts-loader/index.js):\nError: ENOENT: no such file or directory, open '/home/oscar/work/storedsafe/browser_extension/storedsafe-browser-extension/src/background.ts'");
+>>>>>>> master
 
 /***/ })
 

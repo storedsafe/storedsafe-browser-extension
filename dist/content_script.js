@@ -93,6 +93,7 @@
 /*! no static exports found */
 /***/ (function(module, exports) {
 
+<<<<<<< HEAD
 // const types = /text|url|password|email/i;
 // const ids = /user|name|pass|mail|url|server|site/i;
 const matchers = {
@@ -129,6 +130,9 @@ function onMessage(message) {
 }
 browser.runtime.onMessage.addListener(onMessage);
 
+=======
+throw new Error("Module build failed (from ./node_modules/ts-loader/index.js):\nError: ENOENT: no such file or directory, open '/home/oscar/work/storedsafe/browser_extension/storedsafe-browser-extension/src/content_script.ts'");
+>>>>>>> master
 
 /***/ })
 

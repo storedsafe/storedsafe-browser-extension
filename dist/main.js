@@ -86,6 +86,7 @@
 /************************************************************************/
 /******/ ({
 
+<<<<<<< HEAD
 /***/ "./graphics/padlock-error.svg":
 /*!************************************!*\
   !*** ./graphics/padlock-error.svg ***!
@@ -29561,11 +29562,14 @@ module.exports = exported;
 
 /***/ }),
 
+=======
+>>>>>>> master
 /***/ "./src/index.tsx":
 /*!***********************!*\
   !*** ./src/index.tsx ***!
   \***********************/
 /*! no static exports found */
+<<<<<<< HEAD
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30182,6 +30186,11 @@ module.exports = React;
 /***/ (function(module, exports) {
 
 module.exports = ReactDOM;
+=======
+/***/ (function(module, exports) {
+
+throw new Error("Module build failed (from ./node_modules/ts-loader/index.js):\nError: ENOENT: no such file or directory, open '/home/oscar/work/storedsafe/browser_extension/storedsafe-browser-extension/src/index.tsx'");
+>>>>>>> master
 
 /***/ })
 
