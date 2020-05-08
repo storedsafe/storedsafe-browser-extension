@@ -12,26 +12,23 @@ let idleTimer: number;
 
 const invalidateSession = (url: string): void => {
   console.log('Invalidating session: ', url);
-  Sessions.get().then((sessions) => {
+  Sessions.actions.fetch().then((sessions) => {
     const { apikey, token } = sessions[url];
     const storedSafe = new StoredSafe(url, apikey, token);
     storedSafe.logout();
-    const urls = Object.keys(sessions).filter((sessionUrl) => sessionUrl !== url);
-    const newSessions: Sessions.Sessions = {};
-    urls.forEach((url) => newSessions[url] = sessions[url]);
-    Sessions.set(newSessions);
+    Sessions.actions.remove(url);
   });
 };
 
 const invalidateAllSessions = (): void => {
   console.log('Invalidating all sessions');
-  Sessions.get().then((sessions) => {
+  Sessions.actions.fetch().then((sessions) => {
     Object.keys(sessions).forEach((url) => {
       const { apikey, token } = sessions[url];
       const storedSafe = new StoredSafe(url, apikey, token);
       storedSafe.logout();
     });
-    Sessions.set({});
+    Sessions.actions.clear();
   });
 };
 
@@ -43,7 +40,7 @@ function onStorageChange(
   area: 'local' | 'sync' | 'managed',
 ): void {
   if (area === 'local' && sessions !== undefined && sessions.newValue !== undefined) {
-    Settings.get().then((settings) => {
+    Settings.actions.fetch().then((settings) => {
       const newSessions = sessions.newValue;
       Object.keys(sessionTimers).forEach((url) => {
         clearTimeout(sessionTimers[url]);
@@ -75,20 +72,25 @@ function onInstalled(
 function onIdle(
   state: browser.idle.IdleState
 ): void {
-  Settings.get().then((settings) => {
+  Settings.actions.fetch().then((settings) => {
     if (state === 'locked') {
+      console.log('Device is locked, invalidate all sessions.');
       invalidateAllSessions();
     } else if (state === 'idle') {
       if (idleTimer) {
         window.clearTimeout(idleTimer);
       }
       const idleTimeout = settings.idleMax.value as number * 1000 * 60;
-      idleTimer = window.setTimeout(invalidateAllSessions, idleTimeout);
+      idleTimer = window.setTimeout(() => {
+        console.log('Idle timer expired, invalidate all sessions.');
+        invalidateAllSessions()
+      }, idleTimeout);
     }
   });
 }
 
 function onSuspend(): void {
+  console.log('Suspended, invalidate all sessions.');
   invalidateAllSessions();
 }
 
@@ -117,7 +119,7 @@ function onMenuClick(
  * */
 
 // TODO: Remove debug pritnout
-console.log('Background script: ', new Date(Date.now()));
+console.log('Background script initialized: ', new Date(Date.now()));
 
 // Invalidate all sessions on launch
 invalidateAllSessions();

@@ -10,14 +10,14 @@ export interface Settings {
   [key: string]: Field;
 }
 
-interface Dict {
+export interface SettingsValues {
   [key: string]: string | number | boolean;
 }
 
-export const defaults: Settings = {
-  autoFill: { value: false, managed: false },
-  idleMax: { value: 15, managed: false },
-  maxTokenLife: { value: 180, managed: false },
+export const defaults: SettingsValues = {
+  autoFill: false,
+  idleMax: 15,
+  maxTokenLife: 180,
 };
 
 export interface FieldsProps {
@@ -65,7 +65,7 @@ export const fields: FieldsProps = {
  * */
 const populate = (
   settings: Settings,
-  values: Dict,
+  values: SettingsValues,
   managed = false
 ): void => {
   Object.keys(values).forEach((key) => {
@@ -81,7 +81,7 @@ const populate = (
  * storage are set as managed.
  * @return Settings Promise containing Settings object.
  * */
-export const get = (): Promise<Settings> => {
+const get = (): Promise<Settings> => {
   const settings: Settings = {};
   return systemStorage.get('settings').then(({ settings: system }) => {
     if (system && system.enforced) {
@@ -94,7 +94,8 @@ export const get = (): Promise<Settings> => {
       if (system && system.defaults) {
         populate(settings, system.defaults);
       }
-      return { ...defaults, ...settings };
+      populate(settings, defaults);
+      return settings;
     });
   });
 }
@@ -103,8 +104,8 @@ export const get = (): Promise<Settings> => {
  * Commit settings object to sync storage.
  * @param settings New settings object.
  * */
-export const set = (settings: Settings): Promise<void> => {
-  const userSettings: Dict = {};
+const set = (settings: Settings): Promise<void> => {
+  const userSettings: SettingsValues = {};
   Object.keys(settings).forEach((field) => {
     if (settings[field].managed === false) {
       userSettings[field] = settings[field].value;
@@ -112,3 +113,23 @@ export const set = (settings: Settings): Promise<void> => {
   });
   return userStorage.set({ settings: userSettings });
 }
+
+export const actions = {
+  /**
+   * Update user settings. Managed fields will be ignored.
+   * */
+  update: (updatedSettings: Settings): Promise<Settings> => {
+    return get().then((settings) => {
+      const newSettings = {
+        ...settings,
+        ...updatedSettings,
+      };
+      return set(newSettings).then(() => get());
+    })
+  },
+
+  /**
+   * Fetch settings from storage.
+   * */
+  fetch: get,
+};

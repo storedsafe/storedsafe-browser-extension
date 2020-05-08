@@ -29,74 +29,117 @@ describe('uses mocked browser.storage', () => {
     syncSetMock.mockClear();
   });
 
-  test('get(), empty', () => (
-    Sites.get().then((sites) => {
-      expect(sites.system.length).toBe(0);
-      expect(sites.user.length).toBe(0);
+  test('fetch(), empty', () => (
+    Sites.actions.fetch().then((sites) => {
+      expect(sites.collections.system.length).toBe(0);
+      expect(sites.collections.user.length).toBe(0);
     })
   ));
 
-  test('get(), system sites', () => {
-    const mockSites = [ { url: 'foo.example.com', apikey: 'mockapikey' } ];
+  test('fetch(), system sites', () => {
+    const mockSites = [
+      {
+        url: 'foo.example.com',
+        apikey: 'mockapikey'
+      }
+    ];
     managedGetMock.mockImplementationOnce(mockGet(mockSites));
-    return Sites.get().then((sites) => {
-      expect(sites.system).toBe(mockSites);
-      expect(sites.user.length).toBe(0);
+    return Sites.actions.fetch().then((sites) => {
+      expect(sites.collections.system).toBe(mockSites);
+      expect(sites.collections.user.length).toBe(0);
     });
   });
 
-  test('get(), user sites', () => {
+  test('fetch(), user sites', () => {
     const mockSites = [ { url: 'foo.example.com', apikey: 'mockapikey' } ];
     syncGetMock.mockImplementationOnce(mockGet(mockSites));
-    return Sites.get().then((sites) => {
-      expect(sites.system.length).toBe(0);
-      expect(sites.user).toBe(mockSites);
+    return Sites.actions.fetch().then((sites) => {
+      expect(sites.collections.system.length).toBe(0);
+      expect(sites.collections.user).toBe(mockSites);
     });
   });
 
-  test('get(), both', () => {
-    const managedSites = [ { url: 'managed.example.com', apikey: 'managedapikey' } ];
-    const syncSites = [ { url: 'sync.example.com', apikey: 'syncapikey' } ];
+  test('fetch(), both', () => {
+    const managedSites = [
+      {
+        url: 'managed.example.com',
+        apikey: 'managedapikey'
+      }
+    ];
+    const syncSites = [
+      {
+        url: 'sync.example.com',
+        apikey: 'syncapikey'
+      }
+    ];
     managedGetMock.mockImplementationOnce(mockGet(managedSites));
     syncGetMock.mockImplementationOnce(mockGet(syncSites));
-    return Sites.get().then((sites) => {
-      expect(sites.system).toBe(managedSites);
-      expect(sites.user).toBe(syncSites);
+    return Sites.actions.fetch().then((sites) => {
+      expect(sites.collections.system).toBe(managedSites);
+      expect(sites.collections.user).toBe(syncSites);
     });
   });
 
-  test('set(), empty', () => {
-    return Sites.set({
-      system: [], user: [],
-    }).then(() => {
-      expect(syncSetMock).toHaveBeenCalledWith({ sites: [] });
+  test('add()', () => {
+    const syncSites = [
+      {
+        url: 'sync.example.com',
+        apikey: 'syncapikey'
+      }
+    ];
+    const site: Sites.Site = {
+      url: 'foo.example.com',
+      apikey: 'fooapikey'
+    };
+    const newSites = [
+      ...syncSites,
+      site,
+    ];
+    syncGetMock.mockImplementationOnce(mockGet(syncSites));
+    syncGetMock.mockImplementationOnce(mockGet(newSites));
+    return Sites.actions.add(site).then((sites) => {
+      expect(syncSetMock).toHaveBeenCalledWith({
+        sites: newSites
+      });
+      expect(sites).toEqual({
+        list: newSites,
+        collections: {
+          system: [],
+          user: newSites,
+        },
+      });
     });
   });
 
-  test('set(), system sites', () => {
-    return Sites.set({
-      system:  [{ url: 'foo.example.com', apikey: 'mockapikey' }], user: [],
-    }).then(() => {
-      expect(syncSetMock).toHaveBeenCalledWith({ sites: [] });
-    });
-  });
-
-  test('set(), user sites', () => {
-    const mockSites = [{ url: 'foo.example.com', apikey: 'mockapikey' }];
-    return Sites.set({
-      system:  [], user: mockSites,
-    }).then(() => {
-      expect(syncSetMock).toHaveBeenCalledWith({ sites: mockSites });
-    });
-  });
-
-  test('set(), both', () => {
-    const managedSites = [ { url: 'managed.example.com', apikey: 'managedapikey' } ];
-    const syncSites = [ { url: 'sync.example.com', apikey: 'syncapikey' } ];
-    return Sites.set({
-      system:  managedSites, user: syncSites,
-    }).then(() => {
-      expect(syncSetMock).toHaveBeenCalledWith({ sites: syncSites });
+  test('remove()', () => {
+    const syncSites = [
+      {
+        url: 'foo.example.com',
+        apikey: 'fooapikey'
+      },
+      {
+        url: 'bar.example.com',
+        apikey: 'barapikey'
+      },
+      {
+        url: 'zot.example.com',
+        apikey: 'zotapikey'
+      }
+    ];
+    const updatedSites = [syncSites[0], syncSites[2]];
+    syncGetMock.mockImplementationOnce(mockGet(syncSites));
+    syncGetMock.mockImplementationOnce(mockGet(updatedSites));
+    return Sites.actions.remove(1).then((sites) => {
+      expect(syncSetMock).toHaveBeenCalledWith({
+        sites: updatedSites,
+      });
+      expect(sites).toEqual({
+        list: updatedSites,
+        collections: {
+          system: [],
+          user: updatedSites,
+        }
+      });
     });
   });
 });

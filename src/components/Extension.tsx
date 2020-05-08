@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StorageProvider } from '../state/StorageState';
+import { StorageProvider } from '../hooks/useStorage';
 import DebugStorage from './DebugStorage';
 import Options from './Options';
 import Popup from './Popup'
@@ -11,7 +11,7 @@ enum Page {
 }
 
 const Extension: React.FunctionComponent = () => {
-  const [page, setPage] = useState<Page>(Page.Options);
+  const [page, setPage] = useState<Page>();
 
   React.useEffect(() => {
     const path = window.location.href.split('#')[1];

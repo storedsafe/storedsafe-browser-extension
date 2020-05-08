@@ -86,7 +86,6 @@
 /************************************************************************/
 /******/ ({
 
-<<<<<<< HEAD
 /***/ "./node_modules/axios/index.js":
 /*!*************************************!*\
   !*** ./node_modules/axios/index.js ***!
@@ -2250,14 +2249,11 @@ exports.default = StoredSafe;
 
 /***/ }),
 
-=======
->>>>>>> master
 /***/ "./src/background.ts":
 /*!***************************!*\
   !*** ./src/background.ts ***!
   \***************************/
 /*! no static exports found */
-<<<<<<< HEAD
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2283,25 +2279,22 @@ let sessionTimers = {};
 let idleTimer;
 const invalidateSession = (url) => {
     console.log('Invalidating session: ', url);
-    Sessions.get().then((sessions) => {
+    Sessions.actions.fetch().then((sessions) => {
         const { apikey, token } = sessions[url];
         const storedSafe = new storedsafe_1.default(url, apikey, token);
         storedSafe.logout();
-        const urls = Object.keys(sessions).filter((sessionUrl) => sessionUrl !== url);
-        const newSessions = {};
-        urls.forEach((url) => newSessions[url] = sessions[url]);
-        Sessions.set(newSessions);
+        Sessions.actions.remove(url);
     });
 };
 const invalidateAllSessions = () => {
     console.log('Invalidating all sessions');
-    Sessions.get().then((sessions) => {
+    Sessions.actions.fetch().then((sessions) => {
         Object.keys(sessions).forEach((url) => {
             const { apikey, token } = sessions[url];
             const storedSafe = new storedsafe_1.default(url, apikey, token);
             storedSafe.logout();
         });
-        Sessions.set({});
+        Sessions.actions.clear();
     });
 };
 /**
@@ -2309,7 +2302,7 @@ const invalidateAllSessions = () => {
  * */
 function onStorageChange({ sessions }, area) {
     if (area === 'local' && sessions !== undefined && sessions.newValue !== undefined) {
-        Settings.get().then((settings) => {
+        Settings.actions.fetch().then((settings) => {
             const newSessions = sessions.newValue;
             Object.keys(sessionTimers).forEach((url) => {
                 clearTimeout(sessionTimers[url]);
@@ -2334,8 +2327,9 @@ function onInstalled({ reason }) {
     }
 }
 function onIdle(state) {
-    Settings.get().then((settings) => {
+    Settings.actions.fetch().then((settings) => {
         if (state === 'locked') {
+            console.log('Device is locked, invalidate all sessions.');
             invalidateAllSessions();
         }
         else if (state === 'idle') {
@@ -2343,11 +2337,15 @@ function onIdle(state) {
                 window.clearTimeout(idleTimer);
             }
             const idleTimeout = settings.idleMax.value * 1000 * 60;
-            idleTimer = window.setTimeout(invalidateAllSessions, idleTimeout);
+            idleTimer = window.setTimeout(() => {
+                console.log('Idle timer expired, invalidate all sessions.');
+                invalidateAllSessions();
+            }, idleTimeout);
         }
     });
 }
 function onSuspend() {
+    console.log('Suspended, invalidate all sessions.');
     invalidateAllSessions();
 }
 function onMenuClick(info, tab) {
@@ -2370,7 +2368,7 @@ function onMenuClick(info, tab) {
  * Subscribe to events and initialization
  * */
 // TODO: Remove debug pritnout
-console.log('Background script: ', new Date(Date.now()));
+console.log('Background script initialized: ', new Date(Date.now()));
 // Invalidate all sessions on launch
 invalidateAllSessions();
 // Listen to changes in storage to know when sessions are updated
@@ -2400,7 +2398,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
  * Get sessions from local storage.
  * @return Sessions Promise containing Sessions object.
  * */
-exports.get = () => (browser.storage.local.get('sessions')
+const get = () => (browser.storage.local.get('sessions')
     .then(({ sessions }) => {
     return sessions || {};
 }));
@@ -2408,8 +2406,40 @@ exports.get = () => (browser.storage.local.get('sessions')
  * Commit Sessions object to sync storage.
  * @param sessions New Sessions object.
  * */
-exports.set = (sessions) => {
+const set = (sessions) => {
     return browser.storage.local.set({ sessions });
+};
+exports.actions = {
+    /**
+     * Add new session to storage.
+     * */
+    add: (url, session) => {
+        return get().then((sessions) => {
+            const newSessions = Object.assign(Object.assign({}, sessions), { [url]: session });
+            return set(newSessions).then(() => get());
+        });
+    },
+    /**
+     * Remove session from storage.
+     * */
+    remove: (url) => {
+        return get().then((sessions) => {
+            const urls = Object.keys(sessions).filter((sessionUrl) => sessionUrl !== url);
+            const newSessions = {};
+            urls.forEach((url) => newSessions[url] = sessions[url]);
+            return set(newSessions).then(() => get());
+        });
+    },
+    /**
+     * Clear all sessions.
+     * */
+    clear: () => {
+        return set({}).then(() => get());
+    },
+    /**
+     * Fetch sessions from storage.
+     * */
+    fetch: get,
 };
 
 
@@ -2428,9 +2458,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const systemStorage = browser.storage.managed;
 const userStorage = browser.storage.sync;
 exports.defaults = {
-    autoFill: { value: false, managed: false },
-    idleMax: { value: 15, managed: false },
-    maxTokenLife: { value: 180, managed: false },
+    autoFill: false,
+    idleMax: 15,
+    maxTokenLife: 180,
 };
 exports.fields = {
     autoFill: {
@@ -2477,7 +2507,7 @@ const populate = (settings, values, managed = false) => {
  * storage are set as managed.
  * @return Settings Promise containing Settings object.
  * */
-exports.get = () => {
+const get = () => {
     const settings = {};
     return systemStorage.get('settings').then(({ settings: system }) => {
         if (system && system.enforced) {
@@ -2490,7 +2520,8 @@ exports.get = () => {
             if (system && system.defaults) {
                 populate(settings, system.defaults);
             }
-            return Object.assign(Object.assign({}, exports.defaults), settings);
+            populate(settings, exports.defaults);
+            return settings;
         });
     });
 };
@@ -2498,7 +2529,7 @@ exports.get = () => {
  * Commit settings object to sync storage.
  * @param settings New settings object.
  * */
-exports.set = (settings) => {
+const set = (settings) => {
     const userSettings = {};
     Object.keys(settings).forEach((field) => {
         if (settings[field].managed === false) {
@@ -2507,12 +2538,22 @@ exports.set = (settings) => {
     });
     return userStorage.set({ settings: userSettings });
 };
+exports.actions = {
+    /**
+     * Update user settings. Managed fields will be ignored.
+     * */
+    update: (updatedSettings) => {
+        return get().then((settings) => {
+            const newSettings = Object.assign(Object.assign({}, settings), updatedSettings);
+            return set(newSettings).then(() => get());
+        });
+    },
+    /**
+     * Fetch settings from storage.
+     * */
+    fetch: get,
+};
 
-=======
-/***/ (function(module, exports) {
-
-throw new Error("Module build failed (from ./node_modules/ts-loader/index.js):\nError: ENOENT: no such file or directory, open '/home/oscar/work/storedsafe/browser_extension/storedsafe-browser-extension/src/background.ts'");
->>>>>>> master
 
 /***/ })
 

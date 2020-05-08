@@ -1,5 +1,5 @@
 import React, { Fragment, useState } from 'react';
-import * as Layout from '../components/Layout';
+import * as UI from '../components/UI';
 
 export default {
   title: 'Layout',
@@ -20,93 +20,29 @@ export const Button: React.FunctionComponent = () => {
 
   return (
     <Fragment>
-      <Layout.Button isLoading={isLoading} color={color}>
+      <UI.Button isLoading={isLoading} color={color}>
         Button
-      </Layout.Button>
+      </UI.Button>
       <br />
-      <Layout.Button isLoading={true} onClick={(): void => setIsLoading(!isLoading)}>
+      <UI.Button isLoading={true} onClick={(): void => setIsLoading(!isLoading)}>
         Loading
-      </Layout.Button>
-      <Layout.Button color='primary' onClick={(): void => setColor('primary')}>
+      </UI.Button>
+      <UI.Button color='primary' onClick={(): void => setColor('primary')}>
         Primary
-      </Layout.Button>
-      <Layout.Button color='accent' onClick={(): void => setColor('accent')}>
+      </UI.Button>
+      <UI.Button color='accent' onClick={(): void => setColor('accent')}>
         Accent
-      </Layout.Button>
-      <Layout.Button color='warning' onClick={(): void => setColor('warning')}>
+      </UI.Button>
+      <UI.Button color='warning' onClick={(): void => setColor('warning')}>
         Warning
-      </Layout.Button>
-      <Layout.Button color='danger' onClick={(): void => setColor('danger')}>
+      </UI.Button>
+      <UI.Button color='danger' onClick={(): void => setColor('danger')}>
         Danger
-      </Layout.Button>
+      </UI.Button>
     </Fragment>
   );
 };
 
-export const CollapsibleVertical: React.FunctionComponent = () => {
-  const [collapsed, setCollapsed] = useState<boolean>(false);
-
-  return (
-    <Fragment>
-      <Layout.Button onClick={(): void => setCollapsed(!collapsed)}>
-        Collapse
-      </Layout.Button>
-      <Layout.Collapsible collapsed={collapsed}>
-        <div style={{ backgroundColor: '#f00', padding: '5em' }}>
-          Vertical, unbounded
-        </div>
-      </Layout.Collapsible>
-    </Fragment>
-  );
-};
-
-export const CollapsibleHorizontal: React.FunctionComponent = () => {
-  const [collapsed, setCollapsed] = useState<boolean>(false);
-
-  return (
-    <Fragment>
-      <Layout.Button onClick={(): void => setCollapsed(!collapsed)}>
-        Collapse
-      </Layout.Button>
-      <Layout.Collapsible collapsed={collapsed} horizontal={true}>
-        <div style={{ backgroundColor: '#ff0', padding: '5em' }}>
-          Horiztonal, unbounded
-        </div>
-      </Layout.Collapsible>
-    </Fragment>
-  );
-};
-
-export const CollapsibleVertical100: React.FunctionComponent = () => {
-  const [collapsed, setCollapsed] = useState<boolean>(false);
-
-  return (
-    <Fragment>
-      <Layout.Button onClick={(): void => setCollapsed(!collapsed)}>
-        Collapse
-      </Layout.Button>
-      <Layout.Collapsible collapsed={collapsed} maxSize="100px">
-        <div style={{ backgroundColor: '#f0f', padding: '5em' }}>
-          Vertical, 100px
-        </div>
-      </Layout.Collapsible>
-    </Fragment>
-  );
-};
-
-export const CollapsibleHorizontal100: React.FunctionComponent = () => {
-  const [collapsed, setCollapsed] = useState<boolean>(false);
-
-  return (
-    <Fragment>
-      <Layout.Button onClick={(): void => setCollapsed(!collapsed)}>
-        Collapse
-      </Layout.Button>
-      <Layout.Collapsible collapsed={collapsed} horizontal={true} maxSize="100px">
-        <div style={{ backgroundColor: '#0ff', padding: '5em' }}>
-          Horiztonal, 100px
-        </div>
-      </Layout.Collapsible>
-    </Fragment>
-  );
+export const Banner: React.FunctionComponent = () => {
+  return <UI.Banner />;
 };

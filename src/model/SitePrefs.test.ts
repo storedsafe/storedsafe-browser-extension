@@ -27,20 +27,20 @@ describe('uses mocked browser.storage', () => {
     localGetMock.mockClear();
   });
 
-  test('get(), empty', () => (
-    SitePrefs.get().then((sitePrefs) => {
+  test('fetch(), empty', () => (
+    SitePrefs.actions.fetch().then((sitePrefs) => {
       expect(Object.keys(sitePrefs).length).toBe(0);
     })
   ));
 
-  test('get(), no data', () => {
+  test('fetch(), no data', () => {
     localGetMock.mockImplementationOnce(mockGet({}));
-    return SitePrefs.get().then((sitePrefs) => {
+    return SitePrefs.actions.fetch().then((sitePrefs) => {
       expect(Object.keys(sitePrefs).length).toBe(0);
     });
   });
 
-  test('get(), with data', () => {
+  test('fetch(), with data', () => {
     const mockSitePrefs: SitePrefs.SitePrefs = {
       'foo.example.com': {
         username: 'bob',
@@ -54,22 +54,54 @@ describe('uses mocked browser.storage', () => {
       },
     }
     localGetMock.mockImplementationOnce(mockGet(mockSitePrefs));
-    return SitePrefs.get().then((sitePrefs) => {
+    return SitePrefs.actions.fetch().then((sitePrefs) => {
       expect(sitePrefs['foo.example.com']).toBe(mockSitePrefs['foo.example.com']);
       expect(sitePrefs['bar.example.com']).toBe(mockSitePrefs['bar.example.com']);
       expect(sitePrefs['zot.example.com']).toBe(mockSitePrefs['zot.example.com']);
     });
   });
 
-  test('set()', () => {
+  test('update()', () => {
     const mockSitePrefs: SitePrefs.SitePrefs = {
       'foo.example.com': {
         username: 'bob',
         loginType: 'yubikey',
       },
     }
-    return SitePrefs.set(mockSitePrefs).then(() => {
-      expect(localSetMock).toHaveBeenCalledWith({ sitePrefs: mockSitePrefs });
+    const url = 'foo.example.com';
+    const username = 'eve';
+    const loginType = 'totp';
+    const newSitePrefs: SitePrefs.SitePrefs = {
+      ...mockSitePrefs,
+      [url]: {
+        username,
+        loginType,
+      },
+    }
+    localGetMock.mockImplementationOnce(mockGet(mockSitePrefs));
+    localGetMock.mockImplementationOnce(mockGet(newSitePrefs));
+    return SitePrefs.actions.update(
+      url, username, loginType
+    ).then((sitePrefs) => {
+      expect(localSetMock).toHaveBeenCalledWith({
+        sitePrefs: newSitePrefs,
+      });
+      expect(sitePrefs).toEqual(newSitePrefs);
+    });
+  });
+
+  test('remove()', () => {
+    const mockSitePrefs: SitePrefs.SitePrefs = {
+      'foo.example.com': {
+        username: 'bob',
+        loginType: 'yubikey',
+      },
+    }
+    localGetMock.mockImplementationOnce(mockGet(mockSitePrefs));
+    const url = 'foo.example.com';
+    return SitePrefs.actions.remove(url).then((sitePrefs) => {
+      expect(localSetMock).toHaveBeenCalledWith({ sitePrefs: {} });
+      expect(sitePrefs).toEqual({});
     });
   });
 });

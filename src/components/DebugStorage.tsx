@@ -1,9 +1,8 @@
 import React from 'react';
-import { useStorage } from '../state/StorageState';
-import { CollapseList } from './Layout';
+import { useStorage } from '../hooks/useStorage';
 
 const DebugStorage: React.FC = () => {
-  const [state] = useStorage();
+  const { state, isInitialized } = useStorage();
 
   const settings = Object.keys(state.settings).map((key) => {
     const { value, managed } = state.settings[key];
@@ -61,19 +60,17 @@ const DebugStorage: React.FC = () => {
     <section className="card">
       <h2>Storage</h2>
       <h3>State</h3>
-      <p>Is Initialized: {state.isInitialized.toString()}</p>
-      <p>Is Loading: {state.isLoading.toString()}</p>
-      <p>Has Error: {state.hasError.toString()}</p>
-      <p>Error: {state.error && state.error.toString() || 'none'}</p>
-      {true && (
-        <React.Fragment>
-          <CollapseList startCollapsed={false} title={<h3>Settings</h3>} items={settings} />
-          <CollapseList startCollapsed={false} title={<h3>System Sites</h3>} items={systemSites} />
-          <CollapseList startCollapsed={false} title={<h3>User Sites</h3>} items={userSites} />
-          <CollapseList startCollapsed={false} title={<h3>Sessions</h3>} items={sessions} />
-          <CollapseList startCollapsed={false} title={<h3>Site Prefs</h3>} items={sitePrefs} />
-        </React.Fragment>
-      )}
+      <p>Is Initialized: {isInitialized.toString()}</p>
+      <h3>Settings</h3>
+      {settings}
+      <h3>System Sites</h3>
+      {systemSites}
+      <h3>User Sites</h3>
+      {userSites}
+      <h3>Sessions</h3>
+      {sessions}
+      <h3>Site Prefs</h3>
+      {sitePrefs}
     </section>
   );
 };

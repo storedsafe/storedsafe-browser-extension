@@ -1,22 +1,7 @@
 @import '../../variables';
 
 .popup {
-  display: flex;
-  flex-direction: column;
-  width: 360px;
-  height: 400px;
-  overflow: auto;
-
-  header {
-    width: 100%;
-  }
-
-  .logo {
-    margin: auto;
-    max-width: 100%;
-  }
-
-  .popup-content {
-    flex-grow: 1;
-  }
+  background-color: $color-bg;
+  height: 413px;
+  width: 550px;
 }

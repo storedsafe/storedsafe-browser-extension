@@ -33,41 +33,44 @@ describe('uses mocked browser.storage', () => {
     syncSetMock.mockClear();
   });
 
-  test('.get(), no settings', () => (
-    Settings.get().then((settings) => {
-      expect(settings).toEqual(Settings.defaults);
+  test('.fetch(), no settings', () => (
+    Settings.actions.fetch().then((settings) => {
+      Object.keys(settings).forEach((key) => {
+        expect(settings[key].managed).toBe(false);
+        expect(settings[key].value).toEqual(Settings.defaults[key]);
+      });
     })
   ));
 
-  test('.get(), with enforced value', () => {
+  test('.fetch(), with enforced value', () => {
     managedGetMock.mockImplementationOnce(mockGet({
       enforced: { foo: 'bar' }
     }));
-    return Settings.get().then((settings) => {
+    return Settings.actions.fetch().then((settings) => {
       expect(settings.foo.managed).toBe(true);
       expect(settings.foo.value).toBe('bar');
     })
   });
 
-  test('.get(), with default value', () => {
+  test('.fetch(), with default value', () => {
     managedGetMock.mockImplementationOnce(mockGet({
       defaults: { foo: 'bar' }
     }));
-    return Settings.get().then((settings) => {
+    return Settings.actions.fetch().then((settings) => {
       expect(settings.foo.managed).toBe(false);
       expect(settings.foo.value).toBe('bar');
     })
   });
 
-  test('.get(), with user value', () => {
+  test('.fetch(), with user value', () => {
     syncGetMock.mockImplementationOnce(mockGet({ foo: 'bar' }));
-    return Settings.get().then((settings) => {
+    return Settings.actions.fetch().then((settings) => {
       expect(settings.foo.managed).toBe(false);
       expect(settings.foo.value).toBe('bar');
     });
   });
 
-  test('.get(), merge', () => {
+  test('.fetch(), merge', () => {
     managedGetMock.mockImplementationOnce(mockGet({
       enforced: {
         enforced: 'enforced',
@@ -82,7 +85,7 @@ describe('uses mocked browser.storage', () => {
       enforced: 'sync',
       sync: 'sync',
     }));
-    return Settings.get().then((settings) => {
+    return Settings.actions.fetch().then((settings) => {
       expect(settings.enforced.managed).toBe(true);
       expect(settings.enforced.value).toBe('enforced');
       expect(settings.defaults.managed).toBe(false);
@@ -92,45 +95,56 @@ describe('uses mocked browser.storage', () => {
     });
   });
 
-  test('set()', () => {
+  test('update()', () => {
+    syncGetMock.mockImplementationOnce(mockGet({}));
     const settings: Settings.Settings = {}
-    return Settings.set(settings).then(() => {
+    return Settings.actions.update(settings).then(() => {
       expect(syncSetMock).toHaveBeenCalledWith({
-        settings: {}
+        settings: Settings.defaults,
       });
     });
   });
 
-  test('set(), with settings', () => {
+  test('update(), with settings', () => {
     const settings: Settings.Settings = {
       foo: {
         managed: false,
         value: 'bar',
       },
     };
-    return Settings.set(settings).then(() => {
+    syncGetMock.mockImplementationOnce(mockGet({}));
+    return Settings.actions.update(settings).then(() => {
       expect(syncSetMock).toHaveBeenCalledWith({
-        settings: { foo: 'bar' },
+        settings: {
+          ...Settings.defaults,
+          foo: 'bar'
+        },
       });
     });
   });
 
-  test('set(), skip managed', () => {
-    const settings: Settings.Settings = {
+  test('update(), skip managed', () => {
+    const newSettings: Settings.Settings = {
       foo: {
         managed: true,
         value: 'bar',
       },
     };
-    return Settings.set(settings).then(() => {
+    managedGetMock.mockImplementation(mockGet({}));
+    syncGetMock.mockImplementation(mockGet({}));
+    return Settings.actions.update(newSettings).then((settings) => {
       expect(syncSetMock).toHaveBeenCalledWith({
-        settings: {},
+        settings: Settings.defaults,
+      });
+      Object.keys(Settings.defaults).forEach((key) => {
+        expect(settings[key].managed).toBe(false);
+        expect(settings[key].value).toEqual(Settings.defaults[key]);
       });
     });
   });
 
-  test('set(), skip managed, add unmanaged', () => {
-    const settings: Settings.Settings = {
+  test('update(), skip managed, add unmanaged', () => {
+    const newSettings: Settings.Settings = {
       foo: {
         managed: true,
         value: 'bar',
@@ -140,9 +154,24 @@ describe('uses mocked browser.storage', () => {
         value: 'foo',
       },
     }
-    return Settings.set(settings).then(() => {
+    managedGetMock.mockImplementation(mockGet({}));
+    syncGetMock.mockImplementationOnce(mockGet({}));
+    syncGetMock.mockImplementationOnce(mockGet({
+      ...Settings.defaults,
+      zot: 'foo',
+    }));
+    return Settings.actions.update(newSettings).then((settings) => {
       expect(syncSetMock).toHaveBeenCalledWith({
-        settings: { zot: 'foo' },
+        settings: {
+          ...Settings.defaults,
+          zot: 'foo'
+        },
+      });
+      expect(settings.zot.value).toEqual('foo');
+      expect(settings.zot.managed).toEqual(false);
+      Object.keys(Settings.defaults).forEach((key) => {
+        expect(settings[key].managed).toBe(false);
+        expect(settings[key].value).toEqual(Settings.defaults[key]);
       });
     });
   });

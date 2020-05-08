@@ -1,18 +1,30 @@
-import React, { Fragment } from 'react';
-import { useStorage } from '../../state/StorageState';
-import { Button } from '../Layout';
-import {
-  Form,
-  FormValues,
-  RenderFunction,
-  OnSubmitCallback,
-} from '../Form';
+import React, { useState } from 'react';
+import { useStorage } from '../../hooks/useStorage';
+import { Button } from '../UI';
+import { useForm } from '../../hooks/useForm';
 import './Sites.scss';
 
-export const Sites: React.FunctionComponent = () => {
-  const [state, dispatch] = useStorage();
+/**
+ * Form values in the add site form.
+ * */
+interface AddSiteValues {
+  url: string;
+  apikey: string;
+}
 
-  if (!state.isInitialized) return <p>Loading...</p>;
+export const Sites: React.FunctionComponent = () => {
+  const [loading, setLoading] = useState<{ [key: string]: boolean }>({});
+
+  /**
+   * Initial values for the add site form.
+   * */
+  const addSiteInitialValues = { url: '', apikey: '' };
+  const [
+    addSiteValues, events, reset
+  ] = useForm<AddSiteValues>(addSiteInitialValues);
+  const { state, dispatch, isInitialized } = useStorage();
+
+  if (!isInitialized) return <p>Loading...</p>;
 
   const { system, user } = state.sites.collections;
 
@@ -30,10 +42,18 @@ export const Sites: React.FunctionComponent = () => {
   const onRemove = (
     removeUrl: string
   ): () => void => (): void => {
+    setLoading({ ...loading, [removeUrl]: true });
     const id = user.findIndex(({ url }) => url === removeUrl);
     dispatch({
       sites: {
         type: 'remove', id
+      },
+    }, {
+      onSuccess: () => {
+        setLoading({ ...loading, [removeUrl]: false })
+      },
+      onError: () => {
+        setLoading({ ...loading, [removeUrl]: false })
       },
     })
   };
@@ -44,75 +64,41 @@ export const Sites: React.FunctionComponent = () => {
   const userSites = user.map((site) => (
     <li key={site.url}>
       <span>{site.url}</span>
-      <Button color="danger" onClick={onRemove(site.url)}>Delete</Button>
+      <Button
+        color="danger"
+        onClick={onRemove(site.url)}
+        isLoading={loading[site.url] || false}>
+        Delete
+      </Button>
     </li>
   ));
-
-  /**
-   * Form values in the add site form.
-   * */
-  interface AddSiteValues extends FormValues {
-    url: string;
-    apikey: string;
-  }
-
-  /**
-   * Initial values for the add site form.
-   * */
-  const addSiteValues = { url: '', apikey: '' };
 
   /**
    * Callback function to add site after the add site form
    * is submitted.
    * */
-  const onAdd: OnSubmitCallback = ({
-    url, apikey
-  }: AddSiteValues, reset) => {
-    reset();
+  const onAdd = (
+    event: React.FormEvent<HTMLFormElement>
+  ): void => {
+    setLoading({ ...loading, add: true });
+    event.preventDefault();
+    const { url, apikey } = addSiteValues;
     dispatch({
       sites: {
         type: 'add',
         site: { url, apikey },
       },
-    });
+    }, {
+      onSuccess: () => {
+        setLoading({ ...loading, add: false });
+        reset();
+      },
+      onError: (error) => {
+        setLoading({ ...loading, add: false })
+        console.error(error);
+      },
+    })
   }
-
-  /**
-   * Form for adding a site to the collection of sites
-   * managed by the user.
-   * */
-  const addSite: RenderFunction = (
-    values: AddSiteValues,
-    events
-  ) => (
-    <Fragment>
-      <label htmlFor="url">
-        URL
-        <input
-          type="text"
-          name="url"
-          id="url"
-          placeholder="URL"
-          required
-          value={values.url}
-          {...events}
-        />
-      </label>
-      <label htmlFor="apikey">
-        API Key
-        <input
-          type="text"
-          name="apikey"
-          id="apikey"
-          placeholder="API Key"
-          required
-          value={values.apikey}
-          {...events}
-        />
-      </label>
-      <Button color="accent" type="submit">Add Site</Button>
-    </Fragment>
-  );
 
   return (
     <section className="sites">
@@ -120,13 +106,40 @@ export const Sites: React.FunctionComponent = () => {
         <header className="sites-article-header">
           <h3>Add new site</h3>
         </header>
-        <Form
-          className="sites-add-form"
-          initialValues={addSiteValues}
-          onSubmit={onAdd}
-          render={addSite}
-        />
+        <form className="sites-add-form" onSubmit={onAdd}>
+          <label htmlFor="url">
+            URL
+            <input
+              type="text"
+              name="url"
+              id="url"
+              placeholder="URL"
+              required
+              value={addSiteValues.url}
+              {...events}
+            />
+          </label>
+          <label htmlFor="apikey">
+            API Key
+            <input
+              type="text"
+              name="apikey"
+              id="apikey"
+              placeholder="API Key"
+              required
+              value={addSiteValues.apikey}
+              {...events}
+            />
+          </label>
+          <Button
+            color="accent"
+            type="submit"
+            isLoading={loading.add || false}>
+            Add Site
+          </Button>
+        </form>
       </article>
+
       {userSites.length > 0 && (<article
         className="sites-article sites-user">
         <header className="sites-article-header">
@@ -137,6 +150,7 @@ export const Sites: React.FunctionComponent = () => {
         </ul>
       </article>)
       }
+
       {managedSites.length > 0 && (<article
         className="sites-article sites-managed">
         <header className="sites-article-header">
@@ -147,6 +161,7 @@ export const Sites: React.FunctionComponent = () => {
         </ul>
       </article>)
       }
+
     </section>
   );
 };

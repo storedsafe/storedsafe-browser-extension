@@ -45,6 +45,10 @@ label {
   }
 }
 
+.label-altered {
+  color: $color-warning-3;
+}
+
 .label-checkbox {
   display: flex;
   flex-direction: row;

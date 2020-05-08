@@ -27,20 +27,20 @@ describe('uses mocked browser.storage', () => {
     localGetMock.mockClear();
   });
 
-  test('get(), empty', () => (
-    Sessions.get().then((sessions) => {
+  test('fetch(), empty', () => (
+    Sessions.actions.fetch().then((sessions) => {
       expect(Object.keys(sessions).length).toBe(0);
     })
   ));
 
-  test('get(), incomplete sessions object', () => {
+  test('fetch(), incomplete sessions object', () => {
     localGetMock.mockImplementationOnce(mockGet({}));
-    return Sessions.get().then((sessions) => {
+    return Sessions.actions.fetch().then((sessions) => {
       expect(Object.keys(sessions).length).toBe(0);
     })
   });
 
-  test('get(), values exist', () => {
+  test('fetch(), values exist', () => {
     const mockSessions: Sessions.Sessions = {
       'foo.example.com': {
         apikey: 'mockapikey',
@@ -49,23 +49,56 @@ describe('uses mocked browser.storage', () => {
       },
     };
     localGetMock.mockImplementationOnce(mockGet(mockSessions));
-    return Sessions.get().then((sessions) => {
+    return Sessions.actions.fetch().then((sessions) => {
       expect(sessions).toBe(mockSessions);
     })
   });
 
-  test('set()', () => {
-    const mockSessions: Sessions.Sessions = {
-      'foo.example.com': {
-        apikey: 'mockapikey',
-        token: 'mocktoken',
-        createdAt: 0,
-      },
+  test('add()', () => {
+    const url = 'add.example.com';
+    const session: Sessions.Session = {
+      apikey: 'addapikey',
+      token: 'addktoken',
+      createdAt: 0,
     };
-    return Sessions.set(mockSessions).then(() => {
+    const newSessions: Sessions.Sessions = {
+      [url]: session,
+    };
+    localGetMock.mockImplementationOnce(mockGet({}));
+    localGetMock.mockImplementationOnce(mockGet(newSessions));
+    return Sessions.actions.add(url, session).then((sessions) => {
       expect(localSetMock).toHaveBeenCalledWith({
-        sessions: mockSessions
+        sessions: newSessions
       });
+      expect(sessions).toEqual(newSessions);
+    })
+  });
+
+  test('remove()', () => {
+    const url = 'remove.example.com';
+    const session: Sessions.Session = {
+      apikey: 'removeapikey',
+      token: 'removetoken',
+      createdAt: 0,
+    };
+    const mockSessions: Sessions.Sessions = {
+      [url]: session,
+    };
+    localGetMock.mockImplementationOnce(mockGet(mockSessions));
+    return Sessions.actions.remove(url).then((sessions) => {
+      expect(localSetMock).toHaveBeenCalledWith({
+        sessions: {},
+      });
+      expect(sessions).toEqual({});
+    })
+  });
+
+  test('clear()', () => {
+    return Sessions.actions.clear().then((sessions) => {
+      expect(localSetMock).toHaveBeenCalledWith({
+        sessions: {},
+      });
+      expect(sessions).toEqual({});
     })
   });
 });

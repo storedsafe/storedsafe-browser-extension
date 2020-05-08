@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Button /> 1`] = `ShallowWrapper {}`;
+
+exports[`<Button />, with children 1`] = `ShallowWrapper {}`;
+
+exports[`<Button color=accent /> 1`] = `ShallowWrapper {}`;
+
+exports[`<Button color=danger /> 1`] = `ShallowWrapper {}`;
+
+exports[`<Button color=primary /> 1`] = `ShallowWrapper {}`;
+
+exports[`<Button color=warning /> 1`] = `ShallowWrapper {}`;
+
+exports[`<Button isLoading /> 1`] = `ShallowWrapper {}`;
