@@ -4,7 +4,7 @@ type InputElement = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
 type InputType = any; // eslint-disable-line @typescript-eslint/no-explicit-any
 type InputEventCallback = (value: InputType, name: string) => void;
 
-type FormHook<Values> = [
+export type FormHook<Values> = [
   Values,
   {
     onChange: (event: React.ChangeEvent<InputElement>) => void;

@@ -1,11 +1,11 @@
 import React, { Fragment } from 'react';
-import { RenderFunction, FormValues } from '../../Form';
+import { FormHook } from '../../../hooks/useForm';
 
-export interface FieldValues extends FormValues {
+export interface FieldValues {
   keys: string;
 }
 
-export const renderFields: RenderFunction = (values: FieldValues, events) => (
+export const renderFields: (formHook: FormHook<FieldValues>) => React.ReactNode = ([values, events]) => (
   <Fragment>
     <label htmlFor="keys">
       <span>Passphrase + YubiKey</span>

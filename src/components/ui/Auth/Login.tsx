@@ -71,8 +71,8 @@ export const Login: React.FunctionComponent<LoginProps> = ({
             {...events}
           />
         </label>
-        {values.loginType === 'yubikey' && YubiKey.renderFields(values, events)}
-        {values.loginType === 'totp' && TOTP.renderFields(values, events)}
+        {values.loginType === 'yubikey' && YubiKey.renderFields([values, events, reset])}
+        {values.loginType === 'totp' && TOTP.renderFields([values, events, reset])}
         <label htmlFor="remember" className="label-checkbox">
           <span>Remember Username</span>
           <Checkbox
