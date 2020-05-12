@@ -1,5 +1,5 @@
 import React, { Fragment, useState } from 'react';
-import * as UI from '../components/UI';
+import * as UI from '../components/ui/common';
 
 export default {
   title: 'Layout',

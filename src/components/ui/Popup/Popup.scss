@@ -1,0 +1,23 @@
+@import '../../../variables';
+
+.popup {
+  height: 490px;
+  width: 720px;
+  display: grid;
+  grid-template-rows: 64px 400px 15px;
+  grid-template-columns: 360px 360px;
+  background-color: $color-primary-0;
+  color: $color-fg-alt;
+  overflow: hidden;
+
+  .banner {
+    max-width: 100%;
+    max-height: 100%;
+  };
+
+  .popup-left,
+  .popup-right {
+    height: 100%;
+    width: 100%;
+  }
+}

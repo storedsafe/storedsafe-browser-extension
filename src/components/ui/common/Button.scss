@@ -1,4 +1,4 @@
-@import '../../variables';
+@import '../../../variables';
 
 .button {
   border: 0;
@@ -7,7 +7,7 @@
 }
 
 .button {
-  $spinner-size: 1em;
+  $spinner-size: $font-size;
 
   position: relative;
   display: inline-flex;
@@ -22,7 +22,8 @@
   background-color: $color-primary-0;
   color: $color-fg-alt;
   cursor: pointer;
-  font-weight: 600;
+  font-weight: bold;
+  font-size: $font-size;
   transition: padding-right $transition-duration;
 
   &.button-loading {

@@ -8,5 +8,7 @@ interface OnlineIndicatorProps {
 export const OnlineIndicator: React.FunctionComponent<OnlineIndicatorProps> = ({
   online,
 }: OnlineIndicatorProps) => (
-  <div className={`online-indicator ${online ? 'online' : 'offline'}`} />
+  <div className={`online-indicator ${online ? 'online' : 'offline'}`}>
+    <div className="online-indicator-icon" />
+  </div>
 );

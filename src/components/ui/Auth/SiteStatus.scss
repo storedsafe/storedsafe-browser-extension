@@ -1,0 +1,26 @@
+@import '../../../variables';
+
+.site-status {
+  background-color: $color-bg-alt;
+  padding: $spacing;
+  height: 100%;
+  overflow: hidden auto;
+  color: $color-fg;
+
+  .site-status-info {
+    margin-bottom: $spacing;
+  }
+
+  .warnings-title {
+    color: $color-warning-0;
+  }
+
+  .errors-title {
+    color: $color-danger-0;
+  }
+
+  .button {
+    width: 100%;
+  }
+}
+

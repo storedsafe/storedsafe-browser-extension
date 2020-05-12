@@ -1,5 +1,5 @@
 import React from 'react';
-import { Banner } from '../UI';
+import { Banner } from '../ui/common';
 import { Sites } from './Sites';
 import { GeneralSettings } from './GeneralSettings';
 import './Options.scss';

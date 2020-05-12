@@ -1,0 +1,26 @@
+@import '../../../variables';
+
+.login {
+  background-color: $color-bg-alt;
+  padding: $spacing;
+  height: 100%;
+  color: $color-fg;
+  overflow: hidden;
+
+  .form {
+    display: flex;
+    flex-direction: column;
+  }
+
+  label {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: $spacing;
+  }
+
+  .label-checkbox {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+}
+

@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { StorageProvider } from '../hooks/useStorage';
+import React, { useState, useEffect } from 'react';
+import { StorageProvider, useStorage } from '../hooks/useStorage';
 import DebugStorage from './DebugStorage';
 import Options from './Options';
 import Popup from './Popup'
@@ -7,8 +7,22 @@ import Popup from './Popup'
 enum Page {
   Options = 'options',
     Popup = 'popup',
-    Debug = 'debug',
+    Debug = 'debug'
 }
+
+const StorageListener: React.FunctionComponent = () => {
+  const { dispatch } = useStorage();
+  useEffect(() => {
+    const onChanged = (): void => {
+      dispatch({ type: 'init' });
+    };
+    browser.storage.onChanged.addListener(onChanged);
+    return (): void => {
+      browser.storage.onChanged.removeListener(onChanged)
+    };
+  }, [dispatch]);
+  return null;
+};
 
 const Extension: React.FunctionComponent = () => {
   const [page, setPage] = useState<Page>();
@@ -37,6 +51,7 @@ const Extension: React.FunctionComponent = () => {
         {page === Page.Options && <Options />}
         {page === Page.Debug && <DebugStorage />}
         {page === Page.Popup && <Popup />}
+        <StorageListener />
       </StorageProvider>
     </section>
   );

@@ -1,0 +1,38 @@
+@import '../../../variables';
+
+.search-results {
+  overflow: hidden scroll;
+  flex-grow: 1;
+
+  .search-results-url {
+    text-align: center;
+    font-weight: bold;
+    color: $color-primary-0;
+    padding: $spacing;
+  }
+
+  .search-result {
+    background: no-repeat $spacing center / 30px 30px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    background-color: $color-bg;
+    padding: $spacing;
+    padding-left: $spacing * 2 + 30px;
+    cursor: pointer;
+
+    &:not(:last-child) {
+      margin-bottom: $spacing;
+    }
+
+    .search-result-text {
+      display: flex;
+      flex-direction: column;
+    }
+  }
+
+  .search-result.selected {
+    background-color: $color-primary-3;
+    color: $color-fg-alt;
+  }
+}

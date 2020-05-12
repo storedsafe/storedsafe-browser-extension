@@ -4,7 +4,8 @@
   .options-content {
     max-width: 800px;
     margin: auto;
-    padding: $spacing * 4;
+    padding: $spacing;
+    transition: padding $transition-duration;
   }
 
   .options-article {
@@ -15,3 +16,12 @@
     }
   }
 }
+
+@media (min-width: 600px) {
+  .options {
+    .options-content {
+      padding: $spacing * 4;
+    }
+  }
+}
+

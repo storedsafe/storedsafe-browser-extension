@@ -1,0 +1,766 @@
+{
+  "GROUP": {
+    "112": {
+      "id": "112",
+      "groupname": "Oscar",
+      "policy": "7",
+      "description": "Oscar",
+      "status": "4",
+      "statustext": "Admin"
+    }
+  },
+  "OBJECT": {
+    "1301": {
+      "id": "1301",
+      "parentid": "0",
+      "templateid": "2",
+      "groupid": "112",
+      "status": "128",
+      "objectname": "Testing folder",
+      "filename": "",
+      "children": "2",
+      "notes": false,
+      "tags": "",
+      "alarmed": false,
+      "public": {
+        "name": "Testing folder",
+        "info": "Testing creating a folder through the API"
+      }
+    },
+    "1348": {
+      "id": "1348",
+      "parentid": "0",
+      "templateid": "4",
+      "groupid": "112",
+      "status": "128",
+      "objectname": "127.0.0.1",
+      "filename": "",
+      "children": "0",
+      "notes": false,
+      "tags": "",
+      "alarmed": false,
+      "public": {
+        "host": "127.0.0.1",
+        "username": "admin"
+      },
+      "crypted": {
+        "password": "<ab23F92LI!_#0$o"
+      }
+    },
+    "1608": {
+      "id": "1608",
+      "parentid": "0",
+      "templateid": "4",
+      "groupid": "112",
+      "status": "128",
+      "objectname": "git.xpd.se",
+      "filename": "",
+      "children": "0",
+      "notes": false,
+      "tags": "",
+      "alarmed": false,
+      "public": {
+        "host": "git.xpd.se",
+        "username": "oscar_mattsson@live.se"
+      }
+    },
+    "1455": {
+      "id": "1455",
+      "parentid": "0",
+      "templateid": "10",
+      "groupid": "112",
+      "status": "128",
+      "objectname": "oscar short login",
+      "filename": "",
+      "children": "0",
+      "notes": false,
+      "tags": "",
+      "alarmed": false,
+      "public": {
+        "username": "oscar short login"
+      }
+    },
+    "1456": {
+      "id": "1456",
+      "parentid": "0",
+      "templateid": "1",
+      "groupid": "112",
+      "status": "128",
+      "objectname": "test.server.local",
+      "filename": "",
+      "children": "0",
+      "notes": false,
+      "tags": "",
+      "alarmed": false,
+      "public": {
+        "host": "test.server.local",
+        "username": "oscar",
+        "info": "Testing server object"
+      }
+    },
+    "1291": {
+      "fileinfo": {
+        "objectid": "1291",
+        "name": "megagreeter.rb",
+        "size": "929",
+        "type": "application/x-ruby",
+        "filepath": "/isodevice/persistent/upload/180506064324_1291.enc",
+        "created": "2018-05-06 18:43:24",
+        "ext": "rb",
+        "iconpath": "/img/ico/mime/unknown.png"
+      },
+      "id": "1291",
+      "parentid": "0",
+      "templateid": "3",
+      "groupid": "112",
+      "status": "128",
+      "objectname": "",
+      "filename": "megagreeter.rb",
+      "children": "3",
+      "notes": false,
+      "tags": "",
+      "alarmed": false,
+      "public": {
+        "file1": "",
+        "description": "Ruby file test"
+      }
+    },
+    "1457": {
+      "id": "1457",
+      "parentid": "0",
+      "templateid": "5",
+      "groupid": "112",
+      "status": "128",
+      "objectname": "Project Progress",
+      "filename": "",
+      "children": "0",
+      "notes": false,
+      "tags": "",
+      "alarmed": false,
+      "public": {
+        "name": "Project Progress",
+        "progress": "31"
+      }
+    },
+    "1458": {
+      "id": "1458",
+      "parentid": "0",
+      "templateid": "8",
+      "groupid": "112",
+      "status": "128",
+      "objectname": "Post-it",
+      "filename": "",
+      "children": "0",
+      "notes": false,
+      "tags": "",
+      "alarmed": false,
+      "public": {
+        "name": "Post-it"
+      }
+    },
+    "1461": {
+      "id": "1461",
+      "parentid": "0",
+      "templateid": "9",
+      "groupid": "112",
+      "status": "1152",
+      "objectname": "Gym lock PIN",
+      "filename": "",
+      "children": "0",
+      "notes": false,
+      "tags": "",
+      "alarmed": false,
+      "public": {
+        "name": "Gym lock PIN",
+        "info": "3-digit pin for gym lock"
+      }
+    },
+    "1381": {
+      "id": "1381",
+      "parentid": "0",
+      "templateid": "9",
+      "groupid": "112",
+      "status": "128",
+      "objectname": "New PIN",
+      "filename": "",
+      "children": "0",
+      "notes": false,
+      "tags": "",
+      "alarmed": false,
+      "public": {
+        "name": "New PIN",
+        "info": ""
+      }
+    },
+    "1490": {
+      "id": "1490",
+      "parentid": "0",
+      "templateid": "9",
+      "groupid": "112",
+      "status": "1152",
+      "objectname": "Stadsbiblioteket",
+      "filename": "",
+      "children": "0",
+      "notes": false,
+      "tags": "",
+      "alarmed": false,
+      "public": {
+        "name": "Stadsbiblioteket",
+        "info": "https://biblioteket.stockholm.se/"
+      }
+    },
+    "1459": {
+      "id": "1459",
+      "parentid": "0",
+      "templateid": "11",
+      "groupid": "112",
+      "status": "128",
+      "objectname": "Bank of Localhost",
+      "filename": "",
+      "children": "0",
+      "notes": false,
+      "tags": "",
+      "alarmed": false,
+      "public": {
+        "service": "Bank of Localhost",
+        "owner": "John Doe",
+        "note2": "Not hidden under the pillow."
+      }
+    },
+    "1460": {
+      "id": "1460",
+      "parentid": "0",
+      "templateid": "1001",
+      "groupid": "112",
+      "status": "128",
+      "objectname": "test.server.lan",
+      "filename": "",
+      "children": "0",
+      "notes": false,
+      "tags": "",
+      "alarmed": false,
+      "public": {
+        "host": "test.server.lan",
+        "ip": "127.0.0.1",
+        "username": "admin",
+        "info": "testing the lan server"
+      }
+    }
+  },
+  "TEMPLATESINFO": {
+    "2": {
+      "INFO": {
+        "id": "2",
+        "name": "Folder",
+        "ico": "folder",
+        "active": true,
+        "wb": true
+      },
+      "STRUCTURE": {
+        "name": {
+          "translation": "Folder name",
+          "type": "text",
+          "encrypted": false,
+          "show": true,
+          "policy": false,
+          "alarm": false,
+          "opt": false,
+          "cc": false,
+          "nc": false
+        },
+        "info": {
+          "translation": "Description",
+          "type": "textarea",
+          "encrypted": false,
+          "show": true,
+          "policy": false,
+          "alarm": false,
+          "opt": true,
+          "cc": false,
+          "nc": false
+        }
+      }
+    },
+    "4": {
+      "INFO": {
+        "id": "4",
+        "name": "Login",
+        "ico": "server",
+        "active": true,
+        "wb": true
+      },
+      "STRUCTURE": {
+        "host": {
+          "translation": "Host / IP",
+          "type": "text",
+          "encrypted": false,
+          "show": true,
+          "policy": false,
+          "alarm": false,
+          "opt": false,
+          "cc": false,
+          "nc": false
+        },
+        "username": {
+          "translation": "Username",
+          "type": "text",
+          "encrypted": false,
+          "show": true,
+          "policy": false,
+          "alarm": false,
+          "opt": false,
+          "cc": false,
+          "nc": false,
+          "log": true
+        },
+        "password": {
+          "translation": "Password",
+          "type": "text-passwdgen",
+          "encrypted": true,
+          "show": true,
+          "policy": true,
+          "alarm": true,
+          "opt": false,
+          "cc": true,
+          "nc": true
+        }
+      }
+    },
+    "10": {
+      "INFO": {
+        "id": "10",
+        "name": "Short login",
+        "ico": "server",
+        "active": true,
+        "wb": true
+      },
+      "STRUCTURE": {
+        "username": {
+          "translation": "Username",
+          "type": "text",
+          "encrypted": false,
+          "show": true,
+          "policy": false,
+          "alarm": false,
+          "opt": false,
+          "cc": false,
+          "nc": false
+        },
+        "password": {
+          "translation": "Password",
+          "type": "text-passwdgen",
+          "encrypted": true,
+          "show": true,
+          "policy": true,
+          "alarm": true,
+          "opt": false,
+          "cc": true,
+          "nc": true
+        }
+      }
+    },
+    "1": {
+      "INFO": {
+        "id": "1",
+        "name": "Server",
+        "ico": "server",
+        "active": true,
+        "wb": true
+      },
+      "STRUCTURE": {
+        "host": {
+          "translation": "Host",
+          "type": "text",
+          "encrypted": false,
+          "show": true,
+          "policy": false,
+          "alarm": false,
+          "opt": false,
+          "cc": false,
+          "nc": false
+        },
+        "username": {
+          "translation": "Username",
+          "type": "text",
+          "encrypted": false,
+          "show": true,
+          "policy": false,
+          "alarm": false,
+          "opt": false,
+          "cc": false,
+          "nc": false,
+          "log": true
+        },
+        "password": {
+          "translation": "Password",
+          "type": "text-passwdgen",
+          "encrypted": true,
+          "show": true,
+          "policy": true,
+          "alarm": true,
+          "opt": false,
+          "cc": true,
+          "nc": true
+        },
+        "info": {
+          "translation": "Information",
+          "type": "textarea",
+          "encrypted": false,
+          "show": true,
+          "policy": false,
+          "alarm": false,
+          "opt": true,
+          "cc": false,
+          "nc": false
+        },
+        "cryptedinfo": {
+          "translation": "Sensitive info",
+          "type": "textarea",
+          "encrypted": true,
+          "show": false,
+          "policy": false,
+          "alarm": false,
+          "opt": true,
+          "cc": false,
+          "nc": false
+        }
+      }
+    },
+    "3": {
+      "INFO": {
+        "id": "3",
+        "name": "File",
+        "ico": "file",
+        "active": true,
+        "wb": true,
+        "jp": true,
+        "file": "*"
+      },
+      "STRUCTURE": {
+        "file1": {
+          "translation": "File",
+          "type": "file",
+          "encrypted": false,
+          "show": true,
+          "policy": false,
+          "alarm": false,
+          "opt": false,
+          "cc": false,
+          "nc": false
+        },
+        "description": {
+          "translation": "Description",
+          "type": "text",
+          "encrypted": false,
+          "show": true,
+          "policy": false,
+          "alarm": false,
+          "opt": false,
+          "cc": false,
+          "nc": false
+        }
+      }
+    },
+    "5": {
+      "INFO": {
+        "id": "5",
+        "name": "Quicknote",
+        "ico": "person",
+        "active": true,
+        "wb": true
+      },
+      "STRUCTURE": {
+        "name": {
+          "translation": "Namn",
+          "type": "text",
+          "encrypted": false,
+          "show": true,
+          "policy": false,
+          "alarm": false,
+          "opt": false,
+          "cc": false,
+          "nc": false
+        },
+        "progress": {
+          "translation": "Slutförd",
+          "type": "progress",
+          "encrypted": false,
+          "show": true,
+          "policy": false,
+          "alarm": false,
+          "opt": false,
+          "cc": false,
+          "nc": false
+        }
+      }
+    },
+    "8": {
+      "INFO": {
+        "id": "8",
+        "name": "Note",
+        "ico": "note",
+        "active": true,
+        "ed": true,
+        "wb": false,
+        "jp": true
+      },
+      "STRUCTURE": {
+        "name": {
+          "translation": "Name",
+          "type": "text",
+          "encrypted": false,
+          "show": true,
+          "policy": false,
+          "alarm": false,
+          "opt": false,
+          "cc": false,
+          "nc": false
+        },
+        "note": {
+          "translation": "Note",
+          "type": "textarea",
+          "encrypted": true,
+          "show": true,
+          "policy": false,
+          "alarm": false,
+          "opt": true,
+          "cc": false,
+          "nc": true
+        }
+      }
+    },
+    "9": {
+      "INFO": {
+        "id": "9",
+        "name": "PIN code",
+        "ico": "pin",
+        "active": true,
+        "ed": true,
+        "wb": false,
+        "jp": true
+      },
+      "STRUCTURE": {
+        "name": {
+          "translation": "Name",
+          "type": "text",
+          "encrypted": false,
+          "show": true,
+          "policy": false,
+          "alarm": false,
+          "opt": false,
+          "cc": false,
+          "nc": false
+        },
+        "pincode": {
+          "translation": "PIN Code",
+          "type": "text-passwdgen",
+          "encrypted": true,
+          "show": true,
+          "policy": true,
+          "alarm": true,
+          "opt": false,
+          "cc": true,
+          "nc": true
+        },
+        "info": {
+          "translation": "Information",
+          "type": "textarea",
+          "encrypted": false,
+          "show": true,
+          "policy": false,
+          "alarm": false,
+          "opt": true,
+          "cc": false,
+          "nc": false
+        }
+      }
+    },
+    "11": {
+      "INFO": {
+        "id": "11",
+        "name": "Credit Card",
+        "ico": "ccard",
+        "active": true,
+        "wb": true,
+        "jp": false
+      },
+      "STRUCTURE": {
+        "service": {
+          "translation": "Bank/Service",
+          "type": "text",
+          "encrypted": false,
+          "show": true,
+          "policy": false,
+          "alarm": false,
+          "opt": false,
+          "cc": false,
+          "nc": false
+        },
+        "cardno": {
+          "translation": "Card number",
+          "type": "text",
+          "encrypted": true,
+          "show": true,
+          "policy": false,
+          "alarm": false,
+          "opt": false,
+          "cc": false,
+          "nc": true
+        },
+        "expires": {
+          "translation": "Expires",
+          "type": "date",
+          "encrypted": true,
+          "show": true,
+          "policy": false,
+          "alarm": false,
+          "opt": true,
+          "cc": false,
+          "nc": true
+        },
+        "cvc": {
+          "translation": "CVC",
+          "type": "text",
+          "encrypted": true,
+          "show": true,
+          "policy": false,
+          "alarm": false,
+          "opt": true,
+          "cc": false,
+          "nc": true
+        },
+        "owner": {
+          "translation": "Cardholder Name",
+          "type": "text",
+          "encrypted": false,
+          "show": true,
+          "policy": false,
+          "alarm": false,
+          "opt": true,
+          "cc": false,
+          "nc": false
+        },
+        "pincode": {
+          "translation": "PIN Code",
+          "type": "text",
+          "encrypted": true,
+          "show": false,
+          "policy": false,
+          "alarm": false,
+          "opt": true,
+          "cc": true,
+          "nc": true
+        },
+        "note1": {
+          "translation": "Secret Note",
+          "type": "textarea",
+          "encrypted": true,
+          "show": false,
+          "policy": false,
+          "alarm": false,
+          "opt": true,
+          "cc": false,
+          "nc": true
+        },
+        "note2": {
+          "translation": "Public Note",
+          "type": "textarea",
+          "encrypted": false,
+          "show": false,
+          "policy": false,
+          "alarm": false,
+          "opt": true,
+          "cc": false,
+          "nc": false
+        }
+      }
+    },
+    "1001": {
+      "INFO": {
+        "id": "1001",
+        "name": "Server/IP",
+        "ico": "server",
+        "active": true,
+        "wb": true
+      },
+      "STRUCTURE": {
+        "host": {
+          "translation": "Host",
+          "type": "text",
+          "encrypted": false,
+          "show": true,
+          "policy": false,
+          "alarm": false,
+          "opt": false,
+          "cc": false,
+          "nc": false
+        },
+        "ip": {
+          "translation": "IP",
+          "type": "text",
+          "encrypted": false,
+          "show": true,
+          "policy": false,
+          "alarm": false,
+          "opt": false,
+          "cc": false,
+          "nc": false
+        },
+        "username": {
+          "translation": "Username",
+          "type": "text",
+          "encrypted": false,
+          "show": true,
+          "policy": false,
+          "alarm": false,
+          "opt": false,
+          "cc": false,
+          "nc": false,
+          "log": true
+        },
+        "password": {
+          "translation": "Password",
+          "type": "text-passwdgen",
+          "encrypted": true,
+          "show": true,
+          "policy": true,
+          "alarm": true,
+          "opt": false,
+          "cc": true,
+          "nc": true
+        },
+        "info": {
+          "translation": "Information",
+          "type": "textarea",
+          "encrypted": false,
+          "show": true,
+          "policy": false,
+          "alarm": false,
+          "opt": true,
+          "cc": false,
+          "nc": false
+        },
+        "cryptedinfo": {
+          "translation": "Sensitive info",
+          "type": "textarea",
+          "encrypted": true,
+          "show": false,
+          "policy": false,
+          "alarm": false,
+          "opt": true,
+          "cc": false,
+          "nc": false
+        }
+      }
+    }
+  },
+  "DATA": {
+    "token": "vYSL8DH4yEhHOna28goihkravs3s8s2ovb8gbssdo0"
+  },
+  "PARAMS": [],
+  "CALLINFO": {
+    "token": "vYSL8DH4yEhHOna28goihkravs3s8s2ovb8gbssdo0",
+    "handler": "GroupHandler",
+    "status": "SUCCESS"
+  }
+}

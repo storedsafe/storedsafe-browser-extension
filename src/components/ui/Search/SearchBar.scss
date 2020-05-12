@@ -1,0 +1,38 @@
+@import '../../../variables';
+
+.search-bar {
+  position: relative;
+
+  .search-bar-area {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .search-bar-input {
+    flex-grow: 1;
+    width: 0;
+  }
+
+  .search-bar-button {
+    background: $color-accent-0;
+    cursor: pointer;
+    transition: background-color $transition-duration;
+    border: 0;
+    outline: 0;
+    border-bottom: $border-width solid $color-border;
+
+    &:hover {
+      background-color: $color-bg;
+    }
+
+    .search-bar-icon {
+      padding: $spacing;
+      transition: fill $transition-duration;
+      fill: #fff;
+    }
+
+    &:hover .search-bar-icon {
+      fill: $color-accent-0;
+    }
+  }
+}

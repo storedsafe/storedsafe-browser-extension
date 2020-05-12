@@ -23530,7 +23530,7 @@
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, ".general-settings .general-settings-article .general-settings-form {\n  display: flex;\n  flex-direction: column;\n  align-items: stretch;\n  width: 100%;\n  padding: 0.6em;\n}\n.general-settings .general-settings-article label {\n  margin-bottom: 0.6em;\n}\n.general-settings .general-settings-article input {\n  width: 100%;\n}", ""]);
+exports.push([module.i, ".general-settings .general-settings-article .general-settings-form {\n  display: flex;\n  flex-direction: column;\n  align-items: stretch;\n  width: 100%;\n  padding: 10px;\n}\n.general-settings .general-settings-article label {\n  margin-bottom: 10px;\n}\n.general-settings .general-settings-article input {\n  width: 100%;\n}", ""]);
 // Exports
 module.exports = exports;
 
@@ -23548,7 +23548,7 @@ module.exports = exports;
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, ".options .options-content {\n  max-width: 800px;\n  margin: auto;\n  padding: 2.4em;\n}\n.options .options-article .options-article-header,\n.options .options-article .options-article-footer {\n  padding: 1.2em;\n  border-bottom: 1px solid #d4d7d8;\n}", ""]);
+exports.push([module.i, ".options .options-content {\n  max-width: 800px;\n  margin: auto;\n  padding: 10px;\n  transition: padding 0.1s;\n}\n.options .options-article .options-article-header,\n.options .options-article .options-article-footer {\n  padding: 20px;\n  border-bottom: 1px solid #d4d7d8;\n}\n\n@media (min-width: 600px) {\n  .options .options-content {\n    padding: 40px;\n  }\n}", ""]);
 // Exports
 module.exports = exports;
 
@@ -23566,76 +23566,94 @@ module.exports = exports;
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, ".sites .sites-article .sites-article-header {\n  padding: 0.6em 1.2em;\n  background-color: #f3f7f8;\n  color: #526a78;\n}\n.sites .sites-list > li {\n  list-style: none;\n  display: flex;\n  flex-direction: row;\n  align-items: space-between;\n  justify-content: space-between;\n  padding-left: 1.2em;\n}\n.sites .sites-list > li:nth-child(odd) {\n  background-color: #f9fbfc;\n}\n.sites .sites-list span {\n  padding: 0.6em;\n}\n.sites .sites-add .sites-add-form {\n  display: flex;\n  flex-direction: column;\n  align-items: stretch;\n  width: 100%;\n  padding: 0.6em;\n}\n.sites .sites-add label {\n  margin-bottom: 0.6em;\n}\n.sites .sites-add input {\n  width: 100%;\n}\n\n@media (min-width: 500px) {\n  .sites .sites-article .sites-article-header {\n    min-width: -webkit-max-content;\n    min-width: -moz-max-content;\n    min-width: max-content;\n  }\n  .sites .sites-add {\n    display: flex;\n    flex-direction: row;\n  }\n}", ""]);
+exports.push([module.i, ".sites .sites-article .sites-article-header {\n  padding: 10px 20px;\n  background-color: #f3f7f8;\n  color: #526a78;\n}\n.sites .sites-list > li {\n  list-style: none;\n  display: flex;\n  flex-direction: row;\n  align-items: space-between;\n  justify-content: space-between;\n  padding-left: 20px;\n}\n.sites .sites-list > li:nth-child(odd) {\n  background-color: #f9fbfc;\n}\n.sites .sites-list span {\n  padding: 10px;\n}\n.sites .sites-add .sites-add-form {\n  display: flex;\n  flex-direction: column;\n  align-items: stretch;\n  width: 100%;\n  padding: 10px;\n}\n.sites .sites-add label {\n  margin-bottom: 10px;\n}\n.sites .sites-add input {\n  width: 100%;\n}\n\n@media (min-width: 600px) {\n  .sites .sites-article .sites-article-header {\n    min-width: -webkit-max-content;\n    min-width: -moz-max-content;\n    min-width: max-content;\n  }\n  .sites .sites-add {\n    display: flex;\n    flex-direction: row;\n  }\n}", ""]);
 // Exports
 module.exports = exports;
 
 
 /***/ }),
 
-/***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/Popup/Popup.scss":
-/*!********************************************************************************************************************************************************!*\
-  !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src!./node_modules/sass-loader/dist/cjs.js!./src/components/Popup/Popup.scss ***!
-  \********************************************************************************************************************************************************/
+/***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/ui/Popup/Menu.scss":
+/*!**********************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src!./node_modules/sass-loader/dist/cjs.js!./src/components/ui/Popup/Menu.scss ***!
+  \**********************************************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Imports
-var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, ".popup {\n  background-color: #fff;\n  height: 413px;\n  width: 550px;\n}", ""]);
+exports.push([module.i, ".menu {\n  display: flex;\n  flex-direction: row;\n  justify-content: flex-end;\n  align-items: center;\n  background-color: #526a78;\n  width: 100%;\n  height: 100%;\n}\n.menu .menu-item {\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  transition: 0.1s;\n  transition-property: background-color, color, flex-grow;\n  padding: 11.25px;\n  color: #fff;\n  cursor: pointer;\n  width: 63.75px;\n  height: 100%;\n  overflow: hidden;\n}\n.menu .menu-item:hover {\n  flex-grow: 1;\n}\n.menu .menu-item:hover {\n  background-color: #fff;\n  color: #03a388;\n}\n.menu .menu-item.selected {\n  background-color: #f9f9f9;\n  color: #03a388;\n}\n.menu .menu-item:hover .menu-item-icon > svg, .menu .menu-item.selected .menu-item-icon > svg {\n  fill: #03a388;\n}\n.menu .menu-item .menu-item-icon {\n  height: 30px;\n  width: 30px;\n  margin: 5.625px;\n  margin-right: 16.875px;\n}\n.menu .menu-item .menu-item-icon > * {\n  height: 30px;\n  width: 30px;\n}\n.menu .menu-item .menu-item-icon > svg {\n  fill: #fff;\n  transition: fill 0.1s;\n}", ""]);
 // Exports
 module.exports = exports;
 
 
 /***/ }),
 
-/***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/UI/Banner.scss":
-/*!******************************************************************************************************************************************************!*\
-  !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src!./node_modules/sass-loader/dist/cjs.js!./src/components/UI/Banner.scss ***!
-  \******************************************************************************************************************************************************/
+/***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/ui/Popup/Popup.scss":
+/*!***********************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src!./node_modules/sass-loader/dist/cjs.js!./src/components/ui/Popup/Popup.scss ***!
+  \***********************************************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Imports
-var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, ".banner {\n  background-color: #526a78;\n  padding: 1.2em;\n  width: 100%;\n}", ""]);
+exports.push([module.i, ".popup {\n  height: 490px;\n  width: 720px;\n  display: grid;\n  grid-template-rows: 64px 400px 15px;\n  grid-template-columns: 360px 360px;\n  background-color: #526a78;\n  color: #fff;\n  overflow: hidden;\n}\n.popup .banner {\n  max-width: 100%;\n  max-height: 100%;\n}\n.popup .popup-left,\n.popup .popup-right {\n  height: 100%;\n  width: 100%;\n}", ""]);
 // Exports
 module.exports = exports;
 
 
 /***/ }),
 
-/***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/UI/Button.scss":
-/*!******************************************************************************************************************************************************!*\
-  !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src!./node_modules/sass-loader/dist/cjs.js!./src/components/UI/Button.scss ***!
-  \******************************************************************************************************************************************************/
+/***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/ui/common/Banner.scss":
+/*!*************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src!./node_modules/sass-loader/dist/cjs.js!./src/components/ui/common/Banner.scss ***!
+  \*************************************************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Imports
-var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, ".button {\n  border: 0;\n  outline: 0;\n  background: none;\n}\n\n.button {\n  position: relative;\n  display: inline-flex;\n  flex-direction: row;\n  align-items: center;\n  justify-content: center;\n  transition: 0.1s;\n  transition-property: border-color, background-color, color, width;\n  font-family: \"Roboto\", sans-serif;\n  padding: 0.6em;\n  border: 1px solid #526a78;\n  background-color: #526a78;\n  color: #fff;\n  cursor: pointer;\n  font-weight: 600;\n  transition: padding-right 0.1s;\n}\n.button.button-loading {\n  padding-right: 2.2em;\n}\n.button .button-spinner {\n  position: absolute;\n  right: 0.6em;\n  margin-left: 0.6em;\n  width: 1em;\n  height: 1em;\n  opacity: 0;\n  transition: opacity 0.1s;\n}\n.button .button-spinner::after {\n  position: absolute;\n  content: \"\";\n  border-radius: 100%;\n  box-sizing: border-box;\n  left: 0;\n  top: 0;\n  height: 100%;\n  width: 100%;\n  border: 0.1666666667em solid #fff;\n  border-top-color: #03a388;\n  -webkit-animation: spin 1s infinite;\n          animation: spin 1s infinite;\n  transition: all 0.3s;\n}\n.button.button-loading .button-spinner {\n  opacity: 1;\n}\n@-webkit-keyframes spin {\n  from {\n    transform: rotate(0deg);\n  }\n  to {\n    transform: rotate(360deg);\n  }\n}\n@keyframes spin {\n  from {\n    transform: rotate(0deg);\n  }\n  to {\n    transform: rotate(360deg);\n  }\n}\n.button:disabled {\n  cursor: arrow;\n}\n.button:hover:not(:disabled) {\n  background-color: #fff;\n  color: #526a78;\n}\n.button:focus:not(:disabled) {\n  background-color: #fff;\n  color: #526a78;\n}\n.button:active:not(:disabled) {\n  background-color: #f3f7f8;\n}\n.button.button-accent {\n  background-color: #03a388;\n  border-color: #03a388;\n}\n.button.button-accent:hover {\n  color: #03a388;\n}\n.button.button-accent:focus {\n  color: #03a388;\n}\n.button.button-accent:active {\n  background-color: #bff8ef;\n}\n.button.button-warning {\n  background-color: #f59815;\n  border-color: #f59815;\n}\n.button.button-warning:hover {\n  color: #f59815;\n}\n.button.button-warning:focus {\n  color: #f59815;\n}\n.button.button-warning:active {\n  background-color: #fff3e2;\n}\n.button.button-danger {\n  background-color: #c5283e;\n  border-color: #c5283e;\n}\n.button.button-danger:hover {\n  color: #c5283e;\n}\n.button.button-danger:focus {\n  color: #c5283e;\n}\n.button.button-danger:active {\n  background-color: #fdd2d8;\n}", ""]);
+exports.push([module.i, ".banner {\n  background-color: #526a78;\n  padding: 20px;\n  width: 100%;\n}", ""]);
 // Exports
 module.exports = exports;
 
 
 /***/ }),
 
-/***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/UI/Checkbox.scss":
-/*!********************************************************************************************************************************************************!*\
-  !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src!./node_modules/sass-loader/dist/cjs.js!./src/components/UI/Checkbox.scss ***!
-  \********************************************************************************************************************************************************/
+/***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/ui/common/Button.scss":
+/*!*************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src!./node_modules/sass-loader/dist/cjs.js!./src/components/ui/common/Button.scss ***!
+  \*************************************************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Imports
-var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+exports = ___CSS_LOADER_API_IMPORT___(false);
+// Module
+exports.push([module.i, ".button {\n  border: 0;\n  outline: 0;\n  background: none;\n}\n\n.button {\n  position: relative;\n  display: inline-flex;\n  flex-direction: row;\n  align-items: center;\n  justify-content: center;\n  transition: 0.1s;\n  transition-property: border-color, background-color, color, width;\n  font-family: \"Roboto\", sans-serif;\n  padding: 10px;\n  border: 1px solid #526a78;\n  background-color: #526a78;\n  color: #fff;\n  cursor: pointer;\n  font-weight: bold;\n  font-size: 12pt;\n  transition: padding-right 0.1s;\n}\n.button.button-loading {\n  padding-right: 36px;\n}\n.button .button-spinner {\n  position: absolute;\n  right: 10px;\n  margin-left: 10px;\n  width: 12pt;\n  height: 12pt;\n  opacity: 0;\n  transition: opacity 0.1s;\n}\n.button .button-spinner::after {\n  position: absolute;\n  content: \"\";\n  border-radius: 100%;\n  box-sizing: border-box;\n  left: 0;\n  top: 0;\n  height: 100%;\n  width: 100%;\n  border: 2pt solid #fff;\n  border-top-color: #03a388;\n  -webkit-animation: spin 1s infinite;\n          animation: spin 1s infinite;\n  transition: all 0.3s;\n}\n.button.button-loading .button-spinner {\n  opacity: 1;\n}\n@-webkit-keyframes spin {\n  from {\n    transform: rotate(0deg);\n  }\n  to {\n    transform: rotate(360deg);\n  }\n}\n@keyframes spin {\n  from {\n    transform: rotate(0deg);\n  }\n  to {\n    transform: rotate(360deg);\n  }\n}\n.button:disabled {\n  cursor: arrow;\n}\n.button:hover:not(:disabled) {\n  background-color: #fff;\n  color: #526a78;\n}\n.button:focus:not(:disabled) {\n  background-color: #fff;\n  color: #526a78;\n}\n.button:active:not(:disabled) {\n  background-color: #f3f7f8;\n}\n.button.button-accent {\n  background-color: #03a388;\n  border-color: #03a388;\n}\n.button.button-accent:hover {\n  color: #03a388;\n}\n.button.button-accent:focus {\n  color: #03a388;\n}\n.button.button-accent:active {\n  background-color: #bff8ef;\n}\n.button.button-warning {\n  background-color: #f59815;\n  border-color: #f59815;\n}\n.button.button-warning:hover {\n  color: #f59815;\n}\n.button.button-warning:focus {\n  color: #f59815;\n}\n.button.button-warning:active {\n  background-color: #fff3e2;\n}\n.button.button-danger {\n  background-color: #c5283e;\n  border-color: #c5283e;\n}\n.button.button-danger:hover {\n  color: #c5283e;\n}\n.button.button-danger:focus {\n  color: #c5283e;\n}\n.button.button-danger:active {\n  background-color: #fdd2d8;\n}", ""]);
+// Exports
+module.exports = exports;
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/ui/common/Checkbox.scss":
+/*!***************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src!./node_modules/sass-loader/dist/cjs.js!./src/components/ui/common/Checkbox.scss ***!
+  \***************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// Imports
+var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
 exports.push([module.i, ".checkbox input {\n  height: 0;\n  opacity: 0;\n  position: absolute;\n  width: 0;\n}\n.checkbox .custom-checkbox {\n  padding: 2px;\n  position: relative;\n  border: 1px solid #d4d7d8;\n  border-radius: 2px;\n  box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.1) inset;\n  width: 20px;\n  height: 20px;\n  cursor: pointer;\n}\n.checkbox .custom-checkbox::before {\n  display: none;\n  position: absolute;\n  content: \"\";\n  width: 14px;\n  height: 14px;\n  background-color: #03a388;\n  box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.1);\n  border-radius: 2px;\n}\n.checkbox input:checked ~ .custom-checkbox::before {\n  display: block;\n}\n.checkbox input:hover ~ .custom-checkbox,\n.checkbox input:active ~ .custom-checkbox,\n.checkbox input:focus ~ .custom-checkbox {\n  box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.1) inset, 0 0 3px 0 rgba(0, 0, 0, 0.1);\n}\n.checkbox input:hover ~ .custom-checkbox {\n  border-color: #c7cacc;\n  background-color: #f9fbfc;\n}\n.checkbox input:focus ~ .custom-checkbox {\n  border-color: #03a388;\n  background-color: #f9fbfc;\n}\n.checkbox input:active ~ .custom-checkbox {\n  border-color: #d4d7d8;\n  background-color: #ebeef0;\n}", ""]);
@@ -23645,15 +23663,15 @@ module.exports = exports;
 
 /***/ }),
 
-/***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/UI/Logo.scss":
-/*!****************************************************************************************************************************************************!*\
-  !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src!./node_modules/sass-loader/dist/cjs.js!./src/components/UI/Logo.scss ***!
-  \****************************************************************************************************************************************************/
+/***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/ui/common/Logo.scss":
+/*!***********************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src!./node_modules/sass-loader/dist/cjs.js!./src/components/ui/common/Logo.scss ***!
+  \***********************************************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Imports
-var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
 exports.push([module.i, ".logo {\n  display: block;\n  max-width: 220px;\n}", ""]);
@@ -23663,51 +23681,51 @@ module.exports = exports;
 
 /***/ }),
 
-/***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/UI/Message.scss":
-/*!*******************************************************************************************************************************************************!*\
-  !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src!./node_modules/sass-loader/dist/cjs.js!./src/components/UI/Message.scss ***!
-  \*******************************************************************************************************************************************************/
+/***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/ui/common/Message.scss":
+/*!**************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src!./node_modules/sass-loader/dist/cjs.js!./src/components/ui/common/Message.scss ***!
+  \**************************************************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Imports
-var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, ".message {\n  padding: 0.6em;\n  border: 0 solid #03a388;\n  border-left-width: 6px;\n  background-color: #bff8ef;\n  color: #006352;\n}\n.message.warning {\n  border-color: #f59815;\n  background-color: #fff3e2;\n  color: #b76b00;\n}\n.message.error {\n  border-color: #c5283e;\n  background-color: #fdd2d8;\n  color: #7e0314;\n}", ""]);
+exports.push([module.i, ".message {\n  padding: 10px;\n  border: 0 solid #03a388;\n  border-left-width: 6px;\n  background-color: #bff8ef;\n  color: #006352;\n}\n.message.warning {\n  border-color: #f59815;\n  background-color: #fff3e2;\n  color: #b76b00;\n}\n.message.error {\n  border-color: #c5283e;\n  background-color: #fdd2d8;\n  color: #7e0314;\n}", ""]);
 // Exports
 module.exports = exports;
 
 
 /***/ }),
 
-/***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/UI/OnlineIndicator.scss":
-/*!***************************************************************************************************************************************************************!*\
-  !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src!./node_modules/sass-loader/dist/cjs.js!./src/components/UI/OnlineIndicator.scss ***!
-  \***************************************************************************************************************************************************************/
+/***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/ui/common/OnlineIndicator.scss":
+/*!**********************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src!./node_modules/sass-loader/dist/cjs.js!./src/components/ui/common/OnlineIndicator.scss ***!
+  \**********************************************************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Imports
-var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, ".online-indicator {\n  width: 10px;\n  height: 10px;\n  border-radius: 100%;\n  transition: 0.3s;\n  transition-property: background-color, box-shadow;\n  margin: 0.5em;\n}\n.online-indicator.online {\n  background-color: #03a388;\n  box-shadow: 0 0 2.5px 2.5px #bff8ef, 0 0 1.25px 1.25px rgba(0, 0, 0, 0.1) inset;\n}\n.online-indicator.offline {\n  background-color: #c5283e;\n  box-shadow: 0 0 2.5px 2.5px #fdd2d8, 0 0 1.25px 1.25px rgba(0, 0, 0, 0.1) inset;\n}", ""]);
+exports.push([module.i, ".online-indicator {\n  padding: 0.5em;\n}\n.online-indicator .online-indicator-icon {\n  border-radius: 100%;\n  width: 10px;\n  height: 10px;\n  transition: 0.3s;\n  transition-property: background-color, box-shadow;\n}\n.online-indicator.online .online-indicator-icon {\n  background-color: #03a388;\n  box-shadow: 0 0 2.5px 2.5px #bff8ef, 0 0 1.25px 1.25px rgba(0, 0, 0, 0.1) inset;\n}\n.online-indicator.offline .online-indicator-icon {\n  background-color: #c5283e;\n  box-shadow: 0 0 2.5px 2.5px #fdd2d8, 0 0 1.25px 1.25px rgba(0, 0, 0, 0.1) inset;\n}", ""]);
 // Exports
 module.exports = exports;
 
 
 /***/ }),
 
-/***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/UI/Radio.scss":
-/*!*****************************************************************************************************************************************************!*\
-  !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src!./node_modules/sass-loader/dist/cjs.js!./src/components/UI/Radio.scss ***!
-  \*****************************************************************************************************************************************************/
+/***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/ui/common/Radio.scss":
+/*!************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src!./node_modules/sass-loader/dist/cjs.js!./src/components/ui/common/Radio.scss ***!
+  \************************************************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Imports
-var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
 exports.push([module.i, ".radio input {\n  height: 0;\n  opacity: 0;\n  position: absolute;\n  width: 0;\n}\n.radio .custom-radio {\n  padding: 2px;\n  position: relative;\n  border-radius: 100%;\n  border: 1px solid #d4d7d8;\n  box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.1) inset;\n  width: 16px;\n  height: 16px;\n}\n.radio .custom-radio::after {\n  display: none;\n  position: absolute;\n  border-radius: 100%;\n  content: \"\";\n  width: 10px;\n  height: 10px;\n  background-color: #03a388;\n}\n.radio input:checked ~ .custom-radio::after {\n  display: block;\n}\n.radio input:hover ~ .custom-radio,\n.radio input:active ~ .custom-radio,\n.radio input:focus ~ .custom-radio {\n  box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.1) inset, 0 0 3px 0 rgba(0, 0, 0, 0.1);\n}\n.radio input:hover ~ .custom-radio {\n  border-color: #c7cacc;\n  background-color: #f9fbfc;\n}\n.radio input:focus ~ .custom-radio {\n  border-color: #03a388;\n  background-color: #f9fbfc;\n}\n.radio input:active ~ .custom-radio {\n  border-color: #028c73;\n  background-color: #ebeef0;\n}", ""]);
@@ -23717,18 +23735,18 @@ module.exports = exports;
 
 /***/ }),
 
-/***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/UI/Select.scss":
-/*!******************************************************************************************************************************************************!*\
-  !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src!./node_modules/sass-loader/dist/cjs.js!./src/components/UI/Select.scss ***!
-  \******************************************************************************************************************************************************/
+/***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/ui/common/Select.scss":
+/*!*************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src!./node_modules/sass-loader/dist/cjs.js!./src/components/ui/common/Select.scss ***!
+  \*************************************************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Imports
-var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, ".select .custom-select::after {\n  border: solid transparent;\n  border-top-color: #526a78;\n  border-radius: 0.4em;\n  border-width: 0.5em 0.3125em;\n  box-sizing: border-box;\n  content: \"\";\n  height: 1em;\n  margin-top: -0.2em;\n  position: absolute;\n  right: 0.6em;\n  top: 50%;\n  transform-origin: 0.25em 0.15625em;\n  width: 0.625em;\n  pointer-events: none;\n}\n\n.select .custom-select select {\n  -moz-appearance: none;\n  -webkit-appearance: none;\n  appearance: none;\n  padding-right: 1.7em;\n  width: 100%;\n}\n.select .custom-select {\n  position: relative;\n  width: 100%;\n}\n.select .custom-select::after {\n  transition: 0.1s;\n}", ""]);
+exports.push([module.i, ".select .custom-select::after {\n  border: solid transparent;\n  border-top-color: #526a78;\n  border-width: 8px 5px;\n  box-sizing: border-box;\n  content: \"\";\n  height: 16px;\n  margin-top: -0.2em;\n  position: absolute;\n  right: 10px;\n  top: 50%;\n  transform-origin: 4px 2.5px;\n  width: 10px;\n  pointer-events: none;\n}\n\n.select .custom-select select {\n  -moz-appearance: none;\n  -webkit-appearance: none;\n  appearance: none;\n  padding-right: 28px;\n  width: 100%;\n}\n.select .custom-select {\n  position: relative;\n  width: 100%;\n}\n.select .custom-select::after {\n  transition: 0.1s;\n}", ""]);
 // Exports
 module.exports = exports;
 
@@ -23747,7 +23765,7 @@ var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../node_modules/css-lo
 exports = ___CSS_LOADER_API_IMPORT___(false);
 exports.push([module.i, "@import url(https://fonts.googleapis.com/css?family=Montserrat|Roboto&display=swap);"]);
 // Module
-exports.push([module.i, ".card {\n  background-color: #fff;\n  color: #232d33;\n  border-radius: 0.8em;\n  box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.1);\n  margin: 0.6em;\n}\n.card > *:first-child {\n  padding-top: 0.8em;\n  border-top-left-radius: 0.8em;\n  border-top-right-radius: 0.8em;\n}\n.card > *:last-child {\n  padding-bottom: 0.8em;\n  border-bottom-left-radius: 0.8em;\n  border-bottom-right-radius: 0.8em;\n}\n\ninput,\nselect,\ntextarea,\nfieldset {\n  border: 0;\n  outline: 0;\n  background: none;\n  transition: 0.1s;\n  transition-property: border-color, background-color, color;\n  font-family: \"Roboto\", sans-serif;\n  background-color: #fff;\n  color: #232d33;\n  padding: 0.6em;\n  transition-duration: 0.1s;\n  transition-property: background-color, color, border-color;\n  font-size: 1em;\n}\ninput::-webkit-input-placeholder, select::-webkit-input-placeholder, textarea::-webkit-input-placeholder, fieldset::-webkit-input-placeholder {\n  font-size: 1em;\n}\ninput::-moz-placeholder, select::-moz-placeholder, textarea::-moz-placeholder, fieldset::-moz-placeholder {\n  font-size: 1em;\n}\ninput:-ms-input-placeholder, select:-ms-input-placeholder, textarea:-ms-input-placeholder, fieldset:-ms-input-placeholder {\n  font-size: 1em;\n}\ninput::-ms-input-placeholder, select::-ms-input-placeholder, textarea::-ms-input-placeholder, fieldset::-ms-input-placeholder {\n  font-size: 1em;\n}\ninput::placeholder,\nselect::placeholder,\ntextarea::placeholder,\nfieldset::placeholder {\n  font-size: 1em;\n}\ninput:disabled,\nselect:disabled,\ntextarea:disabled,\nfieldset:disabled {\n  cursor: arrow;\n}\n\nlabel {\n  color: #526a78;\n  font-family: \"Montserrat\", sans-serif;\n  text-transform: uppercase;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n}\n\n.label-disabled {\n  color: #ad9f9f;\n  background-color: #f9f9f9;\n}\n.label-disabled input,\n.label-disabled input:hover,\n.label-disabled input:focus,\n.label-disabled input:active {\n  background-color: #f9f9f9;\n  border-color: #d4d7d8;\n  color: #ad9f9f;\n}\n\n.label-altered {\n  color: #b76b00;\n}\n\n.label-checkbox {\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  cursor: pointer;\n}\n.label-checkbox :first-child {\n  margin-right: 0.6em;\n}\n\ninput {\n  border: 0;\n  border-bottom: 1px solid #d4d7d8;\n}\ninput:focus {\n  border-bottom-color: #03a388;\n}\ninput:active {\n  border-bottom-color: #d4d7d8;\n}\n\n* {\n  padding: 0;\n  margin: 0;\n  box-sizing: border-box;\n}\n\nbody {\n  background-color: #f2f2f2;\n  color: #232d33;\n  font-family: \"Roboto\", sans-serif;\n  font-size: 14px;\n}\n\nh1,\nh2 {\n  font-family: \"Montserrat\", sans-serif;\n  color: #526a78;\n}\n\nh3,\nh4,\nh5,\nh6 {\n  font-weight: 500;\n}\n\nh1 {\n  font-size: 1.8em;\n}\n\nh2 {\n  font-size: 1.35em;\n}\n\nh3 {\n  font-size: 1.2em;\n}\n\nh4 {\n  font-size: 1.1em;\n}\n\nh5 {\n  font-size: 1.05em;\n}\n\nh6 {\n  font-size: 1.02em;\n}\n\n.menu-item {\n  position: relative;\n  cursor: pointer;\n  padding-left: inherit;\n  transition: padding-left 0.1s ease-out;\n}\n.menu-item.selected {\n  padding-left: 0.6em;\n}", ""]);
+exports.push([module.i, ".card {\n  background-color: #fff;\n  color: #232d33;\n  border-radius: 0.8em;\n  box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.1);\n  margin: 10px;\n}\n.card > *:first-child {\n  padding-top: 0.8em;\n  border-top-left-radius: 0.8em;\n  border-top-right-radius: 0.8em;\n}\n.card > *:last-child {\n  padding-bottom: 0.8em;\n  border-bottom-left-radius: 0.8em;\n  border-bottom-right-radius: 0.8em;\n}\n\ninput,\nselect,\ntextarea,\nfieldset {\n  border: 0;\n  outline: 0;\n  background: none;\n  transition: 0.1s;\n  transition-property: border-color, background-color, color;\n  font-family: \"Roboto\", sans-serif;\n  background-color: #fff;\n  color: #232d33;\n  padding: 10px;\n  transition-duration: 0.1s;\n  transition-property: background-color, color, border-color;\n  font-size: 1em;\n}\ninput::-webkit-input-placeholder, select::-webkit-input-placeholder, textarea::-webkit-input-placeholder, fieldset::-webkit-input-placeholder {\n  font-size: 1em;\n}\ninput::-moz-placeholder, select::-moz-placeholder, textarea::-moz-placeholder, fieldset::-moz-placeholder {\n  font-size: 1em;\n}\ninput:-ms-input-placeholder, select:-ms-input-placeholder, textarea:-ms-input-placeholder, fieldset:-ms-input-placeholder {\n  font-size: 1em;\n}\ninput::-ms-input-placeholder, select::-ms-input-placeholder, textarea::-ms-input-placeholder, fieldset::-ms-input-placeholder {\n  font-size: 1em;\n}\ninput::placeholder,\nselect::placeholder,\ntextarea::placeholder,\nfieldset::placeholder {\n  font-size: 1em;\n}\ninput:disabled,\nselect:disabled,\ntextarea:disabled,\nfieldset:disabled {\n  cursor: arrow;\n}\n\nlabel {\n  color: #526a78;\n  font-family: \"Montserrat\", sans-serif;\n  text-transform: uppercase;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n}\n\n.label-disabled {\n  color: #ad9f9f;\n  background-color: #f9f9f9;\n}\n.label-disabled input,\n.label-disabled input:hover,\n.label-disabled input:focus,\n.label-disabled input:active {\n  background-color: #f9f9f9;\n  border-color: #d4d7d8;\n  color: #ad9f9f;\n}\n\n.label-altered {\n  color: #b76b00;\n}\n\n.label-checkbox {\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  cursor: pointer;\n}\n.label-checkbox :first-child {\n  margin-right: 10px;\n}\n\ninput {\n  border: 0;\n  border-bottom: 1px solid #d4d7d8;\n}\ninput:focus {\n  border-bottom-color: #03a388;\n}\ninput:active {\n  border-bottom-color: #d4d7d8;\n}\n\n* {\n  padding: 0;\n  margin: 0;\n  box-sizing: border-box;\n}\n\nbody {\n  background-color: #f2f2f2;\n  color: #232d33;\n  font-family: \"Roboto\", sans-serif;\n  font-size: 12pt;\n}\n\nh1,\nh2 {\n  font-family: \"Montserrat\", sans-serif;\n  color: #526a78;\n}\n\nh3,\nh4,\nh5,\nh6 {\n  font-weight: 500;\n}\n\nh1 {\n  font-size: 1.8em;\n}\n\nh2 {\n  font-size: 1.3em;\n}\n\nh3 {\n  font-size: 1.2em;\n}\n\nh4 {\n  font-size: 1.1em;\n}\n\nh5 {\n  font-size: 1.05em;\n}\n\nh6 {\n  font-size: 1.02em;\n}\n\n.menu-item {\n  position: relative;\n  cursor: pointer;\n  padding-left: inherit;\n  transition: padding-left 0.1s ease-out;\n}\n.menu-item.selected {\n  padding-left: 10px;\n}", ""]);
 // Exports
 module.exports = exports;
 
@@ -24912,6 +24930,19 @@ var Page;
     Page["Popup"] = "popup";
     Page["Debug"] = "debug";
 })(Page || (Page = {}));
+const StorageListener = () => {
+    const { dispatch } = useStorage_1.useStorage();
+    react_1.useEffect(() => {
+        const onChanged = () => {
+            dispatch({ type: 'init' });
+        };
+        browser.storage.onChanged.addListener(onChanged);
+        return () => {
+            browser.storage.onChanged.removeListener(onChanged);
+        };
+    }, [dispatch]);
+    return null;
+};
 const Extension = () => {
     const [page, setPage] = react_1.useState();
     react_1.default.useEffect(() => {
@@ -24934,7 +24965,8 @@ const Extension = () => {
         react_1.default.createElement(useStorage_1.StorageProvider, null,
             page === Page.Options && react_1.default.createElement(Options_1.default, null),
             page === Page.Debug && react_1.default.createElement(DebugStorage_1.default, null),
-            page === Page.Popup && react_1.default.createElement(Popup_1.default, null))));
+            page === Page.Popup && react_1.default.createElement(Popup_1.default, null),
+            react_1.default.createElement(StorageListener, null))));
 };
 exports.default = Extension;
 
@@ -24964,11 +24996,9 @@ options.singleton = false;
 
 var update = api(content, options);
 
-var exported = content.locals ? content.locals : {};
 
 
-
-module.exports = exported;
+module.exports = content.locals || {};
 
 /***/ }),
 
@@ -24993,7 +25023,7 @@ const react_1 = __importStar(__webpack_require__(/*! react */ "react"));
 const useStorage_1 = __webpack_require__(/*! ../../hooks/useStorage */ "./src/hooks/useStorage.tsx");
 const useForm_1 = __webpack_require__(/*! ../../hooks/useForm */ "./src/hooks/useForm.ts");
 const Settings_1 = __webpack_require__(/*! ../../model/Settings */ "./src/model/Settings.ts");
-const UI_1 = __webpack_require__(/*! ../UI */ "./src/components/UI/index.ts");
+const common_1 = __webpack_require__(/*! ../ui/common */ "./src/components/ui/common/index.ts");
 __webpack_require__(/*! ./GeneralSettings.scss */ "./src/components/Options/GeneralSettings.scss");
 exports.GeneralSettings = () => {
     const { state, dispatch, isInitialized } = useStorage_1.useStorage();
@@ -25024,7 +25054,7 @@ exports.GeneralSettings = () => {
         ].join(' ');
         if (attributes.type === 'checkbox') {
             return (react_1.default.createElement("label", { key: field, htmlFor: field, className: labelClassNames },
-                react_1.default.createElement(UI_1.Checkbox, Object.assign({ checked: values[field] }, events, attributes)),
+                react_1.default.createElement(common_1.Checkbox, Object.assign({ checked: values[field] }, events, attributes)),
                 react_1.default.createElement("span", null, label)));
         }
         else {
@@ -25058,7 +25088,7 @@ exports.GeneralSettings = () => {
         react_1.default.createElement("article", { className: "general-settings-article" },
             react_1.default.createElement("form", { className: "general-settings-form", onSubmit: onSave },
                 settingsFields,
-                react_1.default.createElement(UI_1.Button, { type: "submit", isLoading: loading }, "Save")))));
+                react_1.default.createElement(common_1.Button, { type: "submit", isLoading: loading }, "Save")))));
 };
 
 
@@ -25087,11 +25117,9 @@ options.singleton = false;
 
 var update = api(content, options);
 
-var exported = content.locals ? content.locals : {};
 
 
-
-module.exports = exported;
+module.exports = content.locals || {};
 
 /***/ }),
 
@@ -25109,14 +25137,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = __importDefault(__webpack_require__(/*! react */ "react"));
-const UI_1 = __webpack_require__(/*! ../UI */ "./src/components/UI/index.ts");
+const common_1 = __webpack_require__(/*! ../ui/common */ "./src/components/ui/common/index.ts");
 const Sites_1 = __webpack_require__(/*! ./Sites */ "./src/components/Options/Sites.tsx");
 const GeneralSettings_1 = __webpack_require__(/*! ./GeneralSettings */ "./src/components/Options/GeneralSettings.tsx");
 __webpack_require__(/*! ./Options.scss */ "./src/components/Options/Options.scss");
 exports.Options = () => {
     return (react_1.default.createElement("section", { className: "options" },
         react_1.default.createElement("header", null,
-            react_1.default.createElement(UI_1.Banner, null)),
+            react_1.default.createElement(common_1.Banner, null)),
         react_1.default.createElement("section", { className: "options-content" },
             react_1.default.createElement("h1", null, "Properties"),
             react_1.default.createElement("article", { className: "options-article card" },
@@ -25155,11 +25183,9 @@ options.singleton = false;
 
 var update = api(content, options);
 
-var exported = content.locals ? content.locals : {};
 
 
-
-module.exports = exported;
+module.exports = content.locals || {};
 
 /***/ }),
 
@@ -25182,7 +25208,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = __importStar(__webpack_require__(/*! react */ "react"));
 const useStorage_1 = __webpack_require__(/*! ../../hooks/useStorage */ "./src/hooks/useStorage.tsx");
-const UI_1 = __webpack_require__(/*! ../UI */ "./src/components/UI/index.ts");
+const common_1 = __webpack_require__(/*! ../ui/common */ "./src/components/ui/common/index.ts");
 const useForm_1 = __webpack_require__(/*! ../../hooks/useForm */ "./src/hooks/useForm.ts");
 __webpack_require__(/*! ./Sites.scss */ "./src/components/Options/Sites.scss");
 exports.Sites = () => {
@@ -25226,7 +25252,7 @@ exports.Sites = () => {
      * */
     const userSites = user.map((site) => (react_1.default.createElement("li", { key: site.url },
         react_1.default.createElement("span", null, site.url),
-        react_1.default.createElement(UI_1.Button, { color: "danger", onClick: onRemove(site.url), isLoading: loading[site.url] || false }, "Delete"))));
+        react_1.default.createElement(common_1.Button, { color: "danger", onClick: onRemove(site.url), isLoading: loading[site.url] || false }, "Delete"))));
     /**
      * Callback function to add site after the add site form
      * is submitted.
@@ -25262,7 +25288,7 @@ exports.Sites = () => {
                 react_1.default.createElement("label", { htmlFor: "apikey" },
                     "API Key",
                     react_1.default.createElement("input", Object.assign({ type: "text", name: "apikey", id: "apikey", placeholder: "API Key", required: true, value: addSiteValues.apikey }, events))),
-                react_1.default.createElement(UI_1.Button, { color: "accent", type: "submit", isLoading: loading.add || false }, "Add Site"))),
+                react_1.default.createElement(common_1.Button, { color: "accent", type: "submit", isLoading: loading.add || false }, "Add Site"))),
         userSites.length > 0 && (react_1.default.createElement("article", { className: "sites-article sites-user" },
             react_1.default.createElement("header", { className: "sites-article-header" },
                 react_1.default.createElement("h3", null, "Sites managed by user")),
@@ -25292,37 +25318,6 @@ exports.default = Options_1.Options;
 
 /***/ }),
 
-/***/ "./src/components/Popup/Popup.scss":
-/*!*****************************************!*\
-  !*** ./src/components/Popup/Popup.scss ***!
-  \*****************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-var api = __webpack_require__(/*! ../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
-            var content = __webpack_require__(/*! !../../../node_modules/css-loader/dist/cjs.js!../../../node_modules/postcss-loader/src!../../../node_modules/sass-loader/dist/cjs.js!./Popup.scss */ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/Popup/Popup.scss");
-
-            content = content.__esModule ? content.default : content;
-
-            if (typeof content === 'string') {
-              content = [[module.i, content, '']];
-            }
-
-var options = {};
-
-options.insert = "head";
-options.singleton = false;
-
-var update = api(content, options);
-
-var exported = content.locals ? content.locals : {};
-
-
-
-module.exports = exported;
-
-/***/ }),
-
 /***/ "./src/components/Popup/Popup.tsx":
 /*!****************************************!*\
   !*** ./src/components/Popup/Popup.tsx ***!
@@ -25335,14 +25330,18 @@ module.exports = exported;
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = __importDefault(__webpack_require__(/*! react */ "react"));
-const UI_1 = __webpack_require__(/*! ../UI */ "./src/components/UI/index.ts");
-__webpack_require__(/*! ./Popup.scss */ "./src/components/Popup/Popup.scss");
+const PopupUI = __importStar(__webpack_require__(/*! ../ui/Popup */ "./src/components/ui/Popup/index.ts"));
 exports.Popup = () => {
-    return (react_1.default.createElement("section", { className: "popup" },
-        react_1.default.createElement(UI_1.Banner, null),
-        "Popup with banner"));
+    return (react_1.default.createElement(PopupUI.Main, { menu: "menu", left: "left", right: "right", status: "status" }));
 };
 
 
@@ -25364,15 +25363,15 @@ exports.default = Popup_1.Popup;
 
 /***/ }),
 
-/***/ "./src/components/UI/Banner.scss":
-/*!***************************************!*\
-  !*** ./src/components/UI/Banner.scss ***!
-  \***************************************/
+/***/ "./src/components/ui/Popup/Menu.scss":
+/*!*******************************************!*\
+  !*** ./src/components/ui/Popup/Menu.scss ***!
+  \*******************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var api = __webpack_require__(/*! ../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
-            var content = __webpack_require__(/*! !../../../node_modules/css-loader/dist/cjs.js!../../../node_modules/postcss-loader/src!../../../node_modules/sass-loader/dist/cjs.js!./Banner.scss */ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/UI/Banner.scss");
+var api = __webpack_require__(/*! ../../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
+            var content = __webpack_require__(/*! !../../../../node_modules/css-loader/dist/cjs.js!../../../../node_modules/postcss-loader/src!../../../../node_modules/sass-loader/dist/cjs.js!./Menu.scss */ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/ui/Popup/Menu.scss");
 
             content = content.__esModule ? content.default : content;
 
@@ -25387,18 +25386,16 @@ options.singleton = false;
 
 var update = api(content, options);
 
-var exported = content.locals ? content.locals : {};
 
 
-
-module.exports = exported;
+module.exports = content.locals || {};
 
 /***/ }),
 
-/***/ "./src/components/UI/Banner.tsx":
-/*!**************************************!*\
-  !*** ./src/components/UI/Banner.tsx ***!
-  \**************************************/
+/***/ "./src/components/ui/Popup/Menu.tsx":
+/*!******************************************!*\
+  !*** ./src/components/ui/Popup/Menu.tsx ***!
+  \******************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -25409,23 +25406,27 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = __importDefault(__webpack_require__(/*! react */ "react"));
-const Logo_1 = __webpack_require__(/*! ./Logo */ "./src/components/UI/Logo.tsx");
-__webpack_require__(/*! ./Banner.scss */ "./src/components/UI/Banner.scss");
-exports.Banner = () => (react_1.default.createElement("div", { className: "banner" },
-    react_1.default.createElement(Logo_1.Logo, null)));
+__webpack_require__(/*! ./Menu.scss */ "./src/components/ui/Popup/Menu.scss");
+const MenuItem = ({ title, icon, onClick, selected }) => (react_1.default.createElement("div", { className: `menu-item ${selected ? ' selected' : ''}`, onClick: onClick },
+    react_1.default.createElement("div", { className: "menu-item-icon" }, icon),
+    react_1.default.createElement("span", { className: "menu-item-title" }, title)));
+MenuItem.defaultProps = {
+    selected: false,
+};
+exports.Menu = ({ items, selected, onClick, }) => (react_1.default.createElement("section", { className: "menu" }, items.map((menuItem, index) => (react_1.default.createElement(MenuItem, Object.assign({ key: index }, menuItem, { onClick: () => onClick(index), selected: index === selected }))))));
 
 
 /***/ }),
 
-/***/ "./src/components/UI/Button.scss":
-/*!***************************************!*\
-  !*** ./src/components/UI/Button.scss ***!
-  \***************************************/
+/***/ "./src/components/ui/Popup/Popup.scss":
+/*!********************************************!*\
+  !*** ./src/components/ui/Popup/Popup.scss ***!
+  \********************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var api = __webpack_require__(/*! ../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
-            var content = __webpack_require__(/*! !../../../node_modules/css-loader/dist/cjs.js!../../../node_modules/postcss-loader/src!../../../node_modules/sass-loader/dist/cjs.js!./Button.scss */ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/UI/Button.scss");
+var api = __webpack_require__(/*! ../../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
+            var content = __webpack_require__(/*! !../../../../node_modules/css-loader/dist/cjs.js!../../../../node_modules/postcss-loader/src!../../../../node_modules/sass-loader/dist/cjs.js!./Popup.scss */ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/ui/Popup/Popup.scss");
 
             content = content.__esModule ? content.default : content;
 
@@ -25440,18 +25441,141 @@ options.singleton = false;
 
 var update = api(content, options);
 
-var exported = content.locals ? content.locals : {};
 
 
-
-module.exports = exported;
+module.exports = content.locals || {};
 
 /***/ }),
 
-/***/ "./src/components/UI/Button.tsx":
-/*!**************************************!*\
-  !*** ./src/components/UI/Button.tsx ***!
-  \**************************************/
+/***/ "./src/components/ui/Popup/Popup.tsx":
+/*!*******************************************!*\
+  !*** ./src/components/ui/Popup/Popup.tsx ***!
+  \*******************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const react_1 = __importDefault(__webpack_require__(/*! react */ "react"));
+const common_1 = __webpack_require__(/*! ../common */ "./src/components/ui/common/index.ts");
+__webpack_require__(/*! ./Popup.scss */ "./src/components/ui/Popup/Popup.scss");
+exports.Popup = ({ menu, left, right, status, }) => (react_1.default.createElement("section", { className: "popup" },
+    react_1.default.createElement(common_1.Banner, null),
+    react_1.default.createElement("section", { className: "popup-menu" }, menu),
+    react_1.default.createElement("section", { className: "popup-left" }, left),
+    react_1.default.createElement("section", { className: "popup-right" }, right),
+    react_1.default.createElement("section", { className: "popup-status" }, status)));
+
+
+/***/ }),
+
+/***/ "./src/components/ui/Popup/index.ts":
+/*!******************************************!*\
+  !*** ./src/components/ui/Popup/index.ts ***!
+  \******************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var Popup_1 = __webpack_require__(/*! ./Popup */ "./src/components/ui/Popup/Popup.tsx");
+exports.Main = Popup_1.Popup;
+var Menu_1 = __webpack_require__(/*! ./Menu */ "./src/components/ui/Popup/Menu.tsx");
+exports.Menu = Menu_1.Menu;
+
+
+/***/ }),
+
+/***/ "./src/components/ui/common/Banner.scss":
+/*!**********************************************!*\
+  !*** ./src/components/ui/common/Banner.scss ***!
+  \**********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var api = __webpack_require__(/*! ../../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
+            var content = __webpack_require__(/*! !../../../../node_modules/css-loader/dist/cjs.js!../../../../node_modules/postcss-loader/src!../../../../node_modules/sass-loader/dist/cjs.js!./Banner.scss */ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/ui/common/Banner.scss");
+
+            content = content.__esModule ? content.default : content;
+
+            if (typeof content === 'string') {
+              content = [[module.i, content, '']];
+            }
+
+var options = {};
+
+options.insert = "head";
+options.singleton = false;
+
+var update = api(content, options);
+
+
+
+module.exports = content.locals || {};
+
+/***/ }),
+
+/***/ "./src/components/ui/common/Banner.tsx":
+/*!*********************************************!*\
+  !*** ./src/components/ui/common/Banner.tsx ***!
+  \*********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const react_1 = __importDefault(__webpack_require__(/*! react */ "react"));
+const Logo_1 = __webpack_require__(/*! ./Logo */ "./src/components/ui/common/Logo.tsx");
+__webpack_require__(/*! ./Banner.scss */ "./src/components/ui/common/Banner.scss");
+exports.Banner = ({ children }) => (react_1.default.createElement("div", { className: "banner" },
+    react_1.default.createElement(Logo_1.Logo, null),
+    children));
+
+
+/***/ }),
+
+/***/ "./src/components/ui/common/Button.scss":
+/*!**********************************************!*\
+  !*** ./src/components/ui/common/Button.scss ***!
+  \**********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var api = __webpack_require__(/*! ../../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
+            var content = __webpack_require__(/*! !../../../../node_modules/css-loader/dist/cjs.js!../../../../node_modules/postcss-loader/src!../../../../node_modules/sass-loader/dist/cjs.js!./Button.scss */ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/ui/common/Button.scss");
+
+            content = content.__esModule ? content.default : content;
+
+            if (typeof content === 'string') {
+              content = [[module.i, content, '']];
+            }
+
+var options = {};
+
+options.insert = "head";
+options.singleton = false;
+
+var update = api(content, options);
+
+
+
+module.exports = content.locals || {};
+
+/***/ }),
+
+/***/ "./src/components/ui/common/Button.tsx":
+/*!*********************************************!*\
+  !*** ./src/components/ui/common/Button.tsx ***!
+  \*********************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -25473,7 +25597,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = __importDefault(__webpack_require__(/*! react */ "react"));
-__webpack_require__(/*! ./Button.scss */ "./src/components/UI/Button.scss");
+__webpack_require__(/*! ./Button.scss */ "./src/components/ui/common/Button.scss");
 exports.Button = (_a) => {
     var { color, isLoading, children, className } = _a, props = __rest(_a, ["color", "isLoading", "children", "className"]);
     const classNames = `button button-${color}${isLoading ? ' button-loading' : ''}${className === '' ? '' : ` ${className} `}`;
@@ -25491,15 +25615,15 @@ exports.Button.defaultProps = {
 
 /***/ }),
 
-/***/ "./src/components/UI/Checkbox.scss":
-/*!*****************************************!*\
-  !*** ./src/components/UI/Checkbox.scss ***!
-  \*****************************************/
+/***/ "./src/components/ui/common/Checkbox.scss":
+/*!************************************************!*\
+  !*** ./src/components/ui/common/Checkbox.scss ***!
+  \************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var api = __webpack_require__(/*! ../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
-            var content = __webpack_require__(/*! !../../../node_modules/css-loader/dist/cjs.js!../../../node_modules/postcss-loader/src!../../../node_modules/sass-loader/dist/cjs.js!./Checkbox.scss */ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/UI/Checkbox.scss");
+var api = __webpack_require__(/*! ../../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
+            var content = __webpack_require__(/*! !../../../../node_modules/css-loader/dist/cjs.js!../../../../node_modules/postcss-loader/src!../../../../node_modules/sass-loader/dist/cjs.js!./Checkbox.scss */ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/ui/common/Checkbox.scss");
 
             content = content.__esModule ? content.default : content;
 
@@ -25514,18 +25638,16 @@ options.singleton = false;
 
 var update = api(content, options);
 
-var exported = content.locals ? content.locals : {};
 
 
-
-module.exports = exported;
+module.exports = content.locals || {};
 
 /***/ }),
 
-/***/ "./src/components/UI/Checkbox.tsx":
-/*!****************************************!*\
-  !*** ./src/components/UI/Checkbox.tsx ***!
-  \****************************************/
+/***/ "./src/components/ui/common/Checkbox.tsx":
+/*!***********************************************!*\
+  !*** ./src/components/ui/common/Checkbox.tsx ***!
+  \***********************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -25540,7 +25662,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __importStar(__webpack_require__(/*! react */ "react"));
-__webpack_require__(/*! ./Checkbox.scss */ "./src/components/UI/Checkbox.scss");
+__webpack_require__(/*! ./Checkbox.scss */ "./src/components/ui/common/Checkbox.scss");
 exports.Checkbox = (props) => (React.createElement(React.Fragment, null,
     React.createElement("div", { style: { display: 'inline-block' }, className: "checkbox" },
         React.createElement("input", Object.assign({ type: "checkbox" }, props)),
@@ -25549,15 +25671,15 @@ exports.Checkbox = (props) => (React.createElement(React.Fragment, null,
 
 /***/ }),
 
-/***/ "./src/components/UI/Logo.scss":
-/*!*************************************!*\
-  !*** ./src/components/UI/Logo.scss ***!
-  \*************************************/
+/***/ "./src/components/ui/common/Logo.scss":
+/*!********************************************!*\
+  !*** ./src/components/ui/common/Logo.scss ***!
+  \********************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var api = __webpack_require__(/*! ../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
-            var content = __webpack_require__(/*! !../../../node_modules/css-loader/dist/cjs.js!../../../node_modules/postcss-loader/src!../../../node_modules/sass-loader/dist/cjs.js!./Logo.scss */ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/UI/Logo.scss");
+var api = __webpack_require__(/*! ../../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
+            var content = __webpack_require__(/*! !../../../../node_modules/css-loader/dist/cjs.js!../../../../node_modules/postcss-loader/src!../../../../node_modules/sass-loader/dist/cjs.js!./Logo.scss */ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/ui/common/Logo.scss");
 
             content = content.__esModule ? content.default : content;
 
@@ -25572,18 +25694,16 @@ options.singleton = false;
 
 var update = api(content, options);
 
-var exported = content.locals ? content.locals : {};
 
 
-
-module.exports = exported;
+module.exports = content.locals || {};
 
 /***/ }),
 
-/***/ "./src/components/UI/Logo.tsx":
-/*!************************************!*\
-  !*** ./src/components/UI/Logo.tsx ***!
-  \************************************/
+/***/ "./src/components/ui/common/Logo.tsx":
+/*!*******************************************!*\
+  !*** ./src/components/ui/common/Logo.tsx ***!
+  \*******************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -25594,22 +25714,22 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = __importDefault(__webpack_require__(/*! react */ "react"));
-const logo_png_1 = __importDefault(__webpack_require__(/*! ./logo.png */ "./src/components/UI/logo.png"));
-__webpack_require__(/*! ./Logo.scss */ "./src/components/UI/Logo.scss");
+const logo_png_1 = __importDefault(__webpack_require__(/*! ./logo.png */ "./src/components/ui/common/logo.png"));
+__webpack_require__(/*! ./Logo.scss */ "./src/components/ui/common/Logo.scss");
 exports.Logo = () => (react_1.default.createElement("img", { src: logo_png_1.default, alt: "StoredSafe", className: "logo" }));
 
 
 /***/ }),
 
-/***/ "./src/components/UI/Message.scss":
-/*!****************************************!*\
-  !*** ./src/components/UI/Message.scss ***!
-  \****************************************/
+/***/ "./src/components/ui/common/Message.scss":
+/*!***********************************************!*\
+  !*** ./src/components/ui/common/Message.scss ***!
+  \***********************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var api = __webpack_require__(/*! ../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
-            var content = __webpack_require__(/*! !../../../node_modules/css-loader/dist/cjs.js!../../../node_modules/postcss-loader/src!../../../node_modules/sass-loader/dist/cjs.js!./Message.scss */ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/UI/Message.scss");
+var api = __webpack_require__(/*! ../../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
+            var content = __webpack_require__(/*! !../../../../node_modules/css-loader/dist/cjs.js!../../../../node_modules/postcss-loader/src!../../../../node_modules/sass-loader/dist/cjs.js!./Message.scss */ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/ui/common/Message.scss");
 
             content = content.__esModule ? content.default : content;
 
@@ -25624,18 +25744,16 @@ options.singleton = false;
 
 var update = api(content, options);
 
-var exported = content.locals ? content.locals : {};
 
 
-
-module.exports = exported;
+module.exports = content.locals || {};
 
 /***/ }),
 
-/***/ "./src/components/UI/Message.tsx":
-/*!***************************************!*\
-  !*** ./src/components/UI/Message.tsx ***!
-  \***************************************/
+/***/ "./src/components/ui/common/Message.tsx":
+/*!**********************************************!*\
+  !*** ./src/components/ui/common/Message.tsx ***!
+  \**********************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -25646,7 +25764,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = __importDefault(__webpack_require__(/*! react */ "react"));
-__webpack_require__(/*! ./Message.scss */ "./src/components/UI/Message.scss");
+__webpack_require__(/*! ./Message.scss */ "./src/components/ui/common/Message.scss");
 exports.Message = ({ type, children, }) => {
     return (react_1.default.createElement("div", { className: `message ${type}` }, children));
 };
@@ -25657,15 +25775,15 @@ exports.Message.defaultProps = {
 
 /***/ }),
 
-/***/ "./src/components/UI/OnlineIndicator.scss":
-/*!************************************************!*\
-  !*** ./src/components/UI/OnlineIndicator.scss ***!
-  \************************************************/
+/***/ "./src/components/ui/common/OnlineIndicator.scss":
+/*!*******************************************************!*\
+  !*** ./src/components/ui/common/OnlineIndicator.scss ***!
+  \*******************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var api = __webpack_require__(/*! ../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
-            var content = __webpack_require__(/*! !../../../node_modules/css-loader/dist/cjs.js!../../../node_modules/postcss-loader/src!../../../node_modules/sass-loader/dist/cjs.js!./OnlineIndicator.scss */ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/UI/OnlineIndicator.scss");
+var api = __webpack_require__(/*! ../../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
+            var content = __webpack_require__(/*! !../../../../node_modules/css-loader/dist/cjs.js!../../../../node_modules/postcss-loader/src!../../../../node_modules/sass-loader/dist/cjs.js!./OnlineIndicator.scss */ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/ui/common/OnlineIndicator.scss");
 
             content = content.__esModule ? content.default : content;
 
@@ -25680,18 +25798,16 @@ options.singleton = false;
 
 var update = api(content, options);
 
-var exported = content.locals ? content.locals : {};
 
 
-
-module.exports = exported;
+module.exports = content.locals || {};
 
 /***/ }),
 
-/***/ "./src/components/UI/OnlineIndicator.tsx":
-/*!***********************************************!*\
-  !*** ./src/components/UI/OnlineIndicator.tsx ***!
-  \***********************************************/
+/***/ "./src/components/ui/common/OnlineIndicator.tsx":
+/*!******************************************************!*\
+  !*** ./src/components/ui/common/OnlineIndicator.tsx ***!
+  \******************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -25702,21 +25818,22 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = __importDefault(__webpack_require__(/*! react */ "react"));
-__webpack_require__(/*! ./OnlineIndicator.scss */ "./src/components/UI/OnlineIndicator.scss");
-exports.OnlineIndicator = ({ online, }) => (react_1.default.createElement("div", { className: `online-indicator ${online ? 'online' : 'offline'}` }));
+__webpack_require__(/*! ./OnlineIndicator.scss */ "./src/components/ui/common/OnlineIndicator.scss");
+exports.OnlineIndicator = ({ online, }) => (react_1.default.createElement("div", { className: `online-indicator ${online ? 'online' : 'offline'}` },
+    react_1.default.createElement("div", { className: "online-indicator-icon" })));
 
 
 /***/ }),
 
-/***/ "./src/components/UI/Radio.scss":
-/*!**************************************!*\
-  !*** ./src/components/UI/Radio.scss ***!
-  \**************************************/
+/***/ "./src/components/ui/common/Radio.scss":
+/*!*********************************************!*\
+  !*** ./src/components/ui/common/Radio.scss ***!
+  \*********************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var api = __webpack_require__(/*! ../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
-            var content = __webpack_require__(/*! !../../../node_modules/css-loader/dist/cjs.js!../../../node_modules/postcss-loader/src!../../../node_modules/sass-loader/dist/cjs.js!./Radio.scss */ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/UI/Radio.scss");
+var api = __webpack_require__(/*! ../../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
+            var content = __webpack_require__(/*! !../../../../node_modules/css-loader/dist/cjs.js!../../../../node_modules/postcss-loader/src!../../../../node_modules/sass-loader/dist/cjs.js!./Radio.scss */ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/ui/common/Radio.scss");
 
             content = content.__esModule ? content.default : content;
 
@@ -25731,18 +25848,16 @@ options.singleton = false;
 
 var update = api(content, options);
 
-var exported = content.locals ? content.locals : {};
 
 
-
-module.exports = exported;
+module.exports = content.locals || {};
 
 /***/ }),
 
-/***/ "./src/components/UI/Radio.tsx":
-/*!*************************************!*\
-  !*** ./src/components/UI/Radio.tsx ***!
-  \*************************************/
+/***/ "./src/components/ui/common/Radio.tsx":
+/*!********************************************!*\
+  !*** ./src/components/ui/common/Radio.tsx ***!
+  \********************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -25757,7 +25872,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __importStar(__webpack_require__(/*! react */ "react"));
-__webpack_require__(/*! ./Radio.scss */ "./src/components/UI/Radio.scss");
+__webpack_require__(/*! ./Radio.scss */ "./src/components/ui/common/Radio.scss");
 exports.Radio = (props) => (React.createElement(React.Fragment, null,
     React.createElement("div", { style: { display: 'inline-block' }, className: "radio" },
         React.createElement("input", Object.assign({ type: "radio" }, props)),
@@ -25766,15 +25881,15 @@ exports.Radio = (props) => (React.createElement(React.Fragment, null,
 
 /***/ }),
 
-/***/ "./src/components/UI/Select.scss":
-/*!***************************************!*\
-  !*** ./src/components/UI/Select.scss ***!
-  \***************************************/
+/***/ "./src/components/ui/common/Select.scss":
+/*!**********************************************!*\
+  !*** ./src/components/ui/common/Select.scss ***!
+  \**********************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var api = __webpack_require__(/*! ../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
-            var content = __webpack_require__(/*! !../../../node_modules/css-loader/dist/cjs.js!../../../node_modules/postcss-loader/src!../../../node_modules/sass-loader/dist/cjs.js!./Select.scss */ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/UI/Select.scss");
+var api = __webpack_require__(/*! ../../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
+            var content = __webpack_require__(/*! !../../../../node_modules/css-loader/dist/cjs.js!../../../../node_modules/postcss-loader/src!../../../../node_modules/sass-loader/dist/cjs.js!./Select.scss */ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/ui/common/Select.scss");
 
             content = content.__esModule ? content.default : content;
 
@@ -25789,18 +25904,16 @@ options.singleton = false;
 
 var update = api(content, options);
 
-var exported = content.locals ? content.locals : {};
 
 
-
-module.exports = exported;
+module.exports = content.locals || {};
 
 /***/ }),
 
-/***/ "./src/components/UI/Select.tsx":
-/*!**************************************!*\
-  !*** ./src/components/UI/Select.tsx ***!
-  \**************************************/
+/***/ "./src/components/ui/common/Select.tsx":
+/*!*********************************************!*\
+  !*** ./src/components/ui/common/Select.tsx ***!
+  \*********************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -25822,7 +25935,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = __importDefault(__webpack_require__(/*! react */ "react"));
-__webpack_require__(/*! ./Select.scss */ "./src/components/UI/Select.scss");
+__webpack_require__(/*! ./Select.scss */ "./src/components/ui/common/Select.scss");
 exports.Select = (_a) => {
     var { children } = _a, props = __rest(_a, ["children"]);
     return (react_1.default.createElement("div", { className: "select" },
@@ -25833,40 +25946,40 @@ exports.Select = (_a) => {
 
 /***/ }),
 
-/***/ "./src/components/UI/index.ts":
-/*!************************************!*\
-  !*** ./src/components/UI/index.ts ***!
-  \************************************/
+/***/ "./src/components/ui/common/index.ts":
+/*!*******************************************!*\
+  !*** ./src/components/ui/common/index.ts ***!
+  \*******************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var Banner_1 = __webpack_require__(/*! ./Banner */ "./src/components/UI/Banner.tsx");
+var Banner_1 = __webpack_require__(/*! ./Banner */ "./src/components/ui/common/Banner.tsx");
 exports.Banner = Banner_1.Banner;
-var Button_1 = __webpack_require__(/*! ./Button */ "./src/components/UI/Button.tsx");
+var Button_1 = __webpack_require__(/*! ./Button */ "./src/components/ui/common/Button.tsx");
 exports.Button = Button_1.Button;
-var Checkbox_1 = __webpack_require__(/*! ./Checkbox */ "./src/components/UI/Checkbox.tsx");
+var Checkbox_1 = __webpack_require__(/*! ./Checkbox */ "./src/components/ui/common/Checkbox.tsx");
 exports.Checkbox = Checkbox_1.Checkbox;
-var Logo_1 = __webpack_require__(/*! ./Logo */ "./src/components/UI/Logo.tsx");
+var Logo_1 = __webpack_require__(/*! ./Logo */ "./src/components/ui/common/Logo.tsx");
 exports.Logo = Logo_1.Logo;
-var Message_1 = __webpack_require__(/*! ./Message */ "./src/components/UI/Message.tsx");
+var Message_1 = __webpack_require__(/*! ./Message */ "./src/components/ui/common/Message.tsx");
 exports.Message = Message_1.Message;
-var OnlineIndicator_1 = __webpack_require__(/*! ./OnlineIndicator */ "./src/components/UI/OnlineIndicator.tsx");
+var OnlineIndicator_1 = __webpack_require__(/*! ./OnlineIndicator */ "./src/components/ui/common/OnlineIndicator.tsx");
 exports.OnlineIndicator = OnlineIndicator_1.OnlineIndicator;
-var Radio_1 = __webpack_require__(/*! ./Radio */ "./src/components/UI/Radio.tsx");
+var Radio_1 = __webpack_require__(/*! ./Radio */ "./src/components/ui/common/Radio.tsx");
 exports.Radio = Radio_1.Radio;
-var Select_1 = __webpack_require__(/*! ./Select */ "./src/components/UI/Select.tsx");
+var Select_1 = __webpack_require__(/*! ./Select */ "./src/components/ui/common/Select.tsx");
 exports.Select = Select_1.Select;
 
 
 /***/ }),
 
-/***/ "./src/components/UI/logo.png":
-/*!************************************!*\
-  !*** ./src/components/UI/logo.png ***!
-  \************************************/
+/***/ "./src/components/ui/common/logo.png":
+/*!*******************************************!*\
+  !*** ./src/components/ui/common/logo.png ***!
+  \*******************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -26047,11 +26160,9 @@ options.singleton = false;
 
 var update = api(content, options);
 
-var exported = content.locals ? content.locals : {};
 
 
-
-module.exports = exported;
+module.exports = content.locals || {};
 
 /***/ }),
 

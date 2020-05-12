@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useStorage } from '../../hooks/useStorage';
 import { useForm } from '../../hooks/useForm';
 import { fields, Settings, SettingsValues } from '../../model/Settings';
-import { Button, Checkbox } from '../UI';
+import { Button, Checkbox } from '../ui/common';
 import './GeneralSettings.scss';
 
 export const GeneralSettings: React.FunctionComponent = () => {
