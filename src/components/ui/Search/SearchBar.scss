@@ -25,13 +25,13 @@
       background-color: $color-bg;
     }
 
-    .search-bar-icon {
+    > svg {
       padding: $spacing;
       transition: fill $transition-duration;
       fill: #fff;
     }
 
-    &:hover .search-bar-icon {
+    &:hover > svg {
       fill: $color-accent-0;
     }
   }

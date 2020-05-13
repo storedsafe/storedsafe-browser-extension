@@ -54,15 +54,15 @@
       margin-left: $spacing;
     }
 
-    .site-icon:not(:last-child) {
+    .icon:not(:last-child) {
       margin-right: $spacing;
     }
 
-    .site-icon.site-icon-warning {
+    .icon.icon-warning {
       fill: $color-warning-0;
     }
 
-    .site-icon.site-icon-error {
+    .icon.icon-error {
       fill: $color-danger-0;
     }
   }
