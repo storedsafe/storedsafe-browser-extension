@@ -29,21 +29,21 @@ interface MenuProps {
     title: string;
     icon: React.ReactNode;
   }[];
-  onClick: (id: number) => void;
+  onSelect: (id: number) => void;
   selected: number;
 }
 
 export const Menu: React.FunctionComponent<MenuProps> = ({
   items,
   selected,
-  onClick,
+  onSelect,
 }: MenuProps) => (
   <section className="menu">
     {items.map((menuItem, index) => (
       <MenuItem
         key={index}
         {...menuItem}
-        onClick={(): void => onClick(index)}
+        onClick={(): void => onSelect(index)}
         selected={index === selected}
       />
     ))}

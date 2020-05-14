@@ -1,0 +1,14 @@
+@import '../../../variables';
+
+.content {
+  display: grid;
+  grid-template-columns: 360px 360px;
+  grid-template-rows: 400px;
+  background-color: $color-primary-0;
+
+  .popup-right,
+  .popup-left {
+    height: 100%;
+    width: 100%;
+  }
+}

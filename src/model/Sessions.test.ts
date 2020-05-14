@@ -46,6 +46,8 @@ describe('uses mocked browser.storage', () => {
         apikey: 'mockapikey',
         token: 'mocktoken',
         createdAt: 0,
+        warnings: ['warning'],
+        errors: ['error'],
       },
     };
     localGetMock.mockImplementationOnce(mockGet(mockSessions));
@@ -60,6 +62,8 @@ describe('uses mocked browser.storage', () => {
       apikey: 'addapikey',
       token: 'addktoken',
       createdAt: 0,
+      warnings: ['warning'],
+      errors: ['error'],
     };
     const newSessions: Sessions.Sessions = {
       [url]: session,
@@ -80,6 +84,8 @@ describe('uses mocked browser.storage', () => {
       apikey: 'removeapikey',
       token: 'removetoken',
       createdAt: 0,
+      warnings: ['warning'],
+      errors: ['error'],
     };
     const mockSessions: Sessions.Sessions = {
       [url]: session,

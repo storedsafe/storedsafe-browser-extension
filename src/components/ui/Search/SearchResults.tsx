@@ -1,5 +1,6 @@
 import React from 'react';
 import { StoredSafeObject, StoredSafeTemplate } from 'storedsafe';
+import { SearchResults as Results } from '../../../model/Search';
 import icons from '../../../ico';
 import './SearchResults.scss';
 
@@ -28,13 +29,8 @@ const SearchResult: React.FunctionComponent<SearchResultProps> = ({
 );
 
 export interface SearchResultsProps {
-  results: {
-    [url: string]: {
-      ssObject: StoredSafeObject;
-      ssTemplate: StoredSafeTemplate;
-    }[];
-  };
-  onSelect: (url: string, id: number) => void;
+  results: Results;
+  onSelect: (selected: { url: string; id: number }) => void;
   selected?: {
     url: string;
     id: number;
@@ -50,13 +46,13 @@ export const SearchResults: React.FunctionComponent<SearchResultsProps> = ({
     {Object.keys(results).map((url) => (
       <article key={url} className="search-results-site">
         <div className="search-results-url">
-          {url}
+          {url}{results[url].loading && <span className="searching" />}
         </div>
-        {results[url].map((result, index) => (
+        {results[url].results.map((result, id) => (
           <SearchResult
-            key={index}
-            onClick={(): void => onSelect(url, index)}
-            selected={selected && selected.url === url && selected.id === index}
+            key={id}
+            onClick={(): void => onSelect({ url, id })}
+            selected={selected && selected.url === url && selected.id === id}
             {...result}
           />
         ))}

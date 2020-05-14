@@ -6,12 +6,6 @@ import './SiteList.scss';
 
 interface SiteListProps {
   sites: Site[];
-  sitesStatus: {
-    [url: string]: {
-      errors: string[];
-      warnings: string[];
-    };
-  };
   sessions: Sessions;
   selected: number;
   onSelect: (id: number) => void;
@@ -22,11 +16,11 @@ export const SiteList: React.FunctionComponent<SiteListProps> = ({
   sessions,
   selected,
   onSelect,
-  sitesStatus,
 }: SiteListProps) => (
   <section className="site-list">
     {sites.map(({ url }, index) => {
-      const isOnline = sessions[url] !== undefined;
+      const session = sessions[url];
+      const isOnline = session !== undefined;
       return (
         <article
           key={url}
@@ -34,8 +28,8 @@ export const SiteList: React.FunctionComponent<SiteListProps> = ({
           onClick={(): void => onSelect(index)}>
           <p className="site-url">{url}</p>
           <div className="site-icons">
-            {sitesStatus[url].warnings.length > 0 && svg.warning}
-            {sitesStatus[url].errors.length > 0 && svg.error}
+            {isOnline && session.warnings.length > 0 && svg.warning}
+            {isOnline && session.errors.length > 0 && svg.error}
             {isOnline && svg.vaultOpen}
             {!isOnline && svg.vault}
           </div>

@@ -86,6 +86,58 @@
 /************************************************************************/
 /******/ ({
 
+/***/ "./graphics/padlock-error.svg":
+/*!************************************!*\
+  !*** ./graphics/padlock-error.svg ***!
+  \************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = (__webpack_require__.p + "2b60f0d00a2a0c7b50ac6e9128bde08b.svg");
+
+/***/ }),
+
+/***/ "./graphics/padlock-unlocked.svg":
+/*!***************************************!*\
+  !*** ./graphics/padlock-unlocked.svg ***!
+  \***************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = (__webpack_require__.p + "fd323c6d4aacfe69735ab7db2c98061e.svg");
+
+/***/ }),
+
+/***/ "./graphics/padlock-warning.svg":
+/*!**************************************!*\
+  !*** ./graphics/padlock-warning.svg ***!
+  \**************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = (__webpack_require__.p + "6ae1530a54fa642a54800f6591a7da03.svg");
+
+/***/ }),
+
+/***/ "./graphics/padlock.svg":
+/*!******************************!*\
+  !*** ./graphics/padlock.svg ***!
+  \******************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = (__webpack_require__.p + "90919a8b5a0b646030fc506d77841cc9.svg");
+
+/***/ }),
+
 /***/ "./node_modules/axe-core/axe.js":
 /*!**************************************!*\
   !*** ./node_modules/axe-core/axe.js ***!
@@ -23519,6 +23571,1819 @@
 
 /***/ }),
 
+/***/ "./node_modules/axios/index.js":
+/*!*************************************!*\
+  !*** ./node_modules/axios/index.js ***!
+  \*************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(/*! ./lib/axios */ "./node_modules/axios/lib/axios.js");
+
+/***/ }),
+
+/***/ "./node_modules/axios/lib/adapters/xhr.js":
+/*!************************************************!*\
+  !*** ./node_modules/axios/lib/adapters/xhr.js ***!
+  \************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var utils = __webpack_require__(/*! ./../utils */ "./node_modules/axios/lib/utils.js");
+var settle = __webpack_require__(/*! ./../core/settle */ "./node_modules/axios/lib/core/settle.js");
+var buildURL = __webpack_require__(/*! ./../helpers/buildURL */ "./node_modules/axios/lib/helpers/buildURL.js");
+var buildFullPath = __webpack_require__(/*! ../core/buildFullPath */ "./node_modules/axios/lib/core/buildFullPath.js");
+var parseHeaders = __webpack_require__(/*! ./../helpers/parseHeaders */ "./node_modules/axios/lib/helpers/parseHeaders.js");
+var isURLSameOrigin = __webpack_require__(/*! ./../helpers/isURLSameOrigin */ "./node_modules/axios/lib/helpers/isURLSameOrigin.js");
+var createError = __webpack_require__(/*! ../core/createError */ "./node_modules/axios/lib/core/createError.js");
+
+module.exports = function xhrAdapter(config) {
+  return new Promise(function dispatchXhrRequest(resolve, reject) {
+    var requestData = config.data;
+    var requestHeaders = config.headers;
+
+    if (utils.isFormData(requestData)) {
+      delete requestHeaders['Content-Type']; // Let the browser set it
+    }
+
+    var request = new XMLHttpRequest();
+
+    // HTTP basic authentication
+    if (config.auth) {
+      var username = config.auth.username || '';
+      var password = config.auth.password || '';
+      requestHeaders.Authorization = 'Basic ' + btoa(username + ':' + password);
+    }
+
+    var fullPath = buildFullPath(config.baseURL, config.url);
+    request.open(config.method.toUpperCase(), buildURL(fullPath, config.params, config.paramsSerializer), true);
+
+    // Set the request timeout in MS
+    request.timeout = config.timeout;
+
+    // Listen for ready state
+    request.onreadystatechange = function handleLoad() {
+      if (!request || request.readyState !== 4) {
+        return;
+      }
+
+      // The request errored out and we didn't get a response, this will be
+      // handled by onerror instead
+      // With one exception: request that using file: protocol, most browsers
+      // will return status as 0 even though it's a successful request
+      if (request.status === 0 && !(request.responseURL && request.responseURL.indexOf('file:') === 0)) {
+        return;
+      }
+
+      // Prepare the response
+      var responseHeaders = 'getAllResponseHeaders' in request ? parseHeaders(request.getAllResponseHeaders()) : null;
+      var responseData = !config.responseType || config.responseType === 'text' ? request.responseText : request.response;
+      var response = {
+        data: responseData,
+        status: request.status,
+        statusText: request.statusText,
+        headers: responseHeaders,
+        config: config,
+        request: request
+      };
+
+      settle(resolve, reject, response);
+
+      // Clean up request
+      request = null;
+    };
+
+    // Handle browser request cancellation (as opposed to a manual cancellation)
+    request.onabort = function handleAbort() {
+      if (!request) {
+        return;
+      }
+
+      reject(createError('Request aborted', config, 'ECONNABORTED', request));
+
+      // Clean up request
+      request = null;
+    };
+
+    // Handle low level network errors
+    request.onerror = function handleError() {
+      // Real errors are hidden from us by the browser
+      // onerror should only fire if it's a network error
+      reject(createError('Network Error', config, null, request));
+
+      // Clean up request
+      request = null;
+    };
+
+    // Handle timeout
+    request.ontimeout = function handleTimeout() {
+      var timeoutErrorMessage = 'timeout of ' + config.timeout + 'ms exceeded';
+      if (config.timeoutErrorMessage) {
+        timeoutErrorMessage = config.timeoutErrorMessage;
+      }
+      reject(createError(timeoutErrorMessage, config, 'ECONNABORTED',
+        request));
+
+      // Clean up request
+      request = null;
+    };
+
+    // Add xsrf header
+    // This is only done if running in a standard browser environment.
+    // Specifically not if we're in a web worker, or react-native.
+    if (utils.isStandardBrowserEnv()) {
+      var cookies = __webpack_require__(/*! ./../helpers/cookies */ "./node_modules/axios/lib/helpers/cookies.js");
+
+      // Add xsrf header
+      var xsrfValue = (config.withCredentials || isURLSameOrigin(fullPath)) && config.xsrfCookieName ?
+        cookies.read(config.xsrfCookieName) :
+        undefined;
+
+      if (xsrfValue) {
+        requestHeaders[config.xsrfHeaderName] = xsrfValue;
+      }
+    }
+
+    // Add headers to the request
+    if ('setRequestHeader' in request) {
+      utils.forEach(requestHeaders, function setRequestHeader(val, key) {
+        if (typeof requestData === 'undefined' && key.toLowerCase() === 'content-type') {
+          // Remove Content-Type if data is undefined
+          delete requestHeaders[key];
+        } else {
+          // Otherwise add header to the request
+          request.setRequestHeader(key, val);
+        }
+      });
+    }
+
+    // Add withCredentials to request if needed
+    if (!utils.isUndefined(config.withCredentials)) {
+      request.withCredentials = !!config.withCredentials;
+    }
+
+    // Add responseType to request if needed
+    if (config.responseType) {
+      try {
+        request.responseType = config.responseType;
+      } catch (e) {
+        // Expected DOMException thrown by browsers not compatible XMLHttpRequest Level 2.
+        // But, this can be suppressed for 'json' type as it can be parsed by default 'transformResponse' function.
+        if (config.responseType !== 'json') {
+          throw e;
+        }
+      }
+    }
+
+    // Handle progress if needed
+    if (typeof config.onDownloadProgress === 'function') {
+      request.addEventListener('progress', config.onDownloadProgress);
+    }
+
+    // Not all browsers support upload events
+    if (typeof config.onUploadProgress === 'function' && request.upload) {
+      request.upload.addEventListener('progress', config.onUploadProgress);
+    }
+
+    if (config.cancelToken) {
+      // Handle cancellation
+      config.cancelToken.promise.then(function onCanceled(cancel) {
+        if (!request) {
+          return;
+        }
+
+        request.abort();
+        reject(cancel);
+        // Clean up request
+        request = null;
+      });
+    }
+
+    if (requestData === undefined) {
+      requestData = null;
+    }
+
+    // Send the request
+    request.send(requestData);
+  });
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/axios/lib/axios.js":
+/*!*****************************************!*\
+  !*** ./node_modules/axios/lib/axios.js ***!
+  \*****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var utils = __webpack_require__(/*! ./utils */ "./node_modules/axios/lib/utils.js");
+var bind = __webpack_require__(/*! ./helpers/bind */ "./node_modules/axios/lib/helpers/bind.js");
+var Axios = __webpack_require__(/*! ./core/Axios */ "./node_modules/axios/lib/core/Axios.js");
+var mergeConfig = __webpack_require__(/*! ./core/mergeConfig */ "./node_modules/axios/lib/core/mergeConfig.js");
+var defaults = __webpack_require__(/*! ./defaults */ "./node_modules/axios/lib/defaults.js");
+
+/**
+ * Create an instance of Axios
+ *
+ * @param {Object} defaultConfig The default config for the instance
+ * @return {Axios} A new instance of Axios
+ */
+function createInstance(defaultConfig) {
+  var context = new Axios(defaultConfig);
+  var instance = bind(Axios.prototype.request, context);
+
+  // Copy axios.prototype to instance
+  utils.extend(instance, Axios.prototype, context);
+
+  // Copy context to instance
+  utils.extend(instance, context);
+
+  return instance;
+}
+
+// Create the default instance to be exported
+var axios = createInstance(defaults);
+
+// Expose Axios class to allow class inheritance
+axios.Axios = Axios;
+
+// Factory for creating new instances
+axios.create = function create(instanceConfig) {
+  return createInstance(mergeConfig(axios.defaults, instanceConfig));
+};
+
+// Expose Cancel & CancelToken
+axios.Cancel = __webpack_require__(/*! ./cancel/Cancel */ "./node_modules/axios/lib/cancel/Cancel.js");
+axios.CancelToken = __webpack_require__(/*! ./cancel/CancelToken */ "./node_modules/axios/lib/cancel/CancelToken.js");
+axios.isCancel = __webpack_require__(/*! ./cancel/isCancel */ "./node_modules/axios/lib/cancel/isCancel.js");
+
+// Expose all/spread
+axios.all = function all(promises) {
+  return Promise.all(promises);
+};
+axios.spread = __webpack_require__(/*! ./helpers/spread */ "./node_modules/axios/lib/helpers/spread.js");
+
+module.exports = axios;
+
+// Allow use of default import syntax in TypeScript
+module.exports.default = axios;
+
+
+/***/ }),
+
+/***/ "./node_modules/axios/lib/cancel/Cancel.js":
+/*!*************************************************!*\
+  !*** ./node_modules/axios/lib/cancel/Cancel.js ***!
+  \*************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/**
+ * A `Cancel` is an object that is thrown when an operation is canceled.
+ *
+ * @class
+ * @param {string=} message The message.
+ */
+function Cancel(message) {
+  this.message = message;
+}
+
+Cancel.prototype.toString = function toString() {
+  return 'Cancel' + (this.message ? ': ' + this.message : '');
+};
+
+Cancel.prototype.__CANCEL__ = true;
+
+module.exports = Cancel;
+
+
+/***/ }),
+
+/***/ "./node_modules/axios/lib/cancel/CancelToken.js":
+/*!******************************************************!*\
+  !*** ./node_modules/axios/lib/cancel/CancelToken.js ***!
+  \******************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var Cancel = __webpack_require__(/*! ./Cancel */ "./node_modules/axios/lib/cancel/Cancel.js");
+
+/**
+ * A `CancelToken` is an object that can be used to request cancellation of an operation.
+ *
+ * @class
+ * @param {Function} executor The executor function.
+ */
+function CancelToken(executor) {
+  if (typeof executor !== 'function') {
+    throw new TypeError('executor must be a function.');
+  }
+
+  var resolvePromise;
+  this.promise = new Promise(function promiseExecutor(resolve) {
+    resolvePromise = resolve;
+  });
+
+  var token = this;
+  executor(function cancel(message) {
+    if (token.reason) {
+      // Cancellation has already been requested
+      return;
+    }
+
+    token.reason = new Cancel(message);
+    resolvePromise(token.reason);
+  });
+}
+
+/**
+ * Throws a `Cancel` if cancellation has been requested.
+ */
+CancelToken.prototype.throwIfRequested = function throwIfRequested() {
+  if (this.reason) {
+    throw this.reason;
+  }
+};
+
+/**
+ * Returns an object that contains a new `CancelToken` and a function that, when called,
+ * cancels the `CancelToken`.
+ */
+CancelToken.source = function source() {
+  var cancel;
+  var token = new CancelToken(function executor(c) {
+    cancel = c;
+  });
+  return {
+    token: token,
+    cancel: cancel
+  };
+};
+
+module.exports = CancelToken;
+
+
+/***/ }),
+
+/***/ "./node_modules/axios/lib/cancel/isCancel.js":
+/*!***************************************************!*\
+  !*** ./node_modules/axios/lib/cancel/isCancel.js ***!
+  \***************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+module.exports = function isCancel(value) {
+  return !!(value && value.__CANCEL__);
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/axios/lib/core/Axios.js":
+/*!**********************************************!*\
+  !*** ./node_modules/axios/lib/core/Axios.js ***!
+  \**********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var utils = __webpack_require__(/*! ./../utils */ "./node_modules/axios/lib/utils.js");
+var buildURL = __webpack_require__(/*! ../helpers/buildURL */ "./node_modules/axios/lib/helpers/buildURL.js");
+var InterceptorManager = __webpack_require__(/*! ./InterceptorManager */ "./node_modules/axios/lib/core/InterceptorManager.js");
+var dispatchRequest = __webpack_require__(/*! ./dispatchRequest */ "./node_modules/axios/lib/core/dispatchRequest.js");
+var mergeConfig = __webpack_require__(/*! ./mergeConfig */ "./node_modules/axios/lib/core/mergeConfig.js");
+
+/**
+ * Create a new instance of Axios
+ *
+ * @param {Object} instanceConfig The default config for the instance
+ */
+function Axios(instanceConfig) {
+  this.defaults = instanceConfig;
+  this.interceptors = {
+    request: new InterceptorManager(),
+    response: new InterceptorManager()
+  };
+}
+
+/**
+ * Dispatch a request
+ *
+ * @param {Object} config The config specific for this request (merged with this.defaults)
+ */
+Axios.prototype.request = function request(config) {
+  /*eslint no-param-reassign:0*/
+  // Allow for axios('example/url'[, config]) a la fetch API
+  if (typeof config === 'string') {
+    config = arguments[1] || {};
+    config.url = arguments[0];
+  } else {
+    config = config || {};
+  }
+
+  config = mergeConfig(this.defaults, config);
+
+  // Set config.method
+  if (config.method) {
+    config.method = config.method.toLowerCase();
+  } else if (this.defaults.method) {
+    config.method = this.defaults.method.toLowerCase();
+  } else {
+    config.method = 'get';
+  }
+
+  // Hook up interceptors middleware
+  var chain = [dispatchRequest, undefined];
+  var promise = Promise.resolve(config);
+
+  this.interceptors.request.forEach(function unshiftRequestInterceptors(interceptor) {
+    chain.unshift(interceptor.fulfilled, interceptor.rejected);
+  });
+
+  this.interceptors.response.forEach(function pushResponseInterceptors(interceptor) {
+    chain.push(interceptor.fulfilled, interceptor.rejected);
+  });
+
+  while (chain.length) {
+    promise = promise.then(chain.shift(), chain.shift());
+  }
+
+  return promise;
+};
+
+Axios.prototype.getUri = function getUri(config) {
+  config = mergeConfig(this.defaults, config);
+  return buildURL(config.url, config.params, config.paramsSerializer).replace(/^\?/, '');
+};
+
+// Provide aliases for supported request methods
+utils.forEach(['delete', 'get', 'head', 'options'], function forEachMethodNoData(method) {
+  /*eslint func-names:0*/
+  Axios.prototype[method] = function(url, config) {
+    return this.request(utils.merge(config || {}, {
+      method: method,
+      url: url
+    }));
+  };
+});
+
+utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
+  /*eslint func-names:0*/
+  Axios.prototype[method] = function(url, data, config) {
+    return this.request(utils.merge(config || {}, {
+      method: method,
+      url: url,
+      data: data
+    }));
+  };
+});
+
+module.exports = Axios;
+
+
+/***/ }),
+
+/***/ "./node_modules/axios/lib/core/InterceptorManager.js":
+/*!***********************************************************!*\
+  !*** ./node_modules/axios/lib/core/InterceptorManager.js ***!
+  \***********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var utils = __webpack_require__(/*! ./../utils */ "./node_modules/axios/lib/utils.js");
+
+function InterceptorManager() {
+  this.handlers = [];
+}
+
+/**
+ * Add a new interceptor to the stack
+ *
+ * @param {Function} fulfilled The function to handle `then` for a `Promise`
+ * @param {Function} rejected The function to handle `reject` for a `Promise`
+ *
+ * @return {Number} An ID used to remove interceptor later
+ */
+InterceptorManager.prototype.use = function use(fulfilled, rejected) {
+  this.handlers.push({
+    fulfilled: fulfilled,
+    rejected: rejected
+  });
+  return this.handlers.length - 1;
+};
+
+/**
+ * Remove an interceptor from the stack
+ *
+ * @param {Number} id The ID that was returned by `use`
+ */
+InterceptorManager.prototype.eject = function eject(id) {
+  if (this.handlers[id]) {
+    this.handlers[id] = null;
+  }
+};
+
+/**
+ * Iterate over all the registered interceptors
+ *
+ * This method is particularly useful for skipping over any
+ * interceptors that may have become `null` calling `eject`.
+ *
+ * @param {Function} fn The function to call for each interceptor
+ */
+InterceptorManager.prototype.forEach = function forEach(fn) {
+  utils.forEach(this.handlers, function forEachHandler(h) {
+    if (h !== null) {
+      fn(h);
+    }
+  });
+};
+
+module.exports = InterceptorManager;
+
+
+/***/ }),
+
+/***/ "./node_modules/axios/lib/core/buildFullPath.js":
+/*!******************************************************!*\
+  !*** ./node_modules/axios/lib/core/buildFullPath.js ***!
+  \******************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var isAbsoluteURL = __webpack_require__(/*! ../helpers/isAbsoluteURL */ "./node_modules/axios/lib/helpers/isAbsoluteURL.js");
+var combineURLs = __webpack_require__(/*! ../helpers/combineURLs */ "./node_modules/axios/lib/helpers/combineURLs.js");
+
+/**
+ * Creates a new URL by combining the baseURL with the requestedURL,
+ * only when the requestedURL is not already an absolute URL.
+ * If the requestURL is absolute, this function returns the requestedURL untouched.
+ *
+ * @param {string} baseURL The base URL
+ * @param {string} requestedURL Absolute or relative URL to combine
+ * @returns {string} The combined full path
+ */
+module.exports = function buildFullPath(baseURL, requestedURL) {
+  if (baseURL && !isAbsoluteURL(requestedURL)) {
+    return combineURLs(baseURL, requestedURL);
+  }
+  return requestedURL;
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/axios/lib/core/createError.js":
+/*!****************************************************!*\
+  !*** ./node_modules/axios/lib/core/createError.js ***!
+  \****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var enhanceError = __webpack_require__(/*! ./enhanceError */ "./node_modules/axios/lib/core/enhanceError.js");
+
+/**
+ * Create an Error with the specified message, config, error code, request and response.
+ *
+ * @param {string} message The error message.
+ * @param {Object} config The config.
+ * @param {string} [code] The error code (for example, 'ECONNABORTED').
+ * @param {Object} [request] The request.
+ * @param {Object} [response] The response.
+ * @returns {Error} The created error.
+ */
+module.exports = function createError(message, config, code, request, response) {
+  var error = new Error(message);
+  return enhanceError(error, config, code, request, response);
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/axios/lib/core/dispatchRequest.js":
+/*!********************************************************!*\
+  !*** ./node_modules/axios/lib/core/dispatchRequest.js ***!
+  \********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var utils = __webpack_require__(/*! ./../utils */ "./node_modules/axios/lib/utils.js");
+var transformData = __webpack_require__(/*! ./transformData */ "./node_modules/axios/lib/core/transformData.js");
+var isCancel = __webpack_require__(/*! ../cancel/isCancel */ "./node_modules/axios/lib/cancel/isCancel.js");
+var defaults = __webpack_require__(/*! ../defaults */ "./node_modules/axios/lib/defaults.js");
+
+/**
+ * Throws a `Cancel` if cancellation has been requested.
+ */
+function throwIfCancellationRequested(config) {
+  if (config.cancelToken) {
+    config.cancelToken.throwIfRequested();
+  }
+}
+
+/**
+ * Dispatch a request to the server using the configured adapter.
+ *
+ * @param {object} config The config that is to be used for the request
+ * @returns {Promise} The Promise to be fulfilled
+ */
+module.exports = function dispatchRequest(config) {
+  throwIfCancellationRequested(config);
+
+  // Ensure headers exist
+  config.headers = config.headers || {};
+
+  // Transform request data
+  config.data = transformData(
+    config.data,
+    config.headers,
+    config.transformRequest
+  );
+
+  // Flatten headers
+  config.headers = utils.merge(
+    config.headers.common || {},
+    config.headers[config.method] || {},
+    config.headers
+  );
+
+  utils.forEach(
+    ['delete', 'get', 'head', 'post', 'put', 'patch', 'common'],
+    function cleanHeaderConfig(method) {
+      delete config.headers[method];
+    }
+  );
+
+  var adapter = config.adapter || defaults.adapter;
+
+  return adapter(config).then(function onAdapterResolution(response) {
+    throwIfCancellationRequested(config);
+
+    // Transform response data
+    response.data = transformData(
+      response.data,
+      response.headers,
+      config.transformResponse
+    );
+
+    return response;
+  }, function onAdapterRejection(reason) {
+    if (!isCancel(reason)) {
+      throwIfCancellationRequested(config);
+
+      // Transform response data
+      if (reason && reason.response) {
+        reason.response.data = transformData(
+          reason.response.data,
+          reason.response.headers,
+          config.transformResponse
+        );
+      }
+    }
+
+    return Promise.reject(reason);
+  });
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/axios/lib/core/enhanceError.js":
+/*!*****************************************************!*\
+  !*** ./node_modules/axios/lib/core/enhanceError.js ***!
+  \*****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/**
+ * Update an Error with the specified config, error code, and response.
+ *
+ * @param {Error} error The error to update.
+ * @param {Object} config The config.
+ * @param {string} [code] The error code (for example, 'ECONNABORTED').
+ * @param {Object} [request] The request.
+ * @param {Object} [response] The response.
+ * @returns {Error} The error.
+ */
+module.exports = function enhanceError(error, config, code, request, response) {
+  error.config = config;
+  if (code) {
+    error.code = code;
+  }
+
+  error.request = request;
+  error.response = response;
+  error.isAxiosError = true;
+
+  error.toJSON = function() {
+    return {
+      // Standard
+      message: this.message,
+      name: this.name,
+      // Microsoft
+      description: this.description,
+      number: this.number,
+      // Mozilla
+      fileName: this.fileName,
+      lineNumber: this.lineNumber,
+      columnNumber: this.columnNumber,
+      stack: this.stack,
+      // Axios
+      config: this.config,
+      code: this.code
+    };
+  };
+  return error;
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/axios/lib/core/mergeConfig.js":
+/*!****************************************************!*\
+  !*** ./node_modules/axios/lib/core/mergeConfig.js ***!
+  \****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var utils = __webpack_require__(/*! ../utils */ "./node_modules/axios/lib/utils.js");
+
+/**
+ * Config-specific merge-function which creates a new config-object
+ * by merging two configuration objects together.
+ *
+ * @param {Object} config1
+ * @param {Object} config2
+ * @returns {Object} New object resulting from merging config2 to config1
+ */
+module.exports = function mergeConfig(config1, config2) {
+  // eslint-disable-next-line no-param-reassign
+  config2 = config2 || {};
+  var config = {};
+
+  var valueFromConfig2Keys = ['url', 'method', 'params', 'data'];
+  var mergeDeepPropertiesKeys = ['headers', 'auth', 'proxy'];
+  var defaultToConfig2Keys = [
+    'baseURL', 'url', 'transformRequest', 'transformResponse', 'paramsSerializer',
+    'timeout', 'withCredentials', 'adapter', 'responseType', 'xsrfCookieName',
+    'xsrfHeaderName', 'onUploadProgress', 'onDownloadProgress',
+    'maxContentLength', 'validateStatus', 'maxRedirects', 'httpAgent',
+    'httpsAgent', 'cancelToken', 'socketPath'
+  ];
+
+  utils.forEach(valueFromConfig2Keys, function valueFromConfig2(prop) {
+    if (typeof config2[prop] !== 'undefined') {
+      config[prop] = config2[prop];
+    }
+  });
+
+  utils.forEach(mergeDeepPropertiesKeys, function mergeDeepProperties(prop) {
+    if (utils.isObject(config2[prop])) {
+      config[prop] = utils.deepMerge(config1[prop], config2[prop]);
+    } else if (typeof config2[prop] !== 'undefined') {
+      config[prop] = config2[prop];
+    } else if (utils.isObject(config1[prop])) {
+      config[prop] = utils.deepMerge(config1[prop]);
+    } else if (typeof config1[prop] !== 'undefined') {
+      config[prop] = config1[prop];
+    }
+  });
+
+  utils.forEach(defaultToConfig2Keys, function defaultToConfig2(prop) {
+    if (typeof config2[prop] !== 'undefined') {
+      config[prop] = config2[prop];
+    } else if (typeof config1[prop] !== 'undefined') {
+      config[prop] = config1[prop];
+    }
+  });
+
+  var axiosKeys = valueFromConfig2Keys
+    .concat(mergeDeepPropertiesKeys)
+    .concat(defaultToConfig2Keys);
+
+  var otherKeys = Object
+    .keys(config2)
+    .filter(function filterAxiosKeys(key) {
+      return axiosKeys.indexOf(key) === -1;
+    });
+
+  utils.forEach(otherKeys, function otherKeysDefaultToConfig2(prop) {
+    if (typeof config2[prop] !== 'undefined') {
+      config[prop] = config2[prop];
+    } else if (typeof config1[prop] !== 'undefined') {
+      config[prop] = config1[prop];
+    }
+  });
+
+  return config;
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/axios/lib/core/settle.js":
+/*!***********************************************!*\
+  !*** ./node_modules/axios/lib/core/settle.js ***!
+  \***********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var createError = __webpack_require__(/*! ./createError */ "./node_modules/axios/lib/core/createError.js");
+
+/**
+ * Resolve or reject a Promise based on response status.
+ *
+ * @param {Function} resolve A function that resolves the promise.
+ * @param {Function} reject A function that rejects the promise.
+ * @param {object} response The response.
+ */
+module.exports = function settle(resolve, reject, response) {
+  var validateStatus = response.config.validateStatus;
+  if (!validateStatus || validateStatus(response.status)) {
+    resolve(response);
+  } else {
+    reject(createError(
+      'Request failed with status code ' + response.status,
+      response.config,
+      null,
+      response.request,
+      response
+    ));
+  }
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/axios/lib/core/transformData.js":
+/*!******************************************************!*\
+  !*** ./node_modules/axios/lib/core/transformData.js ***!
+  \******************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var utils = __webpack_require__(/*! ./../utils */ "./node_modules/axios/lib/utils.js");
+
+/**
+ * Transform the data for a request or a response
+ *
+ * @param {Object|String} data The data to be transformed
+ * @param {Array} headers The headers for the request or response
+ * @param {Array|Function} fns A single function or Array of functions
+ * @returns {*} The resulting transformed data
+ */
+module.exports = function transformData(data, headers, fns) {
+  /*eslint no-param-reassign:0*/
+  utils.forEach(fns, function transform(fn) {
+    data = fn(data, headers);
+  });
+
+  return data;
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/axios/lib/defaults.js":
+/*!********************************************!*\
+  !*** ./node_modules/axios/lib/defaults.js ***!
+  \********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(process) {
+
+var utils = __webpack_require__(/*! ./utils */ "./node_modules/axios/lib/utils.js");
+var normalizeHeaderName = __webpack_require__(/*! ./helpers/normalizeHeaderName */ "./node_modules/axios/lib/helpers/normalizeHeaderName.js");
+
+var DEFAULT_CONTENT_TYPE = {
+  'Content-Type': 'application/x-www-form-urlencoded'
+};
+
+function setContentTypeIfUnset(headers, value) {
+  if (!utils.isUndefined(headers) && utils.isUndefined(headers['Content-Type'])) {
+    headers['Content-Type'] = value;
+  }
+}
+
+function getDefaultAdapter() {
+  var adapter;
+  if (typeof XMLHttpRequest !== 'undefined') {
+    // For browsers use XHR adapter
+    adapter = __webpack_require__(/*! ./adapters/xhr */ "./node_modules/axios/lib/adapters/xhr.js");
+  } else if (typeof process !== 'undefined' && Object.prototype.toString.call(process) === '[object process]') {
+    // For node use HTTP adapter
+    adapter = __webpack_require__(/*! ./adapters/http */ "./node_modules/axios/lib/adapters/xhr.js");
+  }
+  return adapter;
+}
+
+var defaults = {
+  adapter: getDefaultAdapter(),
+
+  transformRequest: [function transformRequest(data, headers) {
+    normalizeHeaderName(headers, 'Accept');
+    normalizeHeaderName(headers, 'Content-Type');
+    if (utils.isFormData(data) ||
+      utils.isArrayBuffer(data) ||
+      utils.isBuffer(data) ||
+      utils.isStream(data) ||
+      utils.isFile(data) ||
+      utils.isBlob(data)
+    ) {
+      return data;
+    }
+    if (utils.isArrayBufferView(data)) {
+      return data.buffer;
+    }
+    if (utils.isURLSearchParams(data)) {
+      setContentTypeIfUnset(headers, 'application/x-www-form-urlencoded;charset=utf-8');
+      return data.toString();
+    }
+    if (utils.isObject(data)) {
+      setContentTypeIfUnset(headers, 'application/json;charset=utf-8');
+      return JSON.stringify(data);
+    }
+    return data;
+  }],
+
+  transformResponse: [function transformResponse(data) {
+    /*eslint no-param-reassign:0*/
+    if (typeof data === 'string') {
+      try {
+        data = JSON.parse(data);
+      } catch (e) { /* Ignore */ }
+    }
+    return data;
+  }],
+
+  /**
+   * A timeout in milliseconds to abort a request. If set to 0 (default) a
+   * timeout is not created.
+   */
+  timeout: 0,
+
+  xsrfCookieName: 'XSRF-TOKEN',
+  xsrfHeaderName: 'X-XSRF-TOKEN',
+
+  maxContentLength: -1,
+
+  validateStatus: function validateStatus(status) {
+    return status >= 200 && status < 300;
+  }
+};
+
+defaults.headers = {
+  common: {
+    'Accept': 'application/json, text/plain, */*'
+  }
+};
+
+utils.forEach(['delete', 'get', 'head'], function forEachMethodNoData(method) {
+  defaults.headers[method] = {};
+});
+
+utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
+  defaults.headers[method] = utils.merge(DEFAULT_CONTENT_TYPE);
+});
+
+module.exports = defaults;
+
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../process/browser.js */ "./node_modules/process/browser.js")))
+
+/***/ }),
+
+/***/ "./node_modules/axios/lib/helpers/bind.js":
+/*!************************************************!*\
+  !*** ./node_modules/axios/lib/helpers/bind.js ***!
+  \************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+module.exports = function bind(fn, thisArg) {
+  return function wrap() {
+    var args = new Array(arguments.length);
+    for (var i = 0; i < args.length; i++) {
+      args[i] = arguments[i];
+    }
+    return fn.apply(thisArg, args);
+  };
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/axios/lib/helpers/buildURL.js":
+/*!****************************************************!*\
+  !*** ./node_modules/axios/lib/helpers/buildURL.js ***!
+  \****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var utils = __webpack_require__(/*! ./../utils */ "./node_modules/axios/lib/utils.js");
+
+function encode(val) {
+  return encodeURIComponent(val).
+    replace(/%40/gi, '@').
+    replace(/%3A/gi, ':').
+    replace(/%24/g, '$').
+    replace(/%2C/gi, ',').
+    replace(/%20/g, '+').
+    replace(/%5B/gi, '[').
+    replace(/%5D/gi, ']');
+}
+
+/**
+ * Build a URL by appending params to the end
+ *
+ * @param {string} url The base of the url (e.g., http://www.google.com)
+ * @param {object} [params] The params to be appended
+ * @returns {string} The formatted url
+ */
+module.exports = function buildURL(url, params, paramsSerializer) {
+  /*eslint no-param-reassign:0*/
+  if (!params) {
+    return url;
+  }
+
+  var serializedParams;
+  if (paramsSerializer) {
+    serializedParams = paramsSerializer(params);
+  } else if (utils.isURLSearchParams(params)) {
+    serializedParams = params.toString();
+  } else {
+    var parts = [];
+
+    utils.forEach(params, function serialize(val, key) {
+      if (val === null || typeof val === 'undefined') {
+        return;
+      }
+
+      if (utils.isArray(val)) {
+        key = key + '[]';
+      } else {
+        val = [val];
+      }
+
+      utils.forEach(val, function parseValue(v) {
+        if (utils.isDate(v)) {
+          v = v.toISOString();
+        } else if (utils.isObject(v)) {
+          v = JSON.stringify(v);
+        }
+        parts.push(encode(key) + '=' + encode(v));
+      });
+    });
+
+    serializedParams = parts.join('&');
+  }
+
+  if (serializedParams) {
+    var hashmarkIndex = url.indexOf('#');
+    if (hashmarkIndex !== -1) {
+      url = url.slice(0, hashmarkIndex);
+    }
+
+    url += (url.indexOf('?') === -1 ? '?' : '&') + serializedParams;
+  }
+
+  return url;
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/axios/lib/helpers/combineURLs.js":
+/*!*******************************************************!*\
+  !*** ./node_modules/axios/lib/helpers/combineURLs.js ***!
+  \*******************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/**
+ * Creates a new URL by combining the specified URLs
+ *
+ * @param {string} baseURL The base URL
+ * @param {string} relativeURL The relative URL
+ * @returns {string} The combined URL
+ */
+module.exports = function combineURLs(baseURL, relativeURL) {
+  return relativeURL
+    ? baseURL.replace(/\/+$/, '') + '/' + relativeURL.replace(/^\/+/, '')
+    : baseURL;
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/axios/lib/helpers/cookies.js":
+/*!***************************************************!*\
+  !*** ./node_modules/axios/lib/helpers/cookies.js ***!
+  \***************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var utils = __webpack_require__(/*! ./../utils */ "./node_modules/axios/lib/utils.js");
+
+module.exports = (
+  utils.isStandardBrowserEnv() ?
+
+  // Standard browser envs support document.cookie
+    (function standardBrowserEnv() {
+      return {
+        write: function write(name, value, expires, path, domain, secure) {
+          var cookie = [];
+          cookie.push(name + '=' + encodeURIComponent(value));
+
+          if (utils.isNumber(expires)) {
+            cookie.push('expires=' + new Date(expires).toGMTString());
+          }
+
+          if (utils.isString(path)) {
+            cookie.push('path=' + path);
+          }
+
+          if (utils.isString(domain)) {
+            cookie.push('domain=' + domain);
+          }
+
+          if (secure === true) {
+            cookie.push('secure');
+          }
+
+          document.cookie = cookie.join('; ');
+        },
+
+        read: function read(name) {
+          var match = document.cookie.match(new RegExp('(^|;\\s*)(' + name + ')=([^;]*)'));
+          return (match ? decodeURIComponent(match[3]) : null);
+        },
+
+        remove: function remove(name) {
+          this.write(name, '', Date.now() - 86400000);
+        }
+      };
+    })() :
+
+  // Non standard browser env (web workers, react-native) lack needed support.
+    (function nonStandardBrowserEnv() {
+      return {
+        write: function write() {},
+        read: function read() { return null; },
+        remove: function remove() {}
+      };
+    })()
+);
+
+
+/***/ }),
+
+/***/ "./node_modules/axios/lib/helpers/isAbsoluteURL.js":
+/*!*********************************************************!*\
+  !*** ./node_modules/axios/lib/helpers/isAbsoluteURL.js ***!
+  \*********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/**
+ * Determines whether the specified URL is absolute
+ *
+ * @param {string} url The URL to test
+ * @returns {boolean} True if the specified URL is absolute, otherwise false
+ */
+module.exports = function isAbsoluteURL(url) {
+  // A URL is considered absolute if it begins with "<scheme>://" or "//" (protocol-relative URL).
+  // RFC 3986 defines scheme name as a sequence of characters beginning with a letter and followed
+  // by any combination of letters, digits, plus, period, or hyphen.
+  return /^([a-z][a-z\d\+\-\.]*:)?\/\//i.test(url);
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/axios/lib/helpers/isURLSameOrigin.js":
+/*!***********************************************************!*\
+  !*** ./node_modules/axios/lib/helpers/isURLSameOrigin.js ***!
+  \***********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var utils = __webpack_require__(/*! ./../utils */ "./node_modules/axios/lib/utils.js");
+
+module.exports = (
+  utils.isStandardBrowserEnv() ?
+
+  // Standard browser envs have full support of the APIs needed to test
+  // whether the request URL is of the same origin as current location.
+    (function standardBrowserEnv() {
+      var msie = /(msie|trident)/i.test(navigator.userAgent);
+      var urlParsingNode = document.createElement('a');
+      var originURL;
+
+      /**
+    * Parse a URL to discover it's components
+    *
+    * @param {String} url The URL to be parsed
+    * @returns {Object}
+    */
+      function resolveURL(url) {
+        var href = url;
+
+        if (msie) {
+        // IE needs attribute set twice to normalize properties
+          urlParsingNode.setAttribute('href', href);
+          href = urlParsingNode.href;
+        }
+
+        urlParsingNode.setAttribute('href', href);
+
+        // urlParsingNode provides the UrlUtils interface - http://url.spec.whatwg.org/#urlutils
+        return {
+          href: urlParsingNode.href,
+          protocol: urlParsingNode.protocol ? urlParsingNode.protocol.replace(/:$/, '') : '',
+          host: urlParsingNode.host,
+          search: urlParsingNode.search ? urlParsingNode.search.replace(/^\?/, '') : '',
+          hash: urlParsingNode.hash ? urlParsingNode.hash.replace(/^#/, '') : '',
+          hostname: urlParsingNode.hostname,
+          port: urlParsingNode.port,
+          pathname: (urlParsingNode.pathname.charAt(0) === '/') ?
+            urlParsingNode.pathname :
+            '/' + urlParsingNode.pathname
+        };
+      }
+
+      originURL = resolveURL(window.location.href);
+
+      /**
+    * Determine if a URL shares the same origin as the current location
+    *
+    * @param {String} requestURL The URL to test
+    * @returns {boolean} True if URL shares the same origin, otherwise false
+    */
+      return function isURLSameOrigin(requestURL) {
+        var parsed = (utils.isString(requestURL)) ? resolveURL(requestURL) : requestURL;
+        return (parsed.protocol === originURL.protocol &&
+            parsed.host === originURL.host);
+      };
+    })() :
+
+  // Non standard browser envs (web workers, react-native) lack needed support.
+    (function nonStandardBrowserEnv() {
+      return function isURLSameOrigin() {
+        return true;
+      };
+    })()
+);
+
+
+/***/ }),
+
+/***/ "./node_modules/axios/lib/helpers/normalizeHeaderName.js":
+/*!***************************************************************!*\
+  !*** ./node_modules/axios/lib/helpers/normalizeHeaderName.js ***!
+  \***************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var utils = __webpack_require__(/*! ../utils */ "./node_modules/axios/lib/utils.js");
+
+module.exports = function normalizeHeaderName(headers, normalizedName) {
+  utils.forEach(headers, function processHeader(value, name) {
+    if (name !== normalizedName && name.toUpperCase() === normalizedName.toUpperCase()) {
+      headers[normalizedName] = value;
+      delete headers[name];
+    }
+  });
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/axios/lib/helpers/parseHeaders.js":
+/*!********************************************************!*\
+  !*** ./node_modules/axios/lib/helpers/parseHeaders.js ***!
+  \********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var utils = __webpack_require__(/*! ./../utils */ "./node_modules/axios/lib/utils.js");
+
+// Headers whose duplicates are ignored by node
+// c.f. https://nodejs.org/api/http.html#http_message_headers
+var ignoreDuplicateOf = [
+  'age', 'authorization', 'content-length', 'content-type', 'etag',
+  'expires', 'from', 'host', 'if-modified-since', 'if-unmodified-since',
+  'last-modified', 'location', 'max-forwards', 'proxy-authorization',
+  'referer', 'retry-after', 'user-agent'
+];
+
+/**
+ * Parse headers into an object
+ *
+ * ```
+ * Date: Wed, 27 Aug 2014 08:58:49 GMT
+ * Content-Type: application/json
+ * Connection: keep-alive
+ * Transfer-Encoding: chunked
+ * ```
+ *
+ * @param {String} headers Headers needing to be parsed
+ * @returns {Object} Headers parsed into an object
+ */
+module.exports = function parseHeaders(headers) {
+  var parsed = {};
+  var key;
+  var val;
+  var i;
+
+  if (!headers) { return parsed; }
+
+  utils.forEach(headers.split('\n'), function parser(line) {
+    i = line.indexOf(':');
+    key = utils.trim(line.substr(0, i)).toLowerCase();
+    val = utils.trim(line.substr(i + 1));
+
+    if (key) {
+      if (parsed[key] && ignoreDuplicateOf.indexOf(key) >= 0) {
+        return;
+      }
+      if (key === 'set-cookie') {
+        parsed[key] = (parsed[key] ? parsed[key] : []).concat([val]);
+      } else {
+        parsed[key] = parsed[key] ? parsed[key] + ', ' + val : val;
+      }
+    }
+  });
+
+  return parsed;
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/axios/lib/helpers/spread.js":
+/*!**************************************************!*\
+  !*** ./node_modules/axios/lib/helpers/spread.js ***!
+  \**************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/**
+ * Syntactic sugar for invoking a function and expanding an array for arguments.
+ *
+ * Common use case would be to use `Function.prototype.apply`.
+ *
+ *  ```js
+ *  function f(x, y, z) {}
+ *  var args = [1, 2, 3];
+ *  f.apply(null, args);
+ *  ```
+ *
+ * With `spread` this example can be re-written.
+ *
+ *  ```js
+ *  spread(function(x, y, z) {})([1, 2, 3]);
+ *  ```
+ *
+ * @param {Function} callback
+ * @returns {Function}
+ */
+module.exports = function spread(callback) {
+  return function wrap(arr) {
+    return callback.apply(null, arr);
+  };
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/axios/lib/utils.js":
+/*!*****************************************!*\
+  !*** ./node_modules/axios/lib/utils.js ***!
+  \*****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var bind = __webpack_require__(/*! ./helpers/bind */ "./node_modules/axios/lib/helpers/bind.js");
+
+/*global toString:true*/
+
+// utils is a library of generic helper functions non-specific to axios
+
+var toString = Object.prototype.toString;
+
+/**
+ * Determine if a value is an Array
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is an Array, otherwise false
+ */
+function isArray(val) {
+  return toString.call(val) === '[object Array]';
+}
+
+/**
+ * Determine if a value is undefined
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if the value is undefined, otherwise false
+ */
+function isUndefined(val) {
+  return typeof val === 'undefined';
+}
+
+/**
+ * Determine if a value is a Buffer
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is a Buffer, otherwise false
+ */
+function isBuffer(val) {
+  return val !== null && !isUndefined(val) && val.constructor !== null && !isUndefined(val.constructor)
+    && typeof val.constructor.isBuffer === 'function' && val.constructor.isBuffer(val);
+}
+
+/**
+ * Determine if a value is an ArrayBuffer
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is an ArrayBuffer, otherwise false
+ */
+function isArrayBuffer(val) {
+  return toString.call(val) === '[object ArrayBuffer]';
+}
+
+/**
+ * Determine if a value is a FormData
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is an FormData, otherwise false
+ */
+function isFormData(val) {
+  return (typeof FormData !== 'undefined') && (val instanceof FormData);
+}
+
+/**
+ * Determine if a value is a view on an ArrayBuffer
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is a view on an ArrayBuffer, otherwise false
+ */
+function isArrayBufferView(val) {
+  var result;
+  if ((typeof ArrayBuffer !== 'undefined') && (ArrayBuffer.isView)) {
+    result = ArrayBuffer.isView(val);
+  } else {
+    result = (val) && (val.buffer) && (val.buffer instanceof ArrayBuffer);
+  }
+  return result;
+}
+
+/**
+ * Determine if a value is a String
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is a String, otherwise false
+ */
+function isString(val) {
+  return typeof val === 'string';
+}
+
+/**
+ * Determine if a value is a Number
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is a Number, otherwise false
+ */
+function isNumber(val) {
+  return typeof val === 'number';
+}
+
+/**
+ * Determine if a value is an Object
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is an Object, otherwise false
+ */
+function isObject(val) {
+  return val !== null && typeof val === 'object';
+}
+
+/**
+ * Determine if a value is a Date
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is a Date, otherwise false
+ */
+function isDate(val) {
+  return toString.call(val) === '[object Date]';
+}
+
+/**
+ * Determine if a value is a File
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is a File, otherwise false
+ */
+function isFile(val) {
+  return toString.call(val) === '[object File]';
+}
+
+/**
+ * Determine if a value is a Blob
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is a Blob, otherwise false
+ */
+function isBlob(val) {
+  return toString.call(val) === '[object Blob]';
+}
+
+/**
+ * Determine if a value is a Function
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is a Function, otherwise false
+ */
+function isFunction(val) {
+  return toString.call(val) === '[object Function]';
+}
+
+/**
+ * Determine if a value is a Stream
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is a Stream, otherwise false
+ */
+function isStream(val) {
+  return isObject(val) && isFunction(val.pipe);
+}
+
+/**
+ * Determine if a value is a URLSearchParams object
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is a URLSearchParams object, otherwise false
+ */
+function isURLSearchParams(val) {
+  return typeof URLSearchParams !== 'undefined' && val instanceof URLSearchParams;
+}
+
+/**
+ * Trim excess whitespace off the beginning and end of a string
+ *
+ * @param {String} str The String to trim
+ * @returns {String} The String freed of excess whitespace
+ */
+function trim(str) {
+  return str.replace(/^\s*/, '').replace(/\s*$/, '');
+}
+
+/**
+ * Determine if we're running in a standard browser environment
+ *
+ * This allows axios to run in a web worker, and react-native.
+ * Both environments support XMLHttpRequest, but not fully standard globals.
+ *
+ * web workers:
+ *  typeof window -> undefined
+ *  typeof document -> undefined
+ *
+ * react-native:
+ *  navigator.product -> 'ReactNative'
+ * nativescript
+ *  navigator.product -> 'NativeScript' or 'NS'
+ */
+function isStandardBrowserEnv() {
+  if (typeof navigator !== 'undefined' && (navigator.product === 'ReactNative' ||
+                                           navigator.product === 'NativeScript' ||
+                                           navigator.product === 'NS')) {
+    return false;
+  }
+  return (
+    typeof window !== 'undefined' &&
+    typeof document !== 'undefined'
+  );
+}
+
+/**
+ * Iterate over an Array or an Object invoking a function for each item.
+ *
+ * If `obj` is an Array callback will be called passing
+ * the value, index, and complete array for each item.
+ *
+ * If 'obj' is an Object callback will be called passing
+ * the value, key, and complete object for each property.
+ *
+ * @param {Object|Array} obj The object to iterate
+ * @param {Function} fn The callback to invoke for each item
+ */
+function forEach(obj, fn) {
+  // Don't bother if no value provided
+  if (obj === null || typeof obj === 'undefined') {
+    return;
+  }
+
+  // Force an array if not already something iterable
+  if (typeof obj !== 'object') {
+    /*eslint no-param-reassign:0*/
+    obj = [obj];
+  }
+
+  if (isArray(obj)) {
+    // Iterate over array values
+    for (var i = 0, l = obj.length; i < l; i++) {
+      fn.call(null, obj[i], i, obj);
+    }
+  } else {
+    // Iterate over object keys
+    for (var key in obj) {
+      if (Object.prototype.hasOwnProperty.call(obj, key)) {
+        fn.call(null, obj[key], key, obj);
+      }
+    }
+  }
+}
+
+/**
+ * Accepts varargs expecting each argument to be an object, then
+ * immutably merges the properties of each object and returns result.
+ *
+ * When multiple objects contain the same key the later object in
+ * the arguments list will take precedence.
+ *
+ * Example:
+ *
+ * ```js
+ * var result = merge({foo: 123}, {foo: 456});
+ * console.log(result.foo); // outputs 456
+ * ```
+ *
+ * @param {Object} obj1 Object to merge
+ * @returns {Object} Result of all merge properties
+ */
+function merge(/* obj1, obj2, obj3, ... */) {
+  var result = {};
+  function assignValue(val, key) {
+    if (typeof result[key] === 'object' && typeof val === 'object') {
+      result[key] = merge(result[key], val);
+    } else {
+      result[key] = val;
+    }
+  }
+
+  for (var i = 0, l = arguments.length; i < l; i++) {
+    forEach(arguments[i], assignValue);
+  }
+  return result;
+}
+
+/**
+ * Function equal to merge with the difference being that no reference
+ * to original objects is kept.
+ *
+ * @see merge
+ * @param {Object} obj1 Object to merge
+ * @returns {Object} Result of all merge properties
+ */
+function deepMerge(/* obj1, obj2, obj3, ... */) {
+  var result = {};
+  function assignValue(val, key) {
+    if (typeof result[key] === 'object' && typeof val === 'object') {
+      result[key] = deepMerge(result[key], val);
+    } else if (typeof val === 'object') {
+      result[key] = deepMerge({}, val);
+    } else {
+      result[key] = val;
+    }
+  }
+
+  for (var i = 0, l = arguments.length; i < l; i++) {
+    forEach(arguments[i], assignValue);
+  }
+  return result;
+}
+
+/**
+ * Extends object a by mutably adding to it the properties of object b.
+ *
+ * @param {Object} a The object to be extended
+ * @param {Object} b The object to copy properties from
+ * @param {Object} thisArg The object to bind function to
+ * @return {Object} The resulting value of object a
+ */
+function extend(a, b, thisArg) {
+  forEach(b, function assignValue(val, key) {
+    if (thisArg && typeof val === 'function') {
+      a[key] = bind(val, thisArg);
+    } else {
+      a[key] = val;
+    }
+  });
+  return a;
+}
+
+module.exports = {
+  isArray: isArray,
+  isArrayBuffer: isArrayBuffer,
+  isBuffer: isBuffer,
+  isFormData: isFormData,
+  isArrayBufferView: isArrayBufferView,
+  isString: isString,
+  isNumber: isNumber,
+  isObject: isObject,
+  isUndefined: isUndefined,
+  isDate: isDate,
+  isFile: isFile,
+  isBlob: isBlob,
+  isFunction: isFunction,
+  isStream: isStream,
+  isURLSearchParams: isURLSearchParams,
+  isStandardBrowserEnv: isStandardBrowserEnv,
+  forEach: forEach,
+  merge: merge,
+  deepMerge: deepMerge,
+  extend: extend,
+  trim: trim
+};
+
+
+/***/ }),
+
 /***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/Options/GeneralSettings.scss":
 /*!********************************************************************************************************************************************************************!*\
   !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src!./node_modules/sass-loader/dist/cjs.js!./src/components/Options/GeneralSettings.scss ***!
@@ -23573,6 +25438,78 @@ module.exports = exports;
 
 /***/ }),
 
+/***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/ui/Auth/Login.scss":
+/*!**********************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src!./node_modules/sass-loader/dist/cjs.js!./src/components/ui/Auth/Login.scss ***!
+  \**********************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// Imports
+var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+exports = ___CSS_LOADER_API_IMPORT___(false);
+// Module
+exports.push([module.i, ".login {\n  background-color: #f9f9f9;\n  padding: 10px;\n  height: 100%;\n  color: #232d33;\n  overflow: hidden;\n}\n.login .form {\n  display: flex;\n  flex-direction: column;\n}\n.login label {\n  display: flex;\n  flex-direction: column;\n  margin-bottom: 10px;\n}\n.login .label-checkbox {\n  flex-direction: row;\n  justify-content: space-between;\n}", ""]);
+// Exports
+module.exports = exports;
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/ui/Auth/SiteList.scss":
+/*!*************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src!./node_modules/sass-loader/dist/cjs.js!./src/components/ui/Auth/SiteList.scss ***!
+  \*************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// Imports
+var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+exports = ___CSS_LOADER_API_IMPORT___(false);
+// Module
+exports.push([module.i, ".site-list {\n  width: 100%;\n  height: 100%;\n  overflow: hidden auto;\n  display: flex;\n  flex-direction: column;\n  padding: 10px;\n  padding-top: 0;\n}\n.site-list .site-list-entry {\n  width: 100%;\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  justify-content: space-between;\n  padding: 10px;\n  background-color: #f9f9f9;\n  color: #526a78;\n  font-weight: bold;\n  cursor: pointer;\n  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);\n  fill: #526a78;\n  transition: margin-left 0.1s;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n}\n.site-list .site-list-entry .site-url {\n  flex-grow: 1;\n  overflow: hidden;\n}\n.site-list .site-list-entry:hover {\n  background-color: #fff;\n}\n.site-list .site-list-entry.online {\n  fill: #03a388;\n}\n.site-list .site-list-entry:not(:last-child) {\n  margin-bottom: 10px;\n}\n.site-list .site-list-entry .site-icons {\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  margin-left: 10px;\n}\n.site-list .site-list-entry .icon:not(:last-child) {\n  margin-right: 10px;\n}\n.site-list .site-list-entry .icon.icon-warning {\n  fill: #f59815;\n}\n.site-list .site-list-entry .icon.icon-error {\n  fill: #c5283e;\n}", ""]);
+// Exports
+module.exports = exports;
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/ui/Auth/SiteStatus.scss":
+/*!***************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src!./node_modules/sass-loader/dist/cjs.js!./src/components/ui/Auth/SiteStatus.scss ***!
+  \***************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// Imports
+var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+exports = ___CSS_LOADER_API_IMPORT___(false);
+// Module
+exports.push([module.i, ".site-status {\n  background-color: #f9f9f9;\n  padding: 10px;\n  height: 100%;\n  overflow: hidden auto;\n  color: #232d33;\n}\n.site-status .site-status-info {\n  margin-bottom: 10px;\n}\n.site-status .warnings-title {\n  color: #f59815;\n}\n.site-status .errors-title {\n  color: #c5283e;\n}\n.site-status .button {\n  width: 100%;\n}", ""]);
+// Exports
+module.exports = exports;
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/ui/Popup/Content.scss":
+/*!*************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src!./node_modules/sass-loader/dist/cjs.js!./src/components/ui/Popup/Content.scss ***!
+  \*************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// Imports
+var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+exports = ___CSS_LOADER_API_IMPORT___(false);
+// Module
+exports.push([module.i, ".content {\n  display: grid;\n  grid-template-columns: 360px 360px;\n  grid-template-rows: 400px;\n  background-color: #526a78;\n}\n.content .popup-right,\n.content .popup-left {\n  height: 100%;\n  width: 100%;\n}", ""]);
+// Exports
+module.exports = exports;
+
+
+/***/ }),
+
 /***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/ui/Popup/Menu.scss":
 /*!**********************************************************************************************************************************************************!*\
   !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src!./node_modules/sass-loader/dist/cjs.js!./src/components/ui/Popup/Menu.scss ***!
@@ -23584,7 +25521,7 @@ module.exports = exports;
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, ".menu {\n  display: flex;\n  flex-direction: row;\n  justify-content: flex-end;\n  align-items: center;\n  background-color: #526a78;\n  width: 100%;\n  height: 100%;\n}\n.menu .menu-item {\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  transition: 0.1s;\n  transition-property: background-color, color, flex-grow;\n  padding: 11.25px;\n  color: #fff;\n  cursor: pointer;\n  width: 63.75px;\n  height: 100%;\n  overflow: hidden;\n}\n.menu .menu-item:hover {\n  flex-grow: 1;\n}\n.menu .menu-item:hover {\n  background-color: #fff;\n  color: #03a388;\n}\n.menu .menu-item.selected {\n  background-color: #f9f9f9;\n  color: #03a388;\n}\n.menu .menu-item:hover .menu-item-icon > svg, .menu .menu-item.selected .menu-item-icon > svg {\n  fill: #03a388;\n}\n.menu .menu-item .menu-item-icon {\n  height: 30px;\n  width: 30px;\n  margin: 5.625px;\n  margin-right: 16.875px;\n}\n.menu .menu-item .menu-item-icon > * {\n  height: 30px;\n  width: 30px;\n}\n.menu .menu-item .menu-item-icon > svg {\n  fill: #fff;\n  transition: fill 0.1s;\n}", ""]);
+exports.push([module.i, ".menu {\n  display: flex;\n  flex-direction: row;\n  justify-content: flex-end;\n  align-items: center;\n  background-color: #526a78;\n  width: 100%;\n  height: 100%;\n}\n.menu .menu-item {\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  transition: 0.1s;\n  transition-property: background-color, color, flex-grow;\n  padding: 11.25px;\n  color: #fff;\n  cursor: pointer;\n  width: 63.75px;\n  height: 100%;\n  overflow: hidden;\n}\n.menu .menu-item:hover {\n  flex-grow: 1;\n}\n.menu .menu-item:hover {\n  background-color: #fff;\n  color: #03a388;\n}\n.menu .menu-item.selected {\n  background-color: #f9f9f9;\n  color: #03a388;\n}\n.menu .menu-item:hover .menu-item-icon > svg, .menu .menu-item.selected .menu-item-icon > svg {\n  fill: #03a388;\n}\n.menu .menu-item:not(:hover) .menu-item-title {\n  transition: visibility 0 0.1s;\n  visibility: hidden;\n}\n.menu .menu-item .menu-item-icon {\n  height: 30px;\n  width: 30px;\n  margin: 5.625px;\n  margin-right: 16.875px;\n}\n.menu .menu-item .menu-item-icon > * {\n  height: 30px;\n  width: 30px;\n}\n.menu .menu-item .menu-item-icon > svg {\n  fill: #fff;\n  transition: fill 0.1s;\n}", ""]);
 // Exports
 module.exports = exports;
 
@@ -23602,7 +25539,97 @@ module.exports = exports;
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, ".popup {\n  height: 490px;\n  width: 720px;\n  display: grid;\n  grid-template-rows: 64px 400px 15px;\n  grid-template-columns: 360px 360px;\n  background-color: #526a78;\n  color: #fff;\n  overflow: hidden;\n}\n.popup .banner {\n  max-width: 100%;\n  max-height: 100%;\n}\n.popup .popup-left,\n.popup .popup-right {\n  height: 100%;\n  width: 100%;\n}", ""]);
+exports.push([module.i, ".popup {\n  height: 490px;\n  width: 720px;\n  display: grid;\n  grid-template-rows: 64px 400px 15px;\n  background-color: #526a78;\n  color: #fff;\n}\n.popup .popup-header {\n  display: grid;\n  grid-template-columns: 1fr 1fr;\n}\n.popup .banner {\n  max-width: 100%;\n  max-height: 100%;\n}\n.popup .popup-content {\n  height: 100%;\n  width: 100%;\n}", ""]);
+// Exports
+module.exports = exports;
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/ui/Popup/StatusBar.scss":
+/*!***************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src!./node_modules/sass-loader/dist/cjs.js!./src/components/ui/Popup/StatusBar.scss ***!
+  \***************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// Imports
+var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+exports = ___CSS_LOADER_API_IMPORT___(false);
+// Module
+exports.push([module.i, ".status-bar {\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n}", ""]);
+// Exports
+module.exports = exports;
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/ui/Search/ObjectView.scss":
+/*!*****************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src!./node_modules/sass-loader/dist/cjs.js!./src/components/ui/Search/ObjectView.scss ***!
+  \*****************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// Imports
+var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+exports = ___CSS_LOADER_API_IMPORT___(false);
+// Module
+exports.push([module.i, ".object-view {\n  background-color: #f9f9f9;\n  color: #232d33;\n  padding: 10px;\n  padding-top: 28.6666666667px;\n  height: 100%;\n}\n.object-view .object-view-title {\n  background: no-repeat 10px center/30px 30px;\n  padding-left: 50px;\n  margin-bottom: 10px;\n}\n.object-view .object-view-container {\n  background-color: #fff;\n  padding: 10px;\n  overflow: hidden auto;\n  max-height: 100%;\n}\n.object-view .object-view-field {\n  padding: 10px;\n  display: flex;\n  flex-direction: row;\n  justify-content: space-between;\n  align-items: center;\n  transition: background-color 0.1s;\n}\n.object-view .object-view-field:hover {\n  background-color: #f3f7f8;\n}\n.object-view .object-view-field:hover .object-view-field-copy {\n  opacity: 1;\n}\n.object-view .object-view-fill {\n  width: 100%;\n}\n.object-view .object-view-field-text {\n  display: flex;\n  flex-direction: column;\n}\n.object-view .object-view-field-copy {\n  padding: 10px;\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  border: 0;\n  outline: 0;\n  background: transparent;\n  color: #03a388;\n  font-weight: bold;\n  cursor: pointer;\n  transition: 0.1s;\n  transition-property: opacity, background-color, color;\n  opacity: 0;\n}\n.object-view .object-view-field-copy:active {\n  background-color: #03a388;\n  color: #fff;\n}\n.object-view .field-title {\n  font-size: 0.8em;\n  color: #526a78;\n}\n.object-view .field-value .number {\n  color: #c5283e;\n}\n.object-view .field-value .uppercase {\n  color: #03a388;\n  font-weight: bold;\n}\n.object-view .field-value .lowercase {\n  color: #526a78;\n}\n.object-view .field-value .symbol {\n  color: #f59815;\n}\n.object-view .field-value .decrypt {\n  border: 0;\n  outline: 0;\n  background: none;\n  color: #c5283e;\n  cursor: pointer;\n  font-size: 1em;\n  font-weight: normal;\n  padding: 0 inherit 0 0;\n}", ""]);
+// Exports
+module.exports = exports;
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/ui/Search/Search.scss":
+/*!*************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src!./node_modules/sass-loader/dist/cjs.js!./src/components/ui/Search/Search.scss ***!
+  \*************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// Imports
+var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+exports = ___CSS_LOADER_API_IMPORT___(false);
+// Module
+exports.push([module.i, ".search {\n  display: flex;\n  flex-direction: column;\n  padding: 10px;\n  width: 100%;\n  height: 100%;\n  background-color: #f9f9f9;\n  color: #232d33;\n}", ""]);
+// Exports
+module.exports = exports;
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/ui/Search/SearchBar.scss":
+/*!****************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src!./node_modules/sass-loader/dist/cjs.js!./src/components/ui/Search/SearchBar.scss ***!
+  \****************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// Imports
+var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+exports = ___CSS_LOADER_API_IMPORT___(false);
+// Module
+exports.push([module.i, ".search-bar {\n  position: relative;\n}\n.search-bar .search-bar-area {\n  display: flex;\n  flex-direction: row;\n}\n.search-bar .search-bar-input {\n  flex-grow: 1;\n  width: 0;\n}\n.search-bar .search-bar-button {\n  background: #03a388;\n  cursor: pointer;\n  transition: background-color 0.1s;\n  border: 0;\n  outline: 0;\n  border-bottom: 1px solid #d4d7d8;\n}\n.search-bar .search-bar-button:hover {\n  background-color: #fff;\n}\n.search-bar .search-bar-button > svg {\n  padding: 10px;\n  transition: fill 0.1s;\n  fill: #fff;\n}\n.search-bar .search-bar-button:hover > svg {\n  fill: #03a388;\n}", ""]);
+// Exports
+module.exports = exports;
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/ui/Search/SearchResults.scss":
+/*!********************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src!./node_modules/sass-loader/dist/cjs.js!./src/components/ui/Search/SearchResults.scss ***!
+  \********************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// Imports
+var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+exports = ___CSS_LOADER_API_IMPORT___(false);
+// Module
+exports.push([module.i, ".search-results {\n  overflow: hidden scroll;\n  flex-grow: 1;\n}\n.search-results .search-results-url {\n  text-align: center;\n  font-weight: bold;\n  color: #526a78;\n  padding: 10px;\n}\n.search-results .search-results-url .searching {\n  margin-left: 10px;\n  position: absolute;\n  width: 12pt;\n  height: 12pt;\n}\n.search-results .search-results-url .searching::after {\n  position: absolute;\n  content: \"\";\n  border-radius: 100%;\n  box-sizing: border-box;\n  left: 0;\n  top: 0;\n  height: 100%;\n  width: 100%;\n  border: 2pt solid #fff;\n  border-top-color: #03a388;\n  -webkit-animation: spin 1s infinite;\n          animation: spin 1s infinite;\n  transition: all 0.3s;\n}\n@-webkit-keyframes spin {\n  from {\n    transform: rotate(0deg);\n  }\n  to {\n    transform: rotate(360deg);\n  }\n}\n@keyframes spin {\n  from {\n    transform: rotate(0deg);\n  }\n  to {\n    transform: rotate(360deg);\n  }\n}\n.search-results .search-result {\n  background: no-repeat 10px center/30px 30px;\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  background-color: #fff;\n  padding: 10px;\n  padding-left: 50px;\n  cursor: pointer;\n}\n.search-results .search-result:not(:last-child) {\n  margin-bottom: 10px;\n}\n.search-results .search-result .search-result-text {\n  display: flex;\n  flex-direction: column;\n}\n.search-results .search-result.selected {\n  background-color: #2e424f;\n  color: #fff;\n}", ""]);
 // Exports
 module.exports = exports;
 
@@ -23663,6 +25690,51 @@ module.exports = exports;
 
 /***/ }),
 
+/***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/ui/common/LoadingComponent.scss":
+/*!***********************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src!./node_modules/sass-loader/dist/cjs.js!./src/components/ui/common/LoadingComponent.scss ***!
+  \***********************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// Imports
+var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+exports = ___CSS_LOADER_API_IMPORT___(false);
+// Module
+exports.push([module.i, ".loading-component {\n  display: grid;\n  width: 100%;\n  height: 100%;\n}", ""]);
+// Exports
+module.exports = exports;
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/ui/common/LoadingSpinner.scss":
+/*!*********************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src!./node_modules/sass-loader/dist/cjs.js!./src/components/ui/common/LoadingSpinner.scss ***!
+  \*********************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// Imports
+var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+var ___CSS_LOADER_GET_URL_IMPORT___ = __webpack_require__(/*! ../../../../node_modules/css-loader/dist/runtime/getUrl.js */ "./node_modules/css-loader/dist/runtime/getUrl.js");
+var ___CSS_LOADER_URL_IMPORT_0___ = __webpack_require__(/*! ../../../../graphics/padlock.svg */ "./graphics/padlock.svg");
+var ___CSS_LOADER_URL_IMPORT_1___ = __webpack_require__(/*! ../../../../graphics/padlock-error.svg */ "./graphics/padlock-error.svg");
+var ___CSS_LOADER_URL_IMPORT_2___ = __webpack_require__(/*! ../../../../graphics/padlock-warning.svg */ "./graphics/padlock-warning.svg");
+var ___CSS_LOADER_URL_IMPORT_3___ = __webpack_require__(/*! ../../../../graphics/padlock-unlocked.svg */ "./graphics/padlock-unlocked.svg");
+exports = ___CSS_LOADER_API_IMPORT___(false);
+var ___CSS_LOADER_URL_REPLACEMENT_0___ = ___CSS_LOADER_GET_URL_IMPORT___(___CSS_LOADER_URL_IMPORT_0___);
+var ___CSS_LOADER_URL_REPLACEMENT_1___ = ___CSS_LOADER_GET_URL_IMPORT___(___CSS_LOADER_URL_IMPORT_1___);
+var ___CSS_LOADER_URL_REPLACEMENT_2___ = ___CSS_LOADER_GET_URL_IMPORT___(___CSS_LOADER_URL_IMPORT_2___);
+var ___CSS_LOADER_URL_REPLACEMENT_3___ = ___CSS_LOADER_GET_URL_IMPORT___(___CSS_LOADER_URL_IMPORT_3___);
+// Module
+exports.push([module.i, ".loading-spinner {\n  position: relative;\n  height: 3em;\n  width: 3em;\n  margin: auto;\n}\n.loading-spinner .spinner::after, .loading-spinner .spinner::before {\n  position: absolute;\n  content: \"\";\n  border-radius: 100%;\n  box-sizing: border-box;\n  left: 0;\n  top: 0;\n  height: 100%;\n  width: 100%;\n}\n.loading-spinner .spinner::after {\n  border: 0.3em solid #fff;\n  border-top-color: #03a388;\n  -webkit-animation: spin 1s infinite;\n          animation: spin 1s infinite;\n  transition: all 0.3s;\n  z-index: 100;\n}\n.loading-spinner .spinner::before {\n  background-image: url(" + ___CSS_LOADER_URL_REPLACEMENT_0___ + ");\n  background-size: contain;\n  border: 0;\n  transition: all 0.3s;\n}\n.loading-spinner .spinner.error::after, .loading-spinner .spinner.warning::after, .loading-spinner .spinner.success::after {\n  -webkit-animation: none;\n          animation: none;\n  border: 0;\n}\n.loading-spinner .spinner.error::before {\n  background-image: url(" + ___CSS_LOADER_URL_REPLACEMENT_1___ + ");\n  border-color: #c5283e;\n}\n.loading-spinner .spinner.warning::before {\n  background-image: url(" + ___CSS_LOADER_URL_REPLACEMENT_2___ + ");\n  border-color: #f59815;\n}\n.loading-spinner .spinner.success::before {\n  background-image: url(" + ___CSS_LOADER_URL_REPLACEMENT_3___ + ");\n  border-color: #03a388;\n}\n\n@-webkit-keyframes spin {\n  from {\n    transform: rotate(0deg);\n  }\n  to {\n    transform: rotate(360deg);\n  }\n}\n\n@keyframes spin {\n  from {\n    transform: rotate(0deg);\n  }\n  to {\n    transform: rotate(360deg);\n  }\n}", ""]);
+// Exports
+module.exports = exports;
+
+
+/***/ }),
+
 /***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/ui/common/Logo.scss":
 /*!***********************************************************************************************************************************************************!*\
   !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src!./node_modules/sass-loader/dist/cjs.js!./src/components/ui/common/Logo.scss ***!
@@ -23711,24 +25783,6 @@ var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../../node_modul
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
 exports.push([module.i, ".online-indicator {\n  padding: 0.5em;\n}\n.online-indicator .online-indicator-icon {\n  border-radius: 100%;\n  width: 10px;\n  height: 10px;\n  transition: 0.3s;\n  transition-property: background-color, box-shadow;\n}\n.online-indicator.online .online-indicator-icon {\n  background-color: #03a388;\n  box-shadow: 0 0 2.5px 2.5px #bff8ef, 0 0 1.25px 1.25px rgba(0, 0, 0, 0.1) inset;\n}\n.online-indicator.offline .online-indicator-icon {\n  background-color: #c5283e;\n  box-shadow: 0 0 2.5px 2.5px #fdd2d8, 0 0 1.25px 1.25px rgba(0, 0, 0, 0.1) inset;\n}", ""]);
-// Exports
-module.exports = exports;
-
-
-/***/ }),
-
-/***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/ui/common/Radio.scss":
-/*!************************************************************************************************************************************************************!*\
-  !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src!./node_modules/sass-loader/dist/cjs.js!./src/components/ui/common/Radio.scss ***!
-  \************************************************************************************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-// Imports
-var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
-exports = ___CSS_LOADER_API_IMPORT___(false);
-// Module
-exports.push([module.i, ".radio input {\n  height: 0;\n  opacity: 0;\n  position: absolute;\n  width: 0;\n}\n.radio .custom-radio {\n  padding: 2px;\n  position: relative;\n  border-radius: 100%;\n  border: 1px solid #d4d7d8;\n  box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.1) inset;\n  width: 16px;\n  height: 16px;\n}\n.radio .custom-radio::after {\n  display: none;\n  position: absolute;\n  border-radius: 100%;\n  content: \"\";\n  width: 10px;\n  height: 10px;\n  background-color: #03a388;\n}\n.radio input:checked ~ .custom-radio::after {\n  display: block;\n}\n.radio input:hover ~ .custom-radio,\n.radio input:active ~ .custom-radio,\n.radio input:focus ~ .custom-radio {\n  box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.1) inset, 0 0 3px 0 rgba(0, 0, 0, 0.1);\n}\n.radio input:hover ~ .custom-radio {\n  border-color: #c7cacc;\n  background-color: #f9fbfc;\n}\n.radio input:focus ~ .custom-radio {\n  border-color: #03a388;\n  background-color: #f9fbfc;\n}\n.radio input:active ~ .custom-radio {\n  border-color: #028c73;\n  background-color: #ebeef0;\n}", ""]);
 // Exports
 module.exports = exports;
 
@@ -23874,6 +25928,246 @@ function toComment(sourceMap) {
   var data = "sourceMappingURL=data:application/json;charset=utf-8;base64,".concat(base64);
   return "/*# ".concat(data, " */");
 }
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/dist/runtime/getUrl.js":
+/*!********************************************************!*\
+  !*** ./node_modules/css-loader/dist/runtime/getUrl.js ***!
+  \********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+module.exports = function (url, options) {
+  if (!options) {
+    // eslint-disable-next-line no-param-reassign
+    options = {};
+  } // eslint-disable-next-line no-underscore-dangle, no-param-reassign
+
+
+  url = url && url.__esModule ? url.default : url;
+
+  if (typeof url !== 'string') {
+    return url;
+  } // If url is already wrapped in quotes, remove them
+
+
+  if (/^['"].*['"]$/.test(url)) {
+    // eslint-disable-next-line no-param-reassign
+    url = url.slice(1, -1);
+  }
+
+  if (options.hash) {
+    // eslint-disable-next-line no-param-reassign
+    url += options.hash;
+  } // Should url be wrapped?
+  // See https://drafts.csswg.org/css-values-3/#urls
+
+
+  if (/["'() \t\n]/.test(url) || options.needQuotes) {
+    return "\"".concat(url.replace(/"/g, '\\"').replace(/\n/g, '\\n'), "\"");
+  }
+
+  return url;
+};
+
+/***/ }),
+
+/***/ "./node_modules/process/browser.js":
+/*!*****************************************!*\
+  !*** ./node_modules/process/browser.js ***!
+  \*****************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+// shim for using process in browser
+var process = module.exports = {};
+
+// cached from whatever global is present so that test runners that stub it
+// don't break things.  But we need to wrap it in a try catch in case it is
+// wrapped in strict mode code which doesn't define any globals.  It's inside a
+// function because try/catches deoptimize in certain engines.
+
+var cachedSetTimeout;
+var cachedClearTimeout;
+
+function defaultSetTimout() {
+    throw new Error('setTimeout has not been defined');
+}
+function defaultClearTimeout () {
+    throw new Error('clearTimeout has not been defined');
+}
+(function () {
+    try {
+        if (typeof setTimeout === 'function') {
+            cachedSetTimeout = setTimeout;
+        } else {
+            cachedSetTimeout = defaultSetTimout;
+        }
+    } catch (e) {
+        cachedSetTimeout = defaultSetTimout;
+    }
+    try {
+        if (typeof clearTimeout === 'function') {
+            cachedClearTimeout = clearTimeout;
+        } else {
+            cachedClearTimeout = defaultClearTimeout;
+        }
+    } catch (e) {
+        cachedClearTimeout = defaultClearTimeout;
+    }
+} ())
+function runTimeout(fun) {
+    if (cachedSetTimeout === setTimeout) {
+        //normal enviroments in sane situations
+        return setTimeout(fun, 0);
+    }
+    // if setTimeout wasn't available but was latter defined
+    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
+        cachedSetTimeout = setTimeout;
+        return setTimeout(fun, 0);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedSetTimeout(fun, 0);
+    } catch(e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
+            return cachedSetTimeout.call(null, fun, 0);
+        } catch(e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
+            return cachedSetTimeout.call(this, fun, 0);
+        }
+    }
+
+
+}
+function runClearTimeout(marker) {
+    if (cachedClearTimeout === clearTimeout) {
+        //normal enviroments in sane situations
+        return clearTimeout(marker);
+    }
+    // if clearTimeout wasn't available but was latter defined
+    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
+        cachedClearTimeout = clearTimeout;
+        return clearTimeout(marker);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedClearTimeout(marker);
+    } catch (e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
+            return cachedClearTimeout.call(null, marker);
+        } catch (e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
+            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
+            return cachedClearTimeout.call(this, marker);
+        }
+    }
+
+
+
+}
+var queue = [];
+var draining = false;
+var currentQueue;
+var queueIndex = -1;
+
+function cleanUpNextTick() {
+    if (!draining || !currentQueue) {
+        return;
+    }
+    draining = false;
+    if (currentQueue.length) {
+        queue = currentQueue.concat(queue);
+    } else {
+        queueIndex = -1;
+    }
+    if (queue.length) {
+        drainQueue();
+    }
+}
+
+function drainQueue() {
+    if (draining) {
+        return;
+    }
+    var timeout = runTimeout(cleanUpNextTick);
+    draining = true;
+
+    var len = queue.length;
+    while(len) {
+        currentQueue = queue;
+        queue = [];
+        while (++queueIndex < len) {
+            if (currentQueue) {
+                currentQueue[queueIndex].run();
+            }
+        }
+        queueIndex = -1;
+        len = queue.length;
+    }
+    currentQueue = null;
+    draining = false;
+    runClearTimeout(timeout);
+}
+
+process.nextTick = function (fun) {
+    var args = new Array(arguments.length - 1);
+    if (arguments.length > 1) {
+        for (var i = 1; i < arguments.length; i++) {
+            args[i - 1] = arguments[i];
+        }
+    }
+    queue.push(new Item(fun, args));
+    if (queue.length === 1 && !draining) {
+        runTimeout(drainQueue);
+    }
+};
+
+// v8 likes predictible objects
+function Item(fun, array) {
+    this.fun = fun;
+    this.array = array;
+}
+Item.prototype.run = function () {
+    this.fun.apply(null, this.array);
+};
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
+process.version = ''; // empty string to avoid regexp issues
+process.versions = {};
+
+function noop() {}
+
+process.on = noop;
+process.addListener = noop;
+process.once = noop;
+process.off = noop;
+process.removeListener = noop;
+process.removeAllListeners = noop;
+process.emit = noop;
+process.prependListener = noop;
+process.prependOnceListener = noop;
+
+process.listeners = function (name) { return [] }
+
+process.binding = function (name) {
+    throw new Error('process.binding is not supported');
+};
+
+process.cwd = function () { return '/' };
+process.chdir = function (dir) {
+    throw new Error('process.chdir is not supported');
+};
+process.umask = function() { return 0; };
+
 
 /***/ }),
 
@@ -24462,6 +26756,161 @@ module.exports = reactAxe;
 
 /***/ }),
 
+/***/ "./node_modules/storedsafe/dist/index.js":
+/*!***********************************************!*\
+  !*** ./node_modules/storedsafe/dist/index.js ***!
+  \***********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var axios_1 = __importDefault(__webpack_require__(/*! axios */ "./node_modules/axios/index.js"));
+var LoginType;
+(function (LoginType) {
+    LoginType["TOTP"] = "totp";
+    LoginType["SMARTCARD"] = "smc_rest";
+})(LoginType = exports.LoginType || (exports.LoginType = {}));
+var StoredSafe = /** @class */ (function () {
+    function StoredSafe(site, apikey, token, version) {
+        if (version === void 0) { version = '1.0'; }
+        this.axios = axios_1.default.create({
+            baseURL: "https://" + site + "/api/" + version + "/",
+            timeout: 5000,
+        });
+        this.apikey = apikey;
+        this.token = token;
+    }
+    StoredSafe.prototype.authYubikey = function (username, passphrase, otp) {
+        var _this = this;
+        return this.axios.post('/auth', {
+            username: username,
+            keys: "" + passphrase + this.apikey + otp,
+        }).then(function (response) {
+            _this.token = response.data.CALLINFO.token;
+            return response;
+        });
+    };
+    StoredSafe.prototype.authTotp = function (username, passphrase, otp) {
+        var _this = this;
+        return this.axios.post('/auth', {
+            username: username,
+            passphrase: passphrase,
+            otp: otp,
+            logintype: LoginType.TOTP,
+            apikey: this.apikey,
+        }).then(function (response) {
+            _this.token = response.data.CALLINFO.token;
+            return response;
+        });
+    };
+    StoredSafe.prototype.authSmartcard = function (username, passphrase, otp) {
+        var _this = this;
+        return this.axios.post('/auth', {
+            username: username,
+            passphrase: passphrase,
+            otp: otp,
+            logintype: LoginType.SMARTCARD,
+            apikey: this.apikey,
+        }).then(function (response) {
+            _this.token = response.data.CALLINFO.token;
+            return response;
+        });
+    };
+    StoredSafe.prototype.logout = function () {
+        var _this = this;
+        return this.axios.get('/auth/logout', {
+            params: { token: this.token },
+        }).then(function (response) {
+            _this.token = undefined;
+            return response;
+        });
+    };
+    StoredSafe.prototype.check = function () {
+        return this.axios.post('/auth/check', {
+            token: this.token
+        });
+    };
+    StoredSafe.prototype.vaultList = function () {
+        return this.axios.get('/vault', {
+            params: { token: this.token },
+        });
+    };
+    StoredSafe.prototype.vaultObjects = function (id) {
+        return this.axios.get("/vault/" + id, {
+            params: { token: this.token },
+        });
+    };
+    StoredSafe.prototype.vaultCreate = function (params) {
+        return this.axios.post('/vault', __assign(__assign({}, params), { token: this.token }));
+    };
+    StoredSafe.prototype.vaultEdit = function (id, params) {
+        return this.axios.put("/vault/" + id, __assign(__assign({}, params), { token: this.token }));
+    };
+    StoredSafe.prototype.vaultDelete = function (id) {
+        return this.axios.delete("/vault/" + id, {
+            params: { token: this.token },
+        });
+    };
+    StoredSafe.prototype.object = function (id, children) {
+        if (children === void 0) { children = false; }
+        return this.axios.get("/object/" + id, {
+            params: { token: this.token, children: children },
+        });
+    };
+    StoredSafe.prototype.objectDecrypt = function (id) {
+        return this.axios.get("/object/" + id, {
+            params: { token: this.token, decrypt: true },
+        });
+    };
+    StoredSafe.prototype.objectCreate = function (params) {
+        return this.axios.post('/object', __assign(__assign({}, params), { token: this.token }));
+    };
+    StoredSafe.prototype.objectEdit = function (id, params) {
+        return this.axios.put("/object/" + id, __assign(__assign({}, params), { token: this.token }));
+    };
+    StoredSafe.prototype.objectDelete = function (id) {
+        return this.axios.delete("/object/" + id, {
+            params: { token: this.token },
+        });
+    };
+    StoredSafe.prototype.find = function (needle) {
+        return this.axios.get('/find', {
+            params: { token: this.token, needle: needle },
+        });
+    };
+    StoredSafe.prototype.templateList = function () {
+        return this.axios.get('/template', {
+            params: { token: this.token },
+        });
+    };
+    StoredSafe.prototype.template = function (id) {
+        return this.axios.get("/template/" + id, {
+            params: { token: this.token },
+        });
+    };
+    return StoredSafe;
+}());
+exports.default = StoredSafe;
+
+
+/***/ }),
+
 /***/ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js":
 /*!****************************************************************************!*\
   !*** ./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js ***!
@@ -24825,7 +27274,7 @@ const DebugStorage = () => {
     const { state, isInitialized } = useStorage_1.useStorage();
     const settings = Object.keys(state.settings).map((key) => {
         const { value, managed } = state.settings[key];
-        return (react_1.default.createElement(react_1.default.Fragment, { key: key },
+        return (react_1.default.createElement("p", { key: key },
             react_1.default.createElement("strong", null,
                 key,
                 ": "),
@@ -24836,7 +27285,7 @@ const DebugStorage = () => {
     });
     const systemSites = state.sites.collections.system.map((site) => {
         const { url, apikey } = site;
-        return (react_1.default.createElement(react_1.default.Fragment, { key: url },
+        return (react_1.default.createElement("p", { key: url },
             react_1.default.createElement("strong", null, "URL: "),
             url,
             react_1.default.createElement("br", null),
@@ -24845,7 +27294,7 @@ const DebugStorage = () => {
     });
     const userSites = state.sites.collections.user.map((site) => {
         const { url, apikey } = site;
-        return (react_1.default.createElement(react_1.default.Fragment, { key: url },
+        return (react_1.default.createElement("p", { key: url },
             react_1.default.createElement("strong", null, "URL: "),
             url,
             react_1.default.createElement("br", null),
@@ -24854,7 +27303,7 @@ const DebugStorage = () => {
     });
     const sessions = Object.keys(state.sessions).map((url) => {
         const { apikey, token, createdAt } = state.sessions[url];
-        return (react_1.default.createElement(react_1.default.Fragment, { key: url },
+        return (react_1.default.createElement("p", { key: url },
             react_1.default.createElement("strong", null, "URL: "),
             url,
             react_1.default.createElement("br", null),
@@ -24869,7 +27318,7 @@ const DebugStorage = () => {
     });
     const sitePrefs = Object.keys(state.sitePrefs).map((url) => {
         const { username, loginType } = state.sitePrefs[url];
-        return (react_1.default.createElement(react_1.default.Fragment, { key: url },
+        return (react_1.default.createElement("p", { key: url },
             react_1.default.createElement("strong", null, "Username: "),
             username,
             react_1.default.createElement("br", null),
@@ -25327,9 +27776,98 @@ exports.default = Options_1.Options;
 
 "use strict";
 
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
+Object.defineProperty(exports, "__esModule", { value: true });
+const react_1 = __importStar(__webpack_require__(/*! react */ "react"));
+const PopupUI = __importStar(__webpack_require__(/*! ../ui/Popup */ "./src/components/ui/Popup/index.ts"));
+const useStorage_1 = __webpack_require__(/*! ../../hooks/useStorage */ "./src/hooks/useStorage.tsx");
+const common_1 = __webpack_require__(/*! ../ui/common */ "./src/components/ui/common/index.ts");
+const PopupSearch_1 = __importDefault(__webpack_require__(/*! ./PopupSearch */ "./src/components/Popup/PopupSearch.tsx"));
+const PopupSessions_1 = __importDefault(__webpack_require__(/*! ./PopupSessions */ "./src/components/Popup/PopupSessions.tsx"));
+const svg_1 = __importDefault(__webpack_require__(/*! ../../ico/svg */ "./src/ico/svg.tsx"));
+var MenuItem;
+(function (MenuItem) {
+    MenuItem[MenuItem["Search"] = 0] = "Search";
+    MenuItem[MenuItem["Sessions"] = 1] = "Sessions";
+    MenuItem[MenuItem["Settings"] = 2] = "Settings";
+})(MenuItem || (MenuItem = {}));
+const menuItems = [
+    {
+        title: 'Search',
+        icon: svg_1.default.search,
+    },
+    {
+        title: 'Sessions',
+        icon: svg_1.default.vault,
+    },
+    {
+        title: 'Settings',
+        icon: svg_1.default.settings,
+    },
+];
+exports.Popup = () => {
+    const { state, isInitialized } = useStorage_1.useStorage();
+    const [menuItem, setMenuItem] = react_1.useState();
+    /**
+     * Event handlers
+     * */
+    // Initialize to sessions if no sessions are active
+    react_1.useEffect(() => {
+        if (menuItem === undefined && isInitialized) {
+            if (Object.keys(state.sessions).length > 0) {
+                setMenuItem(MenuItem.Search);
+            }
+            else {
+                setMenuItem(MenuItem.Sessions);
+            }
+        }
+    }, [state, isInitialized, menuItem]);
+    const onMenuSelect = (id) => {
+        setMenuItem(id);
+    };
+    /**
+     * Components
+     * */
+    const menu = react_1.default.createElement(PopupUI.Menu, { items: menuItems, selected: menuItem, onSelect: onMenuSelect });
+    const status = react_1.default.createElement(PopupUI.StatusBar, { activeSessions: Object.keys(state.sessions).length });
+    let content;
+    switch (menuItem) {
+        case MenuItem.Search: {
+            content = react_1.default.createElement(PopupSearch_1.default, null);
+            break;
+        }
+        case MenuItem.Sessions: {
+            content = react_1.default.createElement(PopupSessions_1.default, null);
+            break;
+        }
+        default: {
+            content = react_1.default.createElement(common_1.LoadingComponent, null);
+        }
+    }
+    return (react_1.default.createElement(PopupUI.Main, { menu: menu, content: content, status: status }));
+};
+
+
+/***/ }),
+
+/***/ "./src/components/Popup/PopupSearch.tsx":
+/*!**********************************************!*\
+  !*** ./src/components/Popup/PopupSearch.tsx ***!
+  \**********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
 var __importStar = (this && this.__importStar) || function (mod) {
     if (mod && mod.__esModule) return mod;
     var result = {};
@@ -25338,11 +27876,208 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const react_1 = __importDefault(__webpack_require__(/*! react */ "react"));
+const react_1 = __importStar(__webpack_require__(/*! react */ "react"));
+const useStorage_1 = __webpack_require__(/*! ../../hooks/useStorage */ "./src/hooks/useStorage.tsx");
+const StoredSafe_1 = __webpack_require__(/*! ../../model/StoredSafe */ "./src/model/StoredSafe.ts");
 const PopupUI = __importStar(__webpack_require__(/*! ../ui/Popup */ "./src/components/ui/Popup/index.ts"));
-exports.Popup = () => {
-    return (react_1.default.createElement(PopupUI.Main, { menu: "menu", left: "left", right: "right", status: "status" }));
+const Search_1 = __webpack_require__(/*! ../ui/Search */ "./src/components/ui/Search/index.ts");
+const PopupSearch = () => {
+    const { state } = useStorage_1.useStorage();
+    const [searching, setSearching] = react_1.useState('');
+    const [needle, setNeedle] = react_1.useState('');
+    const [results, setResults] = react_1.useState({});
+    const [selected, setSelected] = react_1.useState();
+    react_1.useEffect(() => {
+        browser.tabs.query({ active: true }).then((tabs) => {
+            tabs.forEach((tab) => {
+                if (tab.active === true) {
+                    const { url } = tab;
+                    const match = url.match(/^https?:\/\/([^/]+)\/.*/);
+                    setNeedle(match === null ? url : match[1]);
+                }
+            });
+        });
+    }, []);
+    /**
+     * Events
+     * */
+    react_1.useEffect(() => {
+        if (searching !== needle && needle !== '') {
+            const search = () => {
+                setSelected(undefined);
+                setSearching(needle);
+                StoredSafe_1.actions.find(needle).then((searchPromises) => {
+                    const newResults = {};
+                    Object.keys(searchPromises).forEach((url) => {
+                        newResults[url] = { loading: true, results: [] };
+                    });
+                    setResults(newResults);
+                    Object.keys(searchPromises).forEach((url) => {
+                        searchPromises[url].then((siteResults) => {
+                            const siteSearchResults = { loading: false, results: siteResults };
+                            setResults(Object.assign(Object.assign({}, results), { [url]: siteSearchResults }));
+                        });
+                    });
+                });
+            };
+            // Search after 1s of inactivity
+            const id = setTimeout(search, 1000);
+            return () => clearTimeout(id);
+        }
+    }, [needle, searching, results]);
+    // Decrypt helper function
+    const decrypt = () => {
+        const { url, id } = selected;
+        const objectId = results[url].results[id].ssObject.id;
+        return StoredSafe_1.actions.decrypt(url, objectId, state.sessions[url]);
+    };
+    // Decrypt field
+    const onDecrypt = () => {
+        const { url, id } = selected;
+        setResults(Object.assign(Object.assign({}, results), { [url]: Object.assign(Object.assign({}, results[url]), { loading: true }) }));
+        decrypt().then((result) => {
+            const siteResults = results[url].results;
+            siteResults[id] = result;
+            setResults(Object.assign(Object.assign({}, results), { [url]: {
+                    loading: false,
+                    results: siteResults,
+                } }));
+        });
+    };
+    // Copy to clipboard
+    const onCopy = (field) => {
+        const copy = (value) => {
+            navigator.clipboard.writeText(value).then(() => {
+                const clearClipboard = () => {
+                    navigator.clipboard.writeText('');
+                };
+                setTimeout(clearClipboard, 10000);
+            });
+        };
+        const { url, id } = selected;
+        const result = results[url].results[id];
+        if (result.ssTemplate.STRUCTURE[field].encrypted) {
+            decrypt().then(({ ssObject }) => {
+                copy(ssObject.crypted[field]);
+            });
+        }
+        else {
+            copy(result.ssObject.public[field]);
+        }
+    };
+    // Fill fields on page.
+    const onFill = () => {
+        const fill = (ssObject) => {
+            browser.tabs.query({ active: true }).then((tabs) => {
+                for (let i = 0; i < tabs.length; i++) {
+                    if (tabs[i].active) {
+                        browser.tabs.sendMessage(tabs[i].id, {
+                            type: 'fill',
+                            data: ssObject,
+                        });
+                    }
+                }
+            });
+        };
+        const { url, id } = selected;
+        const result = results[url].results[id];
+        const hasCrypted = Object.keys(result.ssTemplate.STRUCTURE).reduce((encrypted, field) => {
+            return encrypted || result.ssTemplate.STRUCTURE[field].encrypted;
+        }, false);
+        if (hasCrypted && result.ssObject.crypted === undefined) {
+            decrypt().then(({ ssObject }) => {
+                fill(ssObject);
+            });
+        }
+        else {
+            fill(result.ssObject);
+        }
+    };
+    /**
+     * Components
+     * */
+    const left = react_1.default.createElement(Search_1.Search, { needle: needle, onChange: setNeedle, onSearch: () => setSearching(''), results: results, onSelect: setSelected, selected: selected });
+    const right = react_1.default.createElement(Search_1.ObjectView, { results: results, onDecrypt: onDecrypt, onCopy: onCopy, onFill: onFill, selected: selected });
+    return (react_1.default.createElement(PopupUI.Content, { left: left, right: right }));
 };
+exports.default = PopupSearch;
+
+
+/***/ }),
+
+/***/ "./src/components/Popup/PopupSessions.tsx":
+/*!************************************************!*\
+  !*** ./src/components/Popup/PopupSessions.tsx ***!
+  \************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const react_1 = __importStar(__webpack_require__(/*! react */ "react"));
+const useStorage_1 = __webpack_require__(/*! ../../hooks/useStorage */ "./src/hooks/useStorage.tsx");
+const PopupUI = __importStar(__webpack_require__(/*! ../ui/Popup */ "./src/components/ui/Popup/index.ts"));
+const Auth_1 = __webpack_require__(/*! ../ui/Auth */ "./src/components/ui/Auth/index.ts");
+const PopupSearch = () => {
+    const { state, dispatch } = useStorage_1.useStorage();
+    const [selected, setSelected] = react_1.useState();
+    const [loading, setLoading] = react_1.useState(false);
+    const [error, setError] = react_1.useState();
+    const url = selected !== undefined ? state.sites.list[selected].url : undefined;
+    /**
+     * Events
+     * */
+    const onLogin = (fields) => {
+        setLoading(true);
+        const site = state.sites.list[selected];
+        dispatch({
+            sessions: {
+                type: 'login',
+                site,
+                fields,
+            },
+            sitePrefs: {
+                type: 'update',
+                url: site.url,
+                username: fields.remember ? fields.username : undefined,
+                loginType: fields.loginType,
+            },
+        }, {
+            onSuccess: () => setLoading(false),
+            onError: (error) => { setLoading(false); setError(error.message); },
+        });
+    };
+    const onLogout = () => {
+        setLoading(true);
+        const url = state.sites.list[selected].url;
+        const session = state.sessions[url];
+        dispatch({
+            sessions: {
+                type: 'logout',
+                url,
+                session,
+            }
+        }, {
+            onSuccess: () => setLoading(false),
+            onError: (error) => { setLoading(false); console.error(error); },
+        });
+    };
+    /**
+     * Components
+     * */
+    const left = react_1.default.createElement(Auth_1.SiteList, { sites: state.sites.list, sessions: state.sessions, onSelect: (id) => setSelected(id === selected ? undefined : id), selected: selected });
+    const right = selected === undefined ? null : state.sessions[url] ? (react_1.default.createElement(Auth_1.SiteStatus, { url: url, session: state.sessions[url], onLogout: onLogout })) : (react_1.default.createElement(Auth_1.Login, { url: url, onLogin: onLogin, loading: loading, error: error }));
+    return (react_1.default.createElement(PopupUI.Content, { left: left, right: right }));
+};
+exports.default = PopupSearch;
 
 
 /***/ }),
@@ -25359,6 +28094,359 @@ exports.Popup = () => {
 Object.defineProperty(exports, "__esModule", { value: true });
 const Popup_1 = __webpack_require__(/*! ./Popup */ "./src/components/Popup/Popup.tsx");
 exports.default = Popup_1.Popup;
+
+
+/***/ }),
+
+/***/ "./src/components/ui/Auth/Login.scss":
+/*!*******************************************!*\
+  !*** ./src/components/ui/Auth/Login.scss ***!
+  \*******************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var api = __webpack_require__(/*! ../../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
+            var content = __webpack_require__(/*! !../../../../node_modules/css-loader/dist/cjs.js!../../../../node_modules/postcss-loader/src!../../../../node_modules/sass-loader/dist/cjs.js!./Login.scss */ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/ui/Auth/Login.scss");
+
+            content = content.__esModule ? content.default : content;
+
+            if (typeof content === 'string') {
+              content = [[module.i, content, '']];
+            }
+
+var options = {};
+
+options.insert = "head";
+options.singleton = false;
+
+var update = api(content, options);
+
+
+
+module.exports = content.locals || {};
+
+/***/ }),
+
+/***/ "./src/components/ui/Auth/Login.tsx":
+/*!******************************************!*\
+  !*** ./src/components/ui/Auth/Login.tsx ***!
+  \******************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const react_1 = __importDefault(__webpack_require__(/*! react */ "react"));
+const useForm_1 = __webpack_require__(/*! ../../../hooks/useForm */ "./src/hooks/useForm.ts");
+const common_1 = __webpack_require__(/*! ../common */ "./src/components/ui/common/index.ts");
+const YubiKey = __importStar(__webpack_require__(/*! ./YubiKey */ "./src/components/ui/Auth/YubiKey.tsx"));
+const TOTP = __importStar(__webpack_require__(/*! ./TOTP */ "./src/components/ui/Auth/TOTP.tsx"));
+__webpack_require__(/*! ./Login.scss */ "./src/components/ui/Auth/Login.scss");
+exports.Login = ({ url, error, loading, sitePrefs, onLogin, formEvents, }) => {
+    const { username, loginType } = sitePrefs && sitePrefs || {};
+    const initialValues = {
+        loginType: loginType || 'yubikey',
+        username: username || '',
+        remember: username !== undefined,
+        keys: '',
+        passphrase: '',
+        otp: '',
+    };
+    const [values, events, reset] = useForm_1.useForm(initialValues, formEvents);
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        onLogin(values);
+    };
+    return (react_1.default.createElement("section", { className: "login" },
+        react_1.default.createElement("h2", null, url),
+        react_1.default.createElement("form", { className: "form", onSubmit: handleSubmit },
+            react_1.default.createElement("label", { htmlFor: "loginType" },
+                react_1.default.createElement("span", null, "Login Type"),
+                react_1.default.createElement(common_1.Select, Object.assign({ id: "loginType", name: "loginType", value: values.loginType }, events),
+                    react_1.default.createElement("option", { value: "yubikey" }, "YubiKey"),
+                    react_1.default.createElement("option", { value: "totp" }, "TOTP"))),
+            react_1.default.createElement("label", { htmlFor: "username" },
+                react_1.default.createElement("span", null, "Username"),
+                react_1.default.createElement("input", Object.assign({ type: "text", id: "username", name: "username", value: values.username, required: true }, events))),
+            values.loginType === 'yubikey' && YubiKey.renderFields([values, events, reset]),
+            values.loginType === 'totp' && TOTP.renderFields([values, events, reset]),
+            react_1.default.createElement("label", { htmlFor: "remember", className: "label-checkbox" },
+                react_1.default.createElement("span", null, "Remember Username"),
+                react_1.default.createElement(common_1.Checkbox, Object.assign({ id: "remember", name: "remember", checked: values.remember }, events))),
+            react_1.default.createElement(common_1.Button, { type: "submit", color: "accent", isLoading: loading }, "Login"),
+            error && (react_1.default.createElement(common_1.Message, { type: "error" }, error)))));
+};
+
+
+/***/ }),
+
+/***/ "./src/components/ui/Auth/SiteList.scss":
+/*!**********************************************!*\
+  !*** ./src/components/ui/Auth/SiteList.scss ***!
+  \**********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var api = __webpack_require__(/*! ../../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
+            var content = __webpack_require__(/*! !../../../../node_modules/css-loader/dist/cjs.js!../../../../node_modules/postcss-loader/src!../../../../node_modules/sass-loader/dist/cjs.js!./SiteList.scss */ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/ui/Auth/SiteList.scss");
+
+            content = content.__esModule ? content.default : content;
+
+            if (typeof content === 'string') {
+              content = [[module.i, content, '']];
+            }
+
+var options = {};
+
+options.insert = "head";
+options.singleton = false;
+
+var update = api(content, options);
+
+
+
+module.exports = content.locals || {};
+
+/***/ }),
+
+/***/ "./src/components/ui/Auth/SiteList.tsx":
+/*!*********************************************!*\
+  !*** ./src/components/ui/Auth/SiteList.tsx ***!
+  \*********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const react_1 = __importDefault(__webpack_require__(/*! react */ "react"));
+const svg_1 = __importDefault(__webpack_require__(/*! ../../../ico/svg */ "./src/ico/svg.tsx"));
+__webpack_require__(/*! ./SiteList.scss */ "./src/components/ui/Auth/SiteList.scss");
+exports.SiteList = ({ sites, sessions, selected, onSelect, }) => (react_1.default.createElement("section", { className: "site-list" }, sites.map(({ url }, index) => {
+    const session = sessions[url];
+    const isOnline = session !== undefined;
+    return (react_1.default.createElement("article", { key: url, className: `site-list-entry${isOnline ? ' online' : ''}${index === selected ? ' selected' : ''}`, onClick: () => onSelect(index) },
+        react_1.default.createElement("p", { className: "site-url" }, url),
+        react_1.default.createElement("div", { className: "site-icons" },
+            isOnline && session.warnings.length > 0 && svg_1.default.warning,
+            isOnline && session.errors.length > 0 && svg_1.default.error,
+            isOnline && svg_1.default.vaultOpen,
+            !isOnline && svg_1.default.vault)));
+})));
+
+
+/***/ }),
+
+/***/ "./src/components/ui/Auth/SiteStatus.scss":
+/*!************************************************!*\
+  !*** ./src/components/ui/Auth/SiteStatus.scss ***!
+  \************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var api = __webpack_require__(/*! ../../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
+            var content = __webpack_require__(/*! !../../../../node_modules/css-loader/dist/cjs.js!../../../../node_modules/postcss-loader/src!../../../../node_modules/sass-loader/dist/cjs.js!./SiteStatus.scss */ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/ui/Auth/SiteStatus.scss");
+
+            content = content.__esModule ? content.default : content;
+
+            if (typeof content === 'string') {
+              content = [[module.i, content, '']];
+            }
+
+var options = {};
+
+options.insert = "head";
+options.singleton = false;
+
+var update = api(content, options);
+
+
+
+module.exports = content.locals || {};
+
+/***/ }),
+
+/***/ "./src/components/ui/Auth/SiteStatus.tsx":
+/*!***********************************************!*\
+  !*** ./src/components/ui/Auth/SiteStatus.tsx ***!
+  \***********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const react_1 = __importDefault(__webpack_require__(/*! react */ "react"));
+const common_1 = __webpack_require__(/*! ../common */ "./src/components/ui/common/index.ts");
+__webpack_require__(/*! ./SiteStatus.scss */ "./src/components/ui/Auth/SiteStatus.scss");
+exports.SiteStatus = ({ url, session, onLogout, }) => {
+    const warningMessages = (react_1.default.createElement("article", { className: "site-status-warnings" },
+        react_1.default.createElement("h3", { className: "warnings-title" }, "Warnings"),
+        session.warnings.map((warning, index) => (react_1.default.createElement(common_1.Message, { key: index, type: "warning" }, warning)))));
+    const errorMessages = (react_1.default.createElement("article", { className: "site-status-errors" },
+        react_1.default.createElement("h3", { className: "errors-title" }, "Violations"),
+        session.errors.map((error, index) => (react_1.default.createElement(common_1.Message, { key: index, type: "error" }, error)))));
+    const minutesActive = Math.floor((Date.now() - session.createdAt) / (1000 * 60));
+    const dateStamp = new Date(session.createdAt).toLocaleTimeString('sv');
+    return (react_1.default.createElement("section", { className: "site-status" },
+        react_1.default.createElement("h2", null, url),
+        react_1.default.createElement("section", { className: "site-status-info" },
+            react_1.default.createElement("article", { className: "site-status-online" },
+                react_1.default.createElement("h3", null, "Session status"),
+                react_1.default.createElement("p", { className: "site-status-active" },
+                    "Online since ",
+                    dateStamp,
+                    " (",
+                    minutesActive,
+                    " minutes).")),
+            session.warnings.length > 0 && (warningMessages),
+            session.errors.length > 0 && (errorMessages)),
+        react_1.default.createElement("section", { className: "site-status-logout" },
+            react_1.default.createElement(common_1.Button, { type: "submit", color: "danger", onClick: onLogout }, "Logout"))));
+};
+
+
+/***/ }),
+
+/***/ "./src/components/ui/Auth/TOTP.tsx":
+/*!*****************************************!*\
+  !*** ./src/components/ui/Auth/TOTP.tsx ***!
+  \*****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const react_1 = __importStar(__webpack_require__(/*! react */ "react"));
+exports.renderFields = ([values, events]) => (react_1.default.createElement(react_1.Fragment, null,
+    react_1.default.createElement("label", { htmlFor: "passphrase" },
+        react_1.default.createElement("span", null, "Passphrase"),
+        react_1.default.createElement("input", Object.assign({ type: "password", name: "passphrase", id: "passphrase", required: true, value: values.passphrase }, events))),
+    react_1.default.createElement("label", { htmlFor: "otp" },
+        react_1.default.createElement("span", null, "OTP"),
+        react_1.default.createElement("input", Object.assign({ type: "text", name: "otp", id: "otp", required: true, value: values.otp }, events)))));
+
+
+/***/ }),
+
+/***/ "./src/components/ui/Auth/YubiKey.tsx":
+/*!********************************************!*\
+  !*** ./src/components/ui/Auth/YubiKey.tsx ***!
+  \********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const react_1 = __importStar(__webpack_require__(/*! react */ "react"));
+exports.renderFields = ([values, events]) => (react_1.default.createElement(react_1.Fragment, null,
+    react_1.default.createElement("label", { htmlFor: "keys" },
+        react_1.default.createElement("span", null, "Passphrase + YubiKey"),
+        react_1.default.createElement("input", Object.assign({ type: "password", name: "keys", id: "keys", required: true, title: "Passphrase + YubiKey", value: values.keys }, events)))));
+
+
+/***/ }),
+
+/***/ "./src/components/ui/Auth/index.ts":
+/*!*****************************************!*\
+  !*** ./src/components/ui/Auth/index.ts ***!
+  \*****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var SiteList_1 = __webpack_require__(/*! ./SiteList */ "./src/components/ui/Auth/SiteList.tsx");
+exports.SiteList = SiteList_1.SiteList;
+var SiteStatus_1 = __webpack_require__(/*! ./SiteStatus */ "./src/components/ui/Auth/SiteStatus.tsx");
+exports.SiteStatus = SiteStatus_1.SiteStatus;
+var Login_1 = __webpack_require__(/*! ./Login */ "./src/components/ui/Auth/Login.tsx");
+exports.Login = Login_1.Login;
+
+
+/***/ }),
+
+/***/ "./src/components/ui/Popup/Content.scss":
+/*!**********************************************!*\
+  !*** ./src/components/ui/Popup/Content.scss ***!
+  \**********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var api = __webpack_require__(/*! ../../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
+            var content = __webpack_require__(/*! !../../../../node_modules/css-loader/dist/cjs.js!../../../../node_modules/postcss-loader/src!../../../../node_modules/sass-loader/dist/cjs.js!./Content.scss */ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/ui/Popup/Content.scss");
+
+            content = content.__esModule ? content.default : content;
+
+            if (typeof content === 'string') {
+              content = [[module.i, content, '']];
+            }
+
+var options = {};
+
+options.insert = "head";
+options.singleton = false;
+
+var update = api(content, options);
+
+
+
+module.exports = content.locals || {};
+
+/***/ }),
+
+/***/ "./src/components/ui/Popup/Content.tsx":
+/*!*********************************************!*\
+  !*** ./src/components/ui/Popup/Content.tsx ***!
+  \*********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const react_1 = __importDefault(__webpack_require__(/*! react */ "react"));
+__webpack_require__(/*! ./Content.scss */ "./src/components/ui/Popup/Content.scss");
+exports.Content = ({ left, right, }) => (react_1.default.createElement("section", { className: "content" },
+    react_1.default.createElement("section", { className: "content-left" }, left),
+    react_1.default.createElement("section", { className: "content-right" }, right)));
 
 
 /***/ }),
@@ -25413,7 +28501,7 @@ const MenuItem = ({ title, icon, onClick, selected }) => (react_1.default.create
 MenuItem.defaultProps = {
     selected: false,
 };
-exports.Menu = ({ items, selected, onClick, }) => (react_1.default.createElement("section", { className: "menu" }, items.map((menuItem, index) => (react_1.default.createElement(MenuItem, Object.assign({ key: index }, menuItem, { onClick: () => onClick(index), selected: index === selected }))))));
+exports.Menu = ({ items, selected, onSelect, }) => (react_1.default.createElement("section", { className: "menu" }, items.map((menuItem, index) => (react_1.default.createElement(MenuItem, Object.assign({ key: index }, menuItem, { onClick: () => onSelect(index), selected: index === selected }))))));
 
 
 /***/ }),
@@ -25463,12 +28551,67 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = __importDefault(__webpack_require__(/*! react */ "react"));
 const common_1 = __webpack_require__(/*! ../common */ "./src/components/ui/common/index.ts");
 __webpack_require__(/*! ./Popup.scss */ "./src/components/ui/Popup/Popup.scss");
-exports.Popup = ({ menu, left, right, status, }) => (react_1.default.createElement("section", { className: "popup" },
-    react_1.default.createElement(common_1.Banner, null),
-    react_1.default.createElement("section", { className: "popup-menu" }, menu),
-    react_1.default.createElement("section", { className: "popup-left" }, left),
-    react_1.default.createElement("section", { className: "popup-right" }, right),
+exports.Popup = ({ menu, content, status, }) => (react_1.default.createElement("section", { className: "popup" },
+    react_1.default.createElement("header", { className: "popup-header" },
+        react_1.default.createElement(common_1.Banner, null),
+        react_1.default.createElement("section", { className: "popup-menu" }, menu)),
+    react_1.default.createElement("section", { className: "popup-content" }, content),
     react_1.default.createElement("section", { className: "popup-status" }, status)));
+
+
+/***/ }),
+
+/***/ "./src/components/ui/Popup/StatusBar.scss":
+/*!************************************************!*\
+  !*** ./src/components/ui/Popup/StatusBar.scss ***!
+  \************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var api = __webpack_require__(/*! ../../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
+            var content = __webpack_require__(/*! !../../../../node_modules/css-loader/dist/cjs.js!../../../../node_modules/postcss-loader/src!../../../../node_modules/sass-loader/dist/cjs.js!./StatusBar.scss */ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/ui/Popup/StatusBar.scss");
+
+            content = content.__esModule ? content.default : content;
+
+            if (typeof content === 'string') {
+              content = [[module.i, content, '']];
+            }
+
+var options = {};
+
+options.insert = "head";
+options.singleton = false;
+
+var update = api(content, options);
+
+
+
+module.exports = content.locals || {};
+
+/***/ }),
+
+/***/ "./src/components/ui/Popup/StatusBar.tsx":
+/*!***********************************************!*\
+  !*** ./src/components/ui/Popup/StatusBar.tsx ***!
+  \***********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const react_1 = __importDefault(__webpack_require__(/*! react */ "react"));
+const common_1 = __webpack_require__(/*! ../common */ "./src/components/ui/common/index.ts");
+__webpack_require__(/*! ./StatusBar.scss */ "./src/components/ui/Popup/StatusBar.scss");
+exports.StatusBar = ({ activeSessions }) => (react_1.default.createElement("section", { className: "status-bar" },
+    react_1.default.createElement(common_1.OnlineIndicator, { online: activeSessions > 0 }),
+    react_1.default.createElement("span", { className: "status-bar-sessions" },
+        activeSessions === 0 && 'No active sessions',
+        activeSessions === 1 && '1 active session',
+        activeSessions >= 2 && `${activeSessions} active sessions`)));
 
 
 /***/ }),
@@ -25485,8 +28628,306 @@ exports.Popup = ({ menu, left, right, status, }) => (react_1.default.createEleme
 Object.defineProperty(exports, "__esModule", { value: true });
 var Popup_1 = __webpack_require__(/*! ./Popup */ "./src/components/ui/Popup/Popup.tsx");
 exports.Main = Popup_1.Popup;
+var Content_1 = __webpack_require__(/*! ./Content */ "./src/components/ui/Popup/Content.tsx");
+exports.Content = Content_1.Content;
 var Menu_1 = __webpack_require__(/*! ./Menu */ "./src/components/ui/Popup/Menu.tsx");
 exports.Menu = Menu_1.Menu;
+var StatusBar_1 = __webpack_require__(/*! ./StatusBar */ "./src/components/ui/Popup/StatusBar.tsx");
+exports.StatusBar = StatusBar_1.StatusBar;
+
+
+/***/ }),
+
+/***/ "./src/components/ui/Search/ObjectView.scss":
+/*!**************************************************!*\
+  !*** ./src/components/ui/Search/ObjectView.scss ***!
+  \**************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var api = __webpack_require__(/*! ../../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
+            var content = __webpack_require__(/*! !../../../../node_modules/css-loader/dist/cjs.js!../../../../node_modules/postcss-loader/src!../../../../node_modules/sass-loader/dist/cjs.js!./ObjectView.scss */ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/ui/Search/ObjectView.scss");
+
+            content = content.__esModule ? content.default : content;
+
+            if (typeof content === 'string') {
+              content = [[module.i, content, '']];
+            }
+
+var options = {};
+
+options.insert = "head";
+options.singleton = false;
+
+var update = api(content, options);
+
+
+
+module.exports = content.locals || {};
+
+/***/ }),
+
+/***/ "./src/components/ui/Search/ObjectView.tsx":
+/*!*************************************************!*\
+  !*** ./src/components/ui/Search/ObjectView.tsx ***!
+  \*************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const react_1 = __importDefault(__webpack_require__(/*! react */ "react"));
+const common_1 = __webpack_require__(/*! ../common */ "./src/components/ui/common/index.ts");
+const ico_1 = __importDefault(__webpack_require__(/*! ../../../ico */ "./src/ico/index.ts"));
+__webpack_require__(/*! ./ObjectView.scss */ "./src/components/ui/Search/ObjectView.scss");
+const encryptedFieldText = (field, ssObject, onDecrypt) => {
+    const onClick = () => {
+        onDecrypt(field, ssObject.id);
+    };
+    if (ssObject.crypted === undefined) {
+        return react_1.default.createElement("button", { className: "decrypt", onClick: onClick }, "show");
+    }
+    return ssObject.crypted[field].split('').map((c, i) => {
+        let className = 'encrypted-field';
+        if (/[0-9]/.test(c)) {
+            className += ' number';
+        }
+        else if (/[a-z]/.test(c)) {
+            className += ' lowercase';
+        }
+        else if (/[A-Z]/.test(c)) {
+            className += ' uppercase';
+        }
+        else {
+            className += ' symbol';
+        }
+        return react_1.default.createElement("span", { key: i, className: className }, c);
+    });
+};
+exports.ObjectView = ({ selected, results, onDecrypt, onCopy, onFill, }) => {
+    if (selected === undefined) {
+        return (react_1.default.createElement("section", { className: "object-view" }, "No object selected"));
+    }
+    const { url, id } = selected;
+    const { ssObject, ssTemplate } = results[url].results[id];
+    return (react_1.default.createElement("section", { className: "object-view" },
+        react_1.default.createElement("article", { className: "object-view-container" },
+            react_1.default.createElement("hgroup", { className: "object-view-title", style: { backgroundImage: `url('${ico_1.default[ssTemplate.INFO.ico]}')` } },
+                react_1.default.createElement("h2", { className: "object-view-name" }, ssObject.objectname),
+                react_1.default.createElement("h3", { className: "obejct-view-url" }, url)),
+            react_1.default.createElement(common_1.Button, { className: "object-view-fill", onClick: () => onFill() }, "Fill"),
+            Object.keys(ssTemplate.STRUCTURE).map((field) => {
+                let value;
+                const isEncrypted = ssTemplate.STRUCTURE[field].encrypted;
+                if (isEncrypted) {
+                    value = encryptedFieldText(field, ssObject, onDecrypt);
+                }
+                else {
+                    value = ssObject.public[field];
+                }
+                return (react_1.default.createElement("div", { className: "object-view-field", key: field },
+                    react_1.default.createElement("p", { className: "object-view-field-text" },
+                        react_1.default.createElement("span", { className: "field-title" }, field),
+                        react_1.default.createElement("span", { className: "field-value" }, value)),
+                    react_1.default.createElement("button", { className: "object-view-field-copy", onClick: () => onCopy(field) }, "Copy")));
+            }))));
+};
+
+
+/***/ }),
+
+/***/ "./src/components/ui/Search/Search.scss":
+/*!**********************************************!*\
+  !*** ./src/components/ui/Search/Search.scss ***!
+  \**********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var api = __webpack_require__(/*! ../../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
+            var content = __webpack_require__(/*! !../../../../node_modules/css-loader/dist/cjs.js!../../../../node_modules/postcss-loader/src!../../../../node_modules/sass-loader/dist/cjs.js!./Search.scss */ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/ui/Search/Search.scss");
+
+            content = content.__esModule ? content.default : content;
+
+            if (typeof content === 'string') {
+              content = [[module.i, content, '']];
+            }
+
+var options = {};
+
+options.insert = "head";
+options.singleton = false;
+
+var update = api(content, options);
+
+
+
+module.exports = content.locals || {};
+
+/***/ }),
+
+/***/ "./src/components/ui/Search/Search.tsx":
+/*!*********************************************!*\
+  !*** ./src/components/ui/Search/Search.tsx ***!
+  \*********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const react_1 = __importDefault(__webpack_require__(/*! react */ "react"));
+const SearchBar_1 = __webpack_require__(/*! ./SearchBar */ "./src/components/ui/Search/SearchBar.tsx");
+const SearchResults_1 = __webpack_require__(/*! ./SearchResults */ "./src/components/ui/Search/SearchResults.tsx");
+__webpack_require__(/*! ./Search.scss */ "./src/components/ui/Search/Search.scss");
+exports.Search = ({ needle, onChange, onSearch, results, onSelect, selected, }) => (react_1.default.createElement("section", { className: "search" },
+    react_1.default.createElement(SearchBar_1.SearchBar, { needle: needle, onChange: onChange, onSearch: onSearch }),
+    react_1.default.createElement(SearchResults_1.SearchResults, { results: results, onSelect: onSelect, selected: selected })));
+
+
+/***/ }),
+
+/***/ "./src/components/ui/Search/SearchBar.scss":
+/*!*************************************************!*\
+  !*** ./src/components/ui/Search/SearchBar.scss ***!
+  \*************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var api = __webpack_require__(/*! ../../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
+            var content = __webpack_require__(/*! !../../../../node_modules/css-loader/dist/cjs.js!../../../../node_modules/postcss-loader/src!../../../../node_modules/sass-loader/dist/cjs.js!./SearchBar.scss */ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/ui/Search/SearchBar.scss");
+
+            content = content.__esModule ? content.default : content;
+
+            if (typeof content === 'string') {
+              content = [[module.i, content, '']];
+            }
+
+var options = {};
+
+options.insert = "head";
+options.singleton = false;
+
+var update = api(content, options);
+
+
+
+module.exports = content.locals || {};
+
+/***/ }),
+
+/***/ "./src/components/ui/Search/SearchBar.tsx":
+/*!************************************************!*\
+  !*** ./src/components/ui/Search/SearchBar.tsx ***!
+  \************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const react_1 = __importDefault(__webpack_require__(/*! react */ "react"));
+const svg_1 = __importDefault(__webpack_require__(/*! ../../../ico/svg */ "./src/ico/svg.tsx"));
+__webpack_require__(/*! ./SearchBar.scss */ "./src/components/ui/Search/SearchBar.scss");
+exports.SearchBar = ({ needle, onChange, onSearch, }) => {
+    const onSubmit = (event) => {
+        event.preventDefault();
+        onSearch(needle);
+    };
+    return (react_1.default.createElement("form", { className: "search-bar", onSubmit: onSubmit },
+        react_1.default.createElement("label", { className: "search-bar-label" },
+            react_1.default.createElement("span", { className: "search-bar-title" }, "Search"),
+            react_1.default.createElement("div", { className: "search-bar-area" },
+                react_1.default.createElement("input", { className: "search-bar-input", type: "search", value: needle, onChange: ({ target }) => {
+                        onChange(target.value);
+                    } }),
+                react_1.default.createElement("button", { className: "search-bar-button", type: "submit" }, svg_1.default.search)))));
+};
+
+
+/***/ }),
+
+/***/ "./src/components/ui/Search/SearchResults.scss":
+/*!*****************************************************!*\
+  !*** ./src/components/ui/Search/SearchResults.scss ***!
+  \*****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var api = __webpack_require__(/*! ../../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
+            var content = __webpack_require__(/*! !../../../../node_modules/css-loader/dist/cjs.js!../../../../node_modules/postcss-loader/src!../../../../node_modules/sass-loader/dist/cjs.js!./SearchResults.scss */ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/ui/Search/SearchResults.scss");
+
+            content = content.__esModule ? content.default : content;
+
+            if (typeof content === 'string') {
+              content = [[module.i, content, '']];
+            }
+
+var options = {};
+
+options.insert = "head";
+options.singleton = false;
+
+var update = api(content, options);
+
+
+
+module.exports = content.locals || {};
+
+/***/ }),
+
+/***/ "./src/components/ui/Search/SearchResults.tsx":
+/*!****************************************************!*\
+  !*** ./src/components/ui/Search/SearchResults.tsx ***!
+  \****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const react_1 = __importDefault(__webpack_require__(/*! react */ "react"));
+const ico_1 = __importDefault(__webpack_require__(/*! ../../../ico */ "./src/ico/index.ts"));
+__webpack_require__(/*! ./SearchResults.scss */ "./src/components/ui/Search/SearchResults.scss");
+const SearchResult = ({ ssObject, ssTemplate, onClick, selected, }) => (react_1.default.createElement("article", { style: { backgroundImage: `url('${ico_1.default[ssTemplate.INFO.ico]}')` }, className: `search-result${selected ? ' selected' : ''}`, onClick: onClick },
+    react_1.default.createElement("div", { className: "search-result-text" },
+        react_1.default.createElement("p", null, ssObject.objectname),
+        react_1.default.createElement("p", null, ssTemplate.INFO.name))));
+exports.SearchResults = ({ results, onSelect, selected, }) => (react_1.default.createElement("section", { className: "search-results" }, Object.keys(results).map((url) => (react_1.default.createElement("article", { key: url, className: "search-results-site" },
+    react_1.default.createElement("div", { className: "search-results-url" },
+        url,
+        results[url].loading && react_1.default.createElement("span", { className: "searching" })),
+    results[url].results.map((result, id) => (react_1.default.createElement(SearchResult, Object.assign({ key: id, onClick: () => onSelect({ url, id }), selected: selected && selected.url === url && selected.id === id }, result)))))))));
+
+
+/***/ }),
+
+/***/ "./src/components/ui/Search/index.ts":
+/*!*******************************************!*\
+  !*** ./src/components/ui/Search/index.ts ***!
+  \*******************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var Search_1 = __webpack_require__(/*! ./Search */ "./src/components/ui/Search/Search.tsx");
+exports.Search = Search_1.Search;
+var ObjectView_1 = __webpack_require__(/*! ./ObjectView */ "./src/components/ui/Search/ObjectView.tsx");
+exports.ObjectView = ObjectView_1.ObjectView;
 
 
 /***/ }),
@@ -25671,6 +29112,110 @@ exports.Checkbox = (props) => (React.createElement(React.Fragment, null,
 
 /***/ }),
 
+/***/ "./src/components/ui/common/LoadingComponent.scss":
+/*!********************************************************!*\
+  !*** ./src/components/ui/common/LoadingComponent.scss ***!
+  \********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var api = __webpack_require__(/*! ../../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
+            var content = __webpack_require__(/*! !../../../../node_modules/css-loader/dist/cjs.js!../../../../node_modules/postcss-loader/src!../../../../node_modules/sass-loader/dist/cjs.js!./LoadingComponent.scss */ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/ui/common/LoadingComponent.scss");
+
+            content = content.__esModule ? content.default : content;
+
+            if (typeof content === 'string') {
+              content = [[module.i, content, '']];
+            }
+
+var options = {};
+
+options.insert = "head";
+options.singleton = false;
+
+var update = api(content, options);
+
+
+
+module.exports = content.locals || {};
+
+/***/ }),
+
+/***/ "./src/components/ui/common/LoadingComponent.tsx":
+/*!*******************************************************!*\
+  !*** ./src/components/ui/common/LoadingComponent.tsx ***!
+  \*******************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const react_1 = __importDefault(__webpack_require__(/*! react */ "react"));
+const LoadingSpinner_1 = __webpack_require__(/*! ./LoadingSpinner */ "./src/components/ui/common/LoadingSpinner.tsx");
+__webpack_require__(/*! ./LoadingComponent.scss */ "./src/components/ui/common/LoadingComponent.scss");
+exports.LoadingComponent = () => (react_1.default.createElement("div", { className: "loading-component" },
+    react_1.default.createElement(LoadingSpinner_1.LoadingSpinner, null)));
+
+
+/***/ }),
+
+/***/ "./src/components/ui/common/LoadingSpinner.scss":
+/*!******************************************************!*\
+  !*** ./src/components/ui/common/LoadingSpinner.scss ***!
+  \******************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var api = __webpack_require__(/*! ../../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
+            var content = __webpack_require__(/*! !../../../../node_modules/css-loader/dist/cjs.js!../../../../node_modules/postcss-loader/src!../../../../node_modules/sass-loader/dist/cjs.js!./LoadingSpinner.scss */ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/ui/common/LoadingSpinner.scss");
+
+            content = content.__esModule ? content.default : content;
+
+            if (typeof content === 'string') {
+              content = [[module.i, content, '']];
+            }
+
+var options = {};
+
+options.insert = "head";
+options.singleton = false;
+
+var update = api(content, options);
+
+
+
+module.exports = content.locals || {};
+
+/***/ }),
+
+/***/ "./src/components/ui/common/LoadingSpinner.tsx":
+/*!*****************************************************!*\
+  !*** ./src/components/ui/common/LoadingSpinner.tsx ***!
+  \*****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const react_1 = __importDefault(__webpack_require__(/*! react */ "react"));
+__webpack_require__(/*! ./LoadingSpinner.scss */ "./src/components/ui/common/LoadingSpinner.scss");
+exports.LoadingSpinner = ({ status, }) => (react_1.default.createElement("div", { className: "loading-spinner" },
+    react_1.default.createElement("div", { className: `spinner ${status}` })));
+exports.LoadingSpinner.defaultProps = {
+    status: 'loading',
+};
+
+
+/***/ }),
+
 /***/ "./src/components/ui/common/Logo.scss":
 /*!********************************************!*\
   !*** ./src/components/ui/common/Logo.scss ***!
@@ -25825,62 +29370,6 @@ exports.OnlineIndicator = ({ online, }) => (react_1.default.createElement("div",
 
 /***/ }),
 
-/***/ "./src/components/ui/common/Radio.scss":
-/*!*********************************************!*\
-  !*** ./src/components/ui/common/Radio.scss ***!
-  \*********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-var api = __webpack_require__(/*! ../../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
-            var content = __webpack_require__(/*! !../../../../node_modules/css-loader/dist/cjs.js!../../../../node_modules/postcss-loader/src!../../../../node_modules/sass-loader/dist/cjs.js!./Radio.scss */ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/ui/common/Radio.scss");
-
-            content = content.__esModule ? content.default : content;
-
-            if (typeof content === 'string') {
-              content = [[module.i, content, '']];
-            }
-
-var options = {};
-
-options.insert = "head";
-options.singleton = false;
-
-var update = api(content, options);
-
-
-
-module.exports = content.locals || {};
-
-/***/ }),
-
-/***/ "./src/components/ui/common/Radio.tsx":
-/*!********************************************!*\
-  !*** ./src/components/ui/common/Radio.tsx ***!
-  \********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const React = __importStar(__webpack_require__(/*! react */ "react"));
-__webpack_require__(/*! ./Radio.scss */ "./src/components/ui/common/Radio.scss");
-exports.Radio = (props) => (React.createElement(React.Fragment, null,
-    React.createElement("div", { style: { display: 'inline-block' }, className: "radio" },
-        React.createElement("input", Object.assign({ type: "radio" }, props)),
-        React.createElement("div", { className: "custom-radio" }))));
-
-
-/***/ }),
-
 /***/ "./src/components/ui/common/Select.scss":
 /*!**********************************************!*\
   !*** ./src/components/ui/common/Select.scss ***!
@@ -25968,10 +29457,10 @@ var Message_1 = __webpack_require__(/*! ./Message */ "./src/components/ui/common
 exports.Message = Message_1.Message;
 var OnlineIndicator_1 = __webpack_require__(/*! ./OnlineIndicator */ "./src/components/ui/common/OnlineIndicator.tsx");
 exports.OnlineIndicator = OnlineIndicator_1.OnlineIndicator;
-var Radio_1 = __webpack_require__(/*! ./Radio */ "./src/components/ui/common/Radio.tsx");
-exports.Radio = Radio_1.Radio;
 var Select_1 = __webpack_require__(/*! ./Select */ "./src/components/ui/common/Select.tsx");
 exports.Select = Select_1.Select;
+var LoadingComponent_1 = __webpack_require__(/*! ./LoadingComponent */ "./src/components/ui/common/LoadingComponent.tsx");
+exports.LoadingComponent = LoadingComponent_1.LoadingComponent;
 
 
 /***/ }),
@@ -26137,6 +29626,197 @@ exports.useStorage = useStorage;
 
 /***/ }),
 
+/***/ "./src/ico/certfolder.svg":
+/*!********************************!*\
+  !*** ./src/ico/certfolder.svg ***!
+  \********************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = (__webpack_require__.p + "5cc9493826be0914732ec24f7b277025.svg");
+
+/***/ }),
+
+/***/ "./src/ico/credit_card.svg":
+/*!*********************************!*\
+  !*** ./src/ico/credit_card.svg ***!
+  \*********************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = (__webpack_require__.p + "1feb6f4e634ae913bf806337936965dc.svg");
+
+/***/ }),
+
+/***/ "./src/ico/file.svg":
+/*!**************************!*\
+  !*** ./src/ico/file.svg ***!
+  \**************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = (__webpack_require__.p + "680fc3288477a68cfee0803990127469.svg");
+
+/***/ }),
+
+/***/ "./src/ico/folder.svg":
+/*!****************************!*\
+  !*** ./src/ico/folder.svg ***!
+  \****************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = (__webpack_require__.p + "27b0f6cb1c33b2daba67148d65d4a695.svg");
+
+/***/ }),
+
+/***/ "./src/ico/index.ts":
+/*!**************************!*\
+  !*** ./src/ico/index.ts ***!
+  \**************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+/* eslint-disable @typescript-eslint/camelcase */
+const server_svg_1 = __importDefault(__webpack_require__(/*! ./server.svg */ "./src/ico/server.svg"));
+const certfolder_svg_1 = __importDefault(__webpack_require__(/*! ./certfolder.svg */ "./src/ico/certfolder.svg"));
+const credit_card_svg_1 = __importDefault(__webpack_require__(/*! ./credit_card.svg */ "./src/ico/credit_card.svg"));
+const credit_card_svg_2 = __importDefault(__webpack_require__(/*! ./credit_card.svg */ "./src/ico/credit_card.svg"));
+const file_svg_1 = __importDefault(__webpack_require__(/*! ./file.svg */ "./src/ico/file.svg"));
+const folder_svg_1 = __importDefault(__webpack_require__(/*! ./folder.svg */ "./src/ico/folder.svg"));
+const note_svg_1 = __importDefault(__webpack_require__(/*! ./note.svg */ "./src/ico/note.svg"));
+const person_svg_1 = __importDefault(__webpack_require__(/*! ./person.svg */ "./src/ico/person.svg"));
+const pin_svg_1 = __importDefault(__webpack_require__(/*! ./pin.svg */ "./src/ico/pin.svg"));
+const quicknote_svg_1 = __importDefault(__webpack_require__(/*! ./quicknote.svg */ "./src/ico/quicknote.svg"));
+const icons = {
+    certfolder: certfolder_svg_1.default,
+    credit_card: credit_card_svg_1.default,
+    ccard: credit_card_svg_2.default,
+    file: file_svg_1.default,
+    folder: folder_svg_1.default,
+    note: note_svg_1.default,
+    person: person_svg_1.default,
+    pin: pin_svg_1.default,
+    quicknote: quicknote_svg_1.default,
+    server: server_svg_1.default,
+};
+exports.default = icons;
+
+
+/***/ }),
+
+/***/ "./src/ico/note.svg":
+/*!**************************!*\
+  !*** ./src/ico/note.svg ***!
+  \**************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = (__webpack_require__.p + "6c27f69c470aa7eed054aefae1542208.svg");
+
+/***/ }),
+
+/***/ "./src/ico/person.svg":
+/*!****************************!*\
+  !*** ./src/ico/person.svg ***!
+  \****************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = (__webpack_require__.p + "6dba742b56adfa878f45c20bd10f3e6b.svg");
+
+/***/ }),
+
+/***/ "./src/ico/pin.svg":
+/*!*************************!*\
+  !*** ./src/ico/pin.svg ***!
+  \*************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = (__webpack_require__.p + "91b5abd284245ee5558ca7e8195ccdf0.svg");
+
+/***/ }),
+
+/***/ "./src/ico/quicknote.svg":
+/*!*******************************!*\
+  !*** ./src/ico/quicknote.svg ***!
+  \*******************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = (__webpack_require__.p + "f50eb22c52de9b623c07e35e180e38f1.svg");
+
+/***/ }),
+
+/***/ "./src/ico/server.svg":
+/*!****************************!*\
+  !*** ./src/ico/server.svg ***!
+  \****************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = (__webpack_require__.p + "1a48c382a92056b5f95a744309b7c840.svg");
+
+/***/ }),
+
+/***/ "./src/ico/svg.tsx":
+/*!*************************!*\
+  !*** ./src/ico/svg.tsx ***!
+  \*************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const react_1 = __importDefault(__webpack_require__(/*! react */ "react"));
+exports.default = {
+    search: (react_1.default.createElement("svg", { className: "icon icon-search", width: "40", height: "40", version: "1.1", viewBox: "0 0 10.583 10.583", xmlns: "http://www.w3.org/2000/svg" },
+        react_1.default.createElement("path", { transform: "scale(.26458)", d: "m27.486 0a12.5 12.5 0 00-12.486 12.5 12.5 12.5 0 002.3145 7.2441 12.5 12.5 0 000 .001953l-17.314 17.312 2.9414 2.9414 17.312-17.312a12.5 12.5 0 007.2461 2.3125 12.5 12.5 0 0012.5-12.5 12.5 12.5 0 00-12.5-12.5 12.5 12.5 0 00-.013672 0zm-.11914 3.6641a8.8361 8.8361 0 01.13281 0 8.8361 8.8361 0 018.8359 8.8359 8.8361 8.8361 0 01-8.8359 8.8359 8.8361 8.8361 0 01-8.8359-8.8359 8.8361 8.8361 0 018.7031-8.8359z" }))),
+    vault: (react_1.default.createElement("svg", { className: "icon icon-vault", width: "40", height: "40", version: "1.1", viewBox: "0 0 10.583 10.583", xmlns: "http://www.w3.org/2000/svg" },
+        react_1.default.createElement("path", { transform: "scale(.26458)", d: "m5.2637 0c-2.9158 5.9212e-16-5.2637 2.288-5.2637 5.1309v28.738c5.9212e-16 2.8429 2.3479 5.1309 5.2637 5.1309h-.26367v1h3v-1h24v1h3v-1h-.26367c2.9158 0 5.2637-2.288 5.2637-5.1309v-28.738c0-2.8429-2.3479-5.1309-5.2637-5.1309h-29.473zm1.2812 1.6973h26.91c2.662 0 4.8047 2.0901 4.8047 4.6855v26.234c0 2.5955-2.1427 4.6855-4.8047 4.6855h-26.91c-2.662 0-4.8047-2.0901-4.8047-4.6855v-26.234c0-2.5955 2.1427-4.6855 4.8047-4.6855zm.83984 1.1074c-2.4963 0-4.5078 1.9607-4.5078 4.3945v24.602c0 2.4338 2.0116 4.3945 4.5078 4.3945h25.23c2.4963 0 4.5078-1.9607 4.5078-4.3945v-24.602c0-2.4338-2.0116-4.3945-4.5078-4.3945h-25.23zm20.492 11.256a5.9606 5.9606 0 01.125 0 5.9606 5.9606 0 015.959 5.959 5.9606 5.9606 0 01-5.959 5.959 5.9606 5.9606 0 01-5.9629-5.959 5.9606 5.9606 0 015.8379-5.959zm.125 1.4453a4.5134 4.5134 0 00-4.5137 4.5137 4.5134 4.5134 0 004.5137 4.5137 4.5134 4.5134 0 004.5117-4.5137 4.5134 4.5134 0 00-4.5117-4.5137zm-18.609.14844a4.3661 4.3661 0 012.2793.58398 4.3661 4.3661 0 012.0449 2.6992h3.0117c.39944 0 .7207.32127.7207.7207v.72266c0 .39944-.32126.7207-.7207.7207h-3.0117a4.3661 4.3661 0 01-.44727 1.1016 4.3661 4.3661 0 01-5.9648 1.5977 4.3661 4.3661 0 01-1.5977-5.9648 4.3661 4.3661 0 013.6855-2.1816zm18.609 1a3.3644 3.3644 0 013.3633 3.3652 3.3644 3.3644 0 01-3.3633 3.3652 3.3644 3.3644 0 01-3.3652-3.3652 3.3644 3.3644 0 013.3652-3.3652zm-18.57.58203a2.7845 2.7845 0 00-2.3555 1.3906 2.7845 2.7845 0 001.0195 3.8027 2.7845 2.7845 0 003.8027-1.0176 2.7845 2.7845 0 00-1.0176-3.8027 2.7845 2.7845 0 00-1.4492-.37305z" }))),
+    vaultOpen: (react_1.default.createElement("svg", { className: "site-icon site-icon-online", width: "40", height: "40", version: "1.1", viewBox: "0 0 10.583 10.583", xmlns: "http://www.w3.org/2000/svg" },
+        react_1.default.createElement("path", { transform: "scale(.26458)", d: "m5.2637 0c-2.9158 0-5.2637 2.288-5.2637 5.1309v28.738c0 2.8429 2.3479 5.1309 5.2637 5.1309h-.26367v1h3v-1h24v1h3v-1h-.26367c2.9158 0 5.2637-2.288 5.2637-5.1309v-28.738c0-2.8429-2.3479-5.1309-5.2637-5.1309h-29.473zm1.2812 1.6973h26.91c2.662 0 4.8047 2.0901 4.8047 4.6855v26.234c0 2.5955-2.1427 4.6855-4.8047 4.6855h-26.91c-2.662 0-4.8047-2.0901-4.8047-4.6855v-26.234c0-2.5955 2.1427-4.6855 4.8047-4.6855zm15.625 1.7344c-1.2013 0-2.1699 1.8859-2.1699 4.2285v23.68c0 2.3426.9686 4.2285 2.1699 4.2285h12.143c1.2013 0 2.168-1.8859 2.168-4.2285v-23.68c0-2.3426-.96665-4.2285-2.168-4.2285h-12.143zm9.9219 10.832a2.8686 5.7371 0 012.8672 5.7363 2.8686 5.7371 0 01-2.8672 5.7363 2.8686 5.7371 0 01-2.8691-5.7363 2.8686 5.7371 0 012.8691-5.7363zm0 1.3926a2.1721 4.3442 0 00-2.1719 4.3438 2.1721 4.3442 0 002.1719 4.3438 2.1721 4.3442 0 002.1719-4.3438 2.1721 4.3442 0 00-2.1719-4.3438zm-8.9551.14258a2.1012 4.2024 0 011.0957.5625 2.1012 4.2024 0 01.98438 2.5977h1.4492c.19223 0 .34766.3089.34766.69336v.69531c0 .38446-.15542.69336-.34766.69336h-1.4492a2.1012 4.2024 0 01-.21484 1.0605 2.1012 4.2024 0 01-2.8711 1.5371 2.1012 4.2024 0 01-.76953-5.7402 2.1012 4.2024 0 011.7754-2.0996zm8.9551.96289a1.6191 3.2383 0 011.6191 3.2383 1.6191 3.2383 0 01-1.6191 3.2383 1.6191 3.2383 0 01-1.6191-3.2383 1.6191 3.2383 0 011.6191-3.2383zm-8.9375.55859a1.3401 2.6801 0 00-1.1328 1.3398 1.3401 2.6801 0 00.49024 3.6602 1.3401 2.6801 0 001.8301-.98047 1.3401 2.6801 0 00-.49024-3.6602 1.3401 2.6801 0 00-.69726-.35938z" }))),
+    settings: (react_1.default.createElement("svg", { className: "icon icon-settings", width: "40", height: "40", version: "1.1", viewBox: "0 0 10.583 10.583", xmlns: "http://www.w3.org/2000/svg" },
+        react_1.default.createElement("g", { transform: "translate(0 -286.42)" },
+            react_1.default.createElement("path", { d: "m4.8943 286.42c-.1781-.002-.29665.0502-.41163.34759-.18397.47571-.35953.99273-.75923 1.1583-.3997.16555-.88962-.0761-1.3561-.28242-.46649-.20633-.49962.0325-.80554.33846-.30592.3059-.54479.33905-.33845.80553.20634.46647.44797.95638.28243 1.3561-.16555.3997-.68256.57526-1.1583.75923-.47573.18397-.32473.37635-.32473.80896s-.15099.62498.32473.80895c.47573.18397.99274.35953 1.1583.75922.16555.3997-.076087.8896-.28243 1.3561-.20634.46648.032536.49961.33845.80553.30592.30591.33906.54478.80554.33845.46649-.20634.9564-.44797 1.3561-.28242.3997.16555.57526.68255.75923 1.1583.18397.47573.37635.32474.80897.32474s.625.15099.80897-.32474c.18397-.47571.35953-.99271.75923-1.1583.3997-.16555.88961.0761 1.3561.28242.46649.20633.49962-.0325.80554-.33845.30592-.30592.54479-.33905.33845-.80553-.20634-.46648-.44797-.95638-.28243-1.3561.16555-.39969.68256-.57525 1.1583-.75922.47573-.18397.32473-.37634.32473-.80895s.15099-.62499-.32473-.80896c-.47573-.18397-.99274-.35953-1.1583-.75923-.16555-.39969.076087-.8896.28243-1.3561.20634-.46648-.032536-.49963-.33845-.80553-.30592-.30592-.33906-.54479-.80554-.33846-.46649.20634-.9564.44797-1.3561.28242-.3997-.16553-.5758-.68255-.75981-1.1583-.18401-.47573-.37593-.32473-.8084-.32473-.16223 0-.29048-.0214-.39734-.0229zm.39734 2.8208a2.4711 2.4711 0 012.4709 2.4709 2.4711 2.4711 0 01-2.4709 2.4709 2.4711 2.4711 0 01-2.4709-2.4709 2.4711 2.4711 0 012.4709-2.4709z" })))),
+    warning: (react_1.default.createElement("svg", { className: "icon icon-warning", width: "32", height: "32", version: "1.1", viewBox: "0 0 8.4667 8.4667", xmlns: "http://www.w3.org/2000/svg" },
+        react_1.default.createElement("path", { transform: "scale(.26458)", d: "m16.033 2.041c-.90656-.011474-1.7477.4677-2.1992 1.2539l-13.229 22.914c-.96138 1.6658.23877 3.748 2.1621 3.75h26.465c1.9233-.00201 3.1235-2.0842 2.1621-3.75l-13.229-22.914c-.43967-.76564-1.25-1.2416-2.1328-1.2539zm-.033203 5.8555c1.205 0 2.1758 1.0976 2.1758 2.4609v8.418c0 1.3633-.97083 2.4609-2.1758 2.4609s-2.1758-1.0976-2.1758-2.4609v-8.418c0-1.3633.97083-2.4609 2.1758-2.4609zm0 14.312a2.375 2.375 0 012.375 2.375 2.375 2.375 0 01-2.375 2.375 2.375 2.375 0 01-2.375-2.375 2.375 2.375 0 012.375-2.375z" }))),
+    error: (react_1.default.createElement("svg", { className: "icon icon-error", width: "32", height: "32", version: "1.1", viewBox: "0 0 8.4667 8.4667", xmlns: "http://www.w3.org/2000/svg" },
+        react_1.default.createElement("path", { transform: "scale(.26458)", d: "m15.992 2.9707a14.458 14.458 0 00-14.449 14.457 14.458 14.458 0 0014.457 14.459 14.458 14.458 0 0014.457-14.459 14.458 14.458 0 00-14.457-14.457 14.458 14.458 0 00-.007812 0zm.007812 4.9258c1.205 0 2.1758 1.0976 2.1758 2.4609v8.418c0 1.3633-.97083 2.4609-2.1758 2.4609s-2.1758-1.0976-2.1758-2.4609v-8.418c0-1.3633.97083-2.4609 2.1758-2.4609zm0 14.312a2.375 2.375 0 012.375 2.375 2.375 2.375 0 01-2.375 2.375 2.375 2.375 0 01-2.375-2.375 2.375 2.375 0 012.375-2.375z" }))),
+};
+
+
+/***/ }),
+
 /***/ "./src/index.scss":
 /*!************************!*\
   !*** ./src/index.scss ***!
@@ -26200,6 +29880,65 @@ if (true) {
     axe(React, ReactDOM, 1000);
 }
 ReactDOM.render(React.createElement(Extension_1.default, null), document.getElementById('app'));
+
+
+/***/ }),
+
+/***/ "./src/model/Search.ts":
+/*!*****************************!*\
+  !*** ./src/model/Search.ts ***!
+  \*****************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+/**
+ * Get search results from local storage.
+ * @return {SearchResults} Promise containing SearchResults object.
+ * */
+const get = () => (browser.storage.local.get('search')
+    .then(({ search }) => {
+    return search || {};
+}));
+/**
+ * Commit SearchResults object to local storage.
+ * @param search New SearchResults object.
+ * */
+const set = (search) => {
+    return browser.storage.local.set({ search });
+};
+exports.actions = {
+    /**
+     * Load search results for site.
+     * */
+    setLoading: (url) => {
+        return get().then((searchResults) => {
+            const newSearchResults = Object.assign(Object.assign({}, searchResults), { [url]: { loading: true, results: [] } });
+            return set(newSearchResults).then(() => get());
+        });
+    },
+    /**
+     * Set search results for site.
+     * */
+    setResults: (url, results) => {
+        return get().then((searchResults) => {
+            const newSearchResults = Object.assign(Object.assign({}, searchResults), { [url]: { loading: false, results } });
+            return set(newSearchResults).then(() => get());
+        });
+    },
+    /**
+     * Clear search results from storage.
+     * */
+    clear: () => {
+        return set({}).then(get);
+    },
+    /**
+     * Fetch sessions from storage.
+     * */
+    fetch: get,
+};
 
 
 /***/ }),
@@ -26290,7 +30029,7 @@ exports.fields = {
         },
     },
     idleMax: {
-        label: 'Idle Max',
+        label: 'Max Idle Minutes',
         attributes: {
             type: 'number',
             required: true,
@@ -26299,7 +30038,7 @@ exports.fields = {
         },
     },
     maxTokenLife: {
-        label: 'Max token Life',
+        label: 'Max Token Life Minutes',
         attributes: {
             type: 'number',
             required: true,
@@ -26510,6 +30249,127 @@ exports.actions = {
 
 /***/ }),
 
+/***/ "./src/model/StoredSafe.ts":
+/*!*********************************!*\
+  !*** ./src/model/StoredSafe.ts ***!
+  \*********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const storedsafe_1 = __importDefault(__webpack_require__(/*! storedsafe */ "./node_modules/storedsafe/dist/index.js"));
+const Sessions_1 = __webpack_require__(/*! ./Sessions */ "./src/model/Sessions.ts");
+const Search_1 = __webpack_require__(/*! ./Search */ "./src/model/Search.ts");
+const handleErrors = (promise) => (promise.then((response) => {
+    if (response.status === 200) {
+        return response.data;
+    }
+    throw new Error(`StoredSafe Error: (${response.status}) ${response.statusText}`);
+}).catch((error) => {
+    if (error.response) {
+        throw new Error(`StoredSafe Error: ${error.response.data.ERRORS}`);
+    }
+    else if (error.request) {
+        throw new Error(`Network Error: (${error.request.status}) ${error.request.statusText}`);
+    }
+    throw new Error(`Unexpected Error: ${error}`);
+}));
+exports.actions = {
+    login: ({ url, apikey }, fields) => {
+        const storedSafe = new storedsafe_1.default(url, apikey);
+        let promise;
+        if (fields.loginType === 'yubikey') {
+            const { username, keys } = fields;
+            const passphrase = keys.slice(0, -44);
+            const otp = keys.slice(-44);
+            promise = storedSafe.authYubikey(username, passphrase, otp);
+        }
+        else if (fields.loginType === 'totp') {
+            const { username, passphrase, otp, } = fields;
+            promise = storedSafe.authTotp(username, passphrase, otp);
+        }
+        return handleErrors(promise).then((data) => {
+            const { token } = data.CALLINFO;
+            return Sessions_1.actions.add(url, {
+                apikey,
+                token,
+                createdAt: Date.now(),
+                errors: [],
+                warnings: [],
+            });
+        });
+    },
+    logout: (url, { apikey, token }) => {
+        const storedSafe = new storedsafe_1.default(url, apikey, token);
+        return handleErrors(storedSafe.logout()).then(() => (Sessions_1.actions.remove(url)));
+    },
+    searchFind: (needle, url, { apikey, token }) => {
+        const storedSafe = new storedsafe_1.default(url, apikey, token);
+        Search_1.actions.setLoading(url);
+        return handleErrors(storedSafe.find(needle)).then((data) => {
+            const searchResults = [];
+            const objectIds = Object.keys(data.OBJECT);
+            for (let i = 0; i < objectIds.length; i++) {
+                const ssObject = data.OBJECT[objectIds[i]];
+                const ssTemplate = data.TEMPLATESINFO[ssObject.templateid];
+                searchResults.push({ ssObject, ssTemplate });
+            }
+            return Search_1.actions.setResults(url, searchResults);
+        });
+    },
+    searchDecrypt: (url, id, { apikey, token }) => {
+        Search_1.actions.setLoading(url);
+        const storedSafe = new storedsafe_1.default(url, apikey, token);
+        return Search_1.actions.fetch().then((searchResults) => {
+            const siteResults = [...searchResults[url].results];
+            const objectId = siteResults[id].ssObject.id;
+            return handleErrors(storedSafe.object(objectId)).then((data) => {
+                const ssObject = data.OBJECT[objectId];
+                const ssTemplate = data.TEMPLATESINFO[ssObject.templateid];
+                siteResults[id] = { ssObject, ssTemplate };
+                return Search_1.actions.setResults(url, siteResults);
+            });
+        });
+    },
+    find: (needle) => {
+        return Sessions_1.actions.fetch().then((sessions) => {
+            const promises = {};
+            Object.keys(sessions).forEach((url) => {
+                const { apikey, token } = sessions[url];
+                const storedSafe = new storedsafe_1.default(url, apikey, token);
+                promises[url] = handleErrors(storedSafe.find(needle)).then((data) => {
+                    const searchResults = [];
+                    const objectIds = Object.keys(data.OBJECT);
+                    for (let i = 0; i < objectIds.length; i++) {
+                        const ssObject = data.OBJECT[objectIds[i]];
+                        const ssTemplate = data.TEMPLATESINFO[ssObject.templateid];
+                        searchResults.push({ ssObject, ssTemplate });
+                    }
+                    return searchResults;
+                });
+            });
+            return promises;
+        });
+    },
+    decrypt: (url, objectId, { apikey, token }) => {
+        Search_1.actions.setLoading(url);
+        const storedSafe = new storedsafe_1.default(url, apikey, token);
+        return handleErrors(storedSafe.objectDecrypt(objectId)).then((data) => {
+            const ssObject = data.OBJECT[objectId];
+            const ssTemplate = data.TEMPLATESINFO[ssObject.templateid];
+            return { ssObject, ssTemplate };
+        });
+    }
+};
+
+
+/***/ }),
+
 /***/ "./src/reducers/PromiseReducer.ts":
 /*!****************************************!*\
   !*** ./src/reducers/PromiseReducer.ts ***!
@@ -26526,7 +30386,7 @@ const react_1 = __webpack_require__(/*! react */ "react");
  * @param {state.isInitialized} Whether or not all init actions have finished.
  * */
 function usePromiseReducer(reducer, emptyState) {
-    const [promise, setPromise] = react_1.useState(Promise.resolve(emptyState));
+    // const [promise, setPromise] = useState<Promise<State>>(Promise.resolve(emptyState));
     const [isInitialized, setIsInitialized] = react_1.useState(false);
     const [state, setState] = react_1.useState(emptyState);
     /**
@@ -26543,16 +30403,16 @@ function usePromiseReducer(reducer, emptyState) {
      * changes in promise state.
      * */
     const dispatch = (action, listener) => {
-        setPromise(promise.then((prevState) => {
-            return reducer(state, action).then((newState) => {
-                setState(newState);
-                listener && listener.onSuccess && listener.onSuccess(newState);
-                return newState;
-            }).catch((error) => {
-                listener && listener.onError && listener.onError(error);
-                return prevState;
-            });
-        }));
+        // setPromise(promise.then((prevState) => {
+        reducer(state, action).then((newState) => {
+            setState(newState);
+            listener && listener.onSuccess && listener.onSuccess(newState);
+            return newState;
+        }).catch((error) => {
+            listener && listener.onError && listener.onError(error);
+            return state;
+        });
+        // }));
     };
     return {
         dispatch,
@@ -26561,6 +30421,38 @@ function usePromiseReducer(reducer, emptyState) {
     };
 }
 exports.usePromiseReducer = usePromiseReducer;
+
+
+/***/ }),
+
+/***/ "./src/reducers/SearchReducer.ts":
+/*!***************************************!*\
+  !*** ./src/reducers/SearchReducer.ts ***!
+  \***************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const Search_1 = __webpack_require__(/*! ../model/Search */ "./src/model/Search.ts");
+const StoredSafe_1 = __webpack_require__(/*! ../model/StoredSafe */ "./src/model/StoredSafe.ts");
+exports.reducer = (state, action) => {
+    switch (action.type) {
+        case 'find': {
+            const { needle, url, session } = action;
+            return StoredSafe_1.actions.searchFind(needle, url, session);
+        }
+        case 'decrypt': {
+            const { url, id, session } = action;
+            return StoredSafe_1.actions.searchDecrypt(url, id, session);
+        }
+        case 'init': {
+            return Search_1.actions.fetch();
+        }
+    }
+};
+exports.emptyState = {};
 
 
 /***/ }),
@@ -26576,15 +30468,16 @@ exports.usePromiseReducer = usePromiseReducer;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 const Sessions_1 = __webpack_require__(/*! ../model/Sessions */ "./src/model/Sessions.ts");
+const StoredSafe_1 = __webpack_require__(/*! ../model/StoredSafe */ "./src/model/StoredSafe.ts");
 exports.reducer = (state, action) => {
     switch (action.type) {
-        case 'add': {
-            const { url, session } = action;
-            return Sessions_1.actions.add(url, session);
+        case 'login': {
+            const { site, fields } = action;
+            return StoredSafe_1.actions.login(site, fields);
         }
-        case 'remove': {
-            const { url } = action;
-            return Sessions_1.actions.remove(url);
+        case 'logout': {
+            const { url, session } = action;
+            return StoredSafe_1.actions.logout(url, session);
         }
         case 'init': {
             return Sessions_1.actions.fetch();
@@ -26712,18 +30605,21 @@ const SessionsReducer = __importStar(__webpack_require__(/*! ./SessionsReducer *
 const SettingsReducer = __importStar(__webpack_require__(/*! ./SettingsReducer */ "./src/reducers/SettingsReducer.ts"));
 const SitesReducer = __importStar(__webpack_require__(/*! ./SitesReducer */ "./src/reducers/SitesReducer.ts"));
 const SitePrefsReducer = __importStar(__webpack_require__(/*! ./SitePrefsReducer */ "./src/reducers/SitePrefsReducer.ts"));
+const SearchReducer = __importStar(__webpack_require__(/*! ./SearchReducer */ "./src/reducers/SearchReducer.ts"));
 exports.reducer = (state, action) => {
     const promises = {
         sessions: Promise.resolve(state.sessions),
         settings: Promise.resolve(state.settings),
         sites: Promise.resolve(state.sites),
         sitePrefs: Promise.resolve(state.sitePrefs),
+        search: Promise.resolve(state.search),
     };
     if (action.type === 'init') {
         promises.sessions = SessionsReducer.reducer(state.sessions, { type: 'init' });
         promises.settings = SettingsReducer.reducer(state.settings, { type: 'init' });
         promises.sites = SitesReducer.reducer(state.sites, { type: 'init' });
         promises.sitePrefs = SitePrefsReducer.reducer(state.sitePrefs, { type: 'init' });
+        promises.search = SearchReducer.reducer(state.search, { type: 'init' });
     }
     else {
         if (action.sessions) {
@@ -26738,14 +30634,18 @@ exports.reducer = (state, action) => {
         if (action.sitePrefs) {
             promises.sitePrefs = SitePrefsReducer.reducer(state.sitePrefs, action.sitePrefs);
         }
+        if (action.search) {
+            promises.search = SearchReducer.reducer(state.search, action.search);
+        }
     }
     return Promise.all([
         promises.sessions,
         promises.settings,
         promises.sites,
         promises.sitePrefs,
-    ]).then(([sessions, settings, sites, sitePrefs]) => ({
-        sessions, settings, sites, sitePrefs,
+        promises.search,
+    ]).then(([sessions, settings, sites, sitePrefs, search]) => ({
+        sessions, settings, sites, sitePrefs, search,
     }));
 };
 exports.emptyState = {
@@ -26753,6 +30653,7 @@ exports.emptyState = {
     settings: SettingsReducer.emptyState,
     sites: SitesReducer.emptyState,
     sitePrefs: SitePrefsReducer.emptyState,
+    search: SearchReducer.emptyState,
 };
 
 

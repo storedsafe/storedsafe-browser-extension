@@ -1,11 +1,8 @@
 import React, { Fragment } from 'react';
 import { FormHook } from '../../../hooks/useForm';
+import { YubiKeyFields } from '../../../model/StoredSafe';
 
-export interface FieldValues {
-  keys: string;
-}
-
-export const renderFields: (formHook: FormHook<FieldValues>) => React.ReactNode = ([values, events]) => (
+export const renderFields: (formHook: FormHook<YubiKeyFields>) => React.ReactNode = ([values, events]) => (
   <Fragment>
     <label htmlFor="keys">
       <span>Passphrase + YubiKey</span>

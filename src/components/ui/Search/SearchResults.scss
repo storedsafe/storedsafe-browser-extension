@@ -9,6 +9,38 @@
     font-weight: bold;
     color: $color-primary-0;
     padding: $spacing;
+
+    .searching {
+      margin-left: $spacing;
+      position: absolute;
+      width: $font-size;
+      height: $font-size;
+    }
+
+    .searching::after {
+      position: absolute;
+      content: '';
+      border-radius: 100%;
+      box-sizing: border-box;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 100%;
+      border: $font-size / 6 solid #fff;
+      border-top-color: $color-accent-0;
+      animation: spin 1s infinite;
+      transition: all $transition-duration*3;
+    }
+  }
+
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+
+    to {
+      transform: rotate(360deg);
+    }
   }
 
   .search-result {

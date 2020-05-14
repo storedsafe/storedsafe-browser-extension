@@ -1,6 +1,7 @@
 import StoredSafe from 'storedsafe';
 import * as Sessions from './model/Sessions';
 import * as Settings from './model/Settings';
+import * as Search from './model/Search';
 
 /**
  * Session management functions and initialization
@@ -29,6 +30,7 @@ const invalidateAllSessions = (): void => {
       storedSafe.logout();
     });
     Sessions.actions.clear();
+    Search.actions.clear();
   });
 };
 

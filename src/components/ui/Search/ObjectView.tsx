@@ -1,5 +1,6 @@
 import React from 'react';
-import { StoredSafeObject, StoredSafeTemplate } from 'storedsafe';
+import { StoredSafeObject } from 'storedsafe';
+import { SearchResults } from '../../../model/Search';
 import { Button } from '../common';
 import icons from '../../../ico';
 import './ObjectView.scss';
@@ -32,14 +33,9 @@ const encryptedFieldText = (
 
 interface ObjectViewProps {
   selected?: { url: string; id: number };
-  results: {
-    [url: string]: {
-      ssObject: StoredSafeObject;
-      ssTemplate: StoredSafeTemplate;
-    }[];
-  };
+  results: SearchResults;
   onDecrypt: (field: string, id: string) => void;
-  onCopy: (value: string) => void;
+  onCopy: (field: string) => void;
   onFill: () => void;
 }
 
@@ -59,7 +55,7 @@ export const ObjectView: React.FunctionComponent<ObjectViewProps> = ({
   }
 
   const { url, id } = selected;
-  const { ssObject, ssTemplate } = results[url][id];
+  const { ssObject, ssTemplate } = results[url].results[id];
   return (
     <section className="object-view">
       <article className="object-view-container">
@@ -69,7 +65,7 @@ export const ObjectView: React.FunctionComponent<ObjectViewProps> = ({
           <h2 className="object-view-name">{ssObject.objectname}</h2>
           <h3 className="obejct-view-url">{url}</h3>
         </hgroup>
-        <Button className="object-view-fill" onClick={onFill}>Fill</Button>
+        <Button className="object-view-fill" onClick={(): void => onFill()}>Fill</Button>
         {Object.keys(ssTemplate.STRUCTURE).map((field) => {
           let value: React.ReactNode;
           const isEncrypted = ssTemplate.STRUCTURE[field].encrypted;
@@ -90,7 +86,7 @@ export const ObjectView: React.FunctionComponent<ObjectViewProps> = ({
               </p>
               <button
                 className="object-view-field-copy"
-                onClick={(): void => onCopy(isEncrypted ? (ssObject.crypted !== undefined ? ssObject.crypted[field] : '') : ssObject.public[field])}>
+                onClick={(): void => onCopy(field)}>
                 Copy
               </button>
             </div>

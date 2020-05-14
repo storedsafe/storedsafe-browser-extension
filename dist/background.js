@@ -2272,6 +2272,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const storedsafe_1 = __importDefault(__webpack_require__(/*! storedsafe */ "./node_modules/storedsafe/dist/index.js"));
 const Sessions = __importStar(__webpack_require__(/*! ./model/Sessions */ "./src/model/Sessions.ts"));
 const Settings = __importStar(__webpack_require__(/*! ./model/Settings */ "./src/model/Settings.ts"));
+const Search = __importStar(__webpack_require__(/*! ./model/Search */ "./src/model/Search.ts"));
 /**
  * Session management functions and initialization
  * */
@@ -2295,6 +2296,7 @@ const invalidateAllSessions = () => {
             storedSafe.logout();
         });
         Sessions.actions.clear();
+        Search.actions.clear();
     });
 };
 /**
@@ -2380,6 +2382,65 @@ browser.runtime.onSuspend.addListener(onSuspend);
 // Invalidate sessions after being idle for some time
 browser.idle.onStateChanged.addListener(onIdle);
 browser.contextMenus.onClicked.addListener(onMenuClick);
+
+
+/***/ }),
+
+/***/ "./src/model/Search.ts":
+/*!*****************************!*\
+  !*** ./src/model/Search.ts ***!
+  \*****************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+/**
+ * Get search results from local storage.
+ * @return {SearchResults} Promise containing SearchResults object.
+ * */
+const get = () => (browser.storage.local.get('search')
+    .then(({ search }) => {
+    return search || {};
+}));
+/**
+ * Commit SearchResults object to local storage.
+ * @param search New SearchResults object.
+ * */
+const set = (search) => {
+    return browser.storage.local.set({ search });
+};
+exports.actions = {
+    /**
+     * Load search results for site.
+     * */
+    setLoading: (url) => {
+        return get().then((searchResults) => {
+            const newSearchResults = Object.assign(Object.assign({}, searchResults), { [url]: { loading: true, results: [] } });
+            return set(newSearchResults).then(() => get());
+        });
+    },
+    /**
+     * Set search results for site.
+     * */
+    setResults: (url, results) => {
+        return get().then((searchResults) => {
+            const newSearchResults = Object.assign(Object.assign({}, searchResults), { [url]: { loading: false, results } });
+            return set(newSearchResults).then(() => get());
+        });
+    },
+    /**
+     * Clear search results from storage.
+     * */
+    clear: () => {
+        return set({}).then(get);
+    },
+    /**
+     * Fetch sessions from storage.
+     * */
+    fetch: get,
+};
 
 
 /***/ }),
@@ -2470,7 +2531,7 @@ exports.fields = {
         },
     },
     idleMax: {
-        label: 'Idle Max',
+        label: 'Max Idle Minutes',
         attributes: {
             type: 'number',
             required: true,
@@ -2479,7 +2540,7 @@ exports.fields = {
         },
     },
     maxTokenLife: {
-        label: 'Max token Life',
+        label: 'Max Token Life Minutes',
         attributes: {
             type: 'number',
             required: true,

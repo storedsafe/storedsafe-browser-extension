@@ -43,6 +43,11 @@
       fill: $color-accent-0;
     }
 
+    &:not(:hover) .menu-item-title {
+      transition: visibility 0 $transition-duration;
+      visibility: hidden;
+    }
+
     .menu-item-icon {
       height: 30px;
       width: 30px;

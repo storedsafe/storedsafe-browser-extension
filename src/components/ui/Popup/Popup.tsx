@@ -4,27 +4,24 @@ import './Popup.scss';
 
 interface PopupProps {
   menu: React.ReactNode;
-  left: React.ReactNode;
-  right: React.ReactNode;
+  content: React.ReactNode;
   status: React.ReactNode;
 }
 
 export const Popup: React.FunctionComponent<PopupProps> = ({
   menu,
-  left,
-  right,
+  content,
   status,
 }: PopupProps) => (
   <section className="popup">
-    <Banner />
-    <section className="popup-menu">
-      {menu}
-    </section>
-    <section className="popup-left">
-      {left}
-    </section>
-    <section className="popup-right">
-      {right}
+    <header className="popup-header">
+      <Banner />
+      <section className="popup-menu">
+        {menu}
+      </section>
+    </header>
+    <section className="popup-content">
+      {content}
     </section>
     <section className="popup-status">
       {status}

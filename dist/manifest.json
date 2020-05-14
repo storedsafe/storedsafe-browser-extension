@@ -35,7 +35,8 @@
     "storage",
     "idle",
     "contextMenus",
-    "activeTab"
+    "activeTab",
+    "tabs"
   ],
   "storage": {
     "managed_schema": "schema.json"

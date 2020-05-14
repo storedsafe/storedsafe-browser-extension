@@ -1,15 +1,16 @@
 import React from 'react';
-import { useForm } from '../../../hooks/useForm';
+import { useForm, FormEventCallbacks } from '../../../hooks/useForm';
 import { Select, Checkbox, Message, Button } from '../common';
+import { LoginFields } from '../../../model/StoredSafe';
 import * as YubiKey from './YubiKey';
 import * as TOTP from './TOTP';
 import './Login.scss';
 
-interface LoginFormValues extends YubiKey.FieldValues, TOTP.FieldValues {
-  loginType: 'yubikey' | 'totp';
-  remember: boolean;
-  username: string;
-}
+type LoginFormValues = { remember: boolean } & LoginFields;
+
+export type OnLoginCallback = (
+  values: LoginFormValues,
+) => void;
 
 interface LoginProps {
   url: string;
@@ -19,7 +20,8 @@ interface LoginProps {
     username?: string;
     loginType?: 'yubikey' | 'totp';
   };
-  onSubmit: (values: LoginFormValues) => void;
+  onLogin: OnLoginCallback;
+  formEvents?: FormEventCallbacks;
 }
 
 export const Login: React.FunctionComponent<LoginProps> = ({
@@ -27,7 +29,8 @@ export const Login: React.FunctionComponent<LoginProps> = ({
   error,
   loading,
   sitePrefs,
-  onSubmit,
+  onLogin,
+  formEvents,
 }: LoginProps) => {
   const { username, loginType } = sitePrefs && sitePrefs || {};
   const initialValues: LoginFormValues = {
@@ -38,11 +41,11 @@ export const Login: React.FunctionComponent<LoginProps> = ({
     passphrase: '',
     otp: '',
   };
-  const [values, events, reset] = useForm(initialValues);
+  const [values, events, reset] = useForm(initialValues, formEvents);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
-    onSubmit(values);
+    onLogin(values);
   };
 
   return (

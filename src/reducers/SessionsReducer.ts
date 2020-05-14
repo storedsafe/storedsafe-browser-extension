@@ -1,25 +1,28 @@
 import PromiseReducer from './PromiseReducer';
 import { actions, Sessions, Session } from '../model/Sessions';
+import { Site } from '../model/Sites';
+import { actions as storedsafe, LoginFields } from '../model/StoredSafe';
 
 export type State = Sessions;
 export type Action = {
-  type: 'add';
+  type: 'login';
+  site: Site;
+  fields: LoginFields;
+} | {
+  type: 'logout';
   url: string;
   session: Session;
-} | {
-  type: 'remove';
-  url: string;
 };
 
 export const reducer: PromiseReducer<State, Action> = (state, action) => {
   switch(action.type) {
-    case 'add': {
-      const { url, session } = action;
-      return actions.add(url, session);
+    case 'login': {
+      const { site, fields } = action;
+      return storedsafe.login(site, fields);
     }
-    case 'remove': {
-      const { url } = action;
-      return actions.remove(url);
+    case 'logout': {
+      const { url, session } = action;
+      return storedsafe.logout(url, session);
     }
     case 'init': {
       return actions.fetch();

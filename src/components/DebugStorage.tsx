@@ -7,52 +7,52 @@ const DebugStorage: React.FC = () => {
   const settings = Object.keys(state.settings).map((key) => {
     const { value, managed } = state.settings[key];
     return (
-      <React.Fragment key={key}>
+      <p key={key}>
         <strong>{key}: </strong>{value.toString()}<br />
         <strong>Managed: </strong>{managed.toString()}
-      </React.Fragment>
+      </p>
     );
   })
 
   const systemSites = state.sites.collections.system.map((site) => {
     const { url, apikey } = site;
     return (
-      <React.Fragment key={url}>
+      <p key={url}>
         <strong>URL: </strong>{url}<br />
         <strong>API Key: </strong>{apikey}
-      </React.Fragment>
+      </p>
     );
   })
 
   const userSites = state.sites.collections.user.map((site) => {
     const { url, apikey } = site;
     return (
-      <React.Fragment key={url}>
+      <p key={url}>
         <strong>URL: </strong>{url}<br />
         <strong>API Key: </strong>{apikey}
-      </React.Fragment>
+      </p>
     );
   })
 
   const sessions = Object.keys(state.sessions).map((url) => {
     const { apikey, token, createdAt } = state.sessions[url];
     return (
-      <React.Fragment key={url}>
+      <p key={url}>
         <strong>URL: </strong>{url}<br />
         <strong>API Key: </strong>{apikey}<br />
         <strong>Token: </strong>{token}<br />
         <strong>Created At: </strong>{createdAt}
-      </React.Fragment>
+      </p>
     );
   });
 
   const sitePrefs = Object.keys(state.sitePrefs).map((url) => {
     const { username, loginType } = state.sitePrefs[url];
     return (
-      <React.Fragment key={url}>
+      <p key={url}>
         <strong>Username: </strong>{username}<br />
         <strong>Login Type: </strong>{loginType}<br />
-      </React.Fragment>
+      </p>
     );
   });
 

@@ -38,7 +38,7 @@ export const fields: FieldsProps = {
     },
   },
   idleMax: {
-    label: 'Idle Max',
+    label: 'Max Idle Minutes',
     attributes: {
       type: 'number',
       required: true,
@@ -47,7 +47,7 @@ export const fields: FieldsProps = {
     },
   },
   maxTokenLife: {
-    label: 'Max token Life',
+    label: 'Max Token Life Minutes',
     attributes: {
       type: 'number',
       required: true,

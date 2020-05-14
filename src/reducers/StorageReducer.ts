@@ -3,12 +3,14 @@ import * as SessionsReducer from './SessionsReducer';
 import * as SettingsReducer from './SettingsReducer';
 import * as SitesReducer from './SitesReducer';
 import * as SitePrefsReducer from './SitePrefsReducer';
+import * as SearchReducer from './SearchReducer';
 
 export type State = {
   sessions: SessionsReducer.State;
   settings: SettingsReducer.State;
   sites:  SitesReducer.State;
   sitePrefs:  SitePrefsReducer.State;
+  search:  SearchReducer.State;
 }
 
 export type Action = {
@@ -17,6 +19,7 @@ export type Action = {
   settings?: SettingsReducer.Action;
   sites?: SitesReducer.Action;
   sitePrefs?: SitePrefsReducer.Action;
+  search?: SearchReducer.Action;
 };
 
 export const reducer: PromiseReducer<State, Action> = (state, action) => {
@@ -25,6 +28,7 @@ export const reducer: PromiseReducer<State, Action> = (state, action) => {
     settings: Promise.resolve(state.settings),
     sites: Promise.resolve(state.sites),
     sitePrefs: Promise.resolve(state.sitePrefs),
+    search: Promise.resolve(state.search),
   };
 
   if (action.type === 'init') {
@@ -39,6 +43,9 @@ export const reducer: PromiseReducer<State, Action> = (state, action) => {
     );
     promises.sitePrefs = SitePrefsReducer.reducer(
       state.sitePrefs, { type: 'init' }
+    );
+    promises.search = SearchReducer.reducer(
+      state.search, { type: 'init' }
     );
   } else {
     if (action.sessions) {
@@ -61,6 +68,11 @@ export const reducer: PromiseReducer<State, Action> = (state, action) => {
         state.sitePrefs, action.sitePrefs,
       );
     }
+    if (action.search) {
+      promises.search = SearchReducer.reducer(
+        state.search, action.search,
+      );
+    }
   }
 
   return Promise.all([
@@ -68,8 +80,9 @@ export const reducer: PromiseReducer<State, Action> = (state, action) => {
     promises.settings,
     promises.sites,
     promises.sitePrefs,
-  ]).then(([sessions, settings, sites, sitePrefs]) => ({
-    sessions, settings, sites, sitePrefs,
+    promises.search,
+  ]).then(([sessions, settings, sites, sitePrefs, search]) => ({
+    sessions, settings, sites, sitePrefs, search,
   }));
 };
 
@@ -78,4 +91,5 @@ export const emptyState: State = {
   settings: SettingsReducer.emptyState,
   sites: SitesReducer.emptyState,
   sitePrefs: SitePrefsReducer.emptyState,
+  search: SearchReducer.emptyState,
 };

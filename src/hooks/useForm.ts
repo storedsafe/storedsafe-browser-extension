@@ -4,13 +4,21 @@ type InputElement = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
 type InputType = any; // eslint-disable-line @typescript-eslint/no-explicit-any
 type InputEventCallback = (value: InputType, name: string) => void;
 
+export interface FormEventCallbacks {
+  onChange?: InputEventCallback;
+  onBlur?: InputEventCallback;
+  onFocus?: InputEventCallback;
+}
+
+interface FormEvents {
+  onChange: (event: React.ChangeEvent<InputElement>) => void;
+  onBlur: (event: React.FocusEvent<InputElement>) => void;
+  onFocus: (event: React.FocusEvent<InputElement>) => void;
+}
+
 export type FormHook<Values> = [
   Values,
-  {
-    onChange: (event: React.ChangeEvent<InputElement>) => void;
-    onBlur: (event: React.FocusEvent<InputElement>) => void;
-    onFocus: (event: React.FocusEvent<InputElement>) => void;
-  },
+  FormEvents,
   (values?: Values) => void,
 ];
 
@@ -20,11 +28,7 @@ export type FormHook<Values> = [
  * */
 export const useForm = <Values>(
   initialValues: Values,
-  events?: {
-    onChange?: InputEventCallback;
-    onBlur?: InputEventCallback;
-    onFocus?: InputEventCallback;
-  },
+  events?: FormEventCallbacks,
 ): FormHook<Values> => {
   const [values, setValues] = useState<Values>(initialValues);
 

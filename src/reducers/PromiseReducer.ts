@@ -47,7 +47,7 @@ function usePromiseReducer<State, Action>(
   reducer: PromiseReducer<State, Action>,
   emptyState: State
 ): PromiseReducerHook<State, Action> {
-  const [promise, setPromise] = useState<Promise<State>>(Promise.resolve(emptyState));
+  // const [promise, setPromise] = useState<Promise<State>>(Promise.resolve(emptyState));
   const [isInitialized, setIsInitialized] = useState<boolean>(false);
   const [state, setState] = useState<State>(emptyState);
 
@@ -66,16 +66,16 @@ function usePromiseReducer<State, Action>(
    * changes in promise state.
    * */
   const dispatch = (action: Action | InitAction, listener?: ActionListener<State>): void => {
-    setPromise(promise.then((prevState) => {
-      return reducer(state, action).then((newState: State) => {
-        setState(newState);
-        listener && listener.onSuccess && listener.onSuccess(newState);
-        return newState;
-      }).catch((error: Error) => {
-        listener && listener.onError && listener.onError(error);
-        return prevState;
-      });
-    }));
+    // setPromise(promise.then((prevState) => {
+    reducer(state, action).then((newState: State) => {
+      setState(newState);
+      listener && listener.onSuccess && listener.onSuccess(newState);
+      return newState;
+    }).catch((error: Error) => {
+      listener && listener.onError && listener.onError(error);
+      return state;
+    });
+    // }));
   };
 
   return {

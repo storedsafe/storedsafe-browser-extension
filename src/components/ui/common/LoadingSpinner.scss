@@ -30,7 +30,7 @@
     }
 
     &::before {
-      background-image: url('../../../graphics/padlock.svg');
+      background-image: url('../../../../graphics/padlock.svg');
       background-size: contain;
       border: 0;
       transition: all $transition-duration*3;
@@ -44,17 +44,17 @@
     }
 
     &.error::before {
-      background-image: url('../../../graphics/padlock-error.svg');
+      background-image: url('../../../../graphics/padlock-error.svg');
       border-color: $color-danger-0;
     }
 
     &.warning::before {
-      background-image: url('../../../graphics/padlock-warning.svg');
+      background-image: url('../../../../graphics/padlock-warning.svg');
       border-color: $color-warning-0;
     }
 
     &.success::before {
-      background-image: url('../../../graphics/padlock-unlocked.svg');
+      background-image: url('../../../../graphics/padlock-unlocked.svg');
       border-color: $color-accent-0;
     }
   }
