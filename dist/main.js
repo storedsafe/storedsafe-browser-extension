@@ -27832,7 +27832,12 @@ exports.Popup = () => {
         }
     }, [state, isInitialized, menuItem]);
     const onMenuSelect = (id) => {
-        setMenuItem(id);
+        if (id === MenuItem.Settings) {
+            browser.runtime.openOptionsPage();
+        }
+        else {
+            setMenuItem(id);
+        }
     };
     /**
      * Components

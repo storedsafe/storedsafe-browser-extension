@@ -48,7 +48,11 @@ export const Popup: React.FunctionComponent = () => {
   }, [state, isInitialized, menuItem]);
 
   const onMenuSelect = (id: number): void => {
-    setMenuItem(id);
+    if (id === MenuItem.Settings) {
+      browser.runtime.openOptionsPage();
+    } else {
+      setMenuItem(id);
+    }
   };
 
   /**
