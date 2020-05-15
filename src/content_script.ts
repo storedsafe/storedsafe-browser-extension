@@ -1,6 +1,8 @@
 // const types = /text|url|password|email/i;
 // const ids = /user|name|pass|mail|url|server|site/i;
 
+console.log('listening');
+
 const matchers: {
   [field: string]: {
     types: RegExp;
@@ -33,14 +35,18 @@ function isMatch(
 
 const { forms } = document;
 
+interface Message {
+  type: string;
+  data: {
+    [field: string]: string;
+  };
+}
+
 function onMessage(
-  message: {
-    type: string;
-    data: {
-      [field: string]: string;
-    };
-  }
+  message: Message,
+  sender: browser.runtime.MessageSender,
 ): void {
+  console.log(message, sender);
   if (message.type === 'fill') {
     for (let i = 0; i < forms.length; i++) {
       for (let j = 0; j < forms[i].length; j++) {

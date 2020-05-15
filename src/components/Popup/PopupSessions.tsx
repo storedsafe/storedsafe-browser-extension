@@ -71,6 +71,7 @@ const PopupSearch: React.FunctionComponent = () => {
       url={url}
       onLogin={onLogin}
       loading={loading}
+      sitePrefs={state.sitePrefs[url]}
       error={error}
     />
   );

@@ -17,14 +17,11 @@ const PopupSearch: React.FunctionComponent = () => {
   }>();
 
   useEffect(() => {
-    browser.tabs.query({ active: true }).then((tabs) => {
-      tabs.forEach((tab) => {
-        if (tab.active === true) {
-          const { url } = tab;
-          const match = url.match(/^https?:\/\/([^/]+)\/.*/);
-          setNeedle(match === null ? url : match[1]);
-        }
-      });
+    browser.tabs.query({ currentWindow: true, active: true }).then((tabs) => {
+      const tab = tabs[0];
+      const { url } = tab;
+      const match = url.match(/^https?:\/\/([^/]+)\/.*/);
+      setNeedle(match === null ? url : match[1]);
     });
   }, []);
 
@@ -116,15 +113,16 @@ const PopupSearch: React.FunctionComponent = () => {
   // Fill fields on page.
   const onFill = (): void => {
     const fill = (ssObject: StoredSafeObject): void => {
-      browser.tabs.query({ active: true }).then((tabs) => {
-        for(let i = 0; i < tabs.length; i++) {
-          if (tabs[i].active) {
-            browser.tabs.sendMessage(tabs[i].id, {
-              type: 'fill',
-              data: ssObject,
-            });
-          }
-        }
+      browser.tabs.query({ currentWindow: true, active: true }).then((tabs) => {
+        const tab = tabs[0];
+        const values = {
+          ...ssObject.crypted,
+          ...ssObject.public,
+        };
+        browser.tabs.sendMessage(tab.id, {
+          type: 'fill',
+          data: values,
+        });
       });
     };
 

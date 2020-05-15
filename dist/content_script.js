@@ -95,6 +95,7 @@
 
 // const types = /text|url|password|email/i;
 // const ids = /user|name|pass|mail|url|server|site/i;
+console.log('listening');
 const matchers = {
     username: {
         types: /text|email/,
@@ -113,7 +114,8 @@ function isMatch(field, element) {
             || matchers[field].name.test(element.id)));
 }
 const { forms } = document;
-function onMessage(message) {
+function onMessage(message, sender) {
+    console.log(message, sender);
     if (message.type === 'fill') {
         for (let i = 0; i < forms.length; i++) {
             for (let j = 0; j < forms[i].length; j++) {

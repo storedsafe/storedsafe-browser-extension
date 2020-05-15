@@ -27888,14 +27888,11 @@ const PopupSearch = () => {
     const [results, setResults] = react_1.useState({});
     const [selected, setSelected] = react_1.useState();
     react_1.useEffect(() => {
-        browser.tabs.query({ active: true }).then((tabs) => {
-            tabs.forEach((tab) => {
-                if (tab.active === true) {
-                    const { url } = tab;
-                    const match = url.match(/^https?:\/\/([^/]+)\/.*/);
-                    setNeedle(match === null ? url : match[1]);
-                }
-            });
+        browser.tabs.query({ currentWindow: true, active: true }).then((tabs) => {
+            const tab = tabs[0];
+            const { url } = tab;
+            const match = url.match(/^https?:\/\/([^/]+)\/.*/);
+            setNeedle(match === null ? url : match[1]);
         });
     }, []);
     /**
@@ -27968,15 +27965,13 @@ const PopupSearch = () => {
     // Fill fields on page.
     const onFill = () => {
         const fill = (ssObject) => {
-            browser.tabs.query({ active: true }).then((tabs) => {
-                for (let i = 0; i < tabs.length; i++) {
-                    if (tabs[i].active) {
-                        browser.tabs.sendMessage(tabs[i].id, {
-                            type: 'fill',
-                            data: ssObject,
-                        });
-                    }
-                }
+            browser.tabs.query({ currentWindow: true, active: true }).then((tabs) => {
+                const tab = tabs[0];
+                const values = Object.assign(Object.assign({}, ssObject.crypted), ssObject.public);
+                browser.tabs.sendMessage(tab.id, {
+                    type: 'fill',
+                    data: values,
+                });
             });
         };
         const { url, id } = selected;
@@ -28074,7 +28069,7 @@ const PopupSearch = () => {
      * Components
      * */
     const left = react_1.default.createElement(Auth_1.SiteList, { sites: state.sites.list, sessions: state.sessions, onSelect: (id) => setSelected(id === selected ? undefined : id), selected: selected });
-    const right = selected === undefined ? null : state.sessions[url] ? (react_1.default.createElement(Auth_1.SiteStatus, { url: url, session: state.sessions[url], onLogout: onLogout })) : (react_1.default.createElement(Auth_1.Login, { url: url, onLogin: onLogin, loading: loading, error: error }));
+    const right = selected === undefined ? null : state.sessions[url] ? (react_1.default.createElement(Auth_1.SiteStatus, { url: url, session: state.sessions[url], onLogout: onLogout })) : (react_1.default.createElement(Auth_1.Login, { url: url, onLogin: onLogin, loading: loading, sitePrefs: state.sitePrefs[url], error: error }));
     return (react_1.default.createElement(PopupUI.Content, { left: left, right: right }));
 };
 exports.default = PopupSearch;
