@@ -81,21 +81,20 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = "./src/content_script.ts");
+/******/ 	return __webpack_require__(__webpack_require__.s = "./src/scripts/content_script.ts");
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ "./src/content_script.ts":
-/*!*******************************!*\
-  !*** ./src/content_script.ts ***!
-  \*******************************/
+/***/ "./src/scripts/content_script.ts":
+/*!***************************************!*\
+  !*** ./src/scripts/content_script.ts ***!
+  \***************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
 // const types = /text|url|password|email/i;
 // const ids = /user|name|pass|mail|url|server|site/i;
-console.log('listening');
 const matchers = {
     username: {
         types: /text|email/,
@@ -105,17 +104,28 @@ const matchers = {
         types: /password/,
         name: /.*/,
     },
+    cardno: {
+        types: /text|tel/,
+        name: /card/,
+    },
+    expires: {
+        types: /text|tel/,
+        name: /exp/,
+    },
+    cvc: {
+        types: /text|tel/,
+        name: /sec|code|cvv|cvc/,
+    },
 };
 function isMatch(field, element) {
     if (matchers[field] === undefined)
         return false;
-    return (matchers[field].types.test(element.type)
-        && (matchers[field].name.test(element.name)
-            || matchers[field].name.test(element.id)));
+    const types = new RegExp(matchers[field].types, 'i');
+    const name = new RegExp(matchers[field].name, 'i');
+    return (types.test(element.type) && (name.test(element.name) || name.test(element.id)));
 }
 const { forms } = document;
-function onMessage(message, sender) {
-    console.log(message, sender);
+function onMessage(message) {
     if (message.type === 'fill') {
         for (let i = 0; i < forms.length; i++) {
             for (let j = 0; j < forms[i].length; j++) {

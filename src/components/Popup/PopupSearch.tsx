@@ -122,6 +122,8 @@ const PopupSearch: React.FunctionComponent = () => {
         browser.tabs.sendMessage(tab.id, {
           type: 'fill',
           data: values,
+        }).then(() => {
+          window.close();
         });
       });
     };

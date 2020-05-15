@@ -6,8 +6,8 @@ const SRC_DIR = path.join(__dirname, 'src');
 module.exports = {
   entry: {
     'main': SRC_DIR + '/index.tsx',
-    'background': SRC_DIR + '/background.ts',
-    'content_script': SRC_DIR + '/content_script.ts',
+    'background': SRC_DIR + '/scripts/background.ts',
+    'content_script': SRC_DIR + '/scripts/content_script.ts',
   },
   output: {
     path: path.resolve(__dirname, 'dist'),

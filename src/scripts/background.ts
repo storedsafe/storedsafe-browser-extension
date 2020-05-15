@@ -1,7 +1,7 @@
 import StoredSafe from 'storedsafe';
-import * as Sessions from './model/Sessions';
-import * as Settings from './model/Settings';
-import * as Search from './model/Search';
+import * as Sessions from '../model/Sessions';
+import * as Settings from '../model/Settings';
+import * as Search from '../model/Search';
 
 /**
  * Session management functions and initialization

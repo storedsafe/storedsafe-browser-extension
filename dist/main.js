@@ -25449,7 +25449,7 @@ module.exports = exports;
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, ".login {\n  background-color: #f9f9f9;\n  padding: 10px;\n  height: 100%;\n  color: #232d33;\n  overflow: hidden;\n}\n.login .form {\n  display: flex;\n  flex-direction: column;\n}\n.login label {\n  display: flex;\n  flex-direction: column;\n  margin-bottom: 10px;\n}\n.login .label-checkbox {\n  flex-direction: row;\n  justify-content: space-between;\n}", ""]);
+exports.push([module.i, ".login {\n  background-color: #f9f9f9;\n  padding: 10px;\n  height: 100%;\n  color: #232d33;\n  overflow: hidden auto;\n}\n.login .form {\n  display: flex;\n  flex-direction: column;\n}\n.login label {\n  display: flex;\n  flex-direction: column;\n}\n.login label:not(:last-child),\n.login .button:not(:last-child),\n.login .message:not(:last-child) {\n  margin-bottom: 10px;\n}\n.login .label-checkbox {\n  flex-direction: row;\n  justify-content: space-between;\n}", ""]);
 // Exports
 module.exports = exports;
 
@@ -27710,10 +27710,14 @@ exports.Sites = () => {
         setLoading(Object.assign(Object.assign({}, loading), { add: true }));
         event.preventDefault();
         const { url, apikey } = addSiteValues;
+        const match = url.match(/^.*:\/\/([^/]+)(\/.*|\/?$)/);
+        console.log(match);
+        const matchedUrl = match === null ? url : match[1];
+        console.log(matchedUrl);
         dispatch({
             sites: {
                 type: 'add',
-                site: { url, apikey },
+                site: { url: matchedUrl, apikey },
             },
         }, {
             onSuccess: () => {
@@ -27976,6 +27980,8 @@ const PopupSearch = () => {
                 browser.tabs.sendMessage(tab.id, {
                     type: 'fill',
                     data: values,
+                }).then(() => {
+                    window.close();
                 });
             });
         };
@@ -28074,7 +28080,11 @@ const PopupSearch = () => {
      * Components
      * */
     const left = react_1.default.createElement(Auth_1.SiteList, { sites: state.sites.list, sessions: state.sessions, onSelect: (id) => setSelected(id === selected ? undefined : id), selected: selected });
-    const right = selected === undefined ? null : state.sessions[url] ? (react_1.default.createElement(Auth_1.SiteStatus, { url: url, session: state.sessions[url], onLogout: onLogout })) : (react_1.default.createElement(Auth_1.Login, { url: url, onLogin: onLogin, loading: loading, sitePrefs: state.sitePrefs[url], error: error }));
+    const right = selected === undefined ? null : state.sessions[url] ? (react_1.default.createElement(Auth_1.SiteStatus, { url: url, session: state.sessions[url], onLogout: onLogout })) : (react_1.default.createElement(Auth_1.Login, { key: url, url: url, onLogin: onLogin, loading: loading, sitePrefs: state.sitePrefs[url], error: error, formEvents: {
+            onFocus: () => {
+                setError(undefined);
+            },
+        } }));
     return (react_1.default.createElement(PopupUI.Content, { left: left, right: right }));
 };
 exports.default = PopupSearch;

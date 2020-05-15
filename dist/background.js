@@ -81,7 +81,7 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = "./src/background.ts");
+/******/ 	return __webpack_require__(__webpack_require__.s = "./src/scripts/background.ts");
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -2249,143 +2249,6 @@ exports.default = StoredSafe;
 
 /***/ }),
 
-/***/ "./src/background.ts":
-/*!***************************!*\
-  !*** ./src/background.ts ***!
-  \***************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const storedsafe_1 = __importDefault(__webpack_require__(/*! storedsafe */ "./node_modules/storedsafe/dist/index.js"));
-const Sessions = __importStar(__webpack_require__(/*! ./model/Sessions */ "./src/model/Sessions.ts"));
-const Settings = __importStar(__webpack_require__(/*! ./model/Settings */ "./src/model/Settings.ts"));
-const Search = __importStar(__webpack_require__(/*! ./model/Search */ "./src/model/Search.ts"));
-/**
- * Session management functions and initialization
- * */
-let sessionTimers = {};
-let idleTimer;
-const invalidateSession = (url) => {
-    console.log('Invalidating session: ', url);
-    Sessions.actions.fetch().then((sessions) => {
-        const { apikey, token } = sessions[url];
-        const storedSafe = new storedsafe_1.default(url, apikey, token);
-        storedSafe.logout();
-        Sessions.actions.remove(url);
-    });
-};
-const invalidateAllSessions = () => {
-    console.log('Invalidating all sessions');
-    Sessions.actions.fetch().then((sessions) => {
-        Object.keys(sessions).forEach((url) => {
-            const { apikey, token } = sessions[url];
-            const storedSafe = new storedsafe_1.default(url, apikey, token);
-            storedSafe.logout();
-        });
-        Sessions.actions.clear();
-        Search.actions.clear();
-    });
-};
-/**
- * Event handler functions
- * */
-function onStorageChange({ sessions }, area) {
-    if (area === 'local' && sessions !== undefined && sessions.newValue !== undefined) {
-        Settings.actions.fetch().then((settings) => {
-            const newSessions = sessions.newValue;
-            Object.keys(sessionTimers).forEach((url) => {
-                clearTimeout(sessionTimers[url]);
-            });
-            sessionTimers = {};
-            Object.keys(newSessions).forEach((url) => {
-                const tokenLife = Date.now() - newSessions[url].createdAt;
-                const tokenTimeout = (settings.maxTokenLife.value * 60 * 1000) - tokenLife;
-                sessionTimers[url] = window.setTimeout(() => invalidateSession(url), tokenTimeout);
-            });
-        });
-    }
-}
-function onInstalled({ reason }) {
-    browser.contextMenus.create({
-        id: 'open-popup',
-        title: 'Show StoredSafe',
-        contexts: ['editable'],
-    });
-    if (reason === 'install' || reason === 'update') {
-        browser.runtime.openOptionsPage();
-    }
-}
-function onIdle(state) {
-    Settings.actions.fetch().then((settings) => {
-        if (state === 'locked') {
-            console.log('Device is locked, invalidate all sessions.');
-            invalidateAllSessions();
-        }
-        else if (state === 'idle') {
-            if (idleTimer) {
-                window.clearTimeout(idleTimer);
-            }
-            const idleTimeout = settings.idleMax.value * 1000 * 60;
-            idleTimer = window.setTimeout(() => {
-                console.log('Idle timer expired, invalidate all sessions.');
-                invalidateAllSessions();
-            }, idleTimeout);
-        }
-    });
-}
-function onSuspend() {
-    console.log('Suspended, invalidate all sessions.');
-    invalidateAllSessions();
-}
-function onMenuClick(info, tab) {
-    switch (info.menuItemId) {
-        case 'open-popup': {
-            browser.browserAction.openPopup().then().catch().then(() => {
-                browser.runtime.sendMessage({
-                    type: 'popup-search',
-                    data: { url: tab.url },
-                });
-            });
-            break;
-        }
-        default: {
-            break;
-        }
-    }
-}
-/**
- * Subscribe to events and initialization
- * */
-// TODO: Remove debug pritnout
-console.log('Background script initialized: ', new Date(Date.now()));
-// Invalidate all sessions on launch
-invalidateAllSessions();
-// Listen to changes in storage to know when sessions are updated
-browser.storage.onChanged.addListener(onStorageChange);
-// Open options page and set up context menus
-browser.runtime.onInstalled.addListener(onInstalled);
-// Invalidate sessions on suspend
-browser.runtime.onSuspend.addListener(onSuspend);
-// Invalidate sessions after being idle for some time
-browser.idle.onStateChanged.addListener(onIdle);
-browser.contextMenus.onClicked.addListener(onMenuClick);
-
-
-/***/ }),
-
 /***/ "./src/model/Search.ts":
 /*!*****************************!*\
   !*** ./src/model/Search.ts ***!
@@ -2614,6 +2477,143 @@ exports.actions = {
      * */
     fetch: get,
 };
+
+
+/***/ }),
+
+/***/ "./src/scripts/background.ts":
+/*!***********************************!*\
+  !*** ./src/scripts/background.ts ***!
+  \***********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const storedsafe_1 = __importDefault(__webpack_require__(/*! storedsafe */ "./node_modules/storedsafe/dist/index.js"));
+const Sessions = __importStar(__webpack_require__(/*! ../model/Sessions */ "./src/model/Sessions.ts"));
+const Settings = __importStar(__webpack_require__(/*! ../model/Settings */ "./src/model/Settings.ts"));
+const Search = __importStar(__webpack_require__(/*! ../model/Search */ "./src/model/Search.ts"));
+/**
+ * Session management functions and initialization
+ * */
+let sessionTimers = {};
+let idleTimer;
+const invalidateSession = (url) => {
+    console.log('Invalidating session: ', url);
+    Sessions.actions.fetch().then((sessions) => {
+        const { apikey, token } = sessions[url];
+        const storedSafe = new storedsafe_1.default(url, apikey, token);
+        storedSafe.logout();
+        Sessions.actions.remove(url);
+    });
+};
+const invalidateAllSessions = () => {
+    console.log('Invalidating all sessions');
+    Sessions.actions.fetch().then((sessions) => {
+        Object.keys(sessions).forEach((url) => {
+            const { apikey, token } = sessions[url];
+            const storedSafe = new storedsafe_1.default(url, apikey, token);
+            storedSafe.logout();
+        });
+        Sessions.actions.clear();
+        Search.actions.clear();
+    });
+};
+/**
+ * Event handler functions
+ * */
+function onStorageChange({ sessions }, area) {
+    if (area === 'local' && sessions !== undefined && sessions.newValue !== undefined) {
+        Settings.actions.fetch().then((settings) => {
+            const newSessions = sessions.newValue;
+            Object.keys(sessionTimers).forEach((url) => {
+                clearTimeout(sessionTimers[url]);
+            });
+            sessionTimers = {};
+            Object.keys(newSessions).forEach((url) => {
+                const tokenLife = Date.now() - newSessions[url].createdAt;
+                const tokenTimeout = (settings.maxTokenLife.value * 60 * 1000) - tokenLife;
+                sessionTimers[url] = window.setTimeout(() => invalidateSession(url), tokenTimeout);
+            });
+        });
+    }
+}
+function onInstalled({ reason }) {
+    browser.contextMenus.create({
+        id: 'open-popup',
+        title: 'Show StoredSafe',
+        contexts: ['editable'],
+    });
+    if (reason === 'install' || reason === 'update') {
+        browser.runtime.openOptionsPage();
+    }
+}
+function onIdle(state) {
+    Settings.actions.fetch().then((settings) => {
+        if (state === 'locked') {
+            console.log('Device is locked, invalidate all sessions.');
+            invalidateAllSessions();
+        }
+        else if (state === 'idle') {
+            if (idleTimer) {
+                window.clearTimeout(idleTimer);
+            }
+            const idleTimeout = settings.idleMax.value * 1000 * 60;
+            idleTimer = window.setTimeout(() => {
+                console.log('Idle timer expired, invalidate all sessions.');
+                invalidateAllSessions();
+            }, idleTimeout);
+        }
+    });
+}
+function onSuspend() {
+    console.log('Suspended, invalidate all sessions.');
+    invalidateAllSessions();
+}
+function onMenuClick(info, tab) {
+    switch (info.menuItemId) {
+        case 'open-popup': {
+            browser.browserAction.openPopup().then().catch().then(() => {
+                browser.runtime.sendMessage({
+                    type: 'popup-search',
+                    data: { url: tab.url },
+                });
+            });
+            break;
+        }
+        default: {
+            break;
+        }
+    }
+}
+/**
+ * Subscribe to events and initialization
+ * */
+// TODO: Remove debug pritnout
+console.log('Background script initialized: ', new Date(Date.now()));
+// Invalidate all sessions on launch
+invalidateAllSessions();
+// Listen to changes in storage to know when sessions are updated
+browser.storage.onChanged.addListener(onStorageChange);
+// Open options page and set up context menus
+browser.runtime.onInstalled.addListener(onInstalled);
+// Invalidate sessions on suspend
+browser.runtime.onSuspend.addListener(onSuspend);
+// Invalidate sessions after being idle for some time
+browser.idle.onStateChanged.addListener(onIdle);
+browser.contextMenus.onClicked.addListener(onMenuClick);
 
 
 /***/ })

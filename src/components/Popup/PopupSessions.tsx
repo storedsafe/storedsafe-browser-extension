@@ -68,11 +68,17 @@ const PopupSearch: React.FunctionComponent = () => {
     />
   ) : (
     <Login
+      key={url}
       url={url}
       onLogin={onLogin}
       loading={loading}
       sitePrefs={state.sitePrefs[url]}
       error={error}
+      formEvents={{
+        onFocus: (): void => {
+          setError(undefined);
+        },
+      }}
     />
   );
 

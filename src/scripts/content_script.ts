@@ -1,8 +1,6 @@
 // const types = /text|url|password|email/i;
 // const ids = /user|name|pass|mail|url|server|site/i;
 
-console.log('listening');
-
 const matchers: {
   [field: string]: {
     types: RegExp;
@@ -17,6 +15,18 @@ const matchers: {
     types: /password/,
     name: /.*/,
   },
+  cardno: {
+    types: /text|tel/,
+    name: /card/,
+  },
+  expires: {
+    types: /text|tel/,
+    name: /exp/,
+  },
+  cvc: {
+    types: /text|tel/,
+    name: /sec|code|cvv|cvc/,
+  },
 };
 
 function isMatch(
@@ -24,12 +34,10 @@ function isMatch(
   element: HTMLInputElement
 ): boolean {
   if (matchers[field] === undefined) return false;
+  const types = new RegExp(matchers[field].types, 'i');
+  const name = new RegExp(matchers[field].name, 'i');
   return (
-    matchers[field].types.test(element.type)
-    && (
-      matchers[field].name.test(element.name)
-      || matchers[field].name.test(element.id)
-    )
+    types.test(element.type) && ( name.test(element.name) || name.test(element.id))
   );
 }
 
@@ -44,9 +52,7 @@ interface Message {
 
 function onMessage(
   message: Message,
-  sender: browser.runtime.MessageSender,
 ): void {
-  console.log(message, sender);
   if (message.type === 'fill') {
     for (let i = 0; i < forms.length; i++) {
       for (let j = 0; j < forms[i].length; j++) {

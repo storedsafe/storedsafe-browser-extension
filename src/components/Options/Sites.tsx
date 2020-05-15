@@ -83,10 +83,14 @@ export const Sites: React.FunctionComponent = () => {
     setLoading({ ...loading, add: true });
     event.preventDefault();
     const { url, apikey } = addSiteValues;
+    const match = url.match(/^.*:\/\/([^/]+)(\/.*|\/?$)/);
+    console.log(match);
+    const matchedUrl = match === null ? url : match[1];
+    console.log(matchedUrl);
     dispatch({
       sites: {
         type: 'add',
-        site: { url, apikey },
+        site: { url: matchedUrl, apikey },
       },
     }, {
       onSuccess: () => {
