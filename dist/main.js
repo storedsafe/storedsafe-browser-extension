@@ -25431,7 +25431,7 @@ module.exports = exports;
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, ".sites .sites-article .sites-article-header {\n  padding: 10px 20px;\n  background-color: #f3f7f8;\n  color: #526a78;\n}\n.sites .sites-list > li {\n  list-style: none;\n  display: flex;\n  flex-direction: row;\n  align-items: space-between;\n  justify-content: space-between;\n  padding-left: 20px;\n}\n.sites .sites-list > li:nth-child(odd) {\n  background-color: #f9fbfc;\n}\n.sites .sites-list span {\n  padding: 10px;\n}\n.sites .sites-add .sites-add-form {\n  display: flex;\n  flex-direction: column;\n  align-items: stretch;\n  width: 100%;\n  padding: 10px;\n}\n.sites .sites-add label {\n  margin-bottom: 10px;\n}\n.sites .sites-add input {\n  width: 100%;\n}\n\n@media (min-width: 600px) {\n  .sites .sites-article .sites-article-header {\n    min-width: -webkit-max-content;\n    min-width: -moz-max-content;\n    min-width: max-content;\n  }\n  .sites .sites-add {\n    display: flex;\n    flex-direction: row;\n  }\n}", ""]);
+exports.push([module.i, ".sites .sites-article .sites-article-header {\n  padding: 10px 20px;\n  background-color: #f3f7f8;\n  color: #526a78;\n}\n.sites .sites-list > li {\n  list-style: none;\n  display: flex;\n  flex-direction: row;\n  align-items: space-between;\n  justify-content: space-between;\n  padding-left: 20px;\n}\n.sites .sites-list > li:nth-child(odd) {\n  background-color: #f9fbfc;\n}\n.sites .sites-list span {\n  padding: 10px;\n}\n.sites .sites-add .sites-add-form {\n  display: flex;\n  flex-direction: column;\n  align-items: stretch;\n  width: 100%;\n  padding: 10px;\n}\n.sites .sites-add label:not(:last-child),\n.sites .sites-add .button:not(:last-child),\n.sites .sites-add .message:not(:last-child) {\n  margin-bottom: 10px;\n}\n.sites .sites-add input {\n  width: 100%;\n}\n\n@media (min-width: 600px) {\n  .sites .sites-article .sites-article-header {\n    min-width: -webkit-max-content;\n    min-width: -moz-max-content;\n    min-width: max-content;\n  }\n  .sites .sites-add {\n    display: flex;\n    flex-direction: row;\n  }\n}", ""]);
 // Exports
 module.exports = exports;
 
@@ -27662,11 +27662,14 @@ const useForm_1 = __webpack_require__(/*! ../../hooks/useForm */ "./src/hooks/us
 __webpack_require__(/*! ./Sites.scss */ "./src/components/Options/Sites.scss");
 exports.Sites = () => {
     const [loading, setLoading] = react_1.useState({});
+    const [error, setError] = react_1.useState();
     /**
      * Initial values for the add site form.
      * */
     const addSiteInitialValues = { url: '', apikey: '' };
-    const [addSiteValues, events, reset] = useForm_1.useForm(addSiteInitialValues);
+    const [addSiteValues, events, reset] = useForm_1.useForm(addSiteInitialValues, {
+        onFocus: () => setError(undefined),
+    });
     const { state, dispatch, isInitialized } = useStorage_1.useStorage();
     if (!isInitialized)
         return react_1.default.createElement("p", null, "Loading...");
@@ -27707,13 +27710,16 @@ exports.Sites = () => {
      * is submitted.
      * */
     const onAdd = (event) => {
-        setLoading(Object.assign(Object.assign({}, loading), { add: true }));
         event.preventDefault();
         const { url, apikey } = addSiteValues;
         const match = url.match(/^.*:\/\/([^/]+)(\/.*|\/?$)/);
-        console.log(match);
         const matchedUrl = match === null ? url : match[1];
-        console.log(matchedUrl);
+        const hasSite = state.sites.list.reduce((hasUrl, { url: siteUrl }) => (hasUrl || siteUrl === matchedUrl), false);
+        if (hasSite) {
+            setError(`Duplicate site: ${matchedUrl}`);
+            return;
+        }
+        setLoading(Object.assign(Object.assign({}, loading), { add: true }));
         dispatch({
             sites: {
                 type: 'add',
@@ -27741,7 +27747,8 @@ exports.Sites = () => {
                 react_1.default.createElement("label", { htmlFor: "apikey" },
                     "API Key",
                     react_1.default.createElement("input", Object.assign({ type: "text", name: "apikey", id: "apikey", placeholder: "API Key", required: true, value: addSiteValues.apikey }, events))),
-                react_1.default.createElement(common_1.Button, { color: "accent", type: "submit", isLoading: loading.add || false }, "Add Site"))),
+                react_1.default.createElement(common_1.Button, { color: "accent", type: "submit", isLoading: loading.add || false }, "Add Site"),
+                error && react_1.default.createElement(common_1.Message, { type: "error" }, error))),
         userSites.length > 0 && (react_1.default.createElement("article", { className: "sites-article sites-user" },
             react_1.default.createElement("header", { className: "sites-article-header" },
                 react_1.default.createElement("h3", null, "Sites managed by user")),

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useStorage } from '../../hooks/useStorage';
-import { Button } from '../ui/common';
+import { Button, Message } from '../ui/common';
 import { useForm } from '../../hooks/useForm';
 import './Sites.scss';
 
@@ -14,6 +14,7 @@ interface AddSiteValues {
 
 export const Sites: React.FunctionComponent = () => {
   const [loading, setLoading] = useState<{ [key: string]: boolean }>({});
+  const [error, setError] = useState<string>();
 
   /**
    * Initial values for the add site form.
@@ -21,7 +22,9 @@ export const Sites: React.FunctionComponent = () => {
   const addSiteInitialValues = { url: '', apikey: '' };
   const [
     addSiteValues, events, reset
-  ] = useForm<AddSiteValues>(addSiteInitialValues);
+  ] = useForm<AddSiteValues>(addSiteInitialValues, {
+    onFocus: () => setError(undefined),
+  });
   const { state, dispatch, isInitialized } = useStorage();
 
   if (!isInitialized) return <p>Loading...</p>;
@@ -80,13 +83,18 @@ export const Sites: React.FunctionComponent = () => {
   const onAdd = (
     event: React.FormEvent<HTMLFormElement>
   ): void => {
-    setLoading({ ...loading, add: true });
     event.preventDefault();
     const { url, apikey } = addSiteValues;
     const match = url.match(/^.*:\/\/([^/]+)(\/.*|\/?$)/);
-    console.log(match);
     const matchedUrl = match === null ? url : match[1];
-    console.log(matchedUrl);
+    const hasSite = state.sites.list.reduce((hasUrl, { url: siteUrl }) => (
+      hasUrl || siteUrl === matchedUrl
+    ), false);
+    if (hasSite) {
+      setError(`Duplicate site: ${matchedUrl}`);
+      return
+    }
+    setLoading({ ...loading, add: true });
     dispatch({
       sites: {
         type: 'add',
@@ -141,6 +149,7 @@ export const Sites: React.FunctionComponent = () => {
             isLoading={loading.add || false}>
             Add Site
           </Button>
+          {error && <Message type="error">{error}</Message>}
         </form>
       </article>
 

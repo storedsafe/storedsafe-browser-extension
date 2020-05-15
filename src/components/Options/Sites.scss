@@ -37,7 +37,9 @@
       padding: $spacing;
     }
 
-    label {
+    label:not(:last-child),
+    .button:not(:last-child),
+    .message:not(:last-child) {
       margin-bottom: $spacing;
     }
 
