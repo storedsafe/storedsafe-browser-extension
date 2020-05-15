@@ -27907,7 +27907,7 @@ const PopupSearch = () => {
         browser.tabs.query({ currentWindow: true, active: true }).then((tabs) => {
             const tab = tabs[0];
             const { url } = tab;
-            const match = url.match(/^https?:\/\/([^/]+)\/.*/);
+            const match = url.match(/^https?:\/\/(?:w{3}\.)?([^/]+)\/.*/);
             setNeedle(match === null ? url : match[1]);
         });
     }, []);
@@ -27924,11 +27924,11 @@ const PopupSearch = () => {
                     Object.keys(searchPromises).forEach((url) => {
                         newResults[url] = { loading: true, results: [] };
                     });
-                    setResults(newResults);
+                    setResults(Object.assign({}, newResults));
                     Object.keys(searchPromises).forEach((url) => {
                         searchPromises[url].then((siteResults) => {
-                            const siteSearchResults = { loading: false, results: siteResults };
-                            setResults(Object.assign(Object.assign({}, results), { [url]: siteSearchResults }));
+                            newResults[url] = { loading: false, results: siteResults };
+                            setResults(Object.assign({}, newResults));
                         });
                     });
                 });
@@ -27937,7 +27937,7 @@ const PopupSearch = () => {
             const id = setTimeout(search, 1000);
             return () => clearTimeout(id);
         }
-    }, [needle, searching, results]);
+    }, [needle, searching]);
     // Decrypt helper function
     const decrypt = () => {
         const { url, id } = selected;

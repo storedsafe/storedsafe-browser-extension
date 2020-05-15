@@ -20,7 +20,7 @@ const PopupSearch: React.FunctionComponent = () => {
     browser.tabs.query({ currentWindow: true, active: true }).then((tabs) => {
       const tab = tabs[0];
       const { url } = tab;
-      const match = url.match(/^https?:\/\/([^/]+)\/.*/);
+      const match = url.match(/^https?:\/\/(?:w{3}\.)?([^/]+)\/.*/);
       setNeedle(match === null ? url : match[1]);
     });
   }, []);
@@ -38,11 +38,11 @@ const PopupSearch: React.FunctionComponent = () => {
           Object.keys(searchPromises).forEach((url) => {
             newResults[url] = { loading: true, results: [] };
           });
-          setResults(newResults);
+          setResults({ ...newResults });
           Object.keys(searchPromises).forEach((url) => {
             searchPromises[url].then((siteResults) => {
-              const siteSearchResults = { loading: false, results: siteResults };
-              setResults({ ...results, [url]: siteSearchResults });
+              newResults[url] = { loading: false, results: siteResults };
+              setResults({ ...newResults });
             });
           });
         });
@@ -52,7 +52,7 @@ const PopupSearch: React.FunctionComponent = () => {
       const id = setTimeout(search, 1000);
       return (): void => clearTimeout(id);
     }
-  }, [needle, searching, results]);
+  }, [needle, searching]);
 
   // Decrypt helper function
   const decrypt = (): Promise<{
