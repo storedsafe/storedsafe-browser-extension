@@ -2534,6 +2534,9 @@ const invalidateAllSessions = () => {
 /**
  * Event handler functions
  * */
+function onStartup() {
+    invalidateAllSessions();
+}
 function onStorageChange({ sessions }, area) {
     if (area === 'local' && sessions !== undefined && sessions.newValue !== undefined) {
         Settings.actions.fetch().then((settings) => {
@@ -2604,7 +2607,7 @@ function onMenuClick(info, tab) {
 // TODO: Remove debug pritnout
 console.log('Background script initialized: ', new Date(Date.now()));
 // Invalidate all sessions on launch
-invalidateAllSessions();
+browser.runtime.onStartup.addListener(onStartup);
 // Listen to changes in storage to know when sessions are updated
 browser.storage.onChanged.addListener(onStorageChange);
 // Open options page and set up context menus

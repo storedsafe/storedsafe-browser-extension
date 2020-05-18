@@ -30,10 +30,9 @@
       overflow: hidden;
     }
 
-    // TODO: Fix alternative or remove, not going to work if site list needs a scroll bar.
-    // &.selected {
-      // margin-left: $spacing;
-    // }
+    &.selected {
+      margin-left: $spacing;
+    }
 
     &:hover {
       background-color: $color-bg;

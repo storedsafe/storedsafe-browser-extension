@@ -7,6 +7,17 @@
     appearance: none;
     padding-right: $spacing * 2 + $arrow-width;
     width: 100%;
+    border: $border-width solid $color-border;
+    cursor: pointer;
+    transition: border-color $transition-duration;
+
+    &:hover {
+      border-color: $color-border-hover;
+    }
+
+    &:focus {
+      border-color: $color-border-focus;
+    }
   }
 
   .custom-select {

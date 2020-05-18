@@ -1,7 +1,7 @@
 @import '../../../variables';
 
 .search-results {
-  overflow: hidden scroll;
+  overflow: hidden auto;
   flex-grow: 1;
 
   .search-results-url {

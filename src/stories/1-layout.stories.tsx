@@ -5,7 +5,7 @@ export default {
   title: 'Layout',
   decorators: [
     (storyFn: () => React.ReactNode): React.ReactNode => (
-      <section className="card">
+      <section className="card" style={{ backgroundColor: '#f9f9f9' }}>
         <div style={{ padding: '1em' }}>
           {storyFn()}
         </div>

@@ -37,6 +37,10 @@ const invalidateAllSessions = (): void => {
 /**
  * Event handler functions
  * */
+function onStartup(): void {
+  invalidateAllSessions();
+}
+
 function onStorageChange(
   { sessions }: { sessions: browser.storage.StorageChange },
   area: 'local' | 'sync' | 'managed',
@@ -124,7 +128,7 @@ function onMenuClick(
 console.log('Background script initialized: ', new Date(Date.now()));
 
 // Invalidate all sessions on launch
-invalidateAllSessions();
+browser.runtime.onStartup.addListener(onStartup);
 
 // Listen to changes in storage to know when sessions are updated
 browser.storage.onChanged.addListener(onStorageChange);

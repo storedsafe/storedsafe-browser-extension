@@ -25467,7 +25467,7 @@ module.exports = exports;
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, ".site-list {\n  width: 100%;\n  height: 100%;\n  overflow: hidden auto;\n  display: flex;\n  flex-direction: column;\n  padding: 10px;\n  padding-top: 0;\n}\n.site-list .site-list-entry {\n  width: 100%;\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  justify-content: space-between;\n  padding: 10px;\n  background-color: #f9f9f9;\n  color: #526a78;\n  font-weight: bold;\n  cursor: pointer;\n  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);\n  fill: #526a78;\n  transition: margin-left 0.1s;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n}\n.site-list .site-list-entry .site-url {\n  flex-grow: 1;\n  overflow: hidden;\n}\n.site-list .site-list-entry:hover {\n  background-color: #fff;\n}\n.site-list .site-list-entry.online {\n  fill: #03a388;\n}\n.site-list .site-list-entry:not(:last-child) {\n  margin-bottom: 10px;\n}\n.site-list .site-list-entry .site-icons {\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  margin-left: 10px;\n}\n.site-list .site-list-entry .icon:not(:last-child) {\n  margin-right: 10px;\n}\n.site-list .site-list-entry .icon.icon-warning {\n  fill: #f59815;\n}\n.site-list .site-list-entry .icon.icon-error {\n  fill: #c5283e;\n}", ""]);
+exports.push([module.i, ".site-list {\n  width: 100%;\n  height: 100%;\n  overflow: hidden auto;\n  display: flex;\n  flex-direction: column;\n  padding: 10px;\n  padding-top: 0;\n}\n.site-list .site-list-entry {\n  width: 100%;\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  justify-content: space-between;\n  padding: 10px;\n  background-color: #f9f9f9;\n  color: #526a78;\n  font-weight: bold;\n  cursor: pointer;\n  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);\n  fill: #526a78;\n  transition: margin-left 0.1s;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n}\n.site-list .site-list-entry .site-url {\n  flex-grow: 1;\n  overflow: hidden;\n}\n.site-list .site-list-entry.selected {\n  margin-left: 10px;\n}\n.site-list .site-list-entry:hover {\n  background-color: #fff;\n}\n.site-list .site-list-entry.online {\n  fill: #03a388;\n}\n.site-list .site-list-entry:not(:last-child) {\n  margin-bottom: 10px;\n}\n.site-list .site-list-entry .site-icons {\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  margin-left: 10px;\n}\n.site-list .site-list-entry .icon:not(:last-child) {\n  margin-right: 10px;\n}\n.site-list .site-list-entry .icon.icon-warning {\n  fill: #f59815;\n}\n.site-list .site-list-entry .icon.icon-error {\n  fill: #c5283e;\n}", ""]);
 // Exports
 module.exports = exports;
 
@@ -25629,7 +25629,7 @@ module.exports = exports;
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, ".search-results {\n  overflow: hidden scroll;\n  flex-grow: 1;\n}\n.search-results .search-results-url {\n  text-align: center;\n  font-weight: bold;\n  color: #526a78;\n  padding: 10px;\n}\n.search-results .search-results-url .searching {\n  margin-left: 10px;\n  position: absolute;\n  width: 12pt;\n  height: 12pt;\n}\n.search-results .search-results-url .searching::after {\n  position: absolute;\n  content: \"\";\n  border-radius: 100%;\n  box-sizing: border-box;\n  left: 0;\n  top: 0;\n  height: 100%;\n  width: 100%;\n  border: 2pt solid #fff;\n  border-top-color: #03a388;\n  -webkit-animation: spin 1s infinite;\n          animation: spin 1s infinite;\n  transition: all 0.3s;\n}\n@-webkit-keyframes spin {\n  from {\n    transform: rotate(0deg);\n  }\n  to {\n    transform: rotate(360deg);\n  }\n}\n@keyframes spin {\n  from {\n    transform: rotate(0deg);\n  }\n  to {\n    transform: rotate(360deg);\n  }\n}\n.search-results .search-result {\n  background: no-repeat 10px center/30px 30px;\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  background-color: #fff;\n  padding: 10px;\n  padding-left: 50px;\n  cursor: pointer;\n}\n.search-results .search-result:not(:last-child) {\n  margin-bottom: 10px;\n}\n.search-results .search-result .search-result-text {\n  display: flex;\n  flex-direction: column;\n}\n.search-results .search-result.selected {\n  background-color: #2e424f;\n  color: #fff;\n}", ""]);
+exports.push([module.i, ".search-results {\n  overflow: hidden auto;\n  flex-grow: 1;\n}\n.search-results .search-results-url {\n  text-align: center;\n  font-weight: bold;\n  color: #526a78;\n  padding: 10px;\n}\n.search-results .search-results-url .searching {\n  margin-left: 10px;\n  position: absolute;\n  width: 12pt;\n  height: 12pt;\n}\n.search-results .search-results-url .searching::after {\n  position: absolute;\n  content: \"\";\n  border-radius: 100%;\n  box-sizing: border-box;\n  left: 0;\n  top: 0;\n  height: 100%;\n  width: 100%;\n  border: 2pt solid #fff;\n  border-top-color: #03a388;\n  -webkit-animation: spin 1s infinite;\n          animation: spin 1s infinite;\n  transition: all 0.3s;\n}\n@-webkit-keyframes spin {\n  from {\n    transform: rotate(0deg);\n  }\n  to {\n    transform: rotate(360deg);\n  }\n}\n@keyframes spin {\n  from {\n    transform: rotate(0deg);\n  }\n  to {\n    transform: rotate(360deg);\n  }\n}\n.search-results .search-result {\n  background: no-repeat 10px center/30px 30px;\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  background-color: #fff;\n  padding: 10px;\n  padding-left: 50px;\n  cursor: pointer;\n}\n.search-results .search-result:not(:last-child) {\n  margin-bottom: 10px;\n}\n.search-results .search-result .search-result-text {\n  display: flex;\n  flex-direction: column;\n}\n.search-results .search-result.selected {\n  background-color: #2e424f;\n  color: #fff;\n}", ""]);
 // Exports
 module.exports = exports;
 
@@ -25800,7 +25800,7 @@ module.exports = exports;
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, ".select .custom-select::after {\n  border: solid transparent;\n  border-top-color: #526a78;\n  border-width: 8px 5px;\n  box-sizing: border-box;\n  content: \"\";\n  height: 16px;\n  margin-top: -0.2em;\n  position: absolute;\n  right: 10px;\n  top: 50%;\n  transform-origin: 4px 2.5px;\n  width: 10px;\n  pointer-events: none;\n}\n\n.select .custom-select select {\n  -moz-appearance: none;\n  -webkit-appearance: none;\n  appearance: none;\n  padding-right: 28px;\n  width: 100%;\n}\n.select .custom-select {\n  position: relative;\n  width: 100%;\n}\n.select .custom-select::after {\n  transition: 0.1s;\n}", ""]);
+exports.push([module.i, ".select .custom-select::after {\n  border: solid transparent;\n  border-top-color: #526a78;\n  border-width: 8px 5px;\n  box-sizing: border-box;\n  content: \"\";\n  height: 16px;\n  margin-top: -0.2em;\n  position: absolute;\n  right: 10px;\n  top: 50%;\n  transform-origin: 4px 2.5px;\n  width: 10px;\n  pointer-events: none;\n}\n\n.select .custom-select select {\n  -moz-appearance: none;\n  -webkit-appearance: none;\n  appearance: none;\n  padding-right: 28px;\n  width: 100%;\n  border: 1px solid #d4d7d8;\n  cursor: pointer;\n  transition: border-color 0.1s;\n}\n.select .custom-select select:hover {\n  border-color: #c7cacc;\n}\n.select .custom-select select:focus {\n  border-color: #03a388;\n}\n.select .custom-select {\n  position: relative;\n  width: 100%;\n}\n.select .custom-select::after {\n  transition: 0.1s;\n}", ""]);
 // Exports
 module.exports = exports;
 
@@ -27920,15 +27920,15 @@ const PopupSearch = () => {
                 setSelected(undefined);
                 setSearching(needle);
                 StoredSafe_1.actions.find(needle).then((searchPromises) => {
-                    const newResults = {};
+                    const loadingResults = {};
                     Object.keys(searchPromises).forEach((url) => {
-                        newResults[url] = { loading: true, results: [] };
+                        loadingResults[url] = { loading: true, results: [] };
                     });
-                    setResults(Object.assign({}, newResults));
+                    setResults(loadingResults);
                     Object.keys(searchPromises).forEach((url) => {
                         searchPromises[url].then((siteResults) => {
-                            newResults[url] = { loading: false, results: siteResults };
-                            setResults(Object.assign({}, newResults));
+                            const newSiteResults = { loading: false, results: siteResults };
+                            setResults((prevResults) => (Object.assign(Object.assign({}, prevResults), { [url]: newSiteResults })));
                         });
                     });
                 });

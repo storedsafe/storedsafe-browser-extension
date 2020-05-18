@@ -34,15 +34,18 @@ const PopupSearch: React.FunctionComponent = () => {
         setSelected(undefined);
         setSearching(needle);
         actions.find(needle).then((searchPromises) => {
-          const newResults: SearchResults = {};
+          const loadingResults: SearchResults = {};
           Object.keys(searchPromises).forEach((url) => {
-            newResults[url] = { loading: true, results: [] };
+            loadingResults[url] = { loading: true, results: [] };
           });
-          setResults({ ...newResults });
+          setResults(loadingResults);
           Object.keys(searchPromises).forEach((url) => {
             searchPromises[url].then((siteResults) => {
-              newResults[url] = { loading: false, results: siteResults };
-              setResults({ ...newResults });
+              const newSiteResults = { loading: false, results: siteResults };
+              setResults((prevResults) => ({
+                ...prevResults,
+                [url]: newSiteResults
+              }));
             });
           });
         });
