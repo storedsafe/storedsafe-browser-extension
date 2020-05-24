@@ -1,10 +1,6 @@
 @import '../../../variables';
 
 .object-view {
-  background-color: $color-bg-alt;
-  color: $color-fg;
-  padding: $spacing;
-  padding-top: $spacing + 14pt;
   height: 100%;
 
   .object-view-title {

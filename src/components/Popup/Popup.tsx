@@ -1,93 +1,57 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import { actions as storedsafe } from '../../model/StoredSafe';
+import {SearchResults } from '../../model/Search';
 import * as PopupUI from '../ui/Popup';
 import { useStorage } from '../../hooks/useStorage';
-import { LoadingComponent } from '../ui/common';
-import Search from './PopupSearch';
-import Sessions from './PopupSessions';
-import svg from '../../ico/svg';
-
-enum MenuItem {
-  Search = 0,
-  Sessions = 1,
-  Settings = 2,
-}
-
-const menuItems = [
-  {
-    title: 'Search',
-    icon: svg.search,
-  },
-  {
-    title: 'Sessions',
-    icon: svg.vault,
-  },
-  {
-    title: 'Settings',
-    icon: svg.settings,
-  },
-];
-
 
 export const Popup: React.FunctionComponent = () => {
-  const { state, isInitialized } = useStorage();
-  const [menuItem, setMenuItem] = useState<number>();
+  const { state, dispatch, isInitialized } = useStorage();
+  const [searchTimeout, setSearchTimeout] = useState<number>();
+  const [results, setResults] = useState<SearchResults>({});
 
-  /**
-   * Event handlers
-   * */
+  const openOptions = browser.runtime.openOptionsPage;
 
-  // Initialize to sessions if no sessions are active
-  useEffect(() => {
-    if (menuItem === undefined && isInitialized) {
-      if (Object.keys(state.sessions).length > 0) {
-        setMenuItem(MenuItem.Search);
-      } else {
-        setMenuItem(MenuItem.Sessions);
-      }
-    }
-  }, [state, isInitialized, menuItem]);
-
-  const onMenuSelect = (id: number): void => {
-    if (id === MenuItem.Settings) {
-      browser.runtime.openOptionsPage();
-    } else {
-      setMenuItem(id);
-    }
+  const onSearch = (needle: string): void => {
+    if (searchTimeout) setSearchTimeout(undefined);
+    Object.keys(state.sessions).forEach((url) => {
+      dispatch({
+        search: {
+          type: 'find',
+          needle,
+          url,
+          session: state.sessions[url],
+        },
+      });
+    });
   };
 
-  /**
-   * Components
-   * */
-  const menu = <PopupUI.Menu
-    items={menuItems}
-    selected={menuItem}
-    onSelect={onMenuSelect}
-  />;
+  const onNeedleChange = (needle: string): void => {
+    if (searchTimeout) {
+      clearTimeout(searchTimeout);
+    }
+    setSearchTimeout(window.setTimeout((): void => onSearch(needle), 1500));
+  };
 
-  const status = <PopupUI.StatusBar
-    activeSessions={Object.keys(state.sessions).length}
-  />;
-
-  let content: React.ReactNode;
-  switch(menuItem) {
-    case MenuItem.Search: {
-      content = <Search />;
-      break;
-    }
-    case MenuItem.Sessions: {
-      content = <Sessions />;
-      break;
-    }
-    default: {
-      content = <LoadingComponent />;
-    }
-  }
+  const decrypt = (url: string, objectId: string, field: string): void => {
+    dispatch({
+      search: {
+        type: 'decrypt',
+        url,
+        id: objectId,
+        session: state.sessions[url],
+      },
+    });
+  };
 
   return (
     <PopupUI.Main
-      menu={menu}
-      content={content}
-      status={status}
+      isLoading={isInitialized}
+      search={{
+        onSearch,
+        onNeedleChange,
+        results: state.search,
+      }}
+      openOptions={openOptions}
     />
   );
 };

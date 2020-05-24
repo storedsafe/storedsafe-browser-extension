@@ -2263,36 +2263,28 @@ Object.defineProperty(exports, "__esModule", { value: true });
  * Get search results from local storage.
  * @return {SearchResults} Promise containing SearchResults object.
  * */
-const get = () => (browser.storage.local.get('search')
-    .then(({ search }) => {
-    return search || {};
-}));
+function get() {
+    return browser.storage.local.get('search').then(({ search }) => {
+        return search || {};
+    });
+}
 /**
  * Commit SearchResults object to local storage.
  * @param search New SearchResults object.
  * */
-const set = (search) => {
-    return browser.storage.local.set({ search });
-};
+function set(search) {
+    return browser.storage.local.set({
+        search
+    });
+}
 exports.actions = {
-    /**
-     * Load search results for site.
-     * */
-    setLoading: (url) => {
-        return get().then((searchResults) => {
-            const newSearchResults = Object.assign(Object.assign({}, searchResults), { [url]: { loading: true, results: [] } });
-            return set(newSearchResults).then(() => get());
-        });
-    },
     /**
      * Set search results for site.
      * */
-    setResults: (url, results) => {
-        return get().then((searchResults) => {
-            const newSearchResults = Object.assign(Object.assign({}, searchResults), { [url]: { loading: false, results } });
-            return set(newSearchResults).then(() => get());
-        });
-    },
+    setResults: (url, results) => (get().then((searchResults) => {
+        const newSearchResults = Object.assign(Object.assign({}, searchResults), { [url]: results });
+        return set(newSearchResults).then(get);
+    })),
     /**
      * Clear search results from storage.
      * */

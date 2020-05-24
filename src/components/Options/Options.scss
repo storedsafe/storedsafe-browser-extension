@@ -1,6 +1,20 @@
 @import '../../variables';
 
 .options {
+  .card {
+    > *:first-child {
+      padding-top: $border-radius;
+      border-top-left-radius: $border-radius;
+      border-top-right-radius: $border-radius;
+    }
+
+    > *:last-child {
+      padding-bottom: $border-radius;
+      border-bottom-left-radius: $border-radius;
+      border-bottom-right-radius: $border-radius;
+    }
+  }
+
   .options-content {
     max-width: 800px;
     margin: auto;
@@ -9,11 +23,22 @@
   }
 
   .options-article {
+    &:not(:last-child) {
+      margin-bottom: $spacing;
+    }
+
     .options-article-header,
     .options-article-footer {
+      background-color: $color-bg;
       padding: $spacing * 2;
       border-bottom: 1px solid $color-border;
     }
+  }
+
+  .banner {
+    height: 64px;
+    padding: $spacing * 2;
+    text-align: center;
   }
 }
 
@@ -21,6 +46,10 @@
   .options {
     .options-content {
       padding: $spacing * 4;
+    }
+
+    .banner {
+      padding: $spacing * 2;
     }
   }
 }

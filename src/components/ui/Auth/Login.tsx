@@ -50,45 +50,49 @@ export const Login: React.FunctionComponent<LoginProps> = ({
 
   return (
     <section className="login">
-      <h2>{url}</h2>
-      <form className="form" onSubmit={handleSubmit}>
-        <label htmlFor="loginType">
-          <span>Login Type</span>
-          <Select
-            id="loginType"
-            name="loginType"
-            value={values.loginType}
-            {...events}>
-            <option value="yubikey">YubiKey</option>
-            <option value="totp">TOTP</option>
-          </Select>
-        </label>
-        <label htmlFor="username">
-          <span>Username</span>
-          <input
-            type="text"
-            id="username"
-            name="username"
-            value={values.username}
-            required
-            {...events}
-          />
-        </label>
-        {values.loginType === 'yubikey' && YubiKey.renderFields([values, events, reset])}
-        {values.loginType === 'totp' && TOTP.renderFields([values, events, reset])}
-        <label htmlFor="remember" className="label-checkbox">
-          <span>Remember Username</span>
-          <Checkbox
-            id="remember"
-            name="remember"
-            checked={values.remember}
-            {...events} />
-        </label>
-        <Button type="submit" color="accent" isLoading={loading}>Login</Button>
-        {error && (
-          <Message type="error">{error}</Message>
-        )}
-      </form>
+      <article className="login-form">
+        <h2>{url}</h2>
+        <form className="form" onSubmit={handleSubmit}>
+          <label htmlFor="loginType">
+            <span>Login Type</span>
+            <Select
+              id="loginType"
+              name="loginType"
+              value={values.loginType}
+              {...events}>
+              <option value="yubikey">YubiKey</option>
+              <option value="totp">TOTP</option>
+            </Select>
+          </label>
+          <label htmlFor="username">
+            <span>Username</span>
+            <input
+              type="text"
+              id="username"
+              name="username"
+              value={values.username}
+              required
+              {...events}
+            />
+          </label>
+          {values.loginType === 'yubikey' && YubiKey.renderFields([values, events, reset])}
+          {values.loginType === 'totp' && TOTP.renderFields([values, events, reset])}
+          <label htmlFor="remember" className="label-checkbox">
+            <span>Remember Username</span>
+            <Checkbox
+              id="remember"
+              name="remember"
+              checked={values.remember}
+              {...events} />
+          </label>
+          <Button type="submit" color="accent" isLoading={loading}>Login</Button>
+        </form>
+      </article>
+      {error && (
+        <Message type="error">
+          {error}
+        </Message>
+      )}
     </section>
   );
 };

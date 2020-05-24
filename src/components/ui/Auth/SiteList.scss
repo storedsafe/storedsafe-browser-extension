@@ -3,11 +3,10 @@
 .site-list {
   width: 100%;
   height: 100%;
-  overflow: hidden auto;
+  overflow: visible auto;
   display: flex;
   flex-direction: column;
-  padding: $spacing;
-  padding-top: 0;
+  padding-right: $spacing;
 
   .site-list-entry {
     width: 100%;

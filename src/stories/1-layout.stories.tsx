@@ -1,4 +1,6 @@
 import React, { Fragment, useState } from 'react';
+import { action } from '@storybook/addon-actions';
+import svg from '../ico/svg';
 import * as UI from '../components/ui/common';
 
 export default {
@@ -96,5 +98,23 @@ export const OnlineIndicator: React.FunctionComponent = () => {
 export const LoadingComponent: React.FunctionComponent = () => (
   <div style={{ height: '200px', width: '100%' }}>
     <UI.LoadingComponent />
+  </div>
+);
+
+export const MenuButton: React.FunctionComponent = () => (
+  <div style={{ backgroundColor: '#526a78', padding: '10px', display: 'grid', gridTemplateColumns: '1fr auto' }}>
+    <div />
+    <div>
+      <UI.MenuButton
+        title="Item 1"
+        icon={svg.vault}
+        onClick={action('item-1-click')}
+      />
+      <UI.MenuButton
+        title="General Settings"
+        icon={svg.settings}
+        onClick={action('item-1-click')}
+      />
+    </div>
   </div>
 );

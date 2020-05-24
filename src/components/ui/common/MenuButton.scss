@@ -1,0 +1,88 @@
+@import '../../../variables';
+
+.menu-button {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: fit-content;
+
+  .menu-button-title {
+    position: absolute;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    right: 0;
+    background: $color-bg;
+    color: $color-fg;
+    margin-right: $menu-size + $spacing;
+    height: $menu-size;
+    width: max-content;
+    border-radius: $border-radius;
+    padding: $spacing;
+    opacity: 0.8;
+    visibility: hidden;
+    transition-duration: 0s, $transition-duration, $transition-duration, $transition-duration;
+    transition-delay: $transition-duration, 0s, 0s, 0s;
+    transition-property: visibility, opacity, border-radius, margin-right;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+  }
+
+  .menu-button-icon:hover + .menu-button-title {
+    transition-delay: 0s;
+    visibility: visible;
+    margin-right: $menu-size;
+    opacity: 1;
+    border-radius: $border-radius 0 0 $border-radius;
+  }
+
+  .menu-button-icon:focus + .menu-button-title {
+    border: $border-width solid $color-accent-0;
+    border-right-width: 0;
+  }
+
+  .menu-button-icon {
+    border: 0;
+    outline: 0;
+    border: $border-width solid $color-bg-alt;
+    background-color: $color-bg-alt;
+    cursor: pointer;
+    height: $menu-size;
+    width: $menu-size;
+    border-radius: $border-radius;
+    padding: $spacing;
+    transition: $transition-duration;
+    transition-property: background-color, border-radius, border-color;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+
+    &:hover {
+      background-color: $color-bg;
+      border-radius: 0 $border-radius $border-radius 0;
+    }
+
+    &.selected:not(:hover) {
+      border-radius: 0 $border-radius $border-radius $border-radius;
+    }
+
+    > svg {
+      height: 100%;
+      width: 100%;
+      transition: fill $transition-duration;
+      fill: $color-primary-0;
+    }
+
+    &:focus {
+      border-color: $color-accent-0;
+    }
+
+    &:focus:hover {
+      border-left-color: transparent;
+    }
+
+    &:hover > svg,
+    &:focus > svg,
+    &.selected > svg {
+      fill: $color-accent-0;
+    }
+  }
+}

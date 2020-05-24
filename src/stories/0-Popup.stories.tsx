@@ -1,194 +1,272 @@
 import React, { useState } from 'react';
-import { StoredSafeResponse  } from 'storedsafe';
-import { Site } from '../model/Sites';
-import { Sessions } from '../model/Sessions';
-import { SitePrefs } from '../model/SitePrefs';
-import { SearchResults } from '../model/Search';
-import data from './ssVault.json';
 import { action } from '@storybook/addon-actions';
-import svg from '../ico/svg';
+import { StoredSafeResponse  } from 'storedsafe';
+import { Sessions } from '../model/Sessions';
+import { Site } from '../model/Sites';
+import { SearchResults, SiteSearchResults, SearchResultFields } from '../model/Search';
+import data from './ssVault.json';
 import * as Popup from '../components/ui/Popup';
-import * as Search from '../components/ui/Search';
-import * as Auth from '../components/ui/Auth';
 
 const ssResponse: StoredSafeResponse = data;
+const results: SiteSearchResults = {};
+Object.keys(ssResponse.OBJECT).forEach((id) => {
+  const ssObject = ssResponse.OBJECT[id];
+  const ssTemplate = ssResponse.TEMPLATESINFO[ssObject.templateid];
+  const isFile = ssObject.templateid === '3';
+  const name = isFile ? ssObject.filename : ssObject.objectname;
+  const { name: type, ico: icon } = ssTemplate.INFO;
+  const fields: SearchResultFields = {};
+  Object.keys(ssTemplate.STRUCTURE).forEach((field) => {
+    const isDecrypted = (
+      ssObject.crypted !== undefined
+      && ssObject.crypted[field] !== undefined
+    );
+    const {
+      translation: title,
+      encrypted: isEncrypted,
+      policy: isPassword,
+    } = ssTemplate.STRUCTURE[field];
+    const value = (
+      isEncrypted
+        ? (isDecrypted ? ssObject.crypted[field] : undefined)
+        : ssObject.public[field]
+    );
+    fields[field] = { title, value, isEncrypted, isDecrypted, isPassword };
+  });
+  results[id] = { name, type, icon, fields };
+});
 
 export default {
   title: 'Popup',
   component: Popup,
 }
 
-const menuItems = [
-  {
-    title: 'Search',
-    icon: svg.search,
-  },
-  {
-    title: 'Sessions',
-    icon: svg.vault,
-  },
-  {
-    title: 'Settings',
-    icon: svg.settings,
-  },
-];
-
-export const PopupSearch: React.FunctionComponent = () => {
-  const [needle, setNeedle] = useState<string>('');
-  const [selected, setSelected] = useState<{ url: string; id: number }>();
-
-  const siteResults = React.useMemo(() => Object.keys(ssResponse.OBJECT).map((id) => ({
-    ssObject: ssResponse.OBJECT[id],
-    ssTemplate: ssResponse.TEMPLATESINFO[ssResponse.OBJECT[id].templateid],
-  })).filter(({ ssObject }) => new RegExp(needle).test(ssObject.objectname) && ssObject.objectname !== '')
-  , [needle])
-
-  const results: SearchResults = {
-    'loading.example.com': { loading: true, results: [] },
-    'safe.example.com': { loading: false, results: siteResults },
-  };
-
-  const menu = <Popup.Menu items={menuItems} selected={0} onSelect={action('popup-menu')} />
-  const left = (<Search.Search
-    needle={needle}
-    onChange={(newNeedle): void => { setSelected(undefined); setNeedle(newNeedle) }}
-    onSearch={action('search')}
-    results={results}
-    onSelect={setSelected}
-    selected={selected}
-  />
-  );
-
-  const onCopy = (field: string): void => {
-    const result = results[selected.url].results[selected.id];
-    const value = result.ssTemplate.STRUCTURE[field].encrypted ? (
-      result.ssObject.crypted && result.ssObject.crypted[field]
-    ) : result.ssObject.public[field];
-    navigator.clipboard.writeText(value).then(() => {
-      setTimeout(() => {
-        navigator.clipboard.writeText('').then(() => action('clipboard-clear')(value));
-      }, 2000);
-    });
-    action('copy')(value);
-  };
-  const right = <Search.ObjectView onFill={action('fill')} onCopy={onCopy} onDecrypt={action('decrypt')} selected={selected} results={results}  />;
-  const status = <Popup.StatusBar activeSessions={1} />;
-  const content = <Popup.Content left={left} right={right} />
-
-  return (
-    <Popup.Main content={content} menu={menu} status={status} />
-  );
-};
-
-export const PopupSessions: React.FunctionComponent = () => {
-  const [selected, setSelected] = useState<number>();
-
-  const siteStatus: {
-    [url: string]: {
-      errors: string[];
-      warnings: string[];
-    };
-  } = {
-    'errors.longurlnameevenlonger.com': {
-      warnings: ['Weak passwords detected', 'StoredSafe update available'],
-      errors: ['Invalid configuration'],
-    },
-    'safe.example.com': {
-      warnings: [],
-      errors: ['Invalid configuration'],
-    },
-    'clean.example.com': {
-      warnings: [],
-      errors: [],
-    },
-    'totp.example.com': {
-      warnings: [],
-      errors: [],
-    },
-  };
-
-  const [sessions, setSessions] = useState<Sessions>({
-    'safe.example.com': {
-      apikey: 'abc123',
-      token: '12345',
-      createdAt: Date.now(),
-      ...siteStatus['safe.example.com'],
-    },
-    'errors.longurlnameevenlonger.com': {
-      apikey: 'xyz987',
-      token: '987654',
-      createdAt: Date.now(),
-      ...siteStatus['errors.longurlnameevenlonger.com'],
-    },
-    'clean.example.com': {
-      apikey: 'clean',
-      token: 'clean',
-      createdAt: Date.now(),
-      ...siteStatus['clean.example.com'],
-    }
-  });
-
+export const PopupOffline: React.FunctionComponent = () => {
+  const sessions: Sessions = {};
   const sites: Site[] = [
-    { url: 'safe.example.com', apikey: 'abc123' },
-    { url: 'errors.longurlnameevenlonger.com', apikey: 'xyz987' },
-    { url: 'clean.example.com', apikey: 'q1w2e3' },
-    { url: 'totp.example.com', apikey: 'q1w2e3' },
+    {
+      url: 'foo.example.com',
+      apikey: 'abc123',
+    }
   ];
 
-  const sitePrefs: SitePrefs = {
-    'totp.example.com': {
-      username: 'oscar',
-      loginType: 'totp',
-    }
-  };
-
-  const removeSession = (id: number): void => {
-    const newSessions: Sessions = {};
-    Object.keys(sessions).forEach((url) => {
-      if (url !== sites[id].url) {
-        newSessions[url] = sessions[url];
-      }
-    });
-    setSessions(newSessions);
-    action('logout')(sites[id].url);
-  };
-
-  const addSession = (id: number): void => {
-    setSessions({
-      ...sessions,
-      [sites[id].url]: {
-        apikey: sites[id].apikey,
-        token: Array.from({ length: 10 }).map(() => (
-          Math.floor(Math.random() * 9)
-        )).join(''),
-        createdAt: Date.now(),
-        ...siteStatus[sites[id].url],
-      }
-    });
-    action('login')(sites[id].url);
-  };
-
-  const onSelect = (id: number): void => setSelected(id === selected ? undefined : id);
-
-  const url = sites[selected] && sites[selected].url;
-
-  const menu = <Popup.Menu items={menuItems} selected={1} onSelect={action('popup-menu')} />;
-  const left = <Auth.SiteList sites={sites} sessions={sessions} selected={selected} onSelect={onSelect} />;
-  const right = url === undefined ? null : sessions[url] !== undefined ? (
-    <Auth.SiteStatus url={url} session={sessions[url]} onLogout={(): void => removeSession(selected)} />
-  ) : (
-    <Auth.Login key={url} url={url} sitePrefs={sitePrefs[url]} onLogin={(): void => addSession(selected)} />
-  );
-  const status = <Popup.StatusBar activeSessions={Object.keys(sessions).length} />;
-  const content = <Popup.Content left={left} right={right} />
-
   return (
-    <Popup.Main content={content} menu={menu} status={status} />
+    <Popup.Main
+      isLoading={false}
+      search={{
+        onNeedleChange: action('needle change'),
+        onSearch: action('search'),
+        results: {},
+        onDecrypt: action('decrypt'),
+        onCopy: action('copy'),
+        onFill: action('fill'),
+      }}
+      auth={{
+        sites,
+        sessions,
+        sitePrefs: {},
+        onLogin: action('login'),
+        onLogout: action('login'),
+        loginStatus: {},
+      }}
+      openOptions={action('options')}
+    />
   );
 };
 
-export const PopupEmpty: React.FunctionComponent = () => {
+export const PopupOnline: React.FunctionComponent = () => {
+  const [searchResults, setSearchResults] = useState<SearchResults>({
+    'foo.example.com': results
+  });
+  const [needle, setNeedle] = useState<string>('');
+
+  const sessions: Sessions = {
+    'foo.example.com': {
+      apikey: 'abc123',
+      token: 'abcdefgh12345678',
+      createdAt: Date.now() - Math.random() * 60000,
+      errors: [],
+      warnings: [],
+    },
+  };
+
+  const sites: Site[] = [
+    {
+      url: 'foo.example.com',
+      apikey: 'abc123',
+    },
+    {
+      url: 'bar.example.com',
+      apikey: 'xyz987',
+    }
+  ];
+
+  const onDecrypt = (url: string, id: string, field: string): void => {
+    setSearchResults((prevSearchResults) => {
+      const newSearchResults = { ...prevSearchResults };
+      // Mimic API behavior of decrypting the entire object,
+      // but only set isDecrypted on requested field.
+      Object.keys(newSearchResults[url][id].fields).forEach((resultField) => {
+        if (newSearchResults[url][id].fields[resultField].isEncrypted) {
+          newSearchResults[url][id].fields[resultField].value = 'd3<ryPTed';
+        }
+      });
+      newSearchResults[url][id].fields[field].isDecrypted = true;
+      return newSearchResults;
+    });
+    action('decrypt')(url, id, field);
+  };
+
+  const filteredResults = needle === '' ? searchResults : {};
+  if (needle !== '') {
+    Object.keys(searchResults).forEach((url) => {
+      filteredResults[url] = {};
+      Object.keys(searchResults[url]).forEach((id) => {
+        if (new RegExp(needle).test(searchResults[url][id].name)) {
+          filteredResults[url][id] = searchResults[url][id];
+        }
+      });
+    });
+  }
+
   return (
-    <Popup.Main content="content" menu="menu" status="status" />
+    <Popup.Main
+      isLoading={false}
+      search={{
+        onNeedleChange: (needle): void => { setNeedle(needle); action('needle change')(needle) },
+        onSearch: action('search'),
+        results: filteredResults,
+        onDecrypt: onDecrypt,
+        onCopy: action('copy'),
+        onFill: action('fill'),
+      }}
+      auth={{
+        sites,
+        sessions,
+        sitePrefs: {},
+        onLogin: action('login'),
+        onLogout: action('login'),
+        loginStatus: {},
+      }}
+      openOptions={action('options')}
+    />
+  );
+};
+
+export const PopupMultiple: React.FunctionComponent = () => {
+  const [searchResults, setSearchResults] = useState<SearchResults>({
+    'foo.example.com': { '1460': results['1460'] },
+    'bar.example.com': { '1456': results['1456'] },
+  });
+
+  const sessions: Sessions = {
+    'foo.example.com': {
+      apikey: 'abc123',
+      token: 'abcdefgh12345678',
+      createdAt: Date.now() - Math.random() * 3600000,
+      errors: [],
+      warnings: [],
+    },
+    'bar.example.com': {
+      apikey: 'xyz987',
+      token: 'abcdefgh12345678',
+      createdAt: Date.now() - Math.random() * 3600000,
+      errors: ['Maximum number of users exceeded.'],
+      warnings: ['Weak password detected'],
+    },
+    'error.example.com': {
+      apikey: 'xyz987',
+      token: 'abcdefgh12345678',
+      createdAt: Date.now() - Math.random() * 3600000,
+      errors: ['Maximum number of users exceeded.'],
+      warnings: [],
+    },
+    'warning.example.com': {
+      apikey: 'xyz987',
+      token: 'abcdefgh12345678',
+      createdAt: Date.now() - Math.random() * 3600000,
+      errors: [],
+      warnings: ['Weak password detected'],
+    },
+  };
+
+  const sites: Site[] = [
+    {
+      url: 'foo.example.com',
+      apikey: 'abc123',
+    },
+    {
+      url: 'bar.example.com',
+      apikey: 'xyz987',
+    },
+    {
+      url: 'error.example.com',
+      apikey: 'xyz987',
+    },
+    {
+      url: 'warning.example.com',
+      apikey: 'xyz987',
+    },
+    {
+      url: 'offline.example.com',
+      apikey: 'xyz987',
+    },
+    {
+      url: 'extra.example.com',
+      apikey: 'xyz987',
+    },
+  ];
+
+  const sitePrefs = {
+    'offline.example.com': {
+      loginType: 'totp' as 'totp',
+      username: 'myusername',
+    },
+  };
+
+  const onDecrypt = (url: string, id: string, field: string): void => {
+    setSearchResults((prevSearchResults) => {
+      const newSearchResults = { ...prevSearchResults };
+      // Mimic API behavior of decrypting the entire object,
+      // but only set isDecrypted on requested field.
+      Object.keys(newSearchResults[url][id].fields).forEach((resultField) => {
+        if (newSearchResults[url][id].fields[resultField].isEncrypted) {
+          newSearchResults[url][id].fields[resultField].value = 'd3<ryPTed';
+        }
+      });
+      newSearchResults[url][id].fields[field].isDecrypted = true;
+      return newSearchResults;
+    });
+    action('decrypt')(url, id, field);
+  };
+
+  const loginStatus = {
+    'offline.example.com': {
+      error: 'Invalid username, passphrase or apikey.',
+      loading: true,
+    },
+  };
+
+  return (
+    <Popup.Main
+      isLoading={false}
+      search={{
+        onNeedleChange: action('needle change'),
+        onSearch: action('search'),
+        results: searchResults,
+        onDecrypt: onDecrypt,
+        onCopy: action('copy'),
+        onFill: action('fill'),
+      }}
+      auth={{
+        sites,
+        sessions,
+        sitePrefs,
+        onLogin: action('login'),
+        onLogout: action('login'),
+        loginStatus,
+      }}
+      openOptions={action('options')}
+    />
   );
 };

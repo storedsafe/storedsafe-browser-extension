@@ -1,0 +1,19 @@
+@import '../../../variables';
+
+.popup-search {
+  background-color: $color-bg-alt;
+  color: $color-fg;
+  border-radius: $border-radius;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+
+  &.popup-search-empty {
+    display: grid;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+
+    p {
+      text-align: center;
+    }
+  }
+}

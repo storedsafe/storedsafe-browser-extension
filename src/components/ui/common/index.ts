@@ -6,3 +6,4 @@ export { Message } from './Message';
 export { OnlineIndicator } from './OnlineIndicator';
 export { Select } from './Select';
 export { LoadingComponent } from './LoadingComponent';
+export { MenuButton } from './MenuButton';

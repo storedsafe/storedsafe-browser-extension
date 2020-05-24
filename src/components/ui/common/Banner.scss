@@ -2,6 +2,6 @@
 
 .banner {
   background-color: $color-bg-banner;
-  padding: $spacing * 2;
-  width: 100%;
+  padding: $spacing * 1.5;
+  min-width: max-content;
 }

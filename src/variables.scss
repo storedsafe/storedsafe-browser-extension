@@ -56,9 +56,11 @@ $font-main: 'Roboto', sans-serif;
 $font-alt: 'Montserrat', sans-serif;
 
 $spacing: 10px;
-$border-radius: 0.8em;
+$border-radius: $spacing;
 $border-width: 1px;
 $transition-duration: 0.1s;
+
+$menu-size: 44px;
 
 $arrow-width: 8px;
 $arrow-height: $arrow-width * 0.625;
@@ -79,21 +81,8 @@ $arrow-height: $arrow-width * 0.625;
 }
 
 %card {
-  background-color: $color-bg;
+  background-color: $color-bg-alt;
   color: $color-fg;
   border-radius: $border-radius;
   box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.1);
-  margin: $spacing;
-
-  > *:first-child {
-    padding-top: $border-radius;
-    border-top-left-radius: $border-radius;
-    border-top-right-radius: $border-radius;
-  }
-
-  > *:last-child {
-    padding-bottom: $border-radius;
-    border-bottom-left-radius: $border-radius;
-    border-bottom-right-radius: $border-radius;
-  }
 }

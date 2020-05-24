@@ -3,10 +3,12 @@ import { Session } from '../../../model/Sessions';
 import { Button, Message } from '../common';
 import './SiteStatus.scss';
 
+export type OnLogoutCallback = (url: string) => void;
+
 interface SiteStatusProps {
   url: string;
   session: Session;
-  onLogout: () => void;
+  onLogout: OnLogoutCallback;
 }
 
 export const SiteStatus: React.FunctionComponent<SiteStatusProps> = ({
@@ -42,11 +44,16 @@ export const SiteStatus: React.FunctionComponent<SiteStatusProps> = ({
           <h3>Session status</h3>
           <p className="site-status-active">Online since {dateStamp} ({minutesActive} minutes).</p>
         </article>
-        {session.warnings.length > 0 && (warningMessages)}
         {session.errors.length > 0 && (errorMessages)}
+        {session.warnings.length > 0 && (warningMessages)}
       </section>
       <section className="site-status-logout">
-        <Button type="submit" color="danger" onClick={onLogout}>Logout</Button>
+        <Button
+          type="submit"
+          color="danger"
+          onClick={(): void => onLogout(url)}>
+          Logout
+        </Button>
       </section>
     </section>
   );

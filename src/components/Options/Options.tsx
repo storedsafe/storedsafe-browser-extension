@@ -11,7 +11,7 @@ export const Options: React.FunctionComponent = () => {
         <Banner />
       </header>
       <section className="options-content">
-        <h1>Properties</h1>
+        <h1>Options</h1>
         <article className="options-article card">
           <header className="options-article-header">
             <h2>General</h2>

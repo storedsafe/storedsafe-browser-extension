@@ -1,65 +1,83 @@
-import { StoredSafeObject, StoredSafeTemplate } from 'storedsafe';
-
-export interface SearchResult {
-  ssObject: StoredSafeObject;
-  ssTemplate: StoredSafeTemplate;
+/**
+ * Information about a field in a search result.
+ * */
+export interface SearchResultField {
+  title: string;
+  value?: string;
+  isEncrypted: boolean;
+  isDecrypted: boolean;
+  isPassword: boolean;
 }
 
 /**
- * Search results object.
+ * Information about each field in a search result.
+ * */
+export interface SearchResultFields {
+  [field: string]: SearchResultField;
+}
+
+/**
+ * Individual search result.
+ * */
+export interface SearchResult {
+  name: string;
+  type: string;
+  icon: string;
+  fields: SearchResultFields;
+}
+
+/**
+ * Search results retrieved from site.
+ * */
+export interface SiteSearchResults {
+  [objectId: string]: SearchResult;
+}
+
+/**
+ * All search results across all searched sites.
  * */
 export interface SearchResults {
-  [url: string]: {
-    loading: boolean;
-    results: SearchResult[];
-  };
+  [url: string]: SiteSearchResults;
 }
 
 /**
  * Get search results from local storage.
  * @return {SearchResults} Promise containing SearchResults object.
  * */
-const get = (): Promise<SearchResults> => (
-  browser.storage.local.get('search')
-  .then(({ search }) => {
+function get (): Promise<SearchResults> {
+  return browser.storage.local.get('search').then(({
+    search
+  }) => {
     return search || {};
   })
-)
+}
 
 /**
  * Commit SearchResults object to local storage.
  * @param search New SearchResults object.
  * */
-const set = (search: SearchResults): Promise<void> => {
-  return browser.storage.local.set({ search });
+function set (search: SearchResults): Promise<void> {
+  return browser.storage.local.set({
+    search
+  });
 }
 
 export const actions = {
   /**
-   * Load search results for site.
-   * */
-  setLoading: (url: string): Promise<SearchResults> => {
-    return get().then((searchResults) => {
-      const newSearchResults = {
-        ...searchResults,
-        [url]: { loading: true, results: [] as SearchResult[] },
-      };
-      return set(newSearchResults).then(() => get());
-    })
-  },
-
-  /**
    * Set search results for site.
    * */
-  setResults: (url: string, results: SearchResult[]): Promise<SearchResults> => {
-    return get().then((searchResults) => {
+  setResults: (
+    url: string,
+    results: SiteSearchResults
+  ): Promise<SearchResults> => (
+    get().then((searchResults) => {
       const newSearchResults = {
         ...searchResults,
-        [url]: { loading: false, results },
+        [url]: results,
       };
-      return set(newSearchResults).then(() => get());
+      return set(newSearchResults).then(get);
     })
-  },
+  ),
 
   /**
    * Clear search results from storage.

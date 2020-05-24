@@ -13,20 +13,21 @@ fieldset {
   padding: $spacing;
   transition-duration: $transition-duration;
   transition-property: background-color, color, border-color;
-  font-size: 1em;
+  font-size: 1rem;
 
   &::placeholder {
-    font-size: 1em;
+    font-size: 1rem;
   }
 
   &:disabled {
-    cursor: arrow;
+    cursor: default;
   }
 }
 
 label {
   color: $color-primary-0;
   font-family: 'Montserrat', sans-serif;
+  font-size: 0.9em;
   text-transform: uppercase;
   user-select: none;
 }

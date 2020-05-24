@@ -25413,7 +25413,7 @@ module.exports = exports;
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, ".options .options-content {\n  max-width: 800px;\n  margin: auto;\n  padding: 10px;\n  transition: padding 0.1s;\n}\n.options .options-article .options-article-header,\n.options .options-article .options-article-footer {\n  padding: 20px;\n  border-bottom: 1px solid #d4d7d8;\n}\n\n@media (min-width: 600px) {\n  .options .options-content {\n    padding: 40px;\n  }\n}", ""]);
+exports.push([module.i, ".options .card > *:first-child {\n  padding-top: 10px;\n  border-top-left-radius: 10px;\n  border-top-right-radius: 10px;\n}\n.options .card > *:last-child {\n  padding-bottom: 10px;\n  border-bottom-left-radius: 10px;\n  border-bottom-right-radius: 10px;\n}\n.options .options-content {\n  max-width: 800px;\n  margin: auto;\n  padding: 10px;\n  transition: padding 0.1s;\n}\n.options .options-article:not(:last-child) {\n  margin-bottom: 10px;\n}\n.options .options-article .options-article-header,\n.options .options-article .options-article-footer {\n  background-color: #fff;\n  padding: 20px;\n  border-bottom: 1px solid #d4d7d8;\n}\n.options .banner {\n  height: 64px;\n  padding: 20px;\n  text-align: center;\n}\n\n@media (min-width: 600px) {\n  .options .options-content {\n    padding: 40px;\n  }\n  .options .banner {\n    padding: 20px;\n  }\n}", ""]);
 // Exports
 module.exports = exports;
 
@@ -25449,7 +25449,7 @@ module.exports = exports;
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, ".login {\n  background-color: #f9f9f9;\n  padding: 10px;\n  height: 100%;\n  color: #232d33;\n  overflow: hidden auto;\n}\n.login .form {\n  display: flex;\n  flex-direction: column;\n}\n.login label {\n  display: flex;\n  flex-direction: column;\n}\n.login label:not(:last-child),\n.login .button:not(:last-child),\n.login .message:not(:last-child) {\n  margin-bottom: 10px;\n}\n.login .label-checkbox {\n  flex-direction: row;\n  justify-content: space-between;\n}", ""]);
+exports.push([module.i, ".login {\n  display: grid;\n  grid-template-rows: 1fr auto;\n  background-color: #f9f9f9;\n  height: 100%;\n  color: #232d33;\n  border-radius: 0 10px 10px 0;\n  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);\n  overflow: hidden auto;\n}\n.login .login-form {\n  padding: 10px;\n  overflow: hidden auto;\n}\n.login .form {\n  display: flex;\n  flex-direction: column;\n}\n.login label {\n  display: flex;\n  flex-direction: column;\n}\n.login label:not(:last-child),\n.login .button:not(:last-child),\n.login .message:not(:last-child) {\n  margin-bottom: 10px;\n}\n.login .label-checkbox {\n  flex-direction: row;\n  justify-content: space-between;\n}", ""]);
 // Exports
 module.exports = exports;
 
@@ -25467,7 +25467,7 @@ module.exports = exports;
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, ".site-list {\n  width: 100%;\n  height: 100%;\n  overflow: hidden auto;\n  display: flex;\n  flex-direction: column;\n  padding: 10px;\n  padding-top: 0;\n}\n.site-list .site-list-entry {\n  width: 100%;\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  justify-content: space-between;\n  padding: 10px;\n  background-color: #f9f9f9;\n  color: #526a78;\n  font-weight: bold;\n  cursor: pointer;\n  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);\n  fill: #526a78;\n  transition: margin-left 0.1s;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n}\n.site-list .site-list-entry .site-url {\n  flex-grow: 1;\n  overflow: hidden;\n}\n.site-list .site-list-entry.selected {\n  margin-left: 10px;\n}\n.site-list .site-list-entry:hover {\n  background-color: #fff;\n}\n.site-list .site-list-entry.online {\n  fill: #03a388;\n}\n.site-list .site-list-entry:not(:last-child) {\n  margin-bottom: 10px;\n}\n.site-list .site-list-entry .site-icons {\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  margin-left: 10px;\n}\n.site-list .site-list-entry .icon:not(:last-child) {\n  margin-right: 10px;\n}\n.site-list .site-list-entry .icon.icon-warning {\n  fill: #f59815;\n}\n.site-list .site-list-entry .icon.icon-error {\n  fill: #c5283e;\n}", ""]);
+exports.push([module.i, ".site-list {\n  width: 100%;\n  height: 100%;\n  overflow: visible auto;\n  display: flex;\n  flex-direction: column;\n  padding-right: 10px;\n}\n.site-list .site-list-entry {\n  width: 100%;\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  justify-content: space-between;\n  padding: 10px;\n  background-color: #f9f9f9;\n  color: #526a78;\n  font-weight: bold;\n  cursor: pointer;\n  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);\n  fill: #526a78;\n  transition: margin-left 0.1s;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n}\n.site-list .site-list-entry .site-url {\n  flex-grow: 1;\n  overflow: hidden;\n}\n.site-list .site-list-entry.selected {\n  margin-left: 10px;\n}\n.site-list .site-list-entry:hover {\n  background-color: #fff;\n}\n.site-list .site-list-entry.online {\n  fill: #03a388;\n}\n.site-list .site-list-entry:not(:last-child) {\n  margin-bottom: 10px;\n}\n.site-list .site-list-entry .site-icons {\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  margin-left: 10px;\n}\n.site-list .site-list-entry .icon:not(:last-child) {\n  margin-right: 10px;\n}\n.site-list .site-list-entry .icon.icon-warning {\n  fill: #f59815;\n}\n.site-list .site-list-entry .icon.icon-error {\n  fill: #c5283e;\n}", ""]);
 // Exports
 module.exports = exports;
 
@@ -25485,7 +25485,7 @@ module.exports = exports;
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, ".site-status {\n  background-color: #f9f9f9;\n  padding: 10px;\n  height: 100%;\n  overflow: hidden auto;\n  color: #232d33;\n}\n.site-status .site-status-info {\n  margin-bottom: 10px;\n}\n.site-status .warnings-title {\n  color: #f59815;\n}\n.site-status .errors-title {\n  color: #c5283e;\n}\n.site-status .button {\n  width: 100%;\n}", ""]);
+exports.push([module.i, ".site-status {\n  background-color: #f9f9f9;\n  padding: 10px;\n  height: 100%;\n  color: #232d33;\n  border-radius: 0 10px 10px 0;\n  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);\n  overflow: hidden auto;\n}\n.site-status .site-status-info {\n  margin-bottom: 10px;\n}\n.site-status .warnings-title {\n  color: #f59815;\n}\n.site-status .errors-title {\n  color: #c5283e;\n}\n.site-status .button {\n  width: 100%;\n}", ""]);
 // Exports
 module.exports = exports;
 
@@ -25503,7 +25503,7 @@ module.exports = exports;
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, ".content {\n  display: grid;\n  grid-template-columns: 360px 360px;\n  grid-template-rows: 400px;\n  background-color: #526a78;\n}\n.content .popup-right,\n.content .popup-left {\n  height: 100%;\n  width: 100%;\n}", ""]);
+exports.push([module.i, ".content {\n  display: grid;\n  grid-template-columns: 1fr 1fr;\n  overflow: hidden;\n  width: 100%;\n  height: 100%;\n}\n.content .content-right,\n.content .content-left {\n  height: 100%;\n  width: 100%;\n  overflow: hidden auto;\n}", ""]);
 // Exports
 module.exports = exports;
 
@@ -25521,7 +25521,7 @@ module.exports = exports;
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, ".menu {\n  display: flex;\n  flex-direction: row;\n  justify-content: flex-end;\n  align-items: center;\n  background-color: #526a78;\n  width: 100%;\n  height: 100%;\n}\n.menu .menu-item {\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  transition: 0.1s;\n  transition-property: background-color, color, flex-grow;\n  padding: 11.25px;\n  color: #fff;\n  cursor: pointer;\n  width: 63.75px;\n  height: 100%;\n  overflow: hidden;\n}\n.menu .menu-item:hover {\n  flex-grow: 1;\n}\n.menu .menu-item:hover {\n  background-color: #fff;\n  color: #03a388;\n}\n.menu .menu-item.selected {\n  background-color: #f9f9f9;\n  color: #03a388;\n}\n.menu .menu-item:hover .menu-item-icon > svg, .menu .menu-item.selected .menu-item-icon > svg {\n  fill: #03a388;\n}\n.menu .menu-item:not(:hover) .menu-item-title {\n  transition: visibility 0 0.1s;\n  visibility: hidden;\n}\n.menu .menu-item .menu-item-icon {\n  height: 30px;\n  width: 30px;\n  margin: 5.625px;\n  margin-right: 16.875px;\n}\n.menu .menu-item .menu-item-icon > * {\n  height: 30px;\n  width: 30px;\n}\n.menu .menu-item .menu-item-icon > svg {\n  fill: #fff;\n  transition: fill 0.1s;\n}", ""]);
+exports.push([module.i, ".menu {\n  display: flex;\n  flex-direction: row;\n  justify-content: flex-end;\n  align-items: center;\n  background-color: #526a78;\n  width: 100%;\n}\n.menu .menu-item {\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  transition: 0.1s;\n  transition-property: background-color, color, flex-grow;\n  padding: 11.25px;\n  color: #fff;\n  cursor: pointer;\n  width: 63.75px;\n  height: 100%;\n  overflow: hidden;\n}\n.menu .menu-item:hover {\n  flex-grow: 1;\n}\n.menu .menu-item:hover {\n  background-color: #fff;\n  color: #03a388;\n}\n.menu .menu-item.selected {\n  background-color: #f9f9f9;\n  color: #03a388;\n}\n.menu .menu-item:hover .menu-item-icon > svg, .menu .menu-item.selected .menu-item-icon > svg {\n  fill: #03a388;\n}\n.menu .menu-item:not(:hover) .menu-item-title {\n  transition: visibility 0 0.1s;\n  visibility: hidden;\n}\n.menu .menu-item .menu-item-icon {\n  height: 30px;\n  width: 30px;\n  margin: 5.625px;\n  margin-right: 16.875px;\n}\n.menu .menu-item .menu-item-icon > * {\n  height: 30px;\n  width: 30px;\n}\n.menu .menu-item .menu-item-icon > svg {\n  fill: #fff;\n  transition: fill 0.1s;\n}", ""]);
 // Exports
 module.exports = exports;
 
@@ -25539,7 +25539,25 @@ module.exports = exports;
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, ".popup {\n  height: 490px;\n  width: 720px;\n  display: grid;\n  grid-template-rows: 64px 400px 15px;\n  background-color: #526a78;\n  color: #fff;\n}\n.popup .popup-header {\n  display: grid;\n  grid-template-columns: 1fr 1fr;\n}\n.popup .banner {\n  max-width: 100%;\n  max-height: 100%;\n}\n.popup .popup-content {\n  height: 100%;\n  width: 100%;\n}", ""]);
+exports.push([module.i, ".popup {\n  display: grid;\n  height: 490px;\n  width: 700px;\n  grid-template-rows: 64px 398px 28px;\n  background-color: #526a78;\n  color: #fff;\n}\n.popup .popup-header {\n  display: grid;\n  grid-template-columns: auto 1fr;\n}\n.popup .banner {\n  display: grid;\n}\n.popup .popup-main {\n  display: grid;\n  grid-template-columns: auto 54px;\n  margin: 0 10px;\n  height: 100%;\n}\n.popup .popup-content {\n  height: 100%;\n  width: 100%;\n  overflow: hidden;\n}\n.popup .popup-search-bar {\n  width: 100%;\n}\n.popup .popup-menu {\n  margin-left: 10px;\n}\n.popup .popup-menu > li {\n  list-style: none;\n}\n.popup .popup-menu > li:not(:last-child) {\n  margin-bottom: 10px;\n}\n.popup .popup-status {\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  justify-content: space-between;\n  margin-right: 64px;\n}\n.popup .popup-status .popup-status-error {\n  font-weight: bold;\n  color: #fdd2d8;\n}", ""]);
+// Exports
+module.exports = exports;
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/ui/Popup/Search.scss":
+/*!************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src!./node_modules/sass-loader/dist/cjs.js!./src/components/ui/Popup/Search.scss ***!
+  \************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// Imports
+var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+exports = ___CSS_LOADER_API_IMPORT___(false);
+// Module
+exports.push([module.i, ".popup-search {\n  background-color: #f9f9f9;\n  color: #232d33;\n  border-radius: 10px;\n  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);\n}\n.popup-search.popup-search-empty {\n  display: grid;\n  width: 100%;\n  height: 100%;\n  align-items: center;\n}\n.popup-search.popup-search-empty p {\n  text-align: center;\n}", ""]);
 // Exports
 module.exports = exports;
 
@@ -25557,7 +25575,7 @@ module.exports = exports;
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, ".status-bar {\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n}", ""]);
+exports.push([module.i, ".status-bar {\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  width: 100%;\n  height: 100%;\n}", ""]);
 // Exports
 module.exports = exports;
 
@@ -25575,25 +25593,7 @@ module.exports = exports;
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, ".object-view {\n  background-color: #f9f9f9;\n  color: #232d33;\n  padding: 10px;\n  padding-top: 28.6666666667px;\n  height: 100%;\n}\n.object-view .object-view-title {\n  background: no-repeat 10px center/30px 30px;\n  padding-left: 50px;\n  margin-bottom: 10px;\n}\n.object-view .object-view-container {\n  background-color: #fff;\n  padding: 10px;\n  overflow: hidden auto;\n  max-height: 100%;\n}\n.object-view .object-view-field {\n  padding: 10px;\n  display: flex;\n  flex-direction: row;\n  justify-content: space-between;\n  align-items: center;\n  transition: background-color 0.1s;\n}\n.object-view .object-view-field:hover {\n  background-color: #f3f7f8;\n}\n.object-view .object-view-field:hover .object-view-field-copy {\n  opacity: 1;\n}\n.object-view .object-view-fill {\n  width: 100%;\n}\n.object-view .object-view-field-text {\n  display: flex;\n  flex-direction: column;\n}\n.object-view .object-view-field-copy {\n  padding: 10px;\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  border: 0;\n  outline: 0;\n  background: transparent;\n  color: #03a388;\n  font-weight: bold;\n  cursor: pointer;\n  transition: 0.1s;\n  transition-property: opacity, background-color, color;\n  opacity: 0;\n}\n.object-view .object-view-field-copy:active {\n  background-color: #03a388;\n  color: #fff;\n}\n.object-view .field-title {\n  font-size: 0.8em;\n  color: #526a78;\n}\n.object-view .field-value .number {\n  color: #c5283e;\n}\n.object-view .field-value .uppercase {\n  color: #03a388;\n  font-weight: bold;\n}\n.object-view .field-value .lowercase {\n  color: #526a78;\n}\n.object-view .field-value .symbol {\n  color: #f59815;\n}\n.object-view .field-value .decrypt {\n  border: 0;\n  outline: 0;\n  background: none;\n  color: #c5283e;\n  cursor: pointer;\n  font-size: 1em;\n  font-weight: normal;\n  padding: 0 inherit 0 0;\n}", ""]);
-// Exports
-module.exports = exports;
-
-
-/***/ }),
-
-/***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/ui/Search/Search.scss":
-/*!*************************************************************************************************************************************************************!*\
-  !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src!./node_modules/sass-loader/dist/cjs.js!./src/components/ui/Search/Search.scss ***!
-  \*************************************************************************************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-// Imports
-var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
-exports = ___CSS_LOADER_API_IMPORT___(false);
-// Module
-exports.push([module.i, ".search {\n  display: flex;\n  flex-direction: column;\n  padding: 10px;\n  width: 100%;\n  height: 100%;\n  background-color: #f9f9f9;\n  color: #232d33;\n}", ""]);
+exports.push([module.i, ".object-view {\n  height: 100%;\n}\n.object-view .object-view-title {\n  background: no-repeat 10px center/30px 30px;\n  padding-left: 50px;\n  margin-bottom: 10px;\n}\n.object-view .object-view-container {\n  background-color: #fff;\n  padding: 10px;\n  overflow: hidden auto;\n  max-height: 100%;\n}\n.object-view .object-view-field {\n  padding: 10px;\n  display: flex;\n  flex-direction: row;\n  justify-content: space-between;\n  align-items: center;\n  transition: background-color 0.1s;\n}\n.object-view .object-view-field:hover {\n  background-color: #f3f7f8;\n}\n.object-view .object-view-field:hover .object-view-field-copy {\n  opacity: 1;\n}\n.object-view .object-view-fill {\n  width: 100%;\n}\n.object-view .object-view-field-text {\n  display: flex;\n  flex-direction: column;\n}\n.object-view .object-view-field-copy {\n  padding: 10px;\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  border: 0;\n  outline: 0;\n  background: transparent;\n  color: #03a388;\n  font-weight: bold;\n  cursor: pointer;\n  transition: 0.1s;\n  transition-property: opacity, background-color, color;\n  opacity: 0;\n}\n.object-view .object-view-field-copy:active {\n  background-color: #03a388;\n  color: #fff;\n}\n.object-view .field-title {\n  font-size: 0.8em;\n  color: #526a78;\n}\n.object-view .field-value .number {\n  color: #c5283e;\n}\n.object-view .field-value .uppercase {\n  color: #03a388;\n  font-weight: bold;\n}\n.object-view .field-value .lowercase {\n  color: #526a78;\n}\n.object-view .field-value .symbol {\n  color: #f59815;\n}\n.object-view .field-value .decrypt {\n  border: 0;\n  outline: 0;\n  background: none;\n  color: #c5283e;\n  cursor: pointer;\n  font-size: 1em;\n  font-weight: normal;\n  padding: 0 inherit 0 0;\n}", ""]);
 // Exports
 module.exports = exports;
 
@@ -25611,7 +25611,7 @@ module.exports = exports;
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, ".search-bar {\n  position: relative;\n}\n.search-bar .search-bar-area {\n  display: flex;\n  flex-direction: row;\n}\n.search-bar .search-bar-input {\n  flex-grow: 1;\n  width: 0;\n}\n.search-bar .search-bar-button {\n  background: #03a388;\n  cursor: pointer;\n  transition: background-color 0.1s;\n  border: 0;\n  outline: 0;\n  border-bottom: 1px solid #d4d7d8;\n}\n.search-bar .search-bar-button:hover {\n  background-color: #fff;\n}\n.search-bar .search-bar-button > svg {\n  padding: 10px;\n  transition: fill 0.1s;\n  fill: #fff;\n}\n.search-bar .search-bar-button:hover > svg {\n  fill: #03a388;\n}", ""]);
+exports.push([module.i, ".search-bar {\n  position: relative;\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  height: 100%;\n  padding: 10px;\n}\n.search-bar.disabled {\n  visibility: hidden;\n}\n.search-bar .search-bar-input {\n  flex-grow: 1;\n  height: 44px;\n  background: #2e424f;\n  color: #fff;\n  border-bottom-color: #102531;\n  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);\n}\n.search-bar .search-bar-input:focus {\n  border-bottom-color: #03a388;\n}\n.search-bar .search-bar-button {\n  border: 0;\n  outline: 0;\n  background-color: #03a388;\n  cursor: pointer;\n  height: 44px;\n  width: 44px;\n  border-radius: 0 10px 10px 0;\n  padding: 10px;\n  transition: 0.1s;\n  transition-property: background-color;\n  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);\n}\n.search-bar .search-bar-button:hover, .search-bar .search-bar-button:focus, .search-bar .search-bar-button.selected {\n  background-color: #fff;\n}\n.search-bar .search-bar-button > svg {\n  height: 100%;\n  width: 100%;\n  transition: fill 0.1s;\n  fill: #fff;\n}\n.search-bar .search-bar-button:hover > svg, .search-bar .search-bar-button:focus > svg, .search-bar .search-bar-button.selected > svg {\n  fill: #03a388;\n}", ""]);
 // Exports
 module.exports = exports;
 
@@ -25647,7 +25647,7 @@ module.exports = exports;
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, ".banner {\n  background-color: #526a78;\n  padding: 20px;\n  width: 100%;\n}", ""]);
+exports.push([module.i, ".banner {\n  background-color: #526a78;\n  padding: 15px;\n  min-width: -webkit-max-content;\n  min-width: -moz-max-content;\n  min-width: max-content;\n}", ""]);
 // Exports
 module.exports = exports;
 
@@ -25746,7 +25746,25 @@ module.exports = exports;
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, ".logo {\n  display: block;\n  max-width: 220px;\n}", ""]);
+exports.push([module.i, ".logo {\n  display: block;\n  max-height: 100%;\n}", ""]);
+// Exports
+module.exports = exports;
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/ui/common/MenuButton.scss":
+/*!*****************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src!./node_modules/sass-loader/dist/cjs.js!./src/components/ui/common/MenuButton.scss ***!
+  \*****************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// Imports
+var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+exports = ___CSS_LOADER_API_IMPORT___(false);
+// Module
+exports.push([module.i, ".menu-button {\n  position: relative;\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  width: -webkit-fit-content;\n  width: -moz-fit-content;\n  width: fit-content;\n}\n.menu-button .menu-button-title {\n  position: absolute;\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  right: 0;\n  background: #fff;\n  color: #232d33;\n  margin-right: 54px;\n  height: 44px;\n  width: -webkit-max-content;\n  width: -moz-max-content;\n  width: max-content;\n  border-radius: 10px;\n  padding: 10px;\n  opacity: 0.8;\n  visibility: hidden;\n  transition-duration: 0s, 0.1s, 0.1s, 0.1s;\n  transition-delay: 0.1s, 0s, 0s, 0s;\n  transition-property: visibility, opacity, border-radius, margin-right;\n  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);\n}\n.menu-button .menu-button-icon:hover + .menu-button-title {\n  transition-delay: 0s;\n  visibility: visible;\n  margin-right: 44px;\n  opacity: 1;\n  border-radius: 10px 0 0 10px;\n}\n.menu-button .menu-button-icon:focus + .menu-button-title {\n  border: 1px solid #03a388;\n  border-right-width: 0;\n}\n.menu-button .menu-button-icon {\n  border: 0;\n  outline: 0;\n  border: 1px solid #f9f9f9;\n  background-color: #f9f9f9;\n  cursor: pointer;\n  height: 44px;\n  width: 44px;\n  border-radius: 10px;\n  padding: 10px;\n  transition: 0.1s;\n  transition-property: background-color, border-radius, border-color;\n  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);\n}\n.menu-button .menu-button-icon:hover {\n  background-color: #fff;\n  border-radius: 0 10px 10px 0;\n}\n.menu-button .menu-button-icon.selected:not(:hover) {\n  border-radius: 0 10px 10px 10px;\n}\n.menu-button .menu-button-icon > svg {\n  height: 100%;\n  width: 100%;\n  transition: fill 0.1s;\n  fill: #526a78;\n}\n.menu-button .menu-button-icon:focus {\n  border-color: #03a388;\n}\n.menu-button .menu-button-icon:focus:hover {\n  border-left-color: transparent;\n}\n.menu-button .menu-button-icon:hover > svg, .menu-button .menu-button-icon:focus > svg, .menu-button .menu-button-icon.selected > svg {\n  fill: #03a388;\n}", ""]);
 // Exports
 module.exports = exports;
 
@@ -25819,7 +25837,7 @@ var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../node_modules/css-lo
 exports = ___CSS_LOADER_API_IMPORT___(false);
 exports.push([module.i, "@import url(https://fonts.googleapis.com/css?family=Montserrat|Roboto&display=swap);"]);
 // Module
-exports.push([module.i, ".card {\n  background-color: #fff;\n  color: #232d33;\n  border-radius: 0.8em;\n  box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.1);\n  margin: 10px;\n}\n.card > *:first-child {\n  padding-top: 0.8em;\n  border-top-left-radius: 0.8em;\n  border-top-right-radius: 0.8em;\n}\n.card > *:last-child {\n  padding-bottom: 0.8em;\n  border-bottom-left-radius: 0.8em;\n  border-bottom-right-radius: 0.8em;\n}\n\ninput,\nselect,\ntextarea,\nfieldset {\n  border: 0;\n  outline: 0;\n  background: none;\n  transition: 0.1s;\n  transition-property: border-color, background-color, color;\n  font-family: \"Roboto\", sans-serif;\n  background-color: #fff;\n  color: #232d33;\n  padding: 10px;\n  transition-duration: 0.1s;\n  transition-property: background-color, color, border-color;\n  font-size: 1em;\n}\ninput::-webkit-input-placeholder, select::-webkit-input-placeholder, textarea::-webkit-input-placeholder, fieldset::-webkit-input-placeholder {\n  font-size: 1em;\n}\ninput::-moz-placeholder, select::-moz-placeholder, textarea::-moz-placeholder, fieldset::-moz-placeholder {\n  font-size: 1em;\n}\ninput:-ms-input-placeholder, select:-ms-input-placeholder, textarea:-ms-input-placeholder, fieldset:-ms-input-placeholder {\n  font-size: 1em;\n}\ninput::-ms-input-placeholder, select::-ms-input-placeholder, textarea::-ms-input-placeholder, fieldset::-ms-input-placeholder {\n  font-size: 1em;\n}\ninput::placeholder,\nselect::placeholder,\ntextarea::placeholder,\nfieldset::placeholder {\n  font-size: 1em;\n}\ninput:disabled,\nselect:disabled,\ntextarea:disabled,\nfieldset:disabled {\n  cursor: arrow;\n}\n\nlabel {\n  color: #526a78;\n  font-family: \"Montserrat\", sans-serif;\n  text-transform: uppercase;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n}\n\n.label-disabled {\n  color: #ad9f9f;\n  background-color: #f9f9f9;\n}\n.label-disabled input,\n.label-disabled input:hover,\n.label-disabled input:focus,\n.label-disabled input:active {\n  background-color: #f9f9f9;\n  border-color: #d4d7d8;\n  color: #ad9f9f;\n}\n\n.label-altered {\n  color: #b76b00;\n}\n\n.label-checkbox {\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  cursor: pointer;\n}\n.label-checkbox :first-child {\n  margin-right: 10px;\n}\n\ninput {\n  border: 0;\n  border-bottom: 1px solid #d4d7d8;\n}\ninput:focus {\n  border-bottom-color: #03a388;\n}\ninput:active {\n  border-bottom-color: #d4d7d8;\n}\n\n* {\n  padding: 0;\n  margin: 0;\n  box-sizing: border-box;\n}\n\nbody {\n  background-color: #f2f2f2;\n  color: #232d33;\n  font-family: \"Roboto\", sans-serif;\n  font-size: 12pt;\n}\n\nh1,\nh2 {\n  font-family: \"Montserrat\", sans-serif;\n  color: #526a78;\n}\n\nh3,\nh4,\nh5,\nh6 {\n  font-weight: 500;\n}\n\nh1 {\n  font-size: 1.8em;\n}\n\nh2 {\n  font-size: 1.3em;\n}\n\nh3 {\n  font-size: 1.2em;\n}\n\nh4 {\n  font-size: 1.1em;\n}\n\nh5 {\n  font-size: 1.05em;\n}\n\nh6 {\n  font-size: 1.02em;\n}\n\n.menu-item {\n  position: relative;\n  cursor: pointer;\n  padding-left: inherit;\n  transition: padding-left 0.1s ease-out;\n}\n.menu-item.selected {\n  padding-left: 10px;\n}", ""]);
+exports.push([module.i, ".card {\n  background-color: #f9f9f9;\n  color: #232d33;\n  border-radius: 10px;\n  box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.1);\n}\n\ninput,\nselect,\ntextarea,\nfieldset {\n  border: 0;\n  outline: 0;\n  background: none;\n  transition: 0.1s;\n  transition-property: border-color, background-color, color;\n  font-family: \"Roboto\", sans-serif;\n  background-color: #fff;\n  color: #232d33;\n  padding: 10px;\n  transition-duration: 0.1s;\n  transition-property: background-color, color, border-color;\n  font-size: 1rem;\n}\ninput::-webkit-input-placeholder, select::-webkit-input-placeholder, textarea::-webkit-input-placeholder, fieldset::-webkit-input-placeholder {\n  font-size: 1rem;\n}\ninput::-moz-placeholder, select::-moz-placeholder, textarea::-moz-placeholder, fieldset::-moz-placeholder {\n  font-size: 1rem;\n}\ninput:-ms-input-placeholder, select:-ms-input-placeholder, textarea:-ms-input-placeholder, fieldset:-ms-input-placeholder {\n  font-size: 1rem;\n}\ninput::-ms-input-placeholder, select::-ms-input-placeholder, textarea::-ms-input-placeholder, fieldset::-ms-input-placeholder {\n  font-size: 1rem;\n}\ninput::placeholder,\nselect::placeholder,\ntextarea::placeholder,\nfieldset::placeholder {\n  font-size: 1rem;\n}\ninput:disabled,\nselect:disabled,\ntextarea:disabled,\nfieldset:disabled {\n  cursor: default;\n}\n\nlabel {\n  color: #526a78;\n  font-family: \"Montserrat\", sans-serif;\n  font-size: 0.9em;\n  text-transform: uppercase;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n}\n\n.label-disabled {\n  color: #ad9f9f;\n  background-color: #f9f9f9;\n}\n.label-disabled input,\n.label-disabled input:hover,\n.label-disabled input:focus,\n.label-disabled input:active {\n  background-color: #f9f9f9;\n  border-color: #d4d7d8;\n  color: #ad9f9f;\n}\n\n.label-altered {\n  color: #b76b00;\n}\n\n.label-checkbox {\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  cursor: pointer;\n}\n.label-checkbox :first-child {\n  margin-right: 10px;\n}\n\ninput {\n  border: 0;\n  border-bottom: 1px solid #d4d7d8;\n}\ninput:focus {\n  border-bottom-color: #03a388;\n}\ninput:active {\n  border-bottom-color: #d4d7d8;\n}\n\n* {\n  padding: 0;\n  margin: 0;\n  box-sizing: border-box;\n}\n\nbody {\n  background-color: #f2f2f2;\n  color: #232d33;\n  font-family: \"Roboto\", sans-serif;\n  font-size: 12pt;\n}\n\nh1,\nh2 {\n  font-family: \"Montserrat\", sans-serif;\n  color: #526a78;\n}\n\nh3,\nh4,\nh5,\nh6 {\n  font-weight: 500;\n}\n\nh1 {\n  font-size: 1.8em;\n}\n\nh2 {\n  font-size: 1.3em;\n}\n\nh3 {\n  font-size: 1.2em;\n}\n\nh4 {\n  font-size: 1.1em;\n}\n\nh5 {\n  font-size: 1.05em;\n}\n\nh6 {\n  font-size: 1.02em;\n}\n\n.menu-item {\n  position: relative;\n  cursor: pointer;\n  padding-left: inherit;\n  transition: padding-left 0.1s ease-out;\n}\n.menu-item.selected {\n  padding-left: 10px;\n}\n\n.content {\n  display: grid;\n  grid-template-columns: 1fr 1fr;\n  overflow: hidden;\n  width: 100%;\n  height: 100%;\n}\n.content > * {\n  height: 100%;\n  width: 100%;\n  overflow: visible auto;\n}", ""]);
 // Exports
 module.exports = exports;
 
@@ -27595,7 +27613,7 @@ exports.Options = () => {
         react_1.default.createElement("header", null,
             react_1.default.createElement(common_1.Banner, null)),
         react_1.default.createElement("section", { className: "options-content" },
-            react_1.default.createElement("h1", null, "Properties"),
+            react_1.default.createElement("h1", null, "Options"),
             react_1.default.createElement("article", { className: "options-article card" },
                 react_1.default.createElement("header", { className: "options-article-header" },
                     react_1.default.createElement("h2", null, "General")),
@@ -27794,307 +27812,51 @@ var __importStar = (this && this.__importStar) || function (mod) {
     result["default"] = mod;
     return result;
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = __importStar(__webpack_require__(/*! react */ "react"));
 const PopupUI = __importStar(__webpack_require__(/*! ../ui/Popup */ "./src/components/ui/Popup/index.ts"));
 const useStorage_1 = __webpack_require__(/*! ../../hooks/useStorage */ "./src/hooks/useStorage.tsx");
-const common_1 = __webpack_require__(/*! ../ui/common */ "./src/components/ui/common/index.ts");
-const PopupSearch_1 = __importDefault(__webpack_require__(/*! ./PopupSearch */ "./src/components/Popup/PopupSearch.tsx"));
-const PopupSessions_1 = __importDefault(__webpack_require__(/*! ./PopupSessions */ "./src/components/Popup/PopupSessions.tsx"));
-const svg_1 = __importDefault(__webpack_require__(/*! ../../ico/svg */ "./src/ico/svg.tsx"));
-var MenuItem;
-(function (MenuItem) {
-    MenuItem[MenuItem["Search"] = 0] = "Search";
-    MenuItem[MenuItem["Sessions"] = 1] = "Sessions";
-    MenuItem[MenuItem["Settings"] = 2] = "Settings";
-})(MenuItem || (MenuItem = {}));
-const menuItems = [
-    {
-        title: 'Search',
-        icon: svg_1.default.search,
-    },
-    {
-        title: 'Sessions',
-        icon: svg_1.default.vault,
-    },
-    {
-        title: 'Settings',
-        icon: svg_1.default.settings,
-    },
-];
 exports.Popup = () => {
-    const { state, isInitialized } = useStorage_1.useStorage();
-    const [menuItem, setMenuItem] = react_1.useState();
-    /**
-     * Event handlers
-     * */
-    // Initialize to sessions if no sessions are active
-    react_1.useEffect(() => {
-        if (menuItem === undefined && isInitialized) {
-            if (Object.keys(state.sessions).length > 0) {
-                setMenuItem(MenuItem.Search);
-            }
-            else {
-                setMenuItem(MenuItem.Sessions);
-            }
-        }
-    }, [state, isInitialized, menuItem]);
-    const onMenuSelect = (id) => {
-        if (id === MenuItem.Settings) {
-            browser.runtime.openOptionsPage();
-        }
-        else {
-            setMenuItem(id);
-        }
-    };
-    /**
-     * Components
-     * */
-    const menu = react_1.default.createElement(PopupUI.Menu, { items: menuItems, selected: menuItem, onSelect: onMenuSelect });
-    const status = react_1.default.createElement(PopupUI.StatusBar, { activeSessions: Object.keys(state.sessions).length });
-    let content;
-    switch (menuItem) {
-        case MenuItem.Search: {
-            content = react_1.default.createElement(PopupSearch_1.default, null);
-            break;
-        }
-        case MenuItem.Sessions: {
-            content = react_1.default.createElement(PopupSessions_1.default, null);
-            break;
-        }
-        default: {
-            content = react_1.default.createElement(common_1.LoadingComponent, null);
-        }
-    }
-    return (react_1.default.createElement(PopupUI.Main, { menu: menu, content: content, status: status }));
-};
-
-
-/***/ }),
-
-/***/ "./src/components/Popup/PopupSearch.tsx":
-/*!**********************************************!*\
-  !*** ./src/components/Popup/PopupSearch.tsx ***!
-  \**********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const react_1 = __importStar(__webpack_require__(/*! react */ "react"));
-const useStorage_1 = __webpack_require__(/*! ../../hooks/useStorage */ "./src/hooks/useStorage.tsx");
-const StoredSafe_1 = __webpack_require__(/*! ../../model/StoredSafe */ "./src/model/StoredSafe.ts");
-const PopupUI = __importStar(__webpack_require__(/*! ../ui/Popup */ "./src/components/ui/Popup/index.ts"));
-const Search_1 = __webpack_require__(/*! ../ui/Search */ "./src/components/ui/Search/index.ts");
-const PopupSearch = () => {
-    const { state } = useStorage_1.useStorage();
-    const [searching, setSearching] = react_1.useState('');
-    const [needle, setNeedle] = react_1.useState('');
+    const { state, dispatch, isInitialized } = useStorage_1.useStorage();
+    const [searchTimeout, setSearchTimeout] = react_1.useState();
     const [results, setResults] = react_1.useState({});
-    const [selected, setSelected] = react_1.useState();
-    react_1.useEffect(() => {
-        browser.tabs.query({ currentWindow: true, active: true }).then((tabs) => {
-            const tab = tabs[0];
-            const { url } = tab;
-            const match = url.match(/^https?:\/\/(?:w{3}\.)?([^/]+)\/.*/);
-            setNeedle(match === null ? url : match[1]);
-        });
-    }, []);
-    /**
-     * Events
-     * */
-    react_1.useEffect(() => {
-        if (searching !== needle && needle !== '') {
-            const search = () => {
-                setSelected(undefined);
-                setSearching(needle);
-                StoredSafe_1.actions.find(needle).then((searchPromises) => {
-                    const loadingResults = {};
-                    Object.keys(searchPromises).forEach((url) => {
-                        loadingResults[url] = { loading: true, results: [] };
-                    });
-                    setResults(loadingResults);
-                    Object.keys(searchPromises).forEach((url) => {
-                        searchPromises[url].then((siteResults) => {
-                            const newSiteResults = { loading: false, results: siteResults };
-                            setResults((prevResults) => (Object.assign(Object.assign({}, prevResults), { [url]: newSiteResults })));
-                        });
-                    });
-                });
-            };
-            // Search after 1s of inactivity
-            const id = setTimeout(search, 1000);
-            return () => clearTimeout(id);
-        }
-    }, [needle, searching]);
-    // Decrypt helper function
-    const decrypt = () => {
-        const { url, id } = selected;
-        const objectId = results[url].results[id].ssObject.id;
-        return StoredSafe_1.actions.decrypt(url, objectId, state.sessions[url]);
-    };
-    // Decrypt field
-    const onDecrypt = () => {
-        const { url, id } = selected;
-        setResults(Object.assign(Object.assign({}, results), { [url]: Object.assign(Object.assign({}, results[url]), { loading: true }) }));
-        decrypt().then((result) => {
-            const siteResults = results[url].results;
-            siteResults[id] = result;
-            setResults(Object.assign(Object.assign({}, results), { [url]: {
-                    loading: false,
-                    results: siteResults,
-                } }));
+    const openOptions = browser.runtime.openOptionsPage;
+    const onSearch = (needle) => {
+        if (searchTimeout)
+            setSearchTimeout(undefined);
+        Object.keys(state.sessions).forEach((url) => {
+            dispatch({
+                search: {
+                    type: 'find',
+                    needle,
+                    url,
+                    session: state.sessions[url],
+                },
+            });
         });
     };
-    // Copy to clipboard
-    const onCopy = (field) => {
-        const copy = (value) => {
-            navigator.clipboard.writeText(value).then(() => {
-                const clearClipboard = () => {
-                    navigator.clipboard.writeText('');
-                };
-                setTimeout(clearClipboard, 10000);
-            });
-        };
-        const { url, id } = selected;
-        const result = results[url].results[id];
-        if (result.ssTemplate.STRUCTURE[field].encrypted) {
-            decrypt().then(({ ssObject }) => {
-                copy(ssObject.crypted[field]);
-            });
+    const onNeedleChange = (needle) => {
+        if (searchTimeout) {
+            clearTimeout(searchTimeout);
         }
-        else {
-            copy(result.ssObject.public[field]);
-        }
+        setSearchTimeout(window.setTimeout(() => onSearch(needle), 1500));
     };
-    // Fill fields on page.
-    const onFill = () => {
-        const fill = (ssObject) => {
-            browser.tabs.query({ currentWindow: true, active: true }).then((tabs) => {
-                const tab = tabs[0];
-                const values = Object.assign(Object.assign({}, ssObject.crypted), ssObject.public);
-                browser.tabs.sendMessage(tab.id, {
-                    type: 'fill',
-                    data: values,
-                }).then(() => {
-                    window.close();
-                });
-            });
-        };
-        const { url, id } = selected;
-        const result = results[url].results[id];
-        const hasCrypted = Object.keys(result.ssTemplate.STRUCTURE).reduce((encrypted, field) => {
-            return encrypted || result.ssTemplate.STRUCTURE[field].encrypted;
-        }, false);
-        if (hasCrypted && result.ssObject.crypted === undefined) {
-            decrypt().then(({ ssObject }) => {
-                fill(ssObject);
-            });
-        }
-        else {
-            fill(result.ssObject);
-        }
-    };
-    /**
-     * Components
-     * */
-    const left = react_1.default.createElement(Search_1.Search, { needle: needle, onChange: setNeedle, onSearch: () => setSearching(''), results: results, onSelect: setSelected, selected: selected });
-    const right = react_1.default.createElement(Search_1.ObjectView, { results: results, onDecrypt: onDecrypt, onCopy: onCopy, onFill: onFill, selected: selected });
-    return (react_1.default.createElement(PopupUI.Content, { left: left, right: right }));
-};
-exports.default = PopupSearch;
-
-
-/***/ }),
-
-/***/ "./src/components/Popup/PopupSessions.tsx":
-/*!************************************************!*\
-  !*** ./src/components/Popup/PopupSessions.tsx ***!
-  \************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const react_1 = __importStar(__webpack_require__(/*! react */ "react"));
-const useStorage_1 = __webpack_require__(/*! ../../hooks/useStorage */ "./src/hooks/useStorage.tsx");
-const PopupUI = __importStar(__webpack_require__(/*! ../ui/Popup */ "./src/components/ui/Popup/index.ts"));
-const Auth_1 = __webpack_require__(/*! ../ui/Auth */ "./src/components/ui/Auth/index.ts");
-const PopupSearch = () => {
-    const { state, dispatch } = useStorage_1.useStorage();
-    const [selected, setSelected] = react_1.useState();
-    const [loading, setLoading] = react_1.useState(false);
-    const [error, setError] = react_1.useState();
-    const url = selected !== undefined ? state.sites.list[selected].url : undefined;
-    /**
-     * Events
-     * */
-    const onLogin = (fields) => {
-        setLoading(true);
-        const site = state.sites.list[selected];
+    const decrypt = (url, objectId, field) => {
         dispatch({
-            sessions: {
-                type: 'login',
-                site,
-                fields,
-            },
-            sitePrefs: {
-                type: 'update',
-                url: site.url,
-                username: fields.remember ? fields.username : undefined,
-                loginType: fields.loginType,
-            },
-        }, {
-            onSuccess: () => setLoading(false),
-            onError: (error) => { setLoading(false); setError(error.message); },
-        });
-    };
-    const onLogout = () => {
-        setLoading(true);
-        const url = state.sites.list[selected].url;
-        const session = state.sessions[url];
-        dispatch({
-            sessions: {
-                type: 'logout',
+            search: {
+                type: 'decrypt',
                 url,
-                session,
-            }
-        }, {
-            onSuccess: () => setLoading(false),
-            onError: (error) => { setLoading(false); console.error(error); },
+                id: objectId,
+                session: state.sessions[url],
+            },
         });
     };
-    /**
-     * Components
-     * */
-    const left = react_1.default.createElement(Auth_1.SiteList, { sites: state.sites.list, sessions: state.sessions, onSelect: (id) => setSelected(id === selected ? undefined : id), selected: selected });
-    const right = selected === undefined ? null : state.sessions[url] ? (react_1.default.createElement(Auth_1.SiteStatus, { url: url, session: state.sessions[url], onLogout: onLogout })) : (react_1.default.createElement(Auth_1.Login, { key: url, url: url, onLogin: onLogin, loading: loading, sitePrefs: state.sitePrefs[url], error: error, formEvents: {
-            onFocus: () => {
-                setError(undefined);
-            },
-        } }));
-    return (react_1.default.createElement(PopupUI.Content, { left: left, right: right }));
+    return (react_1.default.createElement(PopupUI.Main, { isLoading: isInitialized, search: {
+            onSearch,
+            onNeedleChange,
+            results: state.search,
+        }, openOptions: openOptions }));
 };
-exports.default = PopupSearch;
 
 
 /***/ }),
@@ -28186,23 +27948,24 @@ exports.Login = ({ url, error, loading, sitePrefs, onLogin, formEvents, }) => {
         onLogin(values);
     };
     return (react_1.default.createElement("section", { className: "login" },
-        react_1.default.createElement("h2", null, url),
-        react_1.default.createElement("form", { className: "form", onSubmit: handleSubmit },
-            react_1.default.createElement("label", { htmlFor: "loginType" },
-                react_1.default.createElement("span", null, "Login Type"),
-                react_1.default.createElement(common_1.Select, Object.assign({ id: "loginType", name: "loginType", value: values.loginType }, events),
-                    react_1.default.createElement("option", { value: "yubikey" }, "YubiKey"),
-                    react_1.default.createElement("option", { value: "totp" }, "TOTP"))),
-            react_1.default.createElement("label", { htmlFor: "username" },
-                react_1.default.createElement("span", null, "Username"),
-                react_1.default.createElement("input", Object.assign({ type: "text", id: "username", name: "username", value: values.username, required: true }, events))),
-            values.loginType === 'yubikey' && YubiKey.renderFields([values, events, reset]),
-            values.loginType === 'totp' && TOTP.renderFields([values, events, reset]),
-            react_1.default.createElement("label", { htmlFor: "remember", className: "label-checkbox" },
-                react_1.default.createElement("span", null, "Remember Username"),
-                react_1.default.createElement(common_1.Checkbox, Object.assign({ id: "remember", name: "remember", checked: values.remember }, events))),
-            react_1.default.createElement(common_1.Button, { type: "submit", color: "accent", isLoading: loading }, "Login"),
-            error && (react_1.default.createElement(common_1.Message, { type: "error" }, error)))));
+        react_1.default.createElement("article", { className: "login-form" },
+            react_1.default.createElement("h2", null, url),
+            react_1.default.createElement("form", { className: "form", onSubmit: handleSubmit },
+                react_1.default.createElement("label", { htmlFor: "loginType" },
+                    react_1.default.createElement("span", null, "Login Type"),
+                    react_1.default.createElement(common_1.Select, Object.assign({ id: "loginType", name: "loginType", value: values.loginType }, events),
+                        react_1.default.createElement("option", { value: "yubikey" }, "YubiKey"),
+                        react_1.default.createElement("option", { value: "totp" }, "TOTP"))),
+                react_1.default.createElement("label", { htmlFor: "username" },
+                    react_1.default.createElement("span", null, "Username"),
+                    react_1.default.createElement("input", Object.assign({ type: "text", id: "username", name: "username", value: values.username, required: true }, events))),
+                values.loginType === 'yubikey' && YubiKey.renderFields([values, events, reset]),
+                values.loginType === 'totp' && TOTP.renderFields([values, events, reset]),
+                react_1.default.createElement("label", { htmlFor: "remember", className: "label-checkbox" },
+                    react_1.default.createElement("span", null, "Remember Username"),
+                    react_1.default.createElement(common_1.Checkbox, Object.assign({ id: "remember", name: "remember", checked: values.remember }, events))),
+                react_1.default.createElement(common_1.Button, { type: "submit", color: "accent", isLoading: loading }, "Login"))),
+        error && (react_1.default.createElement(common_1.Message, { type: "error" }, error))));
 };
 
 
@@ -28333,10 +28096,10 @@ exports.SiteStatus = ({ url, session, onLogout, }) => {
                     " (",
                     minutesActive,
                     " minutes).")),
-            session.warnings.length > 0 && (warningMessages),
-            session.errors.length > 0 && (errorMessages)),
+            session.errors.length > 0 && (errorMessages),
+            session.warnings.length > 0 && (warningMessages)),
         react_1.default.createElement("section", { className: "site-status-logout" },
-            react_1.default.createElement(common_1.Button, { type: "submit", color: "danger", onClick: onLogout }, "Logout"))));
+            react_1.default.createElement(common_1.Button, { type: "submit", color: "danger", onClick: () => onLogout(url) }, "Logout"))));
 };
 
 
@@ -28413,6 +28176,40 @@ var SiteStatus_1 = __webpack_require__(/*! ./SiteStatus */ "./src/components/ui/
 exports.SiteStatus = SiteStatus_1.SiteStatus;
 var Login_1 = __webpack_require__(/*! ./Login */ "./src/components/ui/Auth/Login.tsx");
 exports.Login = Login_1.Login;
+
+
+/***/ }),
+
+/***/ "./src/components/ui/Popup/Auth.tsx":
+/*!******************************************!*\
+  !*** ./src/components/ui/Popup/Auth.tsx ***!
+  \******************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const react_1 = __importStar(__webpack_require__(/*! react */ "react"));
+const Auth = __importStar(__webpack_require__(/*! ../Auth */ "./src/components/ui/Auth/index.ts"));
+const PopupAuth = ({ sites, sessions, sitePrefs, onLogin, onLogout, loginStatus, }) => {
+    const [selected, setSelected] = react_1.useState(0);
+    const left = react_1.default.createElement(Auth.SiteList, { sites: sites, sessions: sessions, selected: selected, onSelect: setSelected });
+    const url = sites[selected].url;
+    const isOnline = sessions[url] !== undefined;
+    const right = isOnline ? ((react_1.default.createElement(Auth.SiteStatus, { url: url, session: sessions[url], onLogout: onLogout }))) : (react_1.default.createElement(Auth.Login, Object.assign({ key: url, url: url, onLogin: onLogin, sitePrefs: sitePrefs[url] }, loginStatus[url])));
+    return (react_1.default.createElement("section", { className: "auth content" },
+        react_1.default.createElement("article", null, left),
+        react_1.default.createElement("article", null, right)));
+};
+exports.default = PopupAuth;
 
 
 /***/ }),
@@ -28561,19 +28358,148 @@ module.exports = content.locals || {};
 
 "use strict";
 
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const react_1 = __importDefault(__webpack_require__(/*! react */ "react"));
+const react_1 = __importStar(__webpack_require__(/*! react */ "react"));
 const common_1 = __webpack_require__(/*! ../common */ "./src/components/ui/common/index.ts");
+const Search_1 = __webpack_require__(/*! ../Search */ "./src/components/ui/Search/index.ts");
+const StatusBar_1 = __webpack_require__(/*! ./StatusBar */ "./src/components/ui/Popup/StatusBar.tsx");
+const Search_2 = __importDefault(__webpack_require__(/*! ./Search */ "./src/components/ui/Popup/Search.tsx"));
+const Auth_1 = __importDefault(__webpack_require__(/*! ./Auth */ "./src/components/ui/Popup/Auth.tsx"));
+const svg_1 = __importDefault(__webpack_require__(/*! ../../../ico/svg */ "./src/ico/svg.tsx"));
 __webpack_require__(/*! ./Popup.scss */ "./src/components/ui/Popup/Popup.scss");
-exports.Popup = ({ menu, content, status, }) => (react_1.default.createElement("section", { className: "popup" },
-    react_1.default.createElement("header", { className: "popup-header" },
-        react_1.default.createElement(common_1.Banner, null),
-        react_1.default.createElement("section", { className: "popup-menu" }, menu)),
-    react_1.default.createElement("section", { className: "popup-content" }, content),
-    react_1.default.createElement("section", { className: "popup-status" }, status)));
+var Page;
+(function (Page) {
+    Page[Page["Search"] = 0] = "Search";
+    Page[Page["Sessions"] = 1] = "Sessions";
+    Page[Page["Add"] = 2] = "Add";
+})(Page || (Page = {}));
+exports.Popup = ({ isLoading, search, auth, openOptions, }) => {
+    const [needle, setNeedle] = react_1.useState('');
+    const [page, setPage] = react_1.useState();
+    const { sessions } = auth;
+    const { onNeedleChange, onSearch } = search;
+    const isOnline = Object.keys(sessions).length > 0;
+    if (!isLoading && page === undefined) {
+        if (isOnline) {
+            setPage(Page.Search);
+        }
+        else {
+            setPage(Page.Sessions);
+        }
+    }
+    const handleNeedleChange = (newNeedle) => {
+        setNeedle(newNeedle);
+        onNeedleChange && onNeedleChange(newNeedle);
+    };
+    return (react_1.default.createElement("section", { className: "popup" },
+        react_1.default.createElement("header", { className: "popup-header" },
+            react_1.default.createElement(common_1.Banner, null),
+            react_1.default.createElement("article", { className: "popup-search-bar" },
+                react_1.default.createElement(Search_1.SearchBar, { needle: needle, onChange: handleNeedleChange, onSearch: () => onSearch(needle), disabled: !isOnline, onFocus: () => setPage(Page.Search) }))),
+        react_1.default.createElement("section", { className: "popup-main" },
+            react_1.default.createElement("section", { className: "popup-content" },
+                page === Page.Search && react_1.default.createElement(Search_2.default, Object.assign({ key: needle }, search)),
+                page === Page.Sessions && react_1.default.createElement(Auth_1.default, Object.assign({}, auth)),
+                page === undefined && react_1.default.createElement(common_1.LoadingComponent, null)),
+            react_1.default.createElement("ul", { className: "popup-menu" },
+                isOnline && (react_1.default.createElement("li", null,
+                    react_1.default.createElement(common_1.MenuButton, { icon: svg_1.default.add, title: "Add New Object", onClick: () => setPage(Page.Add), selected: page === Page.Add }))),
+                react_1.default.createElement("li", null,
+                    react_1.default.createElement(common_1.MenuButton, { icon: svg_1.default.vault, title: "Sessions", onClick: () => setPage(Page.Sessions), selected: page === Page.Sessions })),
+                react_1.default.createElement("li", null,
+                    react_1.default.createElement(common_1.MenuButton, { icon: svg_1.default.settings, title: "Options", onClick: openOptions })))),
+        react_1.default.createElement("section", { className: "popup-status" },
+            react_1.default.createElement(StatusBar_1.StatusBar, { activeSessions: Object.keys(sessions).length }))));
+};
+
+
+/***/ }),
+
+/***/ "./src/components/ui/Popup/Search.scss":
+/*!*********************************************!*\
+  !*** ./src/components/ui/Popup/Search.scss ***!
+  \*********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var api = __webpack_require__(/*! ../../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
+            var content = __webpack_require__(/*! !../../../../node_modules/css-loader/dist/cjs.js!../../../../node_modules/postcss-loader/src!../../../../node_modules/sass-loader/dist/cjs.js!./Search.scss */ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/ui/Popup/Search.scss");
+
+            content = content.__esModule ? content.default : content;
+
+            if (typeof content === 'string') {
+              content = [[module.i, content, '']];
+            }
+
+var options = {};
+
+options.insert = "head";
+options.singleton = false;
+
+var update = api(content, options);
+
+
+
+module.exports = content.locals || {};
+
+/***/ }),
+
+/***/ "./src/components/ui/Popup/Search.tsx":
+/*!********************************************!*\
+  !*** ./src/components/ui/Popup/Search.tsx ***!
+  \********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const react_1 = __importStar(__webpack_require__(/*! react */ "react"));
+const Search = __importStar(__webpack_require__(/*! ../Search */ "./src/components/ui/Search/index.ts"));
+__webpack_require__(/*! ./Search.scss */ "./src/components/ui/Popup/Search.scss");
+const PopupSearch = ({ results, onDecrypt, onCopy, onFill, }) => {
+    // Initialize selected to first object
+    let firstUrl = undefined, firstId = undefined;
+    const urls = Object.keys(results);
+    for (let i = 0; i < urls.length; i++) {
+        const url = urls[i];
+        const ids = Object.keys(results[url]);
+        if (ids.length > 0) {
+            const id = ids[0];
+            firstUrl = url;
+            firstId = id;
+        }
+    }
+    const [selected, setSelected] = react_1.useState({ url: firstUrl, id: firstId });
+    if (firstUrl == undefined && firstId === undefined) {
+        return (react_1.default.createElement("section", { className: "popup-search popup-search-empty" },
+            react_1.default.createElement("p", null, "No results found")));
+    }
+    const { url, id } = selected;
+    const left = react_1.default.createElement(Search.SearchResults, { results: results, onSelect: (newSelected) => setSelected(newSelected) });
+    const right = react_1.default.createElement(Search.ObjectView, { url: url, id: id, result: results[url][id], onDecrypt: onDecrypt, onCopy: onCopy, onFill: onFill });
+    return (react_1.default.createElement("section", { className: "popup-search content" },
+        react_1.default.createElement("article", null, left),
+        react_1.default.createElement("article", null, right)));
+};
+exports.default = PopupSearch;
 
 
 /***/ }),
@@ -28701,14 +28627,11 @@ const react_1 = __importDefault(__webpack_require__(/*! react */ "react"));
 const common_1 = __webpack_require__(/*! ../common */ "./src/components/ui/common/index.ts");
 const ico_1 = __importDefault(__webpack_require__(/*! ../../../ico */ "./src/ico/index.ts"));
 __webpack_require__(/*! ./ObjectView.scss */ "./src/components/ui/Search/ObjectView.scss");
-const encryptedFieldText = (field, ssObject, onDecrypt) => {
-    const onClick = () => {
-        onDecrypt(field, ssObject.id);
-    };
-    if (ssObject.crypted === undefined) {
-        return react_1.default.createElement("button", { className: "decrypt", onClick: onClick }, "show");
+const encryptedFieldText = (field, onDecrypt) => {
+    if (!field.isDecrypted) {
+        return react_1.default.createElement("button", { className: "decrypt", onClick: onDecrypt }, "show");
     }
-    return ssObject.crypted[field].split('').map((c, i) => {
+    return field.value.split('').map((c, i) => {
         let className = 'encrypted-field';
         if (/[0-9]/.test(c)) {
             className += ' number';
@@ -28725,87 +28648,28 @@ const encryptedFieldText = (field, ssObject, onDecrypt) => {
         return react_1.default.createElement("span", { key: i, className: className }, c);
     });
 };
-exports.ObjectView = ({ selected, results, onDecrypt, onCopy, onFill, }) => {
-    if (selected === undefined) {
-        return (react_1.default.createElement("section", { className: "object-view" }, "No object selected"));
-    }
-    const { url, id } = selected;
-    const { ssObject, ssTemplate } = results[url].results[id];
+exports.ObjectView = ({ url, id, result, onDecrypt, onCopy, onFill, }) => {
     return (react_1.default.createElement("section", { className: "object-view" },
         react_1.default.createElement("article", { className: "object-view-container" },
-            react_1.default.createElement("hgroup", { className: "object-view-title", style: { backgroundImage: `url('${ico_1.default[ssTemplate.INFO.ico]}')` } },
-                react_1.default.createElement("h2", { className: "object-view-name" }, ssObject.objectname),
+            react_1.default.createElement("hgroup", { className: "object-view-title", style: { backgroundImage: `url('${ico_1.default[result.icon]}')` } },
+                react_1.default.createElement("h2", { className: "object-view-name" }, result.name),
                 react_1.default.createElement("h3", { className: "obejct-view-url" }, url)),
-            react_1.default.createElement(common_1.Button, { className: "object-view-fill", onClick: () => onFill() }, "Fill"),
-            Object.keys(ssTemplate.STRUCTURE).map((field) => {
+            react_1.default.createElement(common_1.Button, { className: "object-view-fill", onClick: () => onFill(url, id) }, "Fill"),
+            Object.keys(result.fields).map((field) => {
                 let value;
-                const isEncrypted = ssTemplate.STRUCTURE[field].encrypted;
-                if (isEncrypted) {
-                    value = encryptedFieldText(field, ssObject, onDecrypt);
+                if (result.fields[field].isEncrypted) {
+                    value = encryptedFieldText(result.fields[field], () => onDecrypt(url, id, field));
                 }
                 else {
-                    value = ssObject.public[field];
+                    value = result.fields[field].value;
                 }
                 return (react_1.default.createElement("div", { className: "object-view-field", key: field },
                     react_1.default.createElement("p", { className: "object-view-field-text" },
-                        react_1.default.createElement("span", { className: "field-title" }, field),
+                        react_1.default.createElement("span", { className: "field-title" }, result.fields[field].title),
                         react_1.default.createElement("span", { className: "field-value" }, value)),
-                    react_1.default.createElement("button", { className: "object-view-field-copy", onClick: () => onCopy(field) }, "Copy")));
+                    react_1.default.createElement("button", { className: "object-view-field-copy", onClick: () => onCopy(url, id, field) }, "Copy")));
             }))));
 };
-
-
-/***/ }),
-
-/***/ "./src/components/ui/Search/Search.scss":
-/*!**********************************************!*\
-  !*** ./src/components/ui/Search/Search.scss ***!
-  \**********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-var api = __webpack_require__(/*! ../../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
-            var content = __webpack_require__(/*! !../../../../node_modules/css-loader/dist/cjs.js!../../../../node_modules/postcss-loader/src!../../../../node_modules/sass-loader/dist/cjs.js!./Search.scss */ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/ui/Search/Search.scss");
-
-            content = content.__esModule ? content.default : content;
-
-            if (typeof content === 'string') {
-              content = [[module.i, content, '']];
-            }
-
-var options = {};
-
-options.insert = "head";
-options.singleton = false;
-
-var update = api(content, options);
-
-
-
-module.exports = content.locals || {};
-
-/***/ }),
-
-/***/ "./src/components/ui/Search/Search.tsx":
-/*!*********************************************!*\
-  !*** ./src/components/ui/Search/Search.tsx ***!
-  \*********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const react_1 = __importDefault(__webpack_require__(/*! react */ "react"));
-const SearchBar_1 = __webpack_require__(/*! ./SearchBar */ "./src/components/ui/Search/SearchBar.tsx");
-const SearchResults_1 = __webpack_require__(/*! ./SearchResults */ "./src/components/ui/Search/SearchResults.tsx");
-__webpack_require__(/*! ./Search.scss */ "./src/components/ui/Search/Search.scss");
-exports.Search = ({ needle, onChange, onSearch, results, onSelect, selected, }) => (react_1.default.createElement("section", { className: "search" },
-    react_1.default.createElement(SearchBar_1.SearchBar, { needle: needle, onChange: onChange, onSearch: onSearch }),
-    react_1.default.createElement(SearchResults_1.SearchResults, { results: results, onSelect: onSelect, selected: selected })));
 
 
 /***/ }),
@@ -28855,19 +28719,19 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = __importDefault(__webpack_require__(/*! react */ "react"));
 const svg_1 = __importDefault(__webpack_require__(/*! ../../../ico/svg */ "./src/ico/svg.tsx"));
 __webpack_require__(/*! ./SearchBar.scss */ "./src/components/ui/Search/SearchBar.scss");
-exports.SearchBar = ({ needle, onChange, onSearch, }) => {
+exports.SearchBar = ({ needle, onChange, onSearch, onFocus, onBlur, disabled, }) => {
     const onSubmit = (event) => {
         event.preventDefault();
         onSearch(needle);
     };
-    return (react_1.default.createElement("form", { className: "search-bar", onSubmit: onSubmit },
-        react_1.default.createElement("label", { className: "search-bar-label" },
-            react_1.default.createElement("span", { className: "search-bar-title" }, "Search"),
-            react_1.default.createElement("div", { className: "search-bar-area" },
-                react_1.default.createElement("input", { className: "search-bar-input", type: "search", value: needle, onChange: ({ target }) => {
-                        onChange(target.value);
-                    } }),
-                react_1.default.createElement("button", { className: "search-bar-button", type: "submit" }, svg_1.default.search)))));
+    return (react_1.default.createElement("form", { className: `search-bar${disabled ? ' disabled' : ''}`, onSubmit: onSubmit },
+        react_1.default.createElement("input", { className: "search-bar-input", type: "search", value: needle, placeholder: "Search", "aria-label": "Search Text", disabled: disabled, onChange: ({ target }) => {
+                onChange(target.value);
+            }, onFocus: () => onFocus && onFocus(), onBlur: () => onBlur && onBlur() }),
+        react_1.default.createElement("button", { className: "search-bar-button", type: "submit", "aria-label": "Search Submit", disabled: disabled }, svg_1.default.search)));
+};
+exports.SearchBar.defaultProps = {
+    disabled: false,
 };
 
 
@@ -28918,15 +28782,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = __importDefault(__webpack_require__(/*! react */ "react"));
 const ico_1 = __importDefault(__webpack_require__(/*! ../../../ico */ "./src/ico/index.ts"));
 __webpack_require__(/*! ./SearchResults.scss */ "./src/components/ui/Search/SearchResults.scss");
-const SearchResult = ({ ssObject, ssTemplate, onClick, selected, }) => (react_1.default.createElement("article", { style: { backgroundImage: `url('${ico_1.default[ssTemplate.INFO.ico]}')` }, className: `search-result${selected ? ' selected' : ''}`, onClick: onClick },
+const SearchResult = ({ result, onClick, selected, }) => (react_1.default.createElement("article", { style: { backgroundImage: `url('${ico_1.default[result.icon]}')` }, className: `search-result${selected ? ' selected' : ''}`, onClick: onClick },
     react_1.default.createElement("div", { className: "search-result-text" },
-        react_1.default.createElement("p", null, ssObject.objectname),
-        react_1.default.createElement("p", null, ssTemplate.INFO.name))));
+        react_1.default.createElement("p", null, result.name),
+        react_1.default.createElement("p", null, result.type))));
 exports.SearchResults = ({ results, onSelect, selected, }) => (react_1.default.createElement("section", { className: "search-results" }, Object.keys(results).map((url) => (react_1.default.createElement("article", { key: url, className: "search-results-site" },
-    react_1.default.createElement("div", { className: "search-results-url" },
+    Object.keys(results).length > 1 && (react_1.default.createElement("div", { className: "search-results-url" },
         url,
-        results[url].loading && react_1.default.createElement("span", { className: "searching" })),
-    results[url].results.map((result, id) => (react_1.default.createElement(SearchResult, Object.assign({ key: id, onClick: () => onSelect({ url, id }), selected: selected && selected.url === url && selected.id === id }, result)))))))));
+        results[url].loading && react_1.default.createElement("span", { className: "searching" }))),
+    Object.keys(results[url]).map((id) => (react_1.default.createElement(SearchResult, { key: id, onClick: () => onSelect({ url, id }), selected: selected && selected.url === url && selected.id === id, result: results[url][id] }))))))));
 
 
 /***/ }),
@@ -28941,10 +28805,12 @@ exports.SearchResults = ({ results, onSelect, selected, }) => (react_1.default.c
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var Search_1 = __webpack_require__(/*! ./Search */ "./src/components/ui/Search/Search.tsx");
-exports.Search = Search_1.Search;
+var SearchResults_1 = __webpack_require__(/*! ./SearchResults */ "./src/components/ui/Search/SearchResults.tsx");
+exports.SearchResults = SearchResults_1.SearchResults;
 var ObjectView_1 = __webpack_require__(/*! ./ObjectView */ "./src/components/ui/Search/ObjectView.tsx");
 exports.ObjectView = ObjectView_1.ObjectView;
+var SearchBar_1 = __webpack_require__(/*! ./SearchBar */ "./src/components/ui/Search/SearchBar.tsx");
+exports.SearchBar = SearchBar_1.SearchBar;
 
 
 /***/ }),
@@ -29283,6 +29149,60 @@ exports.Logo = () => (react_1.default.createElement("img", { src: logo_png_1.def
 
 /***/ }),
 
+/***/ "./src/components/ui/common/MenuButton.scss":
+/*!**************************************************!*\
+  !*** ./src/components/ui/common/MenuButton.scss ***!
+  \**************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var api = __webpack_require__(/*! ../../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
+            var content = __webpack_require__(/*! !../../../../node_modules/css-loader/dist/cjs.js!../../../../node_modules/postcss-loader/src!../../../../node_modules/sass-loader/dist/cjs.js!./MenuButton.scss */ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/ui/common/MenuButton.scss");
+
+            content = content.__esModule ? content.default : content;
+
+            if (typeof content === 'string') {
+              content = [[module.i, content, '']];
+            }
+
+var options = {};
+
+options.insert = "head";
+options.singleton = false;
+
+var update = api(content, options);
+
+
+
+module.exports = content.locals || {};
+
+/***/ }),
+
+/***/ "./src/components/ui/common/MenuButton.tsx":
+/*!*************************************************!*\
+  !*** ./src/components/ui/common/MenuButton.tsx ***!
+  \*************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const react_1 = __importDefault(__webpack_require__(/*! react */ "react"));
+__webpack_require__(/*! ./MenuButton.scss */ "./src/components/ui/common/MenuButton.scss");
+exports.MenuButton = ({ title, icon, onClick, selected }) => (react_1.default.createElement("div", { className: "menu-button", onClick: onClick },
+    react_1.default.createElement("button", { className: `menu-button-icon${selected ? ' selected' : ''}`, "aria-label": title }, icon),
+    react_1.default.createElement("div", { className: "menu-button-title" }, title)));
+exports.MenuButton.defaultProps = {
+    selected: false,
+};
+
+
+/***/ }),
+
 /***/ "./src/components/ui/common/Message.scss":
 /*!***********************************************!*\
   !*** ./src/components/ui/common/Message.scss ***!
@@ -29478,6 +29398,8 @@ var Select_1 = __webpack_require__(/*! ./Select */ "./src/components/ui/common/S
 exports.Select = Select_1.Select;
 var LoadingComponent_1 = __webpack_require__(/*! ./LoadingComponent */ "./src/components/ui/common/LoadingComponent.tsx");
 exports.LoadingComponent = LoadingComponent_1.LoadingComponent;
+var MenuButton_1 = __webpack_require__(/*! ./MenuButton */ "./src/components/ui/common/MenuButton.tsx");
+exports.MenuButton = MenuButton_1.MenuButton;
 
 
 /***/ }),
@@ -29829,6 +29751,10 @@ exports.default = {
         react_1.default.createElement("path", { transform: "scale(.26458)", d: "m16.033 2.041c-.90656-.011474-1.7477.4677-2.1992 1.2539l-13.229 22.914c-.96138 1.6658.23877 3.748 2.1621 3.75h26.465c1.9233-.00201 3.1235-2.0842 2.1621-3.75l-13.229-22.914c-.43967-.76564-1.25-1.2416-2.1328-1.2539zm-.033203 5.8555c1.205 0 2.1758 1.0976 2.1758 2.4609v8.418c0 1.3633-.97083 2.4609-2.1758 2.4609s-2.1758-1.0976-2.1758-2.4609v-8.418c0-1.3633.97083-2.4609 2.1758-2.4609zm0 14.312a2.375 2.375 0 012.375 2.375 2.375 2.375 0 01-2.375 2.375 2.375 2.375 0 01-2.375-2.375 2.375 2.375 0 012.375-2.375z" }))),
     error: (react_1.default.createElement("svg", { className: "icon icon-error", width: "32", height: "32", version: "1.1", viewBox: "0 0 8.4667 8.4667", xmlns: "http://www.w3.org/2000/svg" },
         react_1.default.createElement("path", { transform: "scale(.26458)", d: "m15.992 2.9707a14.458 14.458 0 00-14.449 14.457 14.458 14.458 0 0014.457 14.459 14.458 14.458 0 0014.457-14.459 14.458 14.458 0 00-14.457-14.457 14.458 14.458 0 00-.007812 0zm.007812 4.9258c1.205 0 2.1758 1.0976 2.1758 2.4609v8.418c0 1.3633-.97083 2.4609-2.1758 2.4609s-2.1758-1.0976-2.1758-2.4609v-8.418c0-1.3633.97083-2.4609 2.1758-2.4609zm0 14.312a2.375 2.375 0 012.375 2.375 2.375 2.375 0 01-2.375 2.375 2.375 2.375 0 01-2.375-2.375 2.375 2.375 0 012.375-2.375z" }))),
+    add: (react_1.default.createElement("svg", { width: "32", height: "32", version: "1.1", viewBox: "0 0 8.4667 8.4667", xmlns: "http://www.w3.org/2000/svg" },
+        react_1.default.createElement("g", null,
+            react_1.default.createElement("rect", { x: "3.5719", width: "1.3229", height: "8.4667" }),
+            react_1.default.createElement("rect", { transform: "rotate(90)", x: "3.5719", y: "-8.4667", width: "1.3229", height: "8.4667" })))),
 };
 
 
@@ -29915,36 +29841,28 @@ Object.defineProperty(exports, "__esModule", { value: true });
  * Get search results from local storage.
  * @return {SearchResults} Promise containing SearchResults object.
  * */
-const get = () => (browser.storage.local.get('search')
-    .then(({ search }) => {
-    return search || {};
-}));
+function get() {
+    return browser.storage.local.get('search').then(({ search }) => {
+        return search || {};
+    });
+}
 /**
  * Commit SearchResults object to local storage.
  * @param search New SearchResults object.
  * */
-const set = (search) => {
-    return browser.storage.local.set({ search });
-};
+function set(search) {
+    return browser.storage.local.set({
+        search
+    });
+}
 exports.actions = {
-    /**
-     * Load search results for site.
-     * */
-    setLoading: (url) => {
-        return get().then((searchResults) => {
-            const newSearchResults = Object.assign(Object.assign({}, searchResults), { [url]: { loading: true, results: [] } });
-            return set(newSearchResults).then(() => get());
-        });
-    },
     /**
      * Set search results for site.
      * */
-    setResults: (url, results) => {
-        return get().then((searchResults) => {
-            const newSearchResults = Object.assign(Object.assign({}, searchResults), { [url]: { loading: false, results } });
-            return set(newSearchResults).then(() => get());
-        });
-    },
+    setResults: (url, results) => (get().then((searchResults) => {
+        const newSearchResults = Object.assign(Object.assign({}, searchResults), { [url]: results });
+        return set(newSearchResults).then(get);
+    })),
     /**
      * Clear search results from storage.
      * */
@@ -30281,13 +30199,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const storedsafe_1 = __importDefault(__webpack_require__(/*! storedsafe */ "./node_modules/storedsafe/dist/index.js"));
 const Sessions_1 = __webpack_require__(/*! ./Sessions */ "./src/model/Sessions.ts");
-const Search_1 = __webpack_require__(/*! ./Search */ "./src/model/Search.ts");
 const handleErrors = (promise) => (promise.then((response) => {
     if (response.status === 200) {
         return response.data;
     }
+    console.log('StoredSafe Response error', response);
     throw new Error(`StoredSafe Error: (${response.status}) ${response.statusText}`);
 }).catch((error) => {
+    console.log('StoredSafe Error', error);
     if (error.response) {
         throw new Error(`StoredSafe Error: ${error.response.data.ERRORS}`);
     }
@@ -30296,7 +30215,50 @@ const handleErrors = (promise) => (promise.then((response) => {
     }
     throw new Error(`Unexpected Error: ${error}`);
 }));
+/**
+ * Create search result from StoredSafe response data.
+ * */
+const parseSearchResult = (ssObject, ssTemplate, isDecrypted = false) => {
+    const isFile = ssObject.templateid === '3';
+    const name = isFile ? ssObject.filename : ssObject.objectname;
+    const { name: type, ico: icon } = ssTemplate.INFO;
+    const fields = {};
+    Object.keys(ssTemplate.STRUCTURE).forEach((field) => {
+        const { translation: title, encrypted: isEncrypted, policy: isPassword, } = ssTemplate.STRUCTURE[field];
+        const value = (isEncrypted
+            ? (isDecrypted ? ssObject.crypted[field] : undefined)
+            : ssObject.public[field]);
+        fields[field] = {
+            title,
+            value,
+            isEncrypted,
+            isDecrypted,
+            isPassword,
+        };
+    });
+    return {
+        name,
+        type,
+        icon,
+        fields,
+    };
+};
+/**
+ * Get StoredSafe handler for the given url.
+ * */
+function getHandler(url) {
+    return Sessions_1.actions.fetch().then((currentSessions) => {
+        if (currentSessions[url] === undefined) {
+            throw new Error(`No active session for ${url}`);
+        }
+        const { apikey, token } = currentSessions[url];
+        return new storedsafe_1.default(url, apikey, token);
+    });
+}
 exports.actions = {
+    /**
+     * Attempt login with given site.
+     * */
     login: ({ url, apikey }, fields) => {
         const storedSafe = new storedsafe_1.default(url, apikey);
         let promise;
@@ -30321,65 +30283,48 @@ exports.actions = {
             });
         });
     },
-    logout: (url, { apikey, token }) => {
-        const storedSafe = new storedsafe_1.default(url, apikey, token);
-        return handleErrors(storedSafe.logout()).then(() => (Sessions_1.actions.remove(url)));
+    /**
+     * Logout from given site.
+     * Will silently remove session even if logout fails.
+     * */
+    logout: (url) => {
+        return getHandler(url).then((storedSafe) => (handleErrors(storedSafe.logout()).catch((error) => {
+            console.error('StoredSafe Logout Error', error);
+        }).then(() => (Sessions_1.actions.remove(url)))));
     },
-    searchFind: (needle, url, { apikey, token }) => {
-        const storedSafe = new storedsafe_1.default(url, apikey, token);
-        Search_1.actions.setLoading(url);
-        return handleErrors(storedSafe.find(needle)).then((data) => {
-            const searchResults = [];
-            const objectIds = Object.keys(data.OBJECT);
-            for (let i = 0; i < objectIds.length; i++) {
-                const ssObject = data.OBJECT[objectIds[i]];
-                const ssTemplate = data.TEMPLATESINFO[ssObject.templateid];
-                searchResults.push({ ssObject, ssTemplate });
-            }
-            return Search_1.actions.setResults(url, searchResults);
-        });
-    },
-    searchDecrypt: (url, id, { apikey, token }) => {
-        Search_1.actions.setLoading(url);
-        const storedSafe = new storedsafe_1.default(url, apikey, token);
-        return Search_1.actions.fetch().then((searchResults) => {
-            const siteResults = [...searchResults[url].results];
-            const objectId = siteResults[id].ssObject.id;
-            return handleErrors(storedSafe.object(objectId)).then((data) => {
-                const ssObject = data.OBJECT[objectId];
-                const ssTemplate = data.TEMPLATESINFO[ssObject.templateid];
-                siteResults[id] = { ssObject, ssTemplate };
-                return Search_1.actions.setResults(url, siteResults);
-            });
-        });
-    },
-    find: (needle) => {
-        return Sessions_1.actions.fetch().then((sessions) => {
-            const promises = {};
-            Object.keys(sessions).forEach((url) => {
-                const { apikey, token } = sessions[url];
-                const storedSafe = new storedsafe_1.default(url, apikey, token);
-                promises[url] = handleErrors(storedSafe.find(needle)).then((data) => {
-                    const searchResults = [];
+    /**
+     * Find search results from given sites.
+     * */
+    find: (urls, needle) => {
+        return urls.map((url) => {
+            return getHandler(url).then((storedSafe) => {
+                return handleErrors(storedSafe.find(needle)).then((data) => {
+                    const siteSearchResults = {};
                     const objectIds = Object.keys(data.OBJECT);
                     for (let i = 0; i < objectIds.length; i++) {
-                        const ssObject = data.OBJECT[objectIds[i]];
+                        const objectId = objectIds[i];
+                        const ssObject = data.OBJECT[objectId];
                         const ssTemplate = data.TEMPLATESINFO[ssObject.templateid];
-                        searchResults.push({ ssObject, ssTemplate });
+                        siteSearchResults[objectId] = parseSearchResult(ssObject, ssTemplate);
                     }
-                    return searchResults;
+                    return siteSearchResults;
                 });
             });
-            return promises;
         });
     },
-    decrypt: (url, objectId, { apikey, token }) => {
-        Search_1.actions.setLoading(url);
-        const storedSafe = new storedsafe_1.default(url, apikey, token);
-        return handleErrors(storedSafe.objectDecrypt(objectId)).then((data) => {
-            const ssObject = data.OBJECT[objectId];
-            const ssTemplate = data.TEMPLATESINFO[ssObject.templateid];
-            return { ssObject, ssTemplate };
+    decrypt: (url, objectId) => {
+        return Sessions_1.actions.fetch().then((sessions) => {
+            const { apikey, token } = sessions[url];
+            const storedSafe = new storedsafe_1.default(url, apikey, token);
+            return handleErrors(storedSafe.objectDecrypt(objectId)).then((data) => {
+                const ssObject = data.OBJECT[objectId];
+                const ssTemplate = data.TEMPLATESINFO[ssObject.templateid];
+                return {
+                    [url]: {
+                        [objectId]: parseSearchResult(ssObject, ssTemplate),
+                    },
+                };
+            });
         });
     }
 };

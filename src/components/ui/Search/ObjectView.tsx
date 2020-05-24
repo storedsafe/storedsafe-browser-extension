@@ -1,22 +1,17 @@
 import React from 'react';
-import { StoredSafeObject } from 'storedsafe';
-import { SearchResults } from '../../../model/Search';
+import { SearchResult, SearchResultField } from '../../../model/Search';
 import { Button } from '../common';
 import icons from '../../../ico';
 import './ObjectView.scss';
 
 const encryptedFieldText = (
-  field: string,
-  ssObject: StoredSafeObject,
-  onDecrypt: (field: string, id: string) => void
+  field: SearchResultField,
+  onDecrypt: () => void
 ): React.ReactNode => {
-  const onClick = (): void => {
-    onDecrypt(field, ssObject.id);
-  };
-  if (ssObject.crypted === undefined) {
-    return <button className="decrypt" onClick={onClick}>show</button>;
+  if (!field.isDecrypted) {
+    return <button className="decrypt" onClick={onDecrypt}>show</button>;
   }
-  return ssObject.crypted[field].split('').map((c, i) => {
+  return field.value.split('').map((c, i) => {
     let className = 'encrypted-field';
     if (/[0-9]/.test(c)) {
       className += ' number';
@@ -32,53 +27,44 @@ const encryptedFieldText = (
 };
 
 interface ObjectViewProps {
-  selected?: { url: string; id: number };
-  results: SearchResults;
-  onDecrypt: (field: string, id: string) => void;
-  onCopy: (field: string) => void;
-  onFill: () => void;
+  url: string;
+  id: string;
+  result: SearchResult;
+  onDecrypt: (url: string, objectId: string, field: string) => void;
+  onCopy: (url: string, objectId: string, field: string) => void;
+  onFill: (url: string, objectId: string) => void;
 }
 
 export const ObjectView: React.FunctionComponent<ObjectViewProps> = ({
-  selected,
-  results,
+  url,
+  id,
+  result,
   onDecrypt,
   onCopy,
   onFill,
 }: ObjectViewProps) => {
-  if (selected === undefined) {
-    return (
-      <section className="object-view">
-        No object selected
-      </section>
-    );
-  }
-
-  const { url, id } = selected;
-  const { ssObject, ssTemplate } = results[url].results[id];
   return (
     <section className="object-view">
       <article className="object-view-container">
         <hgroup
           className="object-view-title"
-          style={{ backgroundImage: `url('${icons[ssTemplate.INFO.ico]}')`}}>
-          <h2 className="object-view-name">{ssObject.objectname}</h2>
+          style={{ backgroundImage: `url('${icons[result.icon]}')`}}>
+          <h2 className="object-view-name">{result.name}</h2>
           <h3 className="obejct-view-url">{url}</h3>
         </hgroup>
-        <Button className="object-view-fill" onClick={(): void => onFill()}>Fill</Button>
-        {Object.keys(ssTemplate.STRUCTURE).map((field) => {
+        <Button className="object-view-fill" onClick={(): void => onFill(url, id)}>Fill</Button>
+        {Object.keys(result.fields).map((field) => {
           let value: React.ReactNode;
-          const isEncrypted = ssTemplate.STRUCTURE[field].encrypted;
-          if (isEncrypted) {
-            value = encryptedFieldText(field, ssObject, onDecrypt);
+          if (result.fields[field].isEncrypted) {
+            value = encryptedFieldText(result.fields[field], (): void => onDecrypt(url, id, field));
           } else {
-            value = ssObject.public[field];
+            value = result.fields[field].value;
           }
           return (
             <div className="object-view-field" key={field}>
               <p className="object-view-field-text">
                 <span className="field-title">
-                  {field}
+                  {result.fields[field].title}
                 </span>
                 <span className="field-value">
                   {value}
@@ -86,7 +72,7 @@ export const ObjectView: React.FunctionComponent<ObjectViewProps> = ({
               </p>
               <button
                 className="object-view-field-copy"
-                onClick={(): void => onCopy(field)}>
+                onClick={(): void => onCopy(url, id, field)}>
                 Copy
               </button>
             </div>

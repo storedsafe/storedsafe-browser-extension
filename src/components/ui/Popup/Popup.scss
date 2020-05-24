@@ -1,25 +1,61 @@
 @import '../../../variables';
 
 .popup {
-  height: 490px;
-  width: 720px;
   display: grid;
-  grid-template-rows: 64px 400px 15px;
+  height: 490px;
+  width: 700px;
+  grid-template-rows: 64px 398px 28px;
   background-color: $color-primary-0;
   color: $color-fg-alt;
 
   .popup-header {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: auto 1fr;
   }
 
   .banner {
-    max-width: 100%;
-    max-height: 100%;
+    display: grid;
   };
+
+  .popup-main {
+    display: grid;
+    grid-template-columns: auto $menu-size + $spacing;
+    margin: 0 $spacing;
+    height: 100%;
+  }
 
   .popup-content {
     height: 100%;
     width: 100%;
+    overflow: hidden;
+  }
+
+  .popup-search-bar {
+    width: 100%;
+  }
+
+  .popup-menu {
+    margin-left: $spacing;
+
+    > li {
+      list-style: none;
+    }
+
+    > li:not(:last-child) {
+      margin-bottom: $spacing;
+    }
+  }
+
+  .popup-status {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    margin-right: $menu-size + $spacing * 2;
+
+    .popup-status-error {
+      font-weight: bold;
+      color: $color-danger-1;
+    }
   }
 }

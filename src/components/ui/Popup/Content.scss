@@ -2,13 +2,15 @@
 
 .content {
   display: grid;
-  grid-template-columns: 360px 360px;
-  grid-template-rows: 400px;
-  background-color: $color-primary-0;
+  grid-template-columns: 1fr 1fr;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
 
-  .popup-right,
-  .popup-left {
+  .content-right,
+  .content-left {
     height: 100%;
     width: 100%;
+    overflow: hidden auto;
   }
 }

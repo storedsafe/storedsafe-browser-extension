@@ -2,36 +2,58 @@
 
 .search-bar {
   position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  height: 100%;
+  padding: $spacing;
 
-  .search-bar-area {
-    display: flex;
-    flex-direction: row;
+  &.disabled {
+    visibility: hidden;
   }
 
   .search-bar-input {
     flex-grow: 1;
-    width: 0;
+    height: 64px - $spacing * 2;
+    background: $color-primary-3;
+    color: $color-fg-alt;
+    border-bottom-color: $color-primary-4;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+
+    &:focus {
+      border-bottom-color: $color-accent-0;
+    }
   }
 
   .search-bar-button {
-    background: $color-accent-0;
-    cursor: pointer;
-    transition: background-color $transition-duration;
     border: 0;
     outline: 0;
-    border-bottom: $border-width solid $color-border;
+    background-color: $color-accent-0;
+    cursor: pointer;
+    height: $menu-size;
+    width: $menu-size;
+    border-radius: 0 $border-radius $border-radius 0;
+    padding: $spacing;
+    transition: $transition-duration;
+    transition-property: background-color;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
 
-    &:hover {
+    &:hover,
+    &:focus,
+    &.selected {
       background-color: $color-bg;
     }
 
     > svg {
-      padding: $spacing;
+      height: 100%;
+      width: 100%;
       transition: fill $transition-duration;
-      fill: #fff;
+      fill: $color-fg-alt;
     }
 
-    &:hover > svg {
+    &:hover > svg,
+    &:focus > svg,
+    &.selected > svg {
       fill: $color-accent-0;
     }
   }
