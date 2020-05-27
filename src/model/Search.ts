@@ -5,8 +5,8 @@ export interface SearchResultField {
   title: string;
   value?: string;
   isEncrypted: boolean;
-  isDecrypted: boolean;
-  isPassword: boolean;
+  isShowing?: boolean; // Revealed in UI
+  isPassword: boolean; // Formatted as password when shown.
 }
 
 /**
@@ -23,6 +23,7 @@ export interface SearchResult {
   name: string;
   type: string;
   icon: string;
+  isDecrypted: boolean;
   fields: SearchResultFields;
 }
 
@@ -30,7 +31,10 @@ export interface SearchResult {
  * Search results retrieved from site.
  * */
 export interface SiteSearchResults {
-  [objectId: string]: SearchResult;
+  error?: Error;
+  objects: {
+    [objectId: string]: SearchResult;
+  };
 }
 
 /**
@@ -41,10 +45,19 @@ export interface SearchResults {
 }
 
 /**
- * Get search results from local storage.
- * @return {SearchResults} Promise containing SearchResults object.
+ * Search storage object for background searches per tab.
+ * NOTE: Manual searches should use the data structures above but are
+ *       not persistent and should therefore not be stored here.
  * */
-function get (): Promise<SearchResults> {
+export interface Search {
+  [tabId: number]: SearchResults;
+}
+
+/**
+ * Get search results from local storage.
+ * @return {Search} Promise containing Search object.
+ * */
+function get (): Promise<Search> {
   return browser.storage.local.get('search').then(({
     search
   }) => {
@@ -53,27 +66,27 @@ function get (): Promise<SearchResults> {
 }
 
 /**
- * Commit SearchResults object to local storage.
- * @param search New SearchResults object.
+ * Commit Search object to local storage.
+ * @param {Search} search New Search object.
  * */
-function set (search: SearchResults): Promise<void> {
+function set (search: Search): Promise<void> {
   return browser.storage.local.set({
-    search
+    search,
   });
 }
 
 export const actions = {
   /**
-   * Set search results for site.
+   * Set search results for tab.
    * */
-  setResults: (
-    url: string,
-    results: SiteSearchResults
-  ): Promise<SearchResults> => (
-    get().then((searchResults) => {
+  setTabResults: (
+    tabId: number,
+    searchResults: SearchResults
+  ): Promise<Search> => (
+    get().then((prevSearchResults) => {
       const newSearchResults = {
-        ...searchResults,
-        [url]: results,
+        ...prevSearchResults,
+        [tabId]: searchResults,
       };
       return set(newSearchResults).then(get);
     })
@@ -82,12 +95,12 @@ export const actions = {
   /**
    * Clear search results from storage.
    * */
-  clear: (): Promise<SearchResults> => {
+  clear: (): Promise<Search> => {
     return set({}).then(get);
   },
 
   /**
-   * Fetch sessions from storage.
+   * Fetch search from storage.
    * */
   fetch: get,
 };

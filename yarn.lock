@@ -10732,8 +10732,8 @@ store2@^2.7.1:
   integrity sha512-llZqXAXjG2E4FvWsZxFmBDfh6kqQuGFZm64TX23qW02Hf4dyElhDEbYx1IIVTEMKWrrDnDA9oqOjY8WHo2NgcA==
 
 "storedsafe@git+ssh://git@git.xpd.se:19922/oscar/storedsafe-javascript.git":
-  version "0.0.3-2"
-  resolved "git+ssh://git@git.xpd.se:19922/oscar/storedsafe-javascript.git#235658f2b998b44f1b7885009ab8564843d9897f"
+  version "0.0.4"
+  resolved "git+ssh://git@git.xpd.se:19922/oscar/storedsafe-javascript.git#8648fcb07d3176133500c36af4997195070a6739"
   dependencies:
     axios "^0.19.2"
 

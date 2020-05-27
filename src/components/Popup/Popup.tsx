@@ -1,57 +1,112 @@
 import React, { useState } from 'react';
-import { actions as storedsafe } from '../../model/StoredSafe';
-import {SearchResults } from '../../model/Search';
-import * as PopupUI from '../ui/Popup';
-import { useStorage } from '../../hooks/useStorage';
+import { Banner, MenuButton, LoadingComponent } from '../common';
+import { SearchBar } from '../Search';
+import { StatusBar } from './StatusBar';
+import Search, { SearchProps } from './Search';
+import Auth, { AuthProps } from './Auth';
+import svg from '../../ico/svg';
+import './Popup.scss';
 
-export const Popup: React.FunctionComponent = () => {
-  const { state, dispatch, isInitialized } = useStorage();
-  const [searchTimeout, setSearchTimeout] = useState<number>();
-  const [results, setResults] = useState<SearchResults>({});
+enum Page {
+  Search,
+  Sessions,
+  Add,
+}
 
-  const openOptions = browser.runtime.openOptionsPage;
+interface PopupSearchProps extends SearchProps {
+  onNeedleChange?: (newNeedle: string) => void;
+  onSearch: (needle: string) => void;
+}
 
-  const onSearch = (needle: string): void => {
-    if (searchTimeout) setSearchTimeout(undefined);
-    Object.keys(state.sessions).forEach((url) => {
-      dispatch({
-        search: {
-          type: 'find',
-          needle,
-          url,
-          session: state.sessions[url],
-        },
-      });
-    });
-  };
+interface PopupProps {
+  isInitialized: boolean;
+  search: PopupSearchProps;
+  auth: AuthProps;
+  openOptions: () => void;
+}
 
-  const onNeedleChange = (needle: string): void => {
-    if (searchTimeout) {
-      clearTimeout(searchTimeout);
+export const Popup: React.FunctionComponent<PopupProps> = ({
+  isInitialized,
+  search,
+  auth,
+  openOptions,
+}: PopupProps) => {
+  const [needle, setNeedle] = useState<string>('');
+  const [page, setPage] = useState<Page>();
+
+  const { sessions } = auth;
+  const { onNeedleChange, onSearch } = search;
+
+  const isOnline = Object.keys(sessions).length > 0;
+
+  if (isInitialized && page === undefined) {
+    if (isOnline) {
+      setPage(Page.Search);
+    } else {
+      setPage(Page.Sessions);
     }
-    setSearchTimeout(window.setTimeout((): void => onSearch(needle), 1500));
-  };
+  }
 
-  const decrypt = (url: string, objectId: string, field: string): void => {
-    dispatch({
-      search: {
-        type: 'decrypt',
-        url,
-        id: objectId,
-        session: state.sessions[url],
-      },
-    });
+  const handleNeedleChange = (newNeedle: string): void => {
+    setNeedle(newNeedle);
+    onNeedleChange && onNeedleChange(newNeedle);
   };
 
   return (
-    <PopupUI.Main
-      isLoading={isInitialized}
-      search={{
-        onSearch,
-        onNeedleChange,
-        results: state.search,
-      }}
-      openOptions={openOptions}
-    />
+    <section className="popup">
+      <header className="popup-header">
+        <Banner />
+        <article className="popup-search-bar">
+          <SearchBar
+            needle={needle}
+            onChange={handleNeedleChange}
+            onSearch={(): void => onSearch(needle)}
+            disabled={!isOnline}
+            onFocus={(): void => setPage(Page.Search)}
+          />
+        </article>
+      </header>
+      <section className="popup-main">
+        <section className="popup-content">
+          {page === Page.Search && <Search key={needle} { ...search } />}
+          {page === Page.Sessions && <Auth { ...auth } />}
+          {page === undefined && <LoadingComponent />}
+        </section>
+        {isInitialized && (
+          <ul className="popup-menu">
+            {isOnline && (
+              <li>
+                <MenuButton
+                  icon={svg.add}
+                  title="Add New Object"
+                  onClick={(): void => setPage(Page.Add)}
+                  selected={page === Page.Add}
+                />
+              </li>
+            )}
+            <li>
+              <MenuButton
+                icon={svg.vault}
+                title="Sessions"
+                onClick={(): void => setPage(Page.Sessions)}
+                selected={page === Page.Sessions}
+              />
+            </li>
+            <li>
+              <MenuButton
+                icon={svg.settings}
+                title="Options"
+                onClick={openOptions}
+              />
+            </li>
+          </ul>
+        )}
+      </section>
+      <section className="popup-status">
+        <StatusBar
+          activeSessions={Object.keys(sessions).length}
+        />
+      </section>
+    </section>
   );
 };

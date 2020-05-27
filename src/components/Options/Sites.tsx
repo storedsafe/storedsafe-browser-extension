@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useStorage } from '../../hooks/useStorage';
-import { Button, Message } from '../ui/common';
+import { Button, Message } from '../common';
 import { useForm } from '../../hooks/useForm';
 import './Sites.scss';
 

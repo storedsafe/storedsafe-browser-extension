@@ -1,7 +1,7 @@
 import React, { Fragment, useState } from 'react';
 import { action } from '@storybook/addon-actions';
 import svg from '../ico/svg';
-import * as UI from '../components/ui/common';
+import * as UI from '../components/common';
 
 export default {
   title: 'Layout',

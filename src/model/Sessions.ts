@@ -2,8 +2,8 @@ export interface Session {
   apikey: string;
   token: string;
   createdAt: number;
-  warnings: string[];
-  errors: string[];
+  warnings: { [key: string]: string };
+  violations: { [key: string]: string };
 }
 
 /**

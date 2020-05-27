@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import './index.scss';
 
-import Extension from './components/Extension';
+import Extension from './Extension';
 
 /**
  * Launch axe accessibility helper in dev mode.
