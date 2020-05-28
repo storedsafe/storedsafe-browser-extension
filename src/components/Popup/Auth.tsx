@@ -4,18 +4,20 @@ import { Sessions } from '../../model/Sessions';
 import { SitePrefs } from '../../model/SitePrefs';
 import * as Auth from '../Auth';
 
+export interface LoginStatus {
+  [url: string]: {
+    loading: boolean;
+    error: string;
+  };
+}
+
 export interface AuthProps {
   sites: Site[];
   sessions: Sessions;
   sitePrefs: SitePrefs;
   onLogin: Auth.OnLoginCallback;
   onLogout: Auth.OnLogoutCallback;
-  loginStatus: {
-    [url: string]: {
-      loading: boolean;
-      error: string;
-    };
-  };
+  loginStatus: LoginStatus;
 }
 
 const PopupAuth: React.FunctionComponent<AuthProps> = ({

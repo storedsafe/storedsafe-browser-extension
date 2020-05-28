@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { shallow } from 'enzyme';
+import { mount } from 'enzyme';
 import { Banner } from './Banner';
 
-test('<Card />', () => {
-  const wrapper = shallow(<Banner />);
+test('<Banner />', () => {
+  const wrapper = mount(<Banner />);
   expect(wrapper).toMatchSnapshot();
 });

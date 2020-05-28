@@ -3,6 +3,7 @@ import { Banner, MenuButton, LoadingComponent } from '../common';
 import { SearchBar } from '../Search';
 import { StatusBar } from './StatusBar';
 import Search, { SearchProps } from './Search';
+import { OnNeedleChangeCallback, OnSearchCallback } from '../Search';
 import Auth, { AuthProps } from './Auth';
 import svg from '../../ico/svg';
 import './Popup.scss';
@@ -13,29 +14,27 @@ enum Page {
   Add,
 }
 
-interface PopupSearchProps extends SearchProps {
-  onNeedleChange?: (newNeedle: string) => void;
-  onSearch: (needle: string) => void;
-}
-
 interface PopupProps {
   isInitialized: boolean;
-  search: PopupSearchProps;
   auth: AuthProps;
+  search: SearchProps & {
+    needle: string;
+    onNeedleChange: OnNeedleChangeCallback;
+    onSearch: OnSearchCallback;
+  };
   openOptions: () => void;
 }
 
 export const Popup: React.FunctionComponent<PopupProps> = ({
   isInitialized,
-  search,
   auth,
+  search,
   openOptions,
 }: PopupProps) => {
-  const [needle, setNeedle] = useState<string>('');
   const [page, setPage] = useState<Page>();
 
   const { sessions } = auth;
-  const { onNeedleChange, onSearch } = search;
+  const { needle } = search;
 
   const isOnline = Object.keys(sessions).length > 0;
 
@@ -47,20 +46,13 @@ export const Popup: React.FunctionComponent<PopupProps> = ({
     }
   }
 
-  const handleNeedleChange = (newNeedle: string): void => {
-    setNeedle(newNeedle);
-    onNeedleChange && onNeedleChange(newNeedle);
-  };
-
   return (
     <section className="popup">
       <header className="popup-header">
         <Banner />
         <article className="popup-search-bar">
           <SearchBar
-            needle={needle}
-            onChange={handleNeedleChange}
-            onSearch={(): void => onSearch(needle)}
+            {...search}
             disabled={!isOnline}
             onFocus={(): void => setPage(Page.Search)}
           />
@@ -68,6 +60,7 @@ export const Popup: React.FunctionComponent<PopupProps> = ({
       </header>
       <section className="popup-main">
         <section className="popup-content">
+          {page === Page.Add && <p>Not yet implemented</p>}
           {page === Page.Search && <Search key={needle} { ...search } />}
           {page === Page.Sessions && <Auth { ...auth } />}
           {page === undefined && <LoadingComponent />}

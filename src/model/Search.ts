@@ -31,10 +31,7 @@ export interface SearchResult {
  * Search results retrieved from site.
  * */
 export interface SiteSearchResults {
-  error?: Error;
-  objects: {
-    [objectId: string]: SearchResult;
-  };
+  [objectId: string]: SearchResult;
 }
 
 /**

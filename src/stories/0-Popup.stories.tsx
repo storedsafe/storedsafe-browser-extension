@@ -4,11 +4,11 @@ import { StoredSafeResponse  } from 'storedsafe';
 import { Sessions } from '../model/Sessions';
 import { Site } from '../model/Sites';
 import { SearchResults, SiteSearchResults, SearchResultFields } from '../model/Search';
-import data from './ssVault.json';
+import data from './ssVault';
 import * as Popup from '../components/Popup';
 
 const ssResponse: StoredSafeResponse = data;
-const results: SiteSearchResults = { objects: {} };
+const results: SiteSearchResults = {};
 ssResponse.OBJECTS.forEach((ssObject) => {
   const ssTemplate = ssResponse.TEMPLATES.find((template) => template.id === ssObject.templateid);
   const isFile = ssObject.templateid === '3';
@@ -33,7 +33,7 @@ ssResponse.OBJECTS.forEach((ssObject) => {
     );
     fields[field] = { title, value, isEncrypted, isShowing, isPassword };
   });
-  results.objects[ssObject.id] = { name, type, icon, isDecrypted, fields };
+  results[ssObject.id] = { name, type, icon, isDecrypted, fields };
 });
 
 export default {
@@ -41,20 +41,36 @@ export default {
   component: Popup,
 }
 
+const useSearch = (): {
+  needle: string;
+  onNeedleChange: (needle: string) => void;
+} => {
+  const [needle, setNeedle] = useState<string>();
+  const onNeedleChange = (needle: string): void => {
+    setNeedle(needle);
+    action('needle change')(needle);
+  };
+  return { needle, onNeedleChange };
+};
+
 export const PopupLoading: React.FunctionComponent = () => {
   const sessions: Sessions = {};
   const sites: Site[] = [];
+  const { needle, onNeedleChange } = useSearch();
 
   return (
     <Popup.Main
       isInitialized={false}
       search={{
-        onNeedleChange: action('needle change'),
-        onSearch: action('search'),
+        urls: [],
         results: {},
         onShow: action('show'),
         onCopy: action('copy'),
         onFill: action('fill'),
+        needle,
+        onNeedleChange,
+        onSearch: action('search'),
+        searchStatus: {},
       }}
       auth={{
         sites,
@@ -70,6 +86,7 @@ export const PopupLoading: React.FunctionComponent = () => {
 };
 
 export const PopupOffline: React.FunctionComponent = () => {
+  const { needle, onNeedleChange } = useSearch();
   const sessions: Sessions = {};
   const sites: Site[] = [
     {
@@ -82,12 +99,15 @@ export const PopupOffline: React.FunctionComponent = () => {
     <Popup.Main
       isInitialized={true}
       search={{
-        onNeedleChange: action('needle change'),
-        onSearch: action('search'),
+        urls: [],
         results: {},
         onShow: action('show'),
         onCopy: action('copy'),
         onFill: action('fill'),
+        needle,
+        onNeedleChange,
+        onSearch: action('search'),
+        searchStatus: {},
       }}
       auth={{
         sites,
@@ -103,10 +123,10 @@ export const PopupOffline: React.FunctionComponent = () => {
 };
 
 export const PopupOnline: React.FunctionComponent = () => {
+  const { needle, onNeedleChange } = useSearch();
   const [searchResults, setSearchResults] = useState<SearchResults>({
     'foo.example.com': results
   });
-  const [needle, setNeedle] = useState<string>('');
 
   const sessions: Sessions = {
     'foo.example.com': {
@@ -134,25 +154,31 @@ export const PopupOnline: React.FunctionComponent = () => {
       const newSearchResults = { ...prevSearchResults };
       // Mimic API behavior of decrypting the entire object,
       // but only set isDecrypted on requested field.
-      newSearchResults[url].objects[id].isDecrypted = true;
-      Object.keys(newSearchResults[url].objects[id].fields).forEach((resultField) => {
-        if (newSearchResults[url].objects[id].fields[resultField].isEncrypted) {
-          newSearchResults[url].objects[id].fields[resultField].value = 'd3<ryPTed';
+      newSearchResults[url][id].isDecrypted = true;
+      Object.keys(newSearchResults[url][id].fields).forEach((resultField) => {
+        if (newSearchResults[url][id].fields[resultField].isEncrypted) {
+          newSearchResults[url][id].fields[resultField].value = 'd3<ryPTed';
         }
       });
-      newSearchResults[url].objects[id].fields[field].isShowing = true;
+      newSearchResults[url][id].fields[field].isShowing = true;
       return newSearchResults;
     });
     action('show')(url, id, field);
   };
 
+  let searchStatus: {
+    [url: string]: { loading: boolean };
+  } = {};
+
   const filteredResults = needle === '' ? searchResults : {};
   if (needle !== '') {
+    searchStatus = {};
     Object.keys(searchResults).forEach((url) => {
-      filteredResults[url].objects = {};
+      filteredResults[url] = {};
+      searchStatus[url] = { loading: false };
       Object.keys(searchResults[url]).forEach((id) => {
-        if (new RegExp(needle, 'i').test(searchResults[url].objects[id].name)) {
-          filteredResults[url].objects[id] = searchResults[url].objects[id];
+        if (new RegExp(needle, 'i').test(searchResults[url][id].name)) {
+          filteredResults[url][id] = searchResults[url][id];
         }
       });
     });
@@ -162,12 +188,71 @@ export const PopupOnline: React.FunctionComponent = () => {
     <Popup.Main
       isInitialized={true}
       search={{
-        onNeedleChange: (needle): void => { setNeedle(needle); action('needle change')(needle) },
+        urls: Object.keys(filteredResults),
+        needle,
+        onNeedleChange,
         onSearch: action('search'),
         results: filteredResults,
         onShow: onShow,
         onCopy: action('copy'),
         onFill: action('fill'),
+        searchStatus,
+      }}
+      auth={{
+        sites,
+        sessions,
+        sitePrefs: {},
+        onLogin: action('login'),
+        onLogout: action('login'),
+        loginStatus: {},
+      }}
+      openOptions={action('options')}
+    />
+  );
+};
+
+export const PopupOnlineLoading: React.FunctionComponent = () => {
+  const { needle, onNeedleChange } = useSearch();
+
+  const sessions: Sessions = {
+    'foo.example.com': {
+      apikey: 'abc123',
+      token: 'abcdefgh12345678',
+      createdAt: Date.now() - Math.random() * 60000,
+      violations: {},
+      warnings: {},
+    },
+  };
+
+  const sites: Site[] = [
+    {
+      url: 'foo.example.com',
+      apikey: 'abc123',
+    },
+  ];
+
+  const searchStatus: {
+    [url: string]: { loading: boolean; error?: string };
+  } = {
+    'foo.example.com': {
+      loading: true,
+      error: 'Network Error',
+    },
+  };
+
+  return (
+    <Popup.Main
+      isInitialized={true}
+      search={{
+        urls: Object.keys(sessions),
+        needle,
+        onNeedleChange,
+        onSearch: action('search'),
+        results: {},
+        onShow: action('show'),
+        onCopy: action('copy'),
+        onFill: action('fill'),
+        searchStatus,
       }}
       auth={{
         sites,
@@ -183,9 +268,10 @@ export const PopupOnline: React.FunctionComponent = () => {
 };
 
 export const PopupMultiple: React.FunctionComponent = () => {
+  const { needle, onNeedleChange } = useSearch();
   const [searchResults, setSearchResults] = useState<SearchResults>({
-    'foo.example.com': { objects: { '1278': results.objects['1278'] } },
-    'bar.example.com': { objects: { '1279': results.objects['1279'] } },
+    'foo.example.com': { '1278': results['1278'] },
+    'bar.example.com': { '1279': results['1279'] },
   });
 
   const sessions: Sessions = {
@@ -216,6 +302,22 @@ export const PopupMultiple: React.FunctionComponent = () => {
       createdAt: Date.now() - Math.random() * 3600000,
       violations: {},
       warnings: { 'KEY': 'Weak password detected' },
+    },
+  };
+
+  const searchStatus = {
+    'foo.example.com': {
+      loading: false,
+    },
+    'bar.example.com': {
+      loading: false,
+    },
+    'error.example.com': {
+      loading: false,
+      error: 'Network Error',
+    },
+    'warning.example.com': {
+      loading: true,
     },
   };
 
@@ -258,13 +360,13 @@ export const PopupMultiple: React.FunctionComponent = () => {
       const newSearchResults = { ...prevSearchResults };
       // Mimic API behavior of decrypting the entire object,
       // but only set isDecrypted on requested field.
-      newSearchResults[url].objects[id].isDecrypted = true;
-      Object.keys(newSearchResults[url].objects[id].fields).forEach((resultField) => {
-        if (newSearchResults[url].objects[id].fields[resultField].isEncrypted) {
-          newSearchResults[url].objects[id].fields[resultField].value = 'd3<ryPTed';
+      newSearchResults[url][id].isDecrypted = true;
+      Object.keys(newSearchResults[url][id].fields).forEach((resultField) => {
+        if (newSearchResults[url][id].fields[resultField].isEncrypted) {
+          newSearchResults[url][id].fields[resultField].value = 'd3<ryPTed';
         }
       });
-      newSearchResults[url].objects[id].fields[field].isShowing = true;
+      newSearchResults[url][id].fields[field].isShowing = true;
       return newSearchResults;
     });
     action('show')(url, id, field);
@@ -281,12 +383,15 @@ export const PopupMultiple: React.FunctionComponent = () => {
     <Popup.Main
       isInitialized={true}
       search={{
-        onNeedleChange: action('needle change'),
+        urls: Object.keys(sessions),
+        needle,
+        onNeedleChange,
         onSearch: action('search'),
         results: searchResults,
         onShow: onShow,
         onCopy: action('copy'),
         onFill: action('fill'),
+        searchStatus,
       }}
       auth={{
         sites,

@@ -91,8 +91,11 @@
   !*** ./src/scripts/content_script.ts ***!
   \***************************************/
 /*! no static exports found */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
 // const types = /text|url|password|email/i;
 // const ids = /user|name|pass|mail|url|server|site/i;
 const matchers = {
@@ -126,15 +129,24 @@ function isMatch(field, element) {
 }
 const { forms } = document;
 function onMessage(message) {
+    console.log(message);
     if (message.type === 'fill') {
         for (let i = 0; i < forms.length; i++) {
+            let filled = false;
             for (let j = 0; j < forms[i].length; j++) {
                 const element = forms[i][j];
                 Object.keys(message.data).forEach((field) => {
                     if (isMatch(field, element)) {
+                        filled = true;
                         element.value = message.data[field];
+                        console.log(filled, message.data[field]);
                     }
                 });
+            }
+            console.log(filled);
+            if (filled) {
+                console.log(forms[i]);
+                forms[i].submit();
             }
         }
     }

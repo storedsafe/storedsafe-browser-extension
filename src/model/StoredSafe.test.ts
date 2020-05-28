@@ -3,38 +3,34 @@ import { Search, SearchResults, SearchResult } from './Search';
 
 const searchResults: SearchResults = {
   'host': {
-    objects: {
-      '1': {
-        name: 'Host',
-        type: 'Login',
-        icon: 'ico_server',
-        isDecrypted: false,
-        fields: {
-          'host': {
-            title: 'Host / IP',
-            value: 'Host',
-            isEncrypted: false,
-            isPassword: false,
-          },
-          'username': {
-            title: 'Username',
-            value: 'Username',
-            isEncrypted: false,
-            isPassword: false,
-          },
-          'password': {
-            title: 'Password',
-            value: undefined,
-            isEncrypted: true,
-            isPassword: true,
-          },
+    '1': {
+      name: 'Host',
+      type: 'Login',
+      icon: 'ico_server',
+      isDecrypted: false,
+      fields: {
+        'host': {
+          title: 'Host / IP',
+          value: 'Host',
+          isEncrypted: false,
+          isPassword: false,
+        },
+        'username': {
+          title: 'Username',
+          value: 'Username',
+          isEncrypted: false,
+          isPassword: false,
+        },
+        'password': {
+          title: 'Password',
+          value: undefined,
+          isEncrypted: true,
+          isPassword: true,
         },
       },
     },
   },
   'other': {
-    error: expect.any(Error),
-    objects: {},
   },
 };
 
@@ -99,6 +95,7 @@ const localSetMock = jest.fn(() => Promise.resolve());
 const localGetMock = jest.fn((key: 'sessions' | 'search') => {
   return Promise.resolve({ [key]: local[key] })
 });
+const errorMock = jest.fn();
 
 global.browser = {
   storage: {
@@ -109,6 +106,7 @@ global.browser = {
   }
 };
 global.Date.now = jest.fn(() => 0);
+global.console.error = errorMock;
 jest.mock('storedsafe');
 
 import * as StoredSafe from './StoredSafe';
@@ -175,6 +173,7 @@ describe('Search', () => {
   beforeEach(() => {
     localSetMock.mockClear();
     localGetMock.mockClear();
+    errorMock.mockClear();
   });
 
   test('.find()', () => {
@@ -183,10 +182,23 @@ describe('Search', () => {
     }));
 
     return StoredSafe.actions.find(
-      ['host', 'other'],
+      'host',
       'host'
     ).then((results) => {
-      expect(results).toEqual(searchResults);
+      expect(results).toEqual(searchResults['host']);
+    })
+  });
+
+  test('.find(), error', () => {
+    localGetMock.mockImplementationOnce((key: string) => Promise.resolve({
+      [key]: mockSessions,
+    }));
+
+    return StoredSafe.actions.find(
+      'other',
+      'host'
+    ).catch((error) => {
+      expect(error.message).toMatch('StoredSafe Error');
     })
   });
 
@@ -214,6 +226,7 @@ describe('Search', () => {
       'host'
     ).then((search) => {
       expect(search[1]).toEqual(searchResults);
+      expect(errorMock).toHaveBeenCalledWith(expect.any(Error));
     })
   });
 });

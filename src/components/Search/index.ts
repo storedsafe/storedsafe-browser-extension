@@ -1,3 +1,3 @@
 export { SearchResults } from './SearchResults';
-export { ObjectView } from './ObjectView';
-export { SearchBar } from './SearchBar';
+export { ObjectView, OnShowCallback, OnCopyCallback, OnFillCallback } from './ObjectView';
+export { SearchBar, OnNeedleChangeCallback, OnSearchCallback } from './SearchBar';

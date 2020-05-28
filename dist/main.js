@@ -27408,7 +27408,7 @@ exports.Login = ({ site, error, loading, sitePrefs, onLogin, formEvents, }) => {
     const { url } = site;
     const { username, loginType } = sitePrefs && sitePrefs || {};
     const initialValues = {
-        loginType: loginType || 'yubikey',
+        loginType: loginType || 'totp',
         username: username || '',
         remember: username !== undefined,
         keys: '',
@@ -28199,11 +28199,10 @@ var Page;
     Page[Page["Sessions"] = 1] = "Sessions";
     Page[Page["Add"] = 2] = "Add";
 })(Page || (Page = {}));
-exports.Popup = ({ isInitialized, search, auth, openOptions, }) => {
-    const [needle, setNeedle] = react_1.useState('');
+exports.Popup = ({ isInitialized, auth, search, openOptions, }) => {
     const [page, setPage] = react_1.useState();
     const { sessions } = auth;
-    const { onNeedleChange, onSearch } = search;
+    const { needle } = search;
     const isOnline = Object.keys(sessions).length > 0;
     if (isInitialized && page === undefined) {
         if (isOnline) {
@@ -28213,17 +28212,14 @@ exports.Popup = ({ isInitialized, search, auth, openOptions, }) => {
             setPage(Page.Sessions);
         }
     }
-    const handleNeedleChange = (newNeedle) => {
-        setNeedle(newNeedle);
-        onNeedleChange && onNeedleChange(newNeedle);
-    };
     return (react_1.default.createElement("section", { className: "popup" },
         react_1.default.createElement("header", { className: "popup-header" },
             react_1.default.createElement(common_1.Banner, null),
             react_1.default.createElement("article", { className: "popup-search-bar" },
-                react_1.default.createElement(Search_1.SearchBar, { needle: needle, onChange: handleNeedleChange, onSearch: () => onSearch(needle), disabled: !isOnline, onFocus: () => setPage(Page.Search) }))),
+                react_1.default.createElement(Search_1.SearchBar, Object.assign({}, search, { disabled: !isOnline, onFocus: () => setPage(Page.Search) })))),
         react_1.default.createElement("section", { className: "popup-main" },
             react_1.default.createElement("section", { className: "popup-content" },
+                page === Page.Add && react_1.default.createElement("p", null, "Not yet implemented"),
                 page === Page.Search && react_1.default.createElement(Search_2.default, Object.assign({ key: needle }, search)),
                 page === Page.Sessions && react_1.default.createElement(Auth_1.default, Object.assign({}, auth)),
                 page === undefined && react_1.default.createElement(common_1.LoadingComponent, null)),
@@ -28288,15 +28284,16 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = __importStar(__webpack_require__(/*! react */ "react"));
+const common_1 = __webpack_require__(/*! ../common */ "./src/components/common/index.ts");
 const Search = __importStar(__webpack_require__(/*! ../Search */ "./src/components/Search/index.ts"));
 __webpack_require__(/*! ./Search.scss */ "./src/components/Popup/Search.scss");
-const PopupSearch = ({ results, onShow, onCopy, onFill, }) => {
-    // Initialize selected to first object
+const PopupSearch = ({ urls, results, onShow, onCopy, onFill, searchStatus, }) => {
+    // Initialize selected to first object if it exists.
     let firstUrl = undefined, firstId = undefined;
-    const urls = Object.keys(results);
-    for (let i = 0; i < urls.length; i++) {
-        const url = urls[i];
-        const ids = Object.keys(results[url].objects);
+    const resultUrls = Object.keys(results);
+    for (let i = 0; i < resultUrls.length; i++) {
+        const url = resultUrls[i];
+        const ids = Object.keys(results[url]);
         if (ids.length > 0) {
             const id = ids[0];
             firstUrl = url;
@@ -28304,18 +28301,28 @@ const PopupSearch = ({ results, onShow, onCopy, onFill, }) => {
         }
     }
     const [selected, setSelected] = react_1.useState({ url: firstUrl, id: firstId });
+    const isLoading = Object.values(searchStatus).reduce((loading, status) => {
+        return loading || status.loading;
+    }, false);
     if (firstUrl === undefined && firstId === undefined) {
+        if (isLoading) {
+            return (react_1.default.createElement("section", { className: "popup-search content" },
+                react_1.default.createElement("article", null,
+                    react_1.default.createElement(common_1.LoadingComponent, null)),
+                react_1.default.createElement("article", null)));
+        }
         return (react_1.default.createElement("section", { className: "popup-search popup-search-empty" },
             react_1.default.createElement("p", null, "No results found")));
     }
     else if ((selected.url === undefined && selected.id === undefined) &&
         (firstUrl !== undefined && firstId !== undefined)) {
+        // Skip single frame while selected state updates.
         setSelected({ url: firstUrl, id: firstId });
         return null;
     }
     const { url, id } = selected;
-    const left = react_1.default.createElement(Search.SearchResults, { results: results, onSelect: (newSelected) => setSelected(newSelected) });
-    const right = react_1.default.createElement(Search.ObjectView, { url: url, id: id, result: results[url].objects[id], onShow: onShow, onCopy: onCopy, onFill: onFill });
+    const left = react_1.default.createElement(Search.SearchResults, { urls: urls, results: results, onSelect: (newSelected) => setSelected(newSelected), searchStatus: searchStatus });
+    const right = react_1.default.createElement(Search.ObjectView, { url: url, id: id, result: results[url][id], onShow: onShow, onCopy: onCopy, onFill: onFill });
     return (react_1.default.createElement("section", { className: "popup-search content" },
         react_1.default.createElement("article", null, left),
         react_1.default.createElement("article", null, right)));
@@ -28442,28 +28449,28 @@ const react_1 = __importDefault(__webpack_require__(/*! react */ "react"));
 const common_1 = __webpack_require__(/*! ../common */ "./src/components/common/index.ts");
 const ico_1 = __importDefault(__webpack_require__(/*! ../../ico */ "./src/ico/index.ts"));
 __webpack_require__(/*! ./ObjectView.scss */ "./src/components/Search/ObjectView.scss");
-const encryptedFieldText = (field, onShow) => {
-    if (!field.isShowing) {
-        return react_1.default.createElement("button", { className: "show", onClick: onShow }, "show");
-    }
-    return field.value.split('').map((c, i) => {
-        let className = 'encrypted-field';
-        if (/[0-9]/.test(c)) {
-            className += ' number';
-        }
-        else if (/[a-z]/.test(c)) {
-            className += ' lowercase';
-        }
-        else if (/[A-Z]/.test(c)) {
-            className += ' uppercase';
-        }
-        else {
-            className += ' symbol';
-        }
-        return react_1.default.createElement("span", { key: i, className: className }, c);
-    });
-};
 exports.ObjectView = ({ url, id, result, onShow, onCopy, onFill, }) => {
+    const encryptedFieldText = (field, onShow) => {
+        if (!field.isShowing) {
+            return react_1.default.createElement("button", { className: "show", onClick: onShow }, "show");
+        }
+        return field.value.split('').map((c, i) => {
+            let className = 'encrypted-field';
+            if (/[0-9]/.test(c)) {
+                className += ' number';
+            }
+            else if (/[a-z]/.test(c)) {
+                className += ' lowercase';
+            }
+            else if (/[A-Z]/.test(c)) {
+                className += ' uppercase';
+            }
+            else {
+                className += ' symbol';
+            }
+            return react_1.default.createElement("span", { key: i, className: className }, c);
+        });
+    };
     return (react_1.default.createElement("section", { className: "object-view" },
         react_1.default.createElement("article", { className: "object-view-container" },
             react_1.default.createElement("hgroup", { className: "object-view-title", style: { backgroundImage: `url('${ico_1.default[result.icon]}')` } },
@@ -28534,14 +28541,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = __importDefault(__webpack_require__(/*! react */ "react"));
 const svg_1 = __importDefault(__webpack_require__(/*! ../../ico/svg */ "./src/ico/svg.tsx"));
 __webpack_require__(/*! ./SearchBar.scss */ "./src/components/Search/SearchBar.scss");
-exports.SearchBar = ({ needle, onChange, onSearch, onFocus, onBlur, disabled, }) => {
+exports.SearchBar = ({ needle, onNeedleChange, onSearch, onFocus, onBlur, disabled, }) => {
     const onSubmit = (event) => {
         event.preventDefault();
-        onSearch(needle);
+        onSearch();
     };
     return (react_1.default.createElement("form", { className: `search-bar${disabled ? ' disabled' : ''}`, onSubmit: onSubmit },
         react_1.default.createElement("input", { className: "search-bar-input", type: "search", value: needle, placeholder: "Search", "aria-label": "Search Text", disabled: disabled, onChange: ({ target }) => {
-                onChange(target.value);
+                onNeedleChange(target.value);
             }, onFocus: () => onFocus && onFocus(), onBlur: () => onBlur && onBlur() }),
         react_1.default.createElement("button", { className: "search-bar-button", type: "submit", "aria-label": "Search Submit", disabled: disabled }, svg_1.default.search)));
 };
@@ -28595,17 +28602,24 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = __importDefault(__webpack_require__(/*! react */ "react"));
+const common_1 = __webpack_require__(/*! ../common */ "./src/components/common/index.ts");
 const ico_1 = __importDefault(__webpack_require__(/*! ../../ico */ "./src/ico/index.ts"));
 __webpack_require__(/*! ./SearchResults.scss */ "./src/components/Search/SearchResults.scss");
 const SearchResult = ({ result, onClick, selected, }) => (react_1.default.createElement("article", { style: { backgroundImage: `url('${ico_1.default[result.icon]}')` }, className: `search-result${selected ? ' selected' : ''}`, onClick: onClick },
     react_1.default.createElement("div", { className: "search-result-text" },
         react_1.default.createElement("p", null, result.name),
         react_1.default.createElement("p", null, result.type))));
-exports.SearchResults = ({ results, onSelect, selected, }) => (react_1.default.createElement("section", { className: "search-results" }, Object.keys(results).map((url) => (react_1.default.createElement("article", { key: url, className: "search-results-site" },
-    Object.keys(results).length > 1 && (react_1.default.createElement("div", { className: "search-results-url" },
+exports.SearchResults = ({ urls, results, onSelect, selected, searchStatus, }) => (react_1.default.createElement("section", { className: "search-results" }, urls.map((url) => (
+// Hide url results if there is nothing to show..
+(results[url] || searchStatus[url].loading || searchStatus[url].error) && (react_1.default.createElement("article", { key: url, className: "search-results-site" },
+    urls.length > 1 && (react_1.default.createElement("div", { className: "search-results-url" },
         url,
-        " ")),
-    Object.keys(results[url].objects).map((id) => (react_1.default.createElement(SearchResult, { key: id, onClick: () => onSelect({ url, id }), selected: selected && selected.url === url && selected.id === id, result: results[url].objects[id] }))))))));
+        " ",
+        searchStatus[url].loading && react_1.default.createElement("span", { className: "searching" }),
+        searchStatus[url].error && (react_1.default.createElement(common_1.Message, { type: "error" }, searchStatus[url].error)))),
+    urls.length === 1 && searchStatus[url].error && (react_1.default.createElement(common_1.Message, { type: "error" }, searchStatus[url].error)),
+    urls.length === 1 && searchStatus[url].loading && (react_1.default.createElement(common_1.LoadingComponent, null)),
+    results[url] && Object.keys(results[url]).map((id) => (react_1.default.createElement(SearchResult, { key: id, onClick: () => onSelect({ url, id }), selected: selected && selected.url === url && selected.id === id, result: results[url][id] })))))))));
 
 
 /***/ }),
@@ -29277,23 +29291,44 @@ exports.default = createState;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = __webpack_require__(/*! react */ "react");
-const StoredSafe_1 = __webpack_require__(/*! ../model/StoredSafe */ "./src/model/StoredSafe.ts");
+const useStorage_1 = __webpack_require__(/*! ./useStorage */ "./src/hooks/useStorage.tsx");
 exports.useAuth = () => {
+    const { dispatch } = useStorage_1.useStorage();
     const [loginStatus, setLoginStatus] = react_1.useState({});
-    const login = (site, fields) => {
+    const onLogin = (site, fields) => {
         setLoginStatus((prevLoginStatus) => (Object.assign(Object.assign({}, prevLoginStatus), { [site.url]: { loading: true, error: undefined } })));
-        StoredSafe_1.actions.login(site, fields).then(() => {
-            setLoginStatus((prevLoginStatus) => (Object.assign(Object.assign({}, prevLoginStatus), { [site.url]: { loading: false, error: undefined } })));
-        }).catch((error) => {
-            setLoginStatus((prevLoginStatus) => (Object.assign(Object.assign({}, prevLoginStatus), { [site.url]: { loading: false, error: error.message } })));
+        dispatch({
+            sitePrefs: {
+                type: 'update',
+                url: site.url,
+                username: fields.remember ? fields.username : undefined,
+                loginType: fields.loginType,
+            },
+            sessions: {
+                type: 'login',
+                site,
+                fields,
+            },
+        }, {
+            onSuccess: () => {
+                setLoginStatus((prevLoginStatus) => (Object.assign(Object.assign({}, prevLoginStatus), { [site.url]: { loading: false, error: undefined } })));
+            },
+            onError: (error) => {
+                setLoginStatus((prevLoginStatus) => (Object.assign(Object.assign({}, prevLoginStatus), { [site.url]: { loading: false, error: error.message } })));
+            },
         });
     };
-    const logout = (url) => {
-        StoredSafe_1.actions.logout(url);
+    const onLogout = (url) => {
+        dispatch({
+            sessions: {
+                type: 'logout',
+                url,
+            },
+        });
     };
     return {
-        login,
-        logout,
+        onLogin,
+        onLogout,
         loginStatus,
     };
 };
@@ -29388,6 +29423,148 @@ exports.useForm = (initialValues, events) => {
         setValues(values);
     };
     return [values, { onChange, onBlur, onFocus }, reset];
+};
+
+
+/***/ }),
+
+/***/ "./src/hooks/useSearch.ts":
+/*!********************************!*\
+  !*** ./src/hooks/useSearch.ts ***!
+  \********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const react_1 = __webpack_require__(/*! react */ "react");
+const useStorage_1 = __webpack_require__(/*! ./useStorage */ "./src/hooks/useStorage.tsx");
+exports.useSearch = () => {
+    const { state, dispatch } = useStorage_1.useStorage();
+    const [needle, setNeedle] = react_1.useState('');
+    const [searching, setSearching] = react_1.useState('');
+    const [searchStatus, setSearchStatus] = react_1.useState({});
+    const onNeedleChange = (needle) => {
+        setNeedle(needle);
+    };
+    const onSearch = react_1.useCallback(() => {
+        Object.keys(state.sessions).forEach((url) => {
+            setSearchStatus((prevSearchStatus) => (Object.assign(Object.assign({}, prevSearchStatus), { [url]: {
+                    loading: true,
+                } })));
+            dispatch({
+                search: {
+                    type: 'find',
+                    url,
+                    needle,
+                },
+            }, {
+                onSuccess: () => {
+                    setSearchStatus((prevSearchStatus) => (Object.assign(Object.assign({}, prevSearchStatus), { [url]: {
+                            loading: false,
+                        } })));
+                },
+                onError: (error) => {
+                    setSearchStatus((prevSearchStatus) => (Object.assign(Object.assign({}, prevSearchStatus), { [url]: {
+                            loading: false,
+                            error: error.message,
+                        } })));
+                },
+            });
+        });
+    }, [needle, dispatch, state.sessions]);
+    const onShow = (url, objectId, field) => {
+        dispatch({
+            search: {
+                type: 'show',
+                url,
+                objectId,
+                field,
+            },
+        });
+    };
+    const onCopy = (url, objectId, field) => {
+        dispatch({
+            search: {
+                type: 'decrypt',
+                url,
+                objectId,
+            },
+        }, {
+            onSuccess: (newState) => {
+                const value = newState.search[url][objectId].fields[field].value;
+                navigator.clipboard.writeText(value).then(() => {
+                    setTimeout(() => {
+                        navigator.clipboard.writeText('');
+                    }, 30000);
+                });
+            },
+        });
+    };
+    const onFill = (url, objectId) => {
+        const fill = (data) => {
+            browser.tabs.query({ currentWindow: true, active: true }).then(([tab]) => {
+                console.log('send message to tab: ', tab);
+                browser.tabs.sendMessage(tab.id, {
+                    type: 'fill',
+                    data: data,
+                }).then(() => {
+                    window.close();
+                });
+            });
+        };
+        if (!state.search[url][objectId].isDecrypted) {
+            console.log('decrypt first', state.search);
+            dispatch({
+                search: {
+                    type: 'decrypt',
+                    url,
+                    objectId,
+                },
+            }, {
+                onSuccess: (newState) => {
+                    const fields = newState.search[url][objectId].fields;
+                    const data = {};
+                    Object.keys(fields).forEach((field) => {
+                        data[field] = fields[field].value;
+                    });
+                    console.log('decrypted', data);
+                    fill(data);
+                },
+            });
+        }
+        else {
+            const fields = state.search[url][objectId].fields;
+            const data = {};
+            Object.keys(fields).forEach((field) => {
+                data[field] = fields[field].value;
+            });
+            console.log('already decrypted', data);
+            fill(data);
+        }
+    };
+    // TODO: Fix error on type while searching
+    // useEffect(() => {
+    // const search = (): void => {
+    // if (searching !== needle) {
+    // onSearch();
+    // setSearching(needle);
+    // }
+    // };
+    // // Search when there's 500ms since the last keystroke.
+    // const id = setTimeout(search, 500);
+    // return (): void => clearTimeout(id);
+    // }, [needle, searching, onSearch]);
+    return {
+        needle,
+        onNeedleChange,
+        onSearch,
+        onShow,
+        onCopy,
+        onFill,
+        searchStatus,
+    };
 };
 
 
@@ -30076,7 +30253,7 @@ const handleErrors = (promise) => (promise.then((response) => {
  * Create search result from StoredSafe response data.
  * */
 const parseSearchResult = (ssObject, ssTemplate, isDecrypted = false) => {
-    const isFile = ssObject.templateid === '3';
+    const isFile = ssTemplate.info.file !== undefined;
     const name = isFile ? ssObject.filename : ssObject.objectname;
     const { name: type, ico: icon } = ssTemplate.info;
     const fields = {};
@@ -30157,29 +30334,22 @@ function logout(url) {
 /**
  * Find search results from given sites.
  * */
-function find(urls, needle) {
-    const promises = urls.map((url) => {
-        return getHandler(url).then((storedSafe) => {
-            return handleErrors(storedSafe.find(needle)).then((data) => {
-                const siteSearchResults = { objects: {} };
-                for (let i = 0; i < data.OBJECT.length; i++) {
-                    const ssObject = data.OBJECT[i];
-                    const objectId = ssObject.id;
-                    const ssTemplate = data.TEMPLATES.find((template) => template.id === ssObject.templateid);
-                    siteSearchResults.objects[objectId] = parseSearchResult(ssObject, ssTemplate);
+function find(url, needle) {
+    return getHandler(url).then((storedSafe) => {
+        return handleErrors(storedSafe.find(needle)).then((data) => {
+            const siteSearchResults = {};
+            for (let i = 0; i < data.OBJECT.length; i++) {
+                const ssObject = data.OBJECT[i];
+                const objectId = ssObject.id;
+                const ssTemplate = data.TEMPLATES.find((template) => template.id === ssObject.templateid);
+                const isFile = ssTemplate.info.file !== undefined;
+                if (isFile) { // Skip files
+                    continue;
                 }
-                return siteSearchResults;
-            }).catch((error) => {
-                return { error, objects: {} };
-            });
+                siteSearchResults[objectId] = parseSearchResult(ssObject, ssTemplate);
+            }
+            return siteSearchResults;
         });
-    });
-    return Promise.all(promises).then((siteResults) => {
-        const results = {};
-        for (let i = 0; i < siteResults.length; i++) {
-            results[urls[i]] = siteResults[i];
-        }
-        return results;
     });
 }
 /**
@@ -30195,12 +30365,24 @@ function decrypt(url, objectId) {
     });
 }
 /**
- * Find search results related to tab and put in storage.
+ * Find search results related to tab and put in storage
+ * from all logged in sites.
  * */
 function tabFind(tabId, needle) {
     return Sessions_1.actions.fetch().then((sessions) => {
         const urls = Object.keys(sessions);
-        return find(urls, needle).then((results) => (Search_1.actions.setTabResults(tabId, results)));
+        const promises = urls.map((url) => {
+            return find(url, needle).catch((error) => {
+                console.error(error);
+            }).then();
+        });
+        return Promise.all(promises).then((siteResults) => {
+            const results = {};
+            for (let i = 0; i < siteResults.length; i++) {
+                results[urls[i]] = siteResults[i];
+            }
+            return Search_1.actions.setTabResults(tabId, results);
+        });
     });
 }
 exports.actions = {
@@ -30223,6 +30405,9 @@ exports.actions = {
 
 "use strict";
 
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 var __importStar = (this && this.__importStar) || function (mod) {
     if (mod && mod.__esModule) return mod;
     var result = {};
@@ -30231,86 +30416,17 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const react_1 = __importStar(__webpack_require__(/*! react */ "react"));
+const react_1 = __importDefault(__webpack_require__(/*! react */ "react"));
 const useAuth_1 = __webpack_require__(/*! ../../hooks/useAuth */ "./src/hooks/useAuth.ts");
+const useSearch_1 = __webpack_require__(/*! ../../hooks/useSearch */ "./src/hooks/useSearch.ts");
 const useStorage_1 = __webpack_require__(/*! ../../hooks/useStorage */ "./src/hooks/useStorage.tsx");
 const Popup = __importStar(__webpack_require__(/*! ../../components/Popup */ "./src/components/Popup/index.ts"));
 exports.PopupContainer = () => {
-    const { state, dispatch, isInitialized } = useStorage_1.useStorage();
-    const { login, logout, loginStatus } = useAuth_1.useAuth();
-    const [searchTimeout, setSearchTimeout] = react_1.useState();
+    const { state, isInitialized } = useStorage_1.useStorage();
+    const auth = useAuth_1.useAuth();
+    const search = useSearch_1.useSearch();
     const openOptions = () => { browser.runtime.openOptionsPage(); };
-    const onLogin = (site, values) => {
-        dispatch({
-            sitePrefs: {
-                type: 'update',
-                url: site.url,
-                username: values.remember ? values.username : undefined,
-                loginType: values.loginType,
-            },
-        });
-        login(site, values);
-    };
-    const onSearch = (needle) => {
-        if (searchTimeout)
-            setSearchTimeout(undefined);
-        dispatch({
-            search: {
-                type: 'find',
-                urls: Object.keys(state.sessions),
-                needle,
-            },
-        });
-    };
-    const onNeedleChange = (needle) => {
-        if (searchTimeout) {
-            clearTimeout(searchTimeout);
-        }
-        setSearchTimeout(window.setTimeout(() => onSearch(needle), 1500));
-    };
-    const onCopy = (value) => {
-        // TODO: Decrypt first
-        navigator.clipboard.writeText(value).then(() => {
-            setTimeout(() => {
-                navigator.clipboard.writeText('');
-            }, 30000);
-        });
-    };
-    const onShow = (url, objectId, field) => {
-        dispatch({
-            search: {
-                type: 'show',
-                url,
-                objectId,
-                field,
-            },
-        });
-    };
-    const onFill = (url, objectId) => {
-        // TODO: Decrypt first
-        browser.tabs.query({ currentWindow: true, active: true }).then((tabs) => {
-            const tab = tabs[0];
-            browser.tabs.sendMessage(tab.id, {
-                type: 'fill',
-                data: state.search[url].objects[objectId],
-            });
-        });
-    };
-    return (react_1.default.createElement(Popup.Main, { isInitialized: isInitialized, search: {
-            onSearch,
-            onShow,
-            onNeedleChange,
-            results: state.search,
-            onCopy,
-            onFill,
-        }, auth: {
-            sites: state.sites.list,
-            sessions: state.sessions,
-            sitePrefs: state.sitePrefs,
-            onLogin: login,
-            onLogout: logout,
-            loginStatus,
-        }, openOptions: openOptions }));
+    return (react_1.default.createElement(Popup.Main, { isInitialized: isInitialized, search: Object.assign({ urls: Object.keys(state.sessions), results: state.search }, search), auth: Object.assign({ sites: state.sites.list, sessions: state.sessions, sitePrefs: state.sitePrefs }, auth), openOptions: openOptions }));
 };
 
 
@@ -30403,24 +30519,30 @@ exports.reducer = (state, action) => {
     /**
      * Get results from the active tab if they exist.
      * */
-    const init = () => {
+    function init() {
         return browser.tabs.query({
             active: true,
             currentWindow: true,
         }).then(([tab]) => {
             return Search_1.actions.fetch().then((results) => (results[tab.id] || {}));
         });
-    };
+    }
+    /**
+     * Decrypt object in search results.
+     * */
+    function decrypt(url, objectId) {
+        return StoredSafe_1.actions.decrypt(url, objectId).then((result) => (Object.assign(Object.assign({}, state), { [url]: Object.assign(Object.assign({}, state[url]), { [objectId]: result }) })));
+    }
     switch (action.type) {
         /**
          * Perform manual search on provided sites.
          * */
         case 'find': {
-            const { urls, needle } = action;
+            const { url, needle } = action;
             if (needle === '') {
                 return init();
             }
-            return StoredSafe_1.actions.find(urls, needle);
+            return StoredSafe_1.actions.find(url, needle).then((results) => (Object.assign(Object.assign({}, state), { [url]: results })));
         }
         /**
          * Show/hide hidden field in result.
@@ -30429,17 +30551,19 @@ exports.reducer = (state, action) => {
         case 'show': {
             const { url, objectId, field } = action;
             const show = action.show || true;
-            if (show && state[url].objects[objectId].isDecrypted) {
-                return StoredSafe_1.actions.decrypt(url, objectId).then((decryptedResult) => {
-                    decryptedResult.fields[field].isShowing = true;
-                    const newState = Object.assign({}, state);
-                    newState[url].objects[objectId] = decryptedResult;
+            if (show && !state[url][objectId].isDecrypted) {
+                return decrypt(url, objectId).then((newState) => {
+                    newState[url][objectId].fields[field].isShowing = true;
                     return newState;
                 });
             }
             const newState = Object.assign({}, state);
-            newState[url].objects[objectId].fields[field].isShowing = show;
+            newState[url][objectId].fields[field].isShowing = show;
             return Promise.resolve(newState);
+        }
+        case 'decrypt': {
+            const { url, objectId } = action;
+            return decrypt(url, objectId);
         }
         case 'init': {
             return init();

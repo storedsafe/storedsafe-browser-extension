@@ -1,4 +1,6 @@
-{
+import { StoredSafeResponse } from 'storedsafe';
+
+const ssVault: StoredSafeResponse = {
   "VAULT": [
     {
       "id": "139",
@@ -1032,4 +1034,6 @@
     "errors": 0,
     "errorcodes": 0
   }
-}
+};
+
+export default ssVault;

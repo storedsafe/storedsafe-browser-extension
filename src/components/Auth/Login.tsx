@@ -37,7 +37,7 @@ export const Login: React.FunctionComponent<LoginProps> = ({
   const { url } = site;
   const { username, loginType } = sitePrefs && sitePrefs || {};
   const initialValues: LoginFormValues = {
-    loginType: loginType || 'yubikey',
+    loginType: loginType || 'totp', // Set default to TOTP
     username: username || '',
     remember: username !== undefined,
     keys: '',

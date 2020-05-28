@@ -2,18 +2,21 @@ import React from 'react';
 import svg from '../../ico/svg';
 import './SearchBar.scss';
 
+export type OnNeedleChangeCallback = (needle: string) => void;
+export type OnSearchCallback = () => void;
+
 export interface SearchBarProps {
   needle: string;
   onFocus?: () => void;
   onBlur?: () => void;
-  onChange: (needle: string) => void;
-  onSearch: (needle: string) => void;
+  onNeedleChange: OnNeedleChangeCallback;
+  onSearch: OnSearchCallback;
   disabled?: boolean;
 }
 
 export const SearchBar: React.FunctionComponent<SearchBarProps> = ({
   needle,
-  onChange,
+  onNeedleChange,
   onSearch,
   onFocus,
   onBlur,
@@ -21,7 +24,7 @@ export const SearchBar: React.FunctionComponent<SearchBarProps> = ({
 }: SearchBarProps) => {
   const onSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
-    onSearch(needle);
+    onSearch();
   };
 
   return (
@@ -34,7 +37,7 @@ export const SearchBar: React.FunctionComponent<SearchBarProps> = ({
         aria-label="Search Text"
         disabled={disabled}
         onChange={({ target }: React.ChangeEvent<HTMLInputElement>): void => {
-          onChange(target.value)
+          onNeedleChange(target.value)
         }}
         onFocus={(): void => onFocus && onFocus()}
         onBlur={(): void => onBlur && onBlur()}

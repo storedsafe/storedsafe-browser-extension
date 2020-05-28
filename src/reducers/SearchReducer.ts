@@ -7,20 +7,24 @@ export type State = SearchResults;
 export type Action = {
   type: 'find';
   needle: string;
-  urls: string[];
+  url: string;
 } | {
   type: 'show';
   url: string;
   objectId: string;
   field: string;
   show?: boolean;
+} | {
+  type: 'decrypt';
+  url: string;
+  objectId: string;
 };
 
 export const reducer: PromiseReducer<State, Action> = (state, action) => {
   /**
    * Get results from the active tab if they exist.
    * */
-  const init = (): Promise<State> => {
+  function init(): Promise<State> {
     return browser.tabs.query({
       active: true,
       currentWindow: true,
@@ -31,16 +35,32 @@ export const reducer: PromiseReducer<State, Action> = (state, action) => {
     });
   }
 
+  /**
+   * Decrypt object in search results.
+   * */
+  function decrypt(url: string, objectId: string): Promise<State> {
+    return storedsafe.decrypt(url, objectId).then((result) => ({
+      ...state,
+      [url]: {
+        ...state[url],
+        [objectId]: result,
+      },
+    }));
+  }
+
   switch(action.type) {
     /**
      * Perform manual search on provided sites.
      * */
     case 'find': {
-      const { urls, needle } = action;
+      const { url, needle } = action;
       if (needle === '') {
         return init();
       }
-      return storedsafe.find(urls, needle);
+      return storedsafe.find(url, needle).then((results) => ({
+        ...state,
+        [url]: results,
+      }));
     }
 
     /**
@@ -50,17 +70,20 @@ export const reducer: PromiseReducer<State, Action> = (state, action) => {
     case 'show': {
       const { url, objectId, field } = action;
       const show = action.show || true;
-      if (show && state[url].objects[objectId].isDecrypted) {
-        return storedsafe.decrypt(url, objectId).then((decryptedResult) => {
-          decryptedResult.fields[field].isShowing = true;
-          const newState = { ...state };
-          newState[url].objects[objectId] = decryptedResult;
+      if (show && !state[url][objectId].isDecrypted) {
+        return decrypt(url, objectId).then((newState) => {
+          newState[url][objectId].fields[field].isShowing = true;
           return newState;
         });
       }
       const newState = { ...state };
-      newState[url].objects[objectId].fields[field].isShowing = show;
+      newState[url][objectId].fields[field].isShowing = show;
       return Promise.resolve(newState);
+    }
+
+    case 'decrypt': {
+      const { url, objectId } = action;
+      return decrypt(url, objectId);
     }
 
     case 'init': {

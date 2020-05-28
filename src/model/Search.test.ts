@@ -44,20 +44,18 @@ describe('uses mocked browser.storage', () => {
     const mockSearch: Search.Search = {
       1: {
         'fetch.example.com': {
-          objects: {
-            '1234': {
-              name: 'Result',
-              type: 'result',
-              icon: 'ico_result',
-              isDecrypted: false,
-              fields: {
-                'field': {
-                  title: 'Field',
-                  value: 'field',
-                  isEncrypted: false,
-                  isShowing: false,
-                  isPassword: false,
-                },
+          '1234': {
+            name: 'Result',
+            type: 'result',
+            icon: 'ico_result',
+            isDecrypted: false,
+            fields: {
+              'field': {
+                title: 'Field',
+                value: 'field',
+                isEncrypted: false,
+                isShowing: false,
+                isPassword: false,
               },
             },
           },
@@ -74,20 +72,18 @@ describe('uses mocked browser.storage', () => {
     const tabId = 2;
     const searchResults: Search.SearchResults = {
       'set.example.com': {
-        objects: {
-          '7890': {
-            name: 'Result',
-            type: 'result',
-            icon: 'ico_result',
-            isDecrypted: false,
-            fields: {
-              'field': {
-                title: 'Field',
-                value: 'field',
-                isEncrypted: false,
-                isShowing: false,
-                isPassword: false,
-              }
+        '7890': {
+          name: 'Result',
+          type: 'result',
+          icon: 'ico_result',
+          isDecrypted: false,
+          fields: {
+            'field': {
+              title: 'Field',
+              value: 'field',
+              isEncrypted: false,
+              isShowing: false,
+              isPassword: false,
             },
           },
         },

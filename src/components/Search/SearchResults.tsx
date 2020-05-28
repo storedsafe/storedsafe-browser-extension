@@ -1,7 +1,15 @@
 import React from 'react';
 import { SearchResults as Results, SearchResult as Result } from '../../model/Search';
+import { Message, LoadingComponent } from '../common';
 import icons from '../../ico';
 import './SearchResults.scss';
+
+interface SearchStatus {
+  [url: string]: {
+    loading: boolean;
+    error?: string;
+  };
+}
 
 interface SearchResultProps {
   result: Result;
@@ -26,36 +34,57 @@ const SearchResult: React.FunctionComponent<SearchResultProps> = ({
 );
 
 export interface SearchResultsProps {
+  urls: string[];
   results: Results;
   onSelect: (selected: { url: string; id: string }) => void;
   selected?: {
     url: string;
     id: string;
   };
+  searchStatus: SearchStatus;
 }
 
 export const SearchResults: React.FunctionComponent<SearchResultsProps> = ({
+  urls,
   results,
   onSelect,
   selected,
+  searchStatus,
 }: SearchResultsProps) => (
   <section className="search-results">
-    {Object.keys(results).map((url) => (
-      <article key={url} className="search-results-site">
-        {Object.keys(results).length > 1 && (
-          <div className="search-results-url">
-            {url} {/* TODO: Fix separate loading {<span className="searching" />}*/}
-          </div>
-        )}
-        {Object.keys(results[url].objects).map((id) => (
-          <SearchResult
-            key={id}
-            onClick={(): void => onSelect({ url, id })}
-            selected={selected && selected.url === url && selected.id === id}
-            result={results[url].objects[id]}
-          />
-        ))}
-      </article>
+    {urls.map((url) => (
+      // Hide url results if there is nothing to show..
+      (results[url] || searchStatus[url].loading || searchStatus[url].error) && (
+        <article key={url} className="search-results-site">
+          {/* Only show url if more than one session is active. */}
+          {urls.length > 1 && (
+            <div className="search-results-url">
+              {url} {searchStatus[url].loading && <span className="searching" />}
+              {searchStatus[url].error && (
+                <Message type="error">
+                  {searchStatus[url].error}
+                </Message>
+              )}
+            </div>
+          )}
+          {urls.length === 1 && searchStatus[url].error && (
+            <Message type="error">
+              {searchStatus[url].error}
+            </Message>
+          )}
+          {urls.length === 1 && searchStatus[url].loading && (
+            <LoadingComponent />
+          )}
+          {results[url] && Object.keys(results[url]).map((id) => (
+            <SearchResult
+              key={id}
+              onClick={(): void => onSelect({ url, id })}
+              selected={selected && selected.url === url && selected.id === id}
+              result={results[url][id]}
+            />
+          ))}
+        </article>
+      )
     ))}
   </section>
 );

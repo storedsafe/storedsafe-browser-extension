@@ -10,7 +10,6 @@ import {
 } from './Sessions';
 import {
   actions as search,
-  SearchResultField,
   SearchResultFields,
   SearchResult,
   SiteSearchResults,
@@ -58,7 +57,7 @@ const parseSearchResult = (
   ssTemplate: StoredSafeTemplate,
   isDecrypted = false,
 ): SearchResult => {
-  const isFile = ssObject.templateid === '3';
+  const isFile = ssTemplate.info.file !== undefined;
   const name = isFile ? ssObject.filename : ssObject.objectname;
   const { name: type, ico: icon } = ssTemplate.info;
   const fields: SearchResultFields = {};
@@ -168,34 +167,27 @@ function logout(
  * Find search results from given sites.
  * */
 function find(
-  urls: string[],
+  url: string,
   needle: string,
-): Promise<SearchResults> {
-  const promises: Promise<SiteSearchResults>[] = urls.map((url) => {
-    return getHandler(url).then((storedSafe) => {
-      return handleErrors(storedSafe.find(needle)).then((data) => {
-        const siteSearchResults: SiteSearchResults = { objects: {} };
-        for(let i = 0; i < data.OBJECT.length; i++) {
-          const ssObject = data.OBJECT[i];
-          const objectId = ssObject.id;
-          const ssTemplate = data.TEMPLATES.find((template) => template.id === ssObject.templateid);
-          siteSearchResults.objects[objectId] = parseSearchResult(
-            ssObject,
-            ssTemplate,
-          );
+): Promise<SiteSearchResults> {
+  return getHandler(url).then((storedSafe) => {
+    return handleErrors(storedSafe.find(needle)).then((data) => {
+      const siteSearchResults: SiteSearchResults = {};
+      for(let i = 0; i < data.OBJECT.length; i++) {
+        const ssObject = data.OBJECT[i];
+        const objectId = ssObject.id;
+        const ssTemplate = data.TEMPLATES.find((template) => template.id === ssObject.templateid);
+        const isFile = ssTemplate.info.file !== undefined;
+        if (isFile) { // Skip files
+          continue;
         }
-        return siteSearchResults;
-      }).catch((error) => {
-        return { error, objects: {} };
-      });
+        siteSearchResults[objectId] = parseSearchResult(
+          ssObject,
+          ssTemplate,
+        );
+      }
+      return siteSearchResults;
     });
-  });
-  return Promise.all(promises).then((siteResults) => {
-    const results: SearchResults = {};
-    for (let i = 0; i < siteResults.length; i++) {
-      results[urls[i]] = siteResults[i];
-    }
-    return results;
   });
 }
 
@@ -216,7 +208,8 @@ function decrypt(
 }
 
 /**
- * Find search results related to tab and put in storage.
+ * Find search results related to tab and put in storage
+ * from all logged in sites.
  * */
 function tabFind(
   tabId: number,
@@ -224,9 +217,18 @@ function tabFind(
 ): Promise<Search> {
   return sessions.fetch().then((sessions) => {
     const urls = Object.keys(sessions);
-    return find(urls, needle).then((results) => (
-      search.setTabResults(tabId, results)
-    ));
+    const promises: Promise<SiteSearchResults>[] = urls.map((url) => {
+      return find(url, needle).catch((error) => {
+        console.error(error);
+      }).then();
+    });
+    return Promise.all(promises).then((siteResults) => {
+      const results: SearchResults = {};
+      for (let i = 0; i < siteResults.length; i++) {
+        results[urls[i]] = siteResults[i];
+      }
+      return search.setTabResults(tabId, results)
+    });
   });
 }
 

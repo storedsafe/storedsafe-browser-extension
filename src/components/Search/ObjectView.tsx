@@ -4,27 +4,9 @@ import { Button } from '../common';
 import icons from '../../ico';
 import './ObjectView.scss';
 
-const encryptedFieldText = (
-  field: SearchResultField,
-  onShow: () => void
-): React.ReactNode => {
-  if (!field.isShowing) {
-    return <button className="show" onClick={onShow}>show</button>;
-  }
-  return field.value.split('').map((c, i) => {
-    let className = 'encrypted-field';
-    if (/[0-9]/.test(c)) {
-      className += ' number';
-    } else if (/[a-z]/.test(c)) {
-      className += ' lowercase';
-    } else if (/[A-Z]/.test(c)) {
-      className += ' uppercase';
-    } else {
-      className += ' symbol';
-    }
-    return <span key={i} className={className}>{c}</span>
-  });
-};
+export type OnShowCallback = (url: string, objectId: string, field: string) => void;
+export type OnCopyCallback = (url: string, objectId: string, field: string) => void;
+export type OnFillCallback = (url: string, objectId: string) => void;
 
 interface ObjectViewProps {
   url: string;
@@ -43,6 +25,28 @@ export const ObjectView: React.FunctionComponent<ObjectViewProps> = ({
   onCopy,
   onFill,
 }: ObjectViewProps) => {
+  const encryptedFieldText = (
+    field: SearchResultField,
+    onShow: () => void
+  ): React.ReactNode => {
+    if (!field.isShowing) {
+      return <button className="show" onClick={onShow}>show</button>;
+    }
+    return field.value.split('').map((c, i) => {
+      let className = 'encrypted-field';
+      if (/[0-9]/.test(c)) {
+        className += ' number';
+      } else if (/[a-z]/.test(c)) {
+        className += ' lowercase';
+      } else if (/[A-Z]/.test(c)) {
+        className += ' uppercase';
+      } else {
+        className += ' symbol';
+      }
+      return <span key={i} className={className}>{c}</span>
+    });
+  };
+
   return (
     <section className="object-view">
       <article className="object-view-container">
