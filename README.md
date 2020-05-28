@@ -2,6 +2,8 @@
 
 StoredSafe browser extension for Chrome and Firefox.
 
+**NOTE: Current version is only compatible with StoredSafe 2.1.0**
+
 ## Setup
 
 ### Install
