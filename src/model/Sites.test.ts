@@ -1,3 +1,4 @@
+import '../__mocks__/browser';
 const syncSetMock = jest.fn(() => Promise.resolve());
 const syncGetMock = jest.fn((key: string) => Promise.resolve({})); //eslint-disable-line
 const managedGetMock = jest.fn((key: string) => Promise.resolve({})); //eslint-disable-line
@@ -10,15 +11,9 @@ const mockGet = (
   throw new Error('Invalid key');
 };
 
-global.browser = {
-  storage: {
-    sync:  {
-      get: syncGetMock,
-      set: syncSetMock,
-    },
-    managed: { get: managedGetMock },
-  }
-};
+global.browser.storage.sync.get = syncGetMock;
+global.browser.storage.sync.set = syncSetMock;
+global.browser.storage.managed.get = managedGetMock;
 
 import * as Sites from './Sites';
 

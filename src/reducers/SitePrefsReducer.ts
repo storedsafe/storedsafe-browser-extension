@@ -19,14 +19,10 @@ export const reducer: PromiseReducer<State, Action> = (count, action) => {
       const { url, username, loginType } = action;
       return actions.update(url, username, loginType);
     }
-    case 'remove': {
-      const { url } = action;
-      return actions.remove(url);
-    }
     case 'init': {
       return actions.fetch();
     }
   }
 };
 
-export const emptyState: State = {};
+export const emptyState: State = { sites: {} };

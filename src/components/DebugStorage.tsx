@@ -46,8 +46,8 @@ const DebugStorage: React.FC = () => {
     );
   });
 
-  const sitePrefs = Object.keys(state.sitePrefs).map((url) => {
-    const { username, loginType } = state.sitePrefs[url];
+  const sitePrefs = Object.keys(state.sitePrefs.sites).map((url) => {
+    const { username, loginType } = state.sitePrefs.sites[url];
     return (
       <p key={url}>
         <strong>Username: </strong>{username}<br />
@@ -70,6 +70,7 @@ const DebugStorage: React.FC = () => {
       <h3>Sessions</h3>
       {sessions}
       <h3>Site Prefs</h3>
+      <p>Last used: {state.sitePrefs.lastUsed}</p>
       {sitePrefs}
     </section>
   );

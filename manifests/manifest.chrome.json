@@ -1,0 +1,8 @@
+{
+  "background": {
+    "persistent": false
+  },
+  "storage": {
+    "managed_schema": "schema.json"
+  }
+}

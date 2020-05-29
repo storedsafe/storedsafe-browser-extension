@@ -1,3 +1,4 @@
+import '../__mocks__/browser';
 interface Dict {
   [key: string]: string | number | boolean | Dict;
 }
@@ -14,15 +15,9 @@ const mockGet = (
   throw new Error('Invalid key');
 };
 
-global.browser = {
-  storage: {
-    sync:  {
-      get: syncGetMock,
-      set: syncSetMock,
-    },
-    managed: { get: managedGetMock },
-  }
-};
+global.browser.storage.sync.get = syncGetMock;
+global.browser.storage.sync.set = syncSetMock;
+global.browser.storage.managed.get = managedGetMock;
 
 import * as Settings from './Settings';
 

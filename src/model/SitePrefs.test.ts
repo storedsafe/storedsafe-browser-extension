@@ -1,3 +1,4 @@
+import '../__mocks__/browser';
 const localSetMock = jest.fn(() => Promise.resolve());
 //eslint-disable-next-line
 const localGetMock = jest.fn((key: string) => Promise.resolve({}));
@@ -10,14 +11,8 @@ const mockGet = (
   throw new Error('Invalid key');
 };
 
-global.browser = {
-  storage: {
-    local:  {
-      get: localGetMock,
-      set: localSetMock,
-    },
-  }
-};
+global.browser.storage.local.get = localGetMock;
+global.browser.storage.local.set = localSetMock;
 
 import * as SitePrefs from './SitePrefs';
 
@@ -29,43 +24,53 @@ describe('uses mocked browser.storage', () => {
 
   test('fetch(), empty', () => (
     SitePrefs.actions.fetch().then((sitePrefs) => {
-      expect(Object.keys(sitePrefs).length).toBe(0);
+      expect(Object.keys(sitePrefs).length).toBe(1);
+      expect(Object.keys(sitePrefs.sites).length).toBe(0);
     })
   ));
 
   test('fetch(), no data', () => {
-    localGetMock.mockImplementationOnce(mockGet({}));
+    localGetMock.mockImplementationOnce(mockGet({ sites: {} }));
     return SitePrefs.actions.fetch().then((sitePrefs) => {
-      expect(Object.keys(sitePrefs).length).toBe(0);
+      expect(Object.keys(sitePrefs).length).toBe(1);
+      expect(Object.keys(sitePrefs.sites).length).toBe(0);
     });
   });
 
   test('fetch(), with data', () => {
     const mockSitePrefs: SitePrefs.SitePrefs = {
-      'foo.example.com': {
-        username: 'bob',
-        loginType: 'yubikey',
-      },
-      'bar.example.com': {
-        username: 'alice',
-      },
-      'zot.example.com': {
-        loginType: 'totp',
+      lastUsed: 'foo.example.com',
+      sites: {
+        'foo.example.com': {
+          username: 'bob',
+          loginType: 'yubikey',
+        },
+        'bar.example.com': {
+          username: 'alice',
+        },
+        'zot.example.com': {
+          loginType: 'totp',
+        },
       },
     }
     localGetMock.mockImplementationOnce(mockGet(mockSitePrefs));
     return SitePrefs.actions.fetch().then((sitePrefs) => {
-      expect(sitePrefs['foo.example.com']).toBe(mockSitePrefs['foo.example.com']);
-      expect(sitePrefs['bar.example.com']).toBe(mockSitePrefs['bar.example.com']);
-      expect(sitePrefs['zot.example.com']).toBe(mockSitePrefs['zot.example.com']);
+      expect(sitePrefs).toEqual(mockSitePrefs);
     });
   });
 
   test('update()', () => {
     const mockSitePrefs: SitePrefs.SitePrefs = {
-      'foo.example.com': {
-        username: 'bob',
-        loginType: 'yubikey',
+      lastUsed: 'bar.example.com',
+      sites: {
+        'foo.example.com': {
+          username: 'bob',
+          loginType: 'yubikey',
+        },
+        'bar.example.com': {
+          username: 'alice',
+          loginType: 'totp',
+        },
       },
     }
     const url = 'foo.example.com';
@@ -73,9 +78,13 @@ describe('uses mocked browser.storage', () => {
     const loginType = 'totp';
     const newSitePrefs: SitePrefs.SitePrefs = {
       ...mockSitePrefs,
-      [url]: {
-        username,
-        loginType,
+      lastUsed: url,
+      sites: {
+        ...mockSitePrefs.sites,
+        [url]: {
+          username,
+          loginType,
+        },
       },
     }
     localGetMock.mockImplementationOnce(mockGet(mockSitePrefs));
@@ -87,21 +96,6 @@ describe('uses mocked browser.storage', () => {
         sitePrefs: newSitePrefs,
       });
       expect(sitePrefs).toEqual(newSitePrefs);
-    });
-  });
-
-  test('remove()', () => {
-    const mockSitePrefs: SitePrefs.SitePrefs = {
-      'foo.example.com': {
-        username: 'bob',
-        loginType: 'yubikey',
-      },
-    }
-    localGetMock.mockImplementationOnce(mockGet(mockSitePrefs));
-    const url = 'foo.example.com';
-    return SitePrefs.actions.remove(url).then((sitePrefs) => {
-      expect(localSetMock).toHaveBeenCalledWith({ sitePrefs: {} });
-      expect(sitePrefs).toEqual({});
     });
   });
 });

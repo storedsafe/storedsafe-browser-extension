@@ -1,7 +1,10 @@
 export interface SitePrefs {
-  [url: string]: {
-    username?: string;
-    loginType?: 'yubikey' | 'totp';
+  lastUsed?: string;
+  sites: {
+    [url: string]: {
+      username?: string;
+      loginType?: 'yubikey' | 'totp';
+    };
   };
 }
 
@@ -11,7 +14,7 @@ export interface SitePrefs {
  * */
 const get = (): Promise<SitePrefs> => (
   browser.storage.local.get('sitePrefs').then(({ sitePrefs }) => {
-    return sitePrefs || {};
+    return sitePrefs || { sites: {} };
   })
 );
 
@@ -36,26 +39,22 @@ export const actions = {
     return get().then((sitePrefs) => {
       const newSitePrefs = {
         ...sitePrefs,
-        [url]: { username, loginType },
+        lastUsed: url,
+        sites: {
+          ...sitePrefs.sites,
+          [url]: { username, loginType },
+        },
       };
       return set(newSitePrefs).then(() => get());
     });
   },
 
   /**
-   * Remove preferences for the given url.
+   * Clear preferences.
    * */
-  remove: (url: string): Promise<SitePrefs> => {
-    return get().then((sitePrefs) => {
-      const newSitePrefs: SitePrefs = {};
-      Object.keys(sitePrefs).forEach((siteUrl) => {
-        if (siteUrl !== url) {
-          newSitePrefs[siteUrl] = sitePrefs[siteUrl];
-        }
-      });
-      return set(newSitePrefs).then(() => get());
-    });
-  },
+  clear: (): Promise<SitePrefs> => (
+    set({ sites: {} }).then(get)
+  ),
 
   /**
    * Fetch state from storage.

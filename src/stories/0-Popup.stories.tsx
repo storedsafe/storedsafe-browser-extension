@@ -75,7 +75,7 @@ export const PopupLoading: React.FunctionComponent = () => {
       auth={{
         sites,
         sessions,
-        sitePrefs: {},
+        sitePrefs: { sites: {} },
         onLogin: action('login'),
         onLogout: action('login'),
         loginStatus: {},
@@ -112,7 +112,7 @@ export const PopupOffline: React.FunctionComponent = () => {
       auth={{
         sites,
         sessions,
-        sitePrefs: {},
+        sitePrefs: { sites: {} },
         onLogin: action('login'),
         onLogout: action('login'),
         loginStatus: {},
@@ -201,7 +201,7 @@ export const PopupOnline: React.FunctionComponent = () => {
       auth={{
         sites,
         sessions,
-        sitePrefs: {},
+        sitePrefs: { sites: {} },
         onLogin: action('login'),
         onLogout: action('login'),
         loginStatus: {},
@@ -257,7 +257,7 @@ export const PopupOnlineLoading: React.FunctionComponent = () => {
       auth={{
         sites,
         sessions,
-        sitePrefs: {},
+        sitePrefs: { sites: {} },
         onLogin: action('login'),
         onLogout: action('login'),
         loginStatus: {},
@@ -349,9 +349,12 @@ export const PopupMultiple: React.FunctionComponent = () => {
   ];
 
   const sitePrefs = {
-    'offline.example.com': {
-      loginType: 'totp' as 'totp',
-      username: 'myusername',
+    lastUsed: 'offline.example.com',
+    sites: {
+      'offline.example.com': {
+        loginType: 'totp' as 'totp',
+        username: 'myusername',
+      },
     },
   };
 

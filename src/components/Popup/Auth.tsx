@@ -28,7 +28,8 @@ const PopupAuth: React.FunctionComponent<AuthProps> = ({
   onLogout,
   loginStatus,
 }: AuthProps) => {
-  const [selected, setSelected] = useState<number>(0);
+  const lastUsed = sites.findIndex(({ url }) => sitePrefs.lastUsed === url);
+  const [selected, setSelected] = useState<number>(lastUsed === -1 ? 0 : lastUsed);
 
   const left = <Auth.SiteList
     sites={sites}
@@ -51,7 +52,7 @@ const PopupAuth: React.FunctionComponent<AuthProps> = ({
       key={url}
       site={sites[selected]}
       onLogin={onLogin}
-      sitePrefs={sitePrefs[url]}
+      sitePrefs={sitePrefs.sites[url]}
       {...loginStatus[url]}
     />
   );

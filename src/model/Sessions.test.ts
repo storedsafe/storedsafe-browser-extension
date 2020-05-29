@@ -1,3 +1,4 @@
+import '../__mocks__/browser';
 const localSetMock = jest.fn(() => Promise.resolve());
 //eslint-disable-next-line
 const localGetMock = jest.fn((key: string) => Promise.resolve({}));
@@ -10,14 +11,8 @@ const mockGet = (
   throw new Error('Invalid key');
 };
 
-global.browser = {
-  storage: {
-    local:  {
-      get: localGetMock,
-      set: localSetMock,
-    },
-  }
-};
+global.browser.storage.local.get = localGetMock;
+global.browser.storage.local.set = localSetMock;
 
 import * as Sessions from './Sessions';
 

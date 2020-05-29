@@ -1,3 +1,4 @@
+import '../__mocks__/browser';
 import { Sessions } from './Sessions';
 import { Search, SearchResults, SearchResult } from './Search';
 
@@ -97,14 +98,8 @@ const localGetMock = jest.fn((key: 'sessions' | 'search') => {
 });
 const errorMock = jest.fn();
 
-global.browser = {
-  storage: {
-    local:  {
-      get: localGetMock,
-      set: localSetMock,
-    },
-  }
-};
+global.browser.storage.local.get = localGetMock;
+global.browser.storage.local.set = localSetMock;
 global.Date.now = jest.fn(() => 0);
 global.console.error = errorMock;
 jest.mock('storedsafe');
