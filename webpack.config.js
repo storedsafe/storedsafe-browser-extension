@@ -57,7 +57,7 @@ module.exports = (env, args) => ({
   devtool: 'source-map',
 
   plugins: [
-    new CleanWebpackPlugin(),
+    // new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
       chunks: ['main'],
       templateParameters: {
@@ -68,7 +68,7 @@ module.exports = (env, args) => ({
         ] : [
           'react.development.js',
           'react-dom.development.js',
-          'browser-polyfill.js',
+          'browser-polyfill.min.js',
         ],
       },
     }),
@@ -85,8 +85,8 @@ module.exports = (env, args) => ({
       ] : [
         path.resolve(__dirname, 'node_modules/react/umd/react.development.js'),
         path.resolve(__dirname, 'node_modules/react-dom/umd/react-dom.development.js'),
-        path.resolve(__dirname, 'node_modules/webextension-polyfill/dist/browser-polyfill.js'),
-        path.resolve(__dirname, 'node_modules/webextension-polyfill/dist/browser-polyfill.js.map'),
+        path.resolve(__dirname, 'node_modules/webextension-polyfill/dist/browser-polyfill.min.js'),
+        path.resolve(__dirname, 'node_modules/webextension-polyfill/dist/browser-polyfill.min.js.map'),
       ],
     }),
   ],

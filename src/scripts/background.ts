@@ -1,27 +1,32 @@
 import StoredSafe from 'storedsafe';
+import { actions } from '../model/StoredSafe';
 import * as Sessions from '../model/Sessions';
 import * as Settings from '../model/Settings';
 import * as Search from '../model/Search';
 
-/**
- * Session management functions and initialization
- * */
+//
+// Session management functions and initialization
+//
+
+// Timers for invalidating sessions.
 let sessionTimers: {
   [url: string]: number;
 } = {};
 let idleTimer: number;
 
-const invalidateSession = (url: string): void => {
+/**
+ * Invalidate a single session.
+ * */
+function invalidateSession(url: string): void {
   console.log('Invalidating session: ', url);
-  Sessions.actions.fetch().then((sessions) => {
-    const { apikey, token } = sessions[url];
-    const storedSafe = new StoredSafe(url, apikey, token);
-    storedSafe.logout();
-    Sessions.actions.remove(url);
-  });
-};
+  actions.logout(url);
+}
 
-const invalidateAllSessions = (): void => {
+/**
+ * Invalidate all sessions and clear search results.
+ * Doesn't use storedsafe actions to avoid unnecessary calls to storage areas.
+ * */
+function invalidateAllSessions(): void {
   console.log('Invalidating all sessions');
   Sessions.actions.fetch().then((sessions) => {
     Object.keys(sessions).forEach((url) => {
@@ -32,7 +37,18 @@ const invalidateAllSessions = (): void => {
     Sessions.actions.clear();
     Search.actions.clear();
   });
-};
+}
+
+/**
+ * Find search results related to loaded tab.
+ * */
+function tabFind(tab: browser.tabs.Tab): Promise<void> {
+  const { id, url } = tab;
+  const match = url.match(/^(?:https?:\/\/)?(?:www)?(.*)\//i);
+  const needle = match !== null ? match[1] : url;
+  console.log(id, needle)
+  return actions.tabFind(id, needle).then();
+}
 
 /**
  * Event handler functions
@@ -120,6 +136,16 @@ function onMenuClick(
   }
 }
 
+function onMessage(
+  message: { type: string },
+  sender: browser.runtime.MessageSender
+): Promise<void> {
+  if (message.type === 'tabSearch') {
+    return tabFind(sender.tab);
+  }
+  return Promise.reject(`Unknown message type: ${message.type}.`);
+}
+
 /**
  * Subscribe to events and initialization
  * */
@@ -137,9 +163,15 @@ browser.storage.onChanged.addListener(onStorageChange);
 browser.runtime.onInstalled.addListener(onInstalled);
 
 // Invalidate sessions on suspend
-browser.runtime.onSuspend.addListener(onSuspend);
+if (browser.runtime.onSuspend) { // Not implemented in firefox
+  browser.runtime.onSuspend.addListener(onSuspend);
+}
 
 // Invalidate sessions after being idle for some time
 browser.idle.onStateChanged.addListener(onIdle);
 
+// React to contect menu click (menu set up during onInstall)
 browser.contextMenus.onClicked.addListener(onMenuClick);
+
+// React to messages from other parts of the extension
+browser.runtime.onMessage.addListener(onMessage);

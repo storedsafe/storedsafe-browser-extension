@@ -65,7 +65,7 @@ const PopupSearch: React.FunctionComponent<SearchProps> = ({
       </section>
     );
   } else if (
-    (selected.url === undefined && selected.id === undefined) &&
+    (results[selected.url] === undefined || results[selected.url][selected.id] === undefined) &&
     (firstUrl !== undefined && firstId !== undefined)
   ) {
     // Skip single frame while selected state updates.

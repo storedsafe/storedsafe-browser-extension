@@ -54,25 +54,25 @@ export const SearchResults: React.FunctionComponent<SearchResultsProps> = ({
   <section className="search-results">
     {urls.map((url) => (
       // Hide url results if there is nothing to show..
-      (results[url] || searchStatus[url].loading || searchStatus[url].error) && (
+      (results[url] || searchStatus[url] && (searchStatus[url].loading || searchStatus[url].error)) && (
         <article key={url} className="search-results-site">
           {/* Only show url if more than one session is active. */}
           {urls.length > 1 && (
             <div className="search-results-url">
-              {url} {searchStatus[url].loading && <span className="searching" />}
-              {searchStatus[url].error && (
+              {url} {searchStatus[url] && searchStatus[url].loading && <span className="searching" />}
+              {searchStatus[url] && searchStatus[url].error && (
                 <Message type="error">
-                  {searchStatus[url].error}
+                  {searchStatus[url] && searchStatus[url].error}
                 </Message>
               )}
             </div>
           )}
-          {urls.length === 1 && searchStatus[url].error && (
+          {urls.length === 1 && searchStatus[url] && searchStatus[url].error && (
             <Message type="error">
-              {searchStatus[url].error}
+              {searchStatus[url] && searchStatus[url].error}
             </Message>
           )}
-          {urls.length === 1 && searchStatus[url].loading && (
+          {urls.length === 1 && searchStatus[url] && searchStatus[url].loading && (
             <LoadingComponent />
           )}
           {results[url] && Object.keys(results[url]).map((id) => (

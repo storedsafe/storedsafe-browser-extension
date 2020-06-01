@@ -91,13 +91,14 @@
   !*** ./src/scripts/content_script.ts ***!
   \***************************************/
 /*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
 // const types = /text|url|password|email/i;
 // const ids = /user|name|pass|mail|url|server|site/i;
+console.log('Content script loaded');
+browser.runtime.sendMessage({
+    type: 'tabSearch',
+});
 const matchers = {
     username: {
         types: /text|email/,

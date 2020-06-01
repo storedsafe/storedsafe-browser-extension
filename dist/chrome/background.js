@@ -2466,7 +2466,7 @@ const populate = (settings, values, managed = false) => {
  * */
 const get = () => {
     const settings = {};
-    return systemStorage.get('settings').then(({ settings: system }) => {
+    return systemStorage.get('settings').catch(() => ({ settings: {} })).then(({ settings: system }) => {
         if (system && system.enforced) {
             populate(settings, system.enforced, true);
         }
@@ -2514,6 +2514,184 @@ exports.actions = {
 
 /***/ }),
 
+/***/ "./src/model/StoredSafe.ts":
+/*!*********************************!*\
+  !*** ./src/model/StoredSafe.ts ***!
+  \*********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.actions = void 0;
+const storedsafe_1 = __importDefault(__webpack_require__(/*! storedsafe */ "./node_modules/storedsafe/dist/index.js"));
+const Sessions_1 = __webpack_require__(/*! ./Sessions */ "./src/model/Sessions.ts");
+const Search_1 = __webpack_require__(/*! ./Search */ "./src/model/Search.ts");
+const handleErrors = (promise) => (promise.then((response) => {
+    if (response.status === 200) {
+        return response.data;
+    }
+    throw new Error(`StoredSafe Error: (${response.status}) ${response.statusText}`);
+}).catch((error) => {
+    if (error.response) {
+        throw new Error(`StoredSafe Error: ${error.response.data.ERRORS.join(' | ')}`);
+    }
+    else if (error.request) {
+        throw new Error(`Network Error: (${error.request.status}) ${error.request.statusText}`);
+    }
+    throw new Error(`Unexpected Error: ${error.message}`);
+}));
+/**
+ * Create search result from StoredSafe response data.
+ * */
+const parseSearchResult = (ssObject, ssTemplate, isDecrypted = false) => {
+    const isFile = ssTemplate.info.file !== undefined;
+    const name = isFile ? ssObject.filename : ssObject.objectname;
+    const { name: type, ico: icon } = ssTemplate.info;
+    const fields = {};
+    ssTemplate.structure.forEach((field) => {
+        const { translation: title, encrypted: isEncrypted, policy: isPassword, } = field;
+        const value = (isEncrypted
+            ? (isDecrypted ? ssObject.crypted[field.fieldname] : undefined)
+            : ssObject.public[field.fieldname]);
+        fields[field.fieldname] = {
+            title,
+            value,
+            isEncrypted,
+            isPassword,
+        };
+    });
+    return {
+        name,
+        type,
+        icon,
+        isDecrypted,
+        fields,
+    };
+};
+/**
+ * Get StoredSafe handler for the given url.
+ * */
+function getHandler(url) {
+    return Sessions_1.actions.fetch().then((currentSessions) => {
+        if (currentSessions[url] === undefined) {
+            throw new Error(`No active session for ${url}`);
+        }
+        const { apikey, token } = currentSessions[url];
+        return new storedsafe_1.default(url, apikey, token);
+    });
+}
+/**
+ * Attempt login with given site.
+ * */
+function login({ url, apikey }, fields) {
+    const storedSafe = new storedsafe_1.default(url, apikey);
+    let promise;
+    if (fields.loginType === 'yubikey') {
+        const { username, keys } = fields;
+        const passphrase = keys.slice(0, -44);
+        const otp = keys.slice(-44);
+        promise = storedSafe.loginYubikey(username, passphrase, otp);
+    }
+    else if (fields.loginType === 'totp') {
+        const { username, passphrase, otp, } = fields;
+        promise = storedSafe.loginTotp(username, passphrase, otp);
+    }
+    return handleErrors(promise).then((data) => {
+        const { token, audit } = data.CALLINFO;
+        const violations = (Array.isArray(audit.violations)
+            ? {}
+            : audit.violations);
+        const warnings = (Array.isArray(audit.warnings)
+            ? {}
+            : audit.warnings);
+        return Sessions_1.actions.add(url, {
+            apikey,
+            token,
+            createdAt: Date.now(),
+            violations,
+            warnings,
+        });
+    });
+}
+/**
+ * Logout from given site.
+ * Will silently remove session even if logout fails.
+ * */
+function logout(url) {
+    return getHandler(url).then((storedSafe) => (handleErrors(storedSafe.logout()).catch((error) => {
+        console.error('StoredSafe Logout Error', error);
+    }).then(() => (Sessions_1.actions.remove(url)))));
+}
+/**
+ * Find search results from given sites.
+ * */
+function find(url, needle) {
+    return getHandler(url).then((storedSafe) => {
+        return handleErrors(storedSafe.find(needle)).then((data) => {
+            const siteSearchResults = {};
+            for (let i = 0; i < data.OBJECT.length; i++) {
+                const ssObject = data.OBJECT[i];
+                const objectId = ssObject.id;
+                const ssTemplate = data.TEMPLATES.find((template) => template.id === ssObject.templateid);
+                const isFile = ssTemplate.info.file !== undefined;
+                if (isFile) { // Skip files
+                    continue;
+                }
+                siteSearchResults[objectId] = parseSearchResult(ssObject, ssTemplate);
+            }
+            return siteSearchResults;
+        });
+    });
+}
+/**
+ * Decrypt StoredSafe object.
+ * */
+function decrypt(url, objectId) {
+    return getHandler(url).then((storedSafe) => {
+        return handleErrors(storedSafe.decryptObject(objectId)).then((data) => {
+            const ssObject = data.OBJECT.find((obj) => obj.id === objectId);
+            const ssTemplate = data.TEMPLATES.find((template) => template.id === ssObject.templateid);
+            return parseSearchResult(ssObject, ssTemplate, true);
+        });
+    });
+}
+/**
+ * Find search results related to tab and put in storage
+ * from all logged in sites.
+ * */
+function tabFind(tabId, needle) {
+    return Sessions_1.actions.fetch().then((sessions) => {
+        const urls = Object.keys(sessions);
+        const promises = urls.map((url) => {
+            return find(url, needle).catch((error) => {
+                console.error(error);
+            }).then();
+        });
+        return Promise.all(promises).then((siteResults) => {
+            const results = {};
+            for (let i = 0; i < siteResults.length; i++) {
+                results[urls[i]] = siteResults[i];
+            }
+            return Search_1.actions.setTabResults(tabId, results);
+        });
+    });
+}
+exports.actions = {
+    login,
+    logout,
+    find,
+    decrypt,
+    tabFind,
+};
+
+
+/***/ }),
+
 /***/ "./src/scripts/background.ts":
 /*!***********************************!*\
   !*** ./src/scripts/background.ts ***!
@@ -2547,24 +2725,28 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const storedsafe_1 = __importDefault(__webpack_require__(/*! storedsafe */ "./node_modules/storedsafe/dist/index.js"));
+const StoredSafe_1 = __webpack_require__(/*! ../model/StoredSafe */ "./src/model/StoredSafe.ts");
 const Sessions = __importStar(__webpack_require__(/*! ../model/Sessions */ "./src/model/Sessions.ts"));
 const Settings = __importStar(__webpack_require__(/*! ../model/Settings */ "./src/model/Settings.ts"));
 const Search = __importStar(__webpack_require__(/*! ../model/Search */ "./src/model/Search.ts"));
-/**
- * Session management functions and initialization
- * */
+//
+// Session management functions and initialization
+//
+// Timers for invalidating sessions.
 let sessionTimers = {};
 let idleTimer;
-const invalidateSession = (url) => {
+/**
+ * Invalidate a single session.
+ * */
+function invalidateSession(url) {
     console.log('Invalidating session: ', url);
-    Sessions.actions.fetch().then((sessions) => {
-        const { apikey, token } = sessions[url];
-        const storedSafe = new storedsafe_1.default(url, apikey, token);
-        storedSafe.logout();
-        Sessions.actions.remove(url);
-    });
-};
-const invalidateAllSessions = () => {
+    StoredSafe_1.actions.logout(url);
+}
+/**
+ * Invalidate all sessions and clear search results.
+ * Doesn't use storedsafe actions to avoid unnecessary calls to storage areas.
+ * */
+function invalidateAllSessions() {
     console.log('Invalidating all sessions');
     Sessions.actions.fetch().then((sessions) => {
         Object.keys(sessions).forEach((url) => {
@@ -2575,7 +2757,17 @@ const invalidateAllSessions = () => {
         Sessions.actions.clear();
         Search.actions.clear();
     });
-};
+}
+/**
+ * Find search results related to loaded tab.
+ * */
+function tabFind(tab) {
+    const { id, url } = tab;
+    const match = url.match(/^(?:https?:\/\/)?(?:www)?(.*)\//i);
+    const needle = match !== null ? match[1] : url;
+    console.log(id, needle);
+    return StoredSafe_1.actions.tabFind(id, needle).then();
+}
 /**
  * Event handler functions
  * */
@@ -2646,6 +2838,12 @@ function onMenuClick(info, tab) {
         }
     }
 }
+function onMessage(message, sender) {
+    if (message.type === 'tabSearch') {
+        return tabFind(sender.tab);
+    }
+    return Promise.reject(`Unknown message type: ${message.type}.`);
+}
 /**
  * Subscribe to events and initialization
  * */
@@ -2658,10 +2856,15 @@ browser.storage.onChanged.addListener(onStorageChange);
 // Open options page and set up context menus
 browser.runtime.onInstalled.addListener(onInstalled);
 // Invalidate sessions on suspend
-browser.runtime.onSuspend.addListener(onSuspend);
+if (browser.runtime.onSuspend) { // Not implemented in firefox
+    browser.runtime.onSuspend.addListener(onSuspend);
+}
 // Invalidate sessions after being idle for some time
 browser.idle.onStateChanged.addListener(onIdle);
+// React to contect menu click (menu set up during onInstall)
 browser.contextMenus.onClicked.addListener(onMenuClick);
+// React to messages from other parts of the extension
+browser.runtime.onMessage.addListener(onMessage);
 
 
 /***/ })

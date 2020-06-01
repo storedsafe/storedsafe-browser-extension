@@ -31,7 +31,7 @@ const sitesFromCollections = (siteCollections: SiteCollections): Sites => ({
  * */
 const get = (): Promise<SiteCollections> => {
   return Promise.all<StorageSites, StorageSites>([
-    systemStorage.get('sites') as Promise<StorageSites>,
+    systemStorage.get('sites').catch(() => ({ settings: {} })) as Promise<StorageSites>,
     userStorage.get('sites') as Promise<StorageSites>,
   ]).then(([{ sites: systemSites }, { sites: userSites }]) => {
     const system = systemSites || [];

@@ -1,6 +1,11 @@
-import { actions } from '../model/StoredSafe';
 // const types = /text|url|password|email/i;
 // const ids = /user|name|pass|mail|url|server|site/i;
+
+console.log('Content script loaded');
+
+browser.runtime.sendMessage({
+  type: 'tabSearch',
+});
 
 const matchers: {
   [field: string]: {

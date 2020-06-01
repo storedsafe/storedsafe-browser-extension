@@ -61,7 +61,7 @@ export const Popup: React.FunctionComponent<PopupProps> = ({
       <section className="popup-main">
         <section className="popup-content">
           {page === Page.Add && <p>Not yet implemented</p>}
-          {page === Page.Search && <Search key={needle} { ...search } />}
+          {page === Page.Search && <Search { ...search } />}
           {page === Page.Sessions && <Auth { ...auth } />}
           {page === undefined && <LoadingComponent />}
         </section>

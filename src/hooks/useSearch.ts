@@ -25,6 +25,11 @@ export const useSearch = (): SearchHook => {
   const [searching, setSearching] = useState<string>('');
   const [searchStatus, setSearchStatus] = useState<SearchStatus>({});
 
+  useEffect(() => {
+    console.log('mount');
+    return (): void => console.log('unmount');
+  }, []);
+
   const onNeedleChange: OnNeedleChangeCallback = (needle) => {
     setNeedle(needle);
   };
@@ -137,18 +142,17 @@ export const useSearch = (): SearchHook => {
     }
   };
 
-  // TODO: Fix error on type while searching
-  // useEffect(() => {
-    // const search = (): void => {
-      // if (searching !== needle) {
-        // onSearch();
-        // setSearching(needle);
-      // }
-    // };
-    // // Search when there's 500ms since the last keystroke.
-    // const id = setTimeout(search, 500);
-    // return (): void => clearTimeout(id);
-  // }, [needle, searching, onSearch]);
+  useEffect(() => {
+    const search = (): void => {
+      if (searching !== needle) {
+        onSearch();
+        setSearching(needle);
+      }
+    };
+    // Search when there's 500ms since the last keystroke.
+    const id = setTimeout(search, 500);
+    return (): void => clearTimeout(id);
+  }, [needle, searching, onSearch]);
 
   return {
     needle,

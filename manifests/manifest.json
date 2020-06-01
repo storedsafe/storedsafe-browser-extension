@@ -12,7 +12,7 @@
   },
   "background": {
     "scripts": [
-      "browser-polyfill.js",
+      "browser-polyfill.min.js",
       "background.js"
     ]
   },
@@ -20,7 +20,7 @@
     {
       "matches": ["https://*/*"],
       "js": [
-        "browser-polyfill.js",
+        "browser-polyfill.min.js",
         "content_script.js"
       ]
     }

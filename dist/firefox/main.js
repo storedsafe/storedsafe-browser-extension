@@ -28345,7 +28345,7 @@ exports.Popup = ({ isInitialized, auth, search, openOptions, }) => {
         react_1.default.createElement("section", { className: "popup-main" },
             react_1.default.createElement("section", { className: "popup-content" },
                 page === Page.Add && react_1.default.createElement("p", null, "Not yet implemented"),
-                page === Page.Search && react_1.default.createElement(Search_2.default, Object.assign({ key: needle }, search)),
+                page === Page.Search && react_1.default.createElement(Search_2.default, Object.assign({}, search)),
                 page === Page.Sessions && react_1.default.createElement(Auth_1.default, Object.assign({}, auth)),
                 page === undefined && react_1.default.createElement(common_1.LoadingComponent, null)),
             isInitialized && (react_1.default.createElement("ul", { className: "popup-menu" },
@@ -28451,7 +28451,7 @@ const PopupSearch = ({ urls, results, onShow, onCopy, onFill, searchStatus, }) =
         return (react_1.default.createElement("section", { className: "popup-search popup-search-empty" },
             react_1.default.createElement("p", null, "No results found")));
     }
-    else if ((selected.url === undefined && selected.id === undefined) &&
+    else if ((results[selected.url] === undefined || results[selected.url][selected.id] === undefined) &&
         (firstUrl !== undefined && firstId !== undefined)) {
         // Skip single frame while selected state updates.
         setSelected({ url: firstUrl, id: firstId });
@@ -28610,6 +28610,7 @@ exports.ObjectView = ({ url, id, result, onShow, onCopy, onFill, }) => {
             return react_1.default.createElement("span", { key: i, className: className }, c);
         });
     };
+    console.log(result);
     return (react_1.default.createElement("section", { className: "object-view" },
         react_1.default.createElement("article", { className: "object-view-container" },
             react_1.default.createElement("hgroup", { className: "object-view-title", style: { backgroundImage: `url('${ico_1.default[result.icon]}')` } },
@@ -28752,14 +28753,14 @@ const SearchResult = ({ result, onClick, selected, }) => (react_1.default.create
         react_1.default.createElement("p", null, result.type))));
 exports.SearchResults = ({ urls, results, onSelect, selected, searchStatus, }) => (react_1.default.createElement("section", { className: "search-results" }, urls.map((url) => (
 // Hide url results if there is nothing to show..
-(results[url] || searchStatus[url].loading || searchStatus[url].error) && (react_1.default.createElement("article", { key: url, className: "search-results-site" },
+(results[url] || searchStatus[url] && (searchStatus[url].loading || searchStatus[url].error)) && (react_1.default.createElement("article", { key: url, className: "search-results-site" },
     urls.length > 1 && (react_1.default.createElement("div", { className: "search-results-url" },
         url,
         " ",
-        searchStatus[url].loading && react_1.default.createElement("span", { className: "searching" }),
-        searchStatus[url].error && (react_1.default.createElement(common_1.Message, { type: "error" }, searchStatus[url].error)))),
-    urls.length === 1 && searchStatus[url].error && (react_1.default.createElement(common_1.Message, { type: "error" }, searchStatus[url].error)),
-    urls.length === 1 && searchStatus[url].loading && (react_1.default.createElement(common_1.LoadingComponent, null)),
+        searchStatus[url] && searchStatus[url].loading && react_1.default.createElement("span", { className: "searching" }),
+        searchStatus[url] && searchStatus[url].error && (react_1.default.createElement(common_1.Message, { type: "error" }, searchStatus[url] && searchStatus[url].error)))),
+    urls.length === 1 && searchStatus[url] && searchStatus[url].error && (react_1.default.createElement(common_1.Message, { type: "error" }, searchStatus[url] && searchStatus[url].error)),
+    urls.length === 1 && searchStatus[url] && searchStatus[url].loading && (react_1.default.createElement(common_1.LoadingComponent, null)),
     results[url] && Object.keys(results[url]).map((id) => (react_1.default.createElement(SearchResult, { key: id, onClick: () => onSelect({ url, id }), selected: selected && selected.url === url && selected.id === id, result: results[url][id] })))))))));
 
 
@@ -29623,6 +29624,10 @@ exports.useSearch = () => {
     const [needle, setNeedle] = react_1.useState('');
     const [searching, setSearching] = react_1.useState('');
     const [searchStatus, setSearchStatus] = react_1.useState({});
+    react_1.useEffect(() => {
+        console.log('mount');
+        return () => console.log('unmount');
+    }, []);
     const onNeedleChange = (needle) => {
         setNeedle(needle);
     };
@@ -29722,18 +29727,17 @@ exports.useSearch = () => {
             fill(data);
         }
     };
-    // TODO: Fix error on type while searching
-    // useEffect(() => {
-    // const search = (): void => {
-    // if (searching !== needle) {
-    // onSearch();
-    // setSearching(needle);
-    // }
-    // };
-    // // Search when there's 500ms since the last keystroke.
-    // const id = setTimeout(search, 500);
-    // return (): void => clearTimeout(id);
-    // }, [needle, searching, onSearch]);
+    react_1.useEffect(() => {
+        const search = () => {
+            if (searching !== needle) {
+                onSearch();
+                setSearching(needle);
+            }
+        };
+        // Search when there's 500ms since the last keystroke.
+        const id = setTimeout(search, 500);
+        return () => clearTimeout(id);
+    }, [needle, searching, onSearch]);
     return {
         needle,
         onNeedleChange,
@@ -30237,7 +30241,7 @@ const populate = (settings, values, managed = false) => {
  * */
 const get = () => {
     const settings = {};
-    return systemStorage.get('settings').then(({ settings: system }) => {
+    return systemStorage.get('settings').catch(() => ({ settings: {} })).then(({ settings: system }) => {
         if (system && system.enforced) {
             populate(settings, system.enforced, true);
         }
@@ -30355,7 +30359,7 @@ const sitesFromCollections = (siteCollections) => ({
  * */
 const get = () => {
     return Promise.all([
-        systemStorage.get('sites'),
+        systemStorage.get('sites').catch(() => ({ settings: {} })),
         userStorage.get('sites'),
     ]).then(([{ sites: systemSites }, { sites: userSites }]) => {
         const system = systemSites || [];

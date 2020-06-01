@@ -83,7 +83,9 @@ const populate = (
  * */
 const get = (): Promise<Settings> => {
   const settings: Settings = {};
-  return systemStorage.get('settings').then(({ settings: system }) => {
+  return systemStorage.get('settings').catch(
+    () => ({ settings: {} })
+  ).then(({ settings: system }) => {
     if (system && system.enforced) {
       populate(settings, system.enforced, true);
     }
