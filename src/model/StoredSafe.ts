@@ -33,6 +33,21 @@ export interface YubiKeyFields {
 
 export type LoginFields = { loginType: LoginType } & TOTPFields & YubiKeyFields;
 
+export interface Template {
+  title: string;
+  icon: string;
+  id: string;
+  fields: {
+    name: string;
+    type: string;
+  }[];
+}
+
+export interface Vault {
+  title: string;
+  id: string;
+}
+
 const handleErrors = (promise: StoredSafePromise): Promise<StoredSafeResponse> => (
   promise.then((response) => {
     if (response.status === 200) {

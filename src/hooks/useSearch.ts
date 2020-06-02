@@ -25,11 +25,6 @@ export const useSearch = (): SearchHook => {
   const [searching, setSearching] = useState<string>('');
   const [searchStatus, setSearchStatus] = useState<SearchStatus>({});
 
-  useEffect(() => {
-    console.log('mount');
-    return (): void => console.log('unmount');
-  }, []);
-
   const onNeedleChange: OnNeedleChangeCallback = (needle) => {
     setNeedle(needle);
   };
@@ -91,6 +86,8 @@ export const useSearch = (): SearchHook => {
     }, {
       onSuccess: (newState) => {
         const value = newState.search[url][objectId].fields[field].value;
+        // TODO: More reliable copy in background script.
+        // browser.runtime.sendMessage({ type: 'copy', value });
         navigator.clipboard.writeText(value).then(() => {
           setTimeout(() => {
             navigator.clipboard.writeText('');
@@ -103,7 +100,6 @@ export const useSearch = (): SearchHook => {
   const onFill: OnFillCallback = (url, objectId) => {
     const fill = (data: { [field: string]: string }): void => {
       browser.tabs.query({ currentWindow: true, active: true }).then(([tab]) => {
-        console.log('send message to tab: ', tab);
         browser.tabs.sendMessage(tab.id, {
           type: 'fill',
           data: data,
@@ -113,7 +109,6 @@ export const useSearch = (): SearchHook => {
       });
     };
     if (!state.search[url][objectId].isDecrypted) {
-      console.log('decrypt first', state.search);
       dispatch({
         search: {
           type: 'decrypt',
@@ -127,7 +122,6 @@ export const useSearch = (): SearchHook => {
           Object.keys(fields).forEach((field) => {
             data[field] = fields[field].value;
           });
-          console.log('decrypted', data);
           fill(data);
         },
       });
@@ -137,7 +131,6 @@ export const useSearch = (): SearchHook => {
       Object.keys(fields).forEach((field) => {
         data[field] = fields[field].value;
       });
-      console.log('already decrypted', data);
       fill(data);
     }
   };

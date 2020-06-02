@@ -1,4 +1,5 @@
 import StoredSafe from 'storedsafe';
+import './cipher';
 import { actions } from '../model/StoredSafe';
 import * as Sessions from '../model/Sessions';
 import * as Settings from '../model/Settings';
@@ -44,10 +45,48 @@ function invalidateAllSessions(): void {
  * */
 function tabFind(tab: browser.tabs.Tab): Promise<void> {
   const { id, url } = tab;
-  const match = url.match(/^(?:https?:\/\/)?(?:www)?(.*)\//i);
+  const match = url.match(/^(?:https?:\/\/)?(?:www)?([^/]*)\//i);
   const needle = match !== null ? match[1] : url;
-  console.log(id, needle)
-  return actions.tabFind(id, needle).then();
+  return actions.tabFind(id, needle).then((search) => {
+    Settings.actions.fetch().then((settings) => {
+      // if (settings.autoFill) { // TODO: Fix repeated attempts when auto submitting invalid form
+        // console.log('SEARCH', search, id);
+        // const results = search[id];
+        // console.log('RESULTS', results);
+        // const resultUrls = Object.keys(results);
+        // let selectedResult: Search.SearchResult;
+        // for (let i = 0; i < resultUrls.length; i++) {
+          // const url = resultUrls[i];
+          // const ids = Object.keys(results[url]);
+          // console.log(results, url, ids);
+          // if (ids.length > 0) {
+            // selectedResult = results[url][ids[0]];
+          // }
+        // }
+        // if (selectedResult) {
+          // const fields = selectedResult.fields;
+          // const data: { [field: string]: string } = {};
+          // Object.keys(fields).forEach((field) => {
+            // data[field] = fields[field].value;
+          // });
+          // browser.tabs.sendMessage(id, {
+            // type: 'fill',
+            // data: data,
+          // });
+        // }
+      // }
+    });
+  });
+}
+
+function copyToClipboard(value: string): Promise<void> {
+  console.log('Copy to clipboard.');
+  return navigator.clipboard.writeText(value).then(() => {
+    setTimeout(() => {
+      navigator.clipboard.writeText('');
+      console.log('Cleared clipboard.');
+    }, 10000);
+  });
 }
 
 /**
@@ -98,7 +137,11 @@ function onIdle(
     if (state === 'locked') {
       console.log('Device is locked, invalidate all sessions.');
       invalidateAllSessions();
+      if (idleTimer) {
+        window.clearTimeout(idleTimer);
+      }
     } else if (state === 'idle') {
+      console.log('Idle timer started.');
       if (idleTimer) {
         window.clearTimeout(idleTimer);
       }
@@ -107,6 +150,11 @@ function onIdle(
         console.log('Idle timer expired, invalidate all sessions.');
         invalidateAllSessions()
       }, idleTimeout);
+    } else {
+      if (idleTimer) {
+        console.log('Idle timer cancelled.');
+        window.clearTimeout(idleTimer);
+      }
     }
   });
 }
@@ -137,11 +185,13 @@ function onMenuClick(
 }
 
 function onMessage(
-  message: { type: string },
+  message: { type: string; value?: string },
   sender: browser.runtime.MessageSender
 ): Promise<void> {
   if (message.type === 'tabSearch') {
     return tabFind(sender.tab);
+  } else if (message.type === 'copy') {
+    return copyToClipboard(message.value);
   }
   return Promise.reject(`Unknown message type: ${message.type}.`);
 }

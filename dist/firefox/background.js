@@ -2325,6 +2325,18 @@ exports.actions = {
         return set(newSearchResults).then(get);
     })),
     /**
+     * Remove search results for tab.
+     * */
+    removeTabResults: (tabId) => (get().then((prevSearchResults) => {
+        const newSearchResults = {};
+        Object.keys(prevSearchResults).map(Number).forEach((id) => {
+            if (id !== tabId) {
+                newSearchResults[id] = prevSearchResults[id];
+            }
+        });
+        return set(newSearchResults).then(get);
+    })),
+    /**
      * Clear search results from storage.
      * */
     clear: () => {
@@ -2725,6 +2737,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const storedsafe_1 = __importDefault(__webpack_require__(/*! storedsafe */ "./node_modules/storedsafe/dist/index.js"));
+__webpack_require__(/*! ./cipher */ "./src/scripts/cipher.js");
 const StoredSafe_1 = __webpack_require__(/*! ../model/StoredSafe */ "./src/model/StoredSafe.ts");
 const Sessions = __importStar(__webpack_require__(/*! ../model/Sessions */ "./src/model/Sessions.ts"));
 const Settings = __importStar(__webpack_require__(/*! ../model/Settings */ "./src/model/Settings.ts"));
@@ -2763,10 +2776,47 @@ function invalidateAllSessions() {
  * */
 function tabFind(tab) {
     const { id, url } = tab;
-    const match = url.match(/^(?:https?:\/\/)?(?:www)?(.*)\//i);
+    const match = url.match(/^(?:https?:\/\/)?(?:www)?([^/]*)\//i);
     const needle = match !== null ? match[1] : url;
-    console.log(id, needle);
-    return StoredSafe_1.actions.tabFind(id, needle).then();
+    return StoredSafe_1.actions.tabFind(id, needle).then((search) => {
+        Settings.actions.fetch().then((settings) => {
+            // if (settings.autoFill) { // TODO: Fix repeated attempts when auto submitting invalid form
+            // console.log('SEARCH', search, id);
+            // const results = search[id];
+            // console.log('RESULTS', results);
+            // const resultUrls = Object.keys(results);
+            // let selectedResult: Search.SearchResult;
+            // for (let i = 0; i < resultUrls.length; i++) {
+            // const url = resultUrls[i];
+            // const ids = Object.keys(results[url]);
+            // console.log(results, url, ids);
+            // if (ids.length > 0) {
+            // selectedResult = results[url][ids[0]];
+            // }
+            // }
+            // if (selectedResult) {
+            // const fields = selectedResult.fields;
+            // const data: { [field: string]: string } = {};
+            // Object.keys(fields).forEach((field) => {
+            // data[field] = fields[field].value;
+            // });
+            // browser.tabs.sendMessage(id, {
+            // type: 'fill',
+            // data: data,
+            // });
+            // }
+            // }
+        });
+    });
+}
+function copyToClipboard(value) {
+    console.log('Copy to clipboard.');
+    return navigator.clipboard.writeText(value).then(() => {
+        setTimeout(() => {
+            navigator.clipboard.writeText('');
+            console.log('Cleared clipboard.');
+        }, 10000);
+    });
 }
 /**
  * Event handler functions
@@ -2805,8 +2855,12 @@ function onIdle(state) {
         if (state === 'locked') {
             console.log('Device is locked, invalidate all sessions.');
             invalidateAllSessions();
+            if (idleTimer) {
+                window.clearTimeout(idleTimer);
+            }
         }
         else if (state === 'idle') {
+            console.log('Idle timer started.');
             if (idleTimer) {
                 window.clearTimeout(idleTimer);
             }
@@ -2815,6 +2869,12 @@ function onIdle(state) {
                 console.log('Idle timer expired, invalidate all sessions.');
                 invalidateAllSessions();
             }, idleTimeout);
+        }
+        else {
+            if (idleTimer) {
+                console.log('Idle timer cancelled.');
+                window.clearTimeout(idleTimer);
+            }
         }
     });
 }
@@ -2842,6 +2902,9 @@ function onMessage(message, sender) {
     if (message.type === 'tabSearch') {
         return tabFind(sender.tab);
     }
+    else if (message.type === 'copy') {
+        return copyToClipboard(message.value);
+    }
     return Promise.reject(`Unknown message type: ${message.type}.`);
 }
 /**
@@ -2866,6 +2929,17 @@ browser.contextMenus.onClicked.addListener(onMenuClick);
 // React to messages from other parts of the extension
 browser.runtime.onMessage.addListener(onMessage);
 
+
+/***/ }),
+
+/***/ "./src/scripts/cipher.js":
+/*!*******************************!*\
+  !*** ./src/scripts/cipher.js ***!
+  \*******************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+throw new Error("Module build failed (from ./node_modules/source-map-loader/index.js):\nError: ENOENT: no such file or directory, open '/home/oscar/work/storedsafe/browser_extension/storedsafe-browser-extension/src/scripts/cipher.js'");
 
 /***/ })
 

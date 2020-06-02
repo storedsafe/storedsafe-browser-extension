@@ -13,6 +13,10 @@ export const PopupContainer: React.FunctionComponent = () => {
 
   return (
     <Popup.Main
+      add={{
+        urls: Object.keys(state.sessions),
+        onUrlChange: (url: string): void => { console.log(url) },
+      }}
       isInitialized={isInitialized}
       search={{
         urls: Object.keys(state.sessions),

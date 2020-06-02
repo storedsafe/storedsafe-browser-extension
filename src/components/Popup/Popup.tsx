@@ -2,9 +2,10 @@ import React, { useState } from 'react';
 import { Banner, MenuButton, LoadingComponent } from '../common';
 import { SearchBar } from '../Search';
 import { StatusBar } from './StatusBar';
-import Search, { SearchProps } from './Search';
 import { OnNeedleChangeCallback, OnSearchCallback } from '../Search';
+import Search, { SearchProps } from './Search';
 import Auth, { AuthProps } from './Auth';
+import Add, { AddProps } from './Add';
 import svg from '../../ico/svg';
 import './Popup.scss';
 
@@ -16,6 +17,7 @@ enum Page {
 
 interface PopupProps {
   isInitialized: boolean;
+  add: AddProps;
   auth: AuthProps;
   search: SearchProps & {
     needle: string;
@@ -27,6 +29,7 @@ interface PopupProps {
 
 export const Popup: React.FunctionComponent<PopupProps> = ({
   isInitialized,
+  add,
   auth,
   search,
   openOptions,
@@ -34,8 +37,6 @@ export const Popup: React.FunctionComponent<PopupProps> = ({
   const [page, setPage] = useState<Page>();
 
   const { sessions } = auth;
-  const { needle } = search;
-
   const isOnline = Object.keys(sessions).length > 0;
 
   if (isInitialized && page === undefined) {
@@ -60,7 +61,7 @@ export const Popup: React.FunctionComponent<PopupProps> = ({
       </header>
       <section className="popup-main">
         <section className="popup-content">
-          {page === Page.Add && <p>Not yet implemented</p>}
+          {page === Page.Add && <Add { ...add } />}
           {page === Page.Search && <Search { ...search } />}
           {page === Page.Sessions && <Auth { ...auth } />}
           {page === undefined && <LoadingComponent />}

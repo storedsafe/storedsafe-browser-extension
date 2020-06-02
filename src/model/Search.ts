@@ -90,6 +90,23 @@ export const actions = {
   ),
 
   /**
+   * Remove search results for tab.
+   * */
+  removeTabResults: (
+    tabId: number,
+  ): Promise<Search> => (
+    get().then((prevSearchResults) => {
+      const newSearchResults: Search = {};
+      Object.keys(prevSearchResults).map(Number).forEach((id) => {
+        if (id !== tabId) {
+          newSearchResults[id] = prevSearchResults[id];
+        }
+      });
+      return set(newSearchResults).then(get);
+    })
+  ),
+
+  /**
    * Clear search results from storage.
    * */
   clear: (): Promise<Search> => {

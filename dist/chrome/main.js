@@ -25400,6 +25400,24 @@ module.exports = {
 
 /***/ }),
 
+/***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/Add/AddObject.scss":
+/*!**********************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src!./node_modules/sass-loader/dist/cjs.js!./src/components/Add/AddObject.scss ***!
+  \**********************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// Imports
+var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+exports = ___CSS_LOADER_API_IMPORT___(false);
+// Module
+exports.push([module.i, ".add-object {\n  padding: 10px;\n}", ""]);
+// Exports
+module.exports = exports;
+
+
+/***/ }),
+
 /***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/Auth/Login.scss":
 /*!*******************************************************************************************************************************************************!*\
   !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src!./node_modules/sass-loader/dist/cjs.js!./src/components/Auth/Login.scss ***!
@@ -25502,6 +25520,24 @@ var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../node_modules/
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
 exports.push([module.i, ".sites .sites-article .sites-article-header {\n  padding: 10px 20px;\n  background-color: #f3f7f8;\n  color: #526a78;\n}\n.sites .sites-list > li {\n  list-style: none;\n  display: flex;\n  flex-direction: row;\n  align-items: space-between;\n  justify-content: space-between;\n  padding-left: 20px;\n}\n.sites .sites-list > li:nth-child(odd) {\n  background-color: #f9fbfc;\n}\n.sites .sites-list span {\n  padding: 10px;\n}\n.sites .sites-add .sites-add-form {\n  display: flex;\n  flex-direction: column;\n  align-items: stretch;\n  width: 100%;\n  padding: 10px;\n}\n.sites .sites-add label:not(:last-child),\n.sites .sites-add .button:not(:last-child),\n.sites .sites-add .message:not(:last-child) {\n  margin-bottom: 10px;\n}\n.sites .sites-add input {\n  width: 100%;\n}\n\n@media (min-width: 600px) {\n  .sites .sites-article .sites-article-header {\n    min-width: -webkit-max-content;\n    min-width: -moz-max-content;\n    min-width: max-content;\n  }\n  .sites .sites-add {\n    display: flex;\n    flex-direction: row;\n  }\n}", ""]);
+// Exports
+module.exports = exports;
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/Popup/Add.scss":
+/*!******************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src!./node_modules/sass-loader/dist/cjs.js!./src/components/Popup/Add.scss ***!
+  \******************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// Imports
+var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+exports = ___CSS_LOADER_API_IMPORT___(false);
+// Module
+exports.push([module.i, ".popup-add {\n  background-color: #f9f9f9;\n  color: #232d33;\n  border-radius: 10px;\n  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);\n}\n.popup-add.popup-search-empty {\n  display: grid;\n  width: 100%;\n  height: 100%;\n  align-items: center;\n}\n.popup-add.popup-search-empty p {\n  text-align: center;\n}", ""]);
 // Exports
 module.exports = exports;
 
@@ -27377,6 +27413,104 @@ exports.default = Extension;
 
 /***/ }),
 
+/***/ "./src/components/Add/AddObject.scss":
+/*!*******************************************!*\
+  !*** ./src/components/Add/AddObject.scss ***!
+  \*******************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var api = __webpack_require__(/*! ../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
+            var content = __webpack_require__(/*! !../../../node_modules/css-loader/dist/cjs.js!../../../node_modules/postcss-loader/src!../../../node_modules/sass-loader/dist/cjs.js!./AddObject.scss */ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/Add/AddObject.scss");
+
+            content = content.__esModule ? content.default : content;
+
+            if (typeof content === 'string') {
+              content = [[module.i, content, '']];
+            }
+
+var options = {};
+
+options.insert = "head";
+options.singleton = false;
+
+var update = api(content, options);
+
+
+
+module.exports = content.locals || {};
+
+/***/ }),
+
+/***/ "./src/components/Add/AddObject.tsx":
+/*!******************************************!*\
+  !*** ./src/components/Add/AddObject.tsx ***!
+  \******************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.AddObject = void 0;
+const react_1 = __importDefault(__webpack_require__(/*! react */ "react"));
+const common_1 = __webpack_require__(/*! ../common */ "./src/components/common/index.ts");
+__webpack_require__(/*! ./AddObject.scss */ "./src/components/Add/AddObject.scss");
+exports.AddObject = ({ url, vault, template, }) => {
+    const onSelectUrl = ({ target }) => {
+        url.onChange(Number(target.value));
+    };
+    const onSelectVault = ({ target }) => {
+        vault.onChange(Number(target.value));
+    };
+    const onSelectTemplate = ({ target }) => {
+        template.onChange(Number(target.value));
+    };
+    const sites = (react_1.default.createElement("label", { htmlFor: "url" },
+        react_1.default.createElement("span", null, "Site"),
+        react_1.default.createElement(common_1.Select, { id: "url", value: url.selected, onChange: onSelectUrl },
+            react_1.default.createElement("option", { value: undefined }, "Choose site..."),
+            url.values.map((url, id) => (react_1.default.createElement("option", { key: url, value: id }, url))))));
+    const hasVaults = (vault && vault.values) !== undefined;
+    const vaults = (react_1.default.createElement("label", { htmlFor: "vault" },
+        react_1.default.createElement("span", null, "Vault"),
+        react_1.default.createElement(common_1.Select, { id: "vault", value: vault.selected, onChange: onSelectVault, disabled: !hasVaults },
+            react_1.default.createElement("option", { value: undefined }, "Choose vault..."),
+            hasVaults && vault.values.map(({ id: vaultId, title }, id) => (react_1.default.createElement("option", { key: vaultId, value: id }, title))))));
+    const hasTemplates = (template && template.values) !== undefined;
+    const templates = (react_1.default.createElement("label", { htmlFor: "template" },
+        react_1.default.createElement("span", null, "Template"),
+        react_1.default.createElement(common_1.Select, { id: "template", value: template.selected, onChange: onSelectTemplate, disabled: !hasTemplates },
+            react_1.default.createElement("option", { value: undefined }, "Choose template..."),
+            hasTemplates && template.values.map(({ id: templateId, title }, id) => (react_1.default.createElement("option", { key: templateId, value: id }, title))))));
+    return (react_1.default.createElement("section", { className: "add-object" },
+        sites,
+        vaults,
+        templates));
+};
+
+
+/***/ }),
+
+/***/ "./src/components/Add/index.ts":
+/*!*************************************!*\
+  !*** ./src/components/Add/index.ts ***!
+  \*************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var AddObject_1 = __webpack_require__(/*! ./AddObject */ "./src/components/Add/AddObject.tsx");
+Object.defineProperty(exports, "AddObject", { enumerable: true, get: function () { return AddObject_1.AddObject; } });
+
+
+/***/ }),
+
 /***/ "./src/components/Auth/Login.scss":
 /*!****************************************!*\
   !*** ./src/components/Auth/Login.scss ***!
@@ -28201,6 +28335,102 @@ exports.default = Options_1.Options;
 
 /***/ }),
 
+/***/ "./src/components/Popup/Add.scss":
+/*!***************************************!*\
+  !*** ./src/components/Popup/Add.scss ***!
+  \***************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var api = __webpack_require__(/*! ../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
+            var content = __webpack_require__(/*! !../../../node_modules/css-loader/dist/cjs.js!../../../node_modules/postcss-loader/src!../../../node_modules/sass-loader/dist/cjs.js!./Add.scss */ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/Popup/Add.scss");
+
+            content = content.__esModule ? content.default : content;
+
+            if (typeof content === 'string') {
+              content = [[module.i, content, '']];
+            }
+
+var options = {};
+
+options.insert = "head";
+options.singleton = false;
+
+var update = api(content, options);
+
+
+
+module.exports = content.locals || {};
+
+/***/ }),
+
+/***/ "./src/components/Popup/Add.tsx":
+/*!**************************************!*\
+  !*** ./src/components/Popup/Add.tsx ***!
+  \**************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const react_1 = __importStar(__webpack_require__(/*! react */ "react"));
+const Add_1 = __webpack_require__(/*! ../Add */ "./src/components/Add/index.ts");
+__webpack_require__(/*! ./Add.scss */ "./src/components/Popup/Add.scss");
+const PopupAdd = ({ urls, vaults, templates, onUrlChange, }) => {
+    const [state, setState] = react_1.useState({});
+    const handleUrlChange = (id) => {
+        setState({ url: id });
+        onUrlChange(urls[id]);
+    };
+    const handleVaultChange = (id) => {
+        setState((prevState) => (Object.assign(Object.assign({}, prevState), { vault: id })));
+    };
+    const handleTemplateChange = (id) => {
+        setState((prevState) => (Object.assign(Object.assign({}, prevState), { template: id })));
+    };
+    const left = react_1.default.createElement(Add_1.AddObject, { url: {
+            selected: state.url,
+            values: urls,
+            onChange: handleUrlChange,
+        }, vault: {
+            selected: state.vault,
+            values: vaults,
+            onChange: handleVaultChange,
+        }, template: {
+            selected: state.template,
+            values: templates,
+            onChange: handleTemplateChange,
+        } });
+    const right = null;
+    return (react_1.default.createElement("section", { className: "popup-add content" },
+        react_1.default.createElement("article", null, left),
+        react_1.default.createElement("article", null, right)));
+};
+exports.default = PopupAdd;
+
+
+/***/ }),
+
 /***/ "./src/components/Popup/Auth.tsx":
 /*!***************************************!*\
   !*** ./src/components/Popup/Auth.tsx ***!
@@ -28316,6 +28546,7 @@ const Search_1 = __webpack_require__(/*! ../Search */ "./src/components/Search/i
 const StatusBar_1 = __webpack_require__(/*! ./StatusBar */ "./src/components/Popup/StatusBar.tsx");
 const Search_2 = __importDefault(__webpack_require__(/*! ./Search */ "./src/components/Popup/Search.tsx"));
 const Auth_1 = __importDefault(__webpack_require__(/*! ./Auth */ "./src/components/Popup/Auth.tsx"));
+const Add_1 = __importDefault(__webpack_require__(/*! ./Add */ "./src/components/Popup/Add.tsx"));
 const svg_1 = __importDefault(__webpack_require__(/*! ../../ico/svg */ "./src/ico/svg.tsx"));
 __webpack_require__(/*! ./Popup.scss */ "./src/components/Popup/Popup.scss");
 var Page;
@@ -28324,10 +28555,9 @@ var Page;
     Page[Page["Sessions"] = 1] = "Sessions";
     Page[Page["Add"] = 2] = "Add";
 })(Page || (Page = {}));
-exports.Popup = ({ isInitialized, auth, search, openOptions, }) => {
+exports.Popup = ({ isInitialized, add, auth, search, openOptions, }) => {
     const [page, setPage] = react_1.useState();
     const { sessions } = auth;
-    const { needle } = search;
     const isOnline = Object.keys(sessions).length > 0;
     if (isInitialized && page === undefined) {
         if (isOnline) {
@@ -28344,7 +28574,7 @@ exports.Popup = ({ isInitialized, auth, search, openOptions, }) => {
                 react_1.default.createElement(Search_1.SearchBar, Object.assign({}, search, { disabled: !isOnline, onFocus: () => setPage(Page.Search) })))),
         react_1.default.createElement("section", { className: "popup-main" },
             react_1.default.createElement("section", { className: "popup-content" },
-                page === Page.Add && react_1.default.createElement("p", null, "Not yet implemented"),
+                page === Page.Add && react_1.default.createElement(Add_1.default, Object.assign({}, add)),
                 page === Page.Search && react_1.default.createElement(Search_2.default, Object.assign({}, search)),
                 page === Page.Sessions && react_1.default.createElement(Auth_1.default, Object.assign({}, auth)),
                 page === undefined && react_1.default.createElement(common_1.LoadingComponent, null)),
@@ -28610,7 +28840,6 @@ exports.ObjectView = ({ url, id, result, onShow, onCopy, onFill, }) => {
             return react_1.default.createElement("span", { key: i, className: className }, c);
         });
     };
-    console.log(result);
     return (react_1.default.createElement("section", { className: "object-view" },
         react_1.default.createElement("article", { className: "object-view-container" },
             react_1.default.createElement("hgroup", { className: "object-view-title", style: { backgroundImage: `url('${ico_1.default[result.icon]}')` } },
@@ -29624,10 +29853,6 @@ exports.useSearch = () => {
     const [needle, setNeedle] = react_1.useState('');
     const [searching, setSearching] = react_1.useState('');
     const [searchStatus, setSearchStatus] = react_1.useState({});
-    react_1.useEffect(() => {
-        console.log('mount');
-        return () => console.log('unmount');
-    }, []);
     const onNeedleChange = (needle) => {
         setNeedle(needle);
     };
@@ -29677,6 +29902,8 @@ exports.useSearch = () => {
         }, {
             onSuccess: (newState) => {
                 const value = newState.search[url][objectId].fields[field].value;
+                // TODO: More reliable copy in background script.
+                // browser.runtime.sendMessage({ type: 'copy', value });
                 navigator.clipboard.writeText(value).then(() => {
                     setTimeout(() => {
                         navigator.clipboard.writeText('');
@@ -29688,7 +29915,6 @@ exports.useSearch = () => {
     const onFill = (url, objectId) => {
         const fill = (data) => {
             browser.tabs.query({ currentWindow: true, active: true }).then(([tab]) => {
-                console.log('send message to tab: ', tab);
                 browser.tabs.sendMessage(tab.id, {
                     type: 'fill',
                     data: data,
@@ -29698,7 +29924,6 @@ exports.useSearch = () => {
             });
         };
         if (!state.search[url][objectId].isDecrypted) {
-            console.log('decrypt first', state.search);
             dispatch({
                 search: {
                     type: 'decrypt',
@@ -29712,7 +29937,6 @@ exports.useSearch = () => {
                     Object.keys(fields).forEach((field) => {
                         data[field] = fields[field].value;
                     });
-                    console.log('decrypted', data);
                     fill(data);
                 },
             });
@@ -29723,7 +29947,6 @@ exports.useSearch = () => {
             Object.keys(fields).forEach((field) => {
                 data[field] = fields[field].value;
             });
-            console.log('already decrypted', data);
             fill(data);
         }
     };
@@ -30097,6 +30320,18 @@ exports.actions = {
      * */
     setTabResults: (tabId, searchResults) => (get().then((prevSearchResults) => {
         const newSearchResults = Object.assign(Object.assign({}, prevSearchResults), { [tabId]: searchResults });
+        return set(newSearchResults).then(get);
+    })),
+    /**
+     * Remove search results for tab.
+     * */
+    removeTabResults: (tabId) => (get().then((prevSearchResults) => {
+        const newSearchResults = {};
+        Object.keys(prevSearchResults).map(Number).forEach((id) => {
+            if (id !== tabId) {
+                newSearchResults[id] = prevSearchResults[id];
+            }
+        });
         return set(newSearchResults).then(get);
     })),
     /**
@@ -30635,7 +30870,10 @@ exports.PopupContainer = () => {
     const auth = useAuth_1.useAuth();
     const search = useSearch_1.useSearch();
     const openOptions = () => { browser.runtime.openOptionsPage(); };
-    return (react_1.default.createElement(Popup.Main, { isInitialized: isInitialized, search: Object.assign({ urls: Object.keys(state.sessions), results: state.search }, search), auth: Object.assign({ sites: state.sites.list, sessions: state.sessions, sitePrefs: state.sitePrefs }, auth), openOptions: openOptions }));
+    return (react_1.default.createElement(Popup.Main, { add: {
+            urls: Object.keys(state.sessions),
+            onUrlChange: (url) => { console.log(url); },
+        }, isInitialized: isInitialized, search: Object.assign({ urls: Object.keys(state.sessions), results: state.search }, search), auth: Object.assign({ sites: state.sites.list, sessions: state.sessions, sitePrefs: state.sitePrefs }, auth), openOptions: openOptions }));
 };
 
 

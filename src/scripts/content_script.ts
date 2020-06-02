@@ -59,7 +59,6 @@ interface Message {
 function onMessage(
   message: Message,
 ): void {
-  console.log(message);
   if (message.type === 'fill') {
     for (let i = 0; i < forms.length; i++) {
       let filled = false;
@@ -69,13 +68,10 @@ function onMessage(
           if (isMatch(field, element)) {
             filled = true;
             element.value = message.data[field];
-            console.log(filled, message.data[field]);
           }
         });
       }
-      console.log(filled);
       if (filled) {
-        console.log(forms[i]);
         forms[i].submit();
       }
     }

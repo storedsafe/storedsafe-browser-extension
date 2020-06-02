@@ -47,8 +47,6 @@ export const ObjectView: React.FunctionComponent<ObjectViewProps> = ({
     });
   };
 
-  console.log(result);
-
   return (
     <section className="object-view">
       <article className="object-view-container">

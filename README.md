@@ -113,6 +113,7 @@ Check package.json for all scripts or use `yarn <command>` to use the installed 
 ### Known bugs
 - [ ] Doesn't invalidate session if one exists when a site is removed
 - [ ] Show flag on encrypted fields resets when clicking fill/copy or show on another object.
+- [ ] Fields occasionally change order when clicked "show" on encrypted field.
 - [x] ~~Errors if writing in search bar while search is ongoing (automatic currently search disabled as temporary fix).~~
 
 ### Questions
@@ -120,3 +121,7 @@ Check package.json for all scripts or use `yarn <command>` to use the installed 
   - Currently few clients and most of them will most likely only need the one (or more) provided by the organization in which case the option to add more sites might be confusing.
   - I imagine the few users that currently use sites from different organizations right now are people who can actually access and edit the managed configuration files.
   - May be more relevant at a point where StoreSafe becomes more open for example with the open source version of StoredSafe or if a personal subscription model opens up.
+
+### Future ideas
+- PIN code lock instead of logout after idle timer runs out.
+  - Use PIN code to encrypt session-specific data (tokens, cached searches etc.)

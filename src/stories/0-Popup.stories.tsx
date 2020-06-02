@@ -4,6 +4,7 @@ import { StoredSafeResponse  } from 'storedsafe';
 import { Sessions } from '../model/Sessions';
 import { Site } from '../model/Sites';
 import { SearchResults, SiteSearchResults, SearchResultFields } from '../model/Search';
+import { Vault, Template } from '../model/StoredSafe';
 import data from './ssVault';
 import * as Popup from '../components/Popup';
 
@@ -61,6 +62,10 @@ export const PopupLoading: React.FunctionComponent = () => {
   return (
     <Popup.Main
       isInitialized={false}
+      add={{
+        urls: [],
+        onUrlChange: action('url change'),
+      }}
       search={{
         urls: [],
         results: {},
@@ -97,6 +102,10 @@ export const PopupOffline: React.FunctionComponent = () => {
 
   return (
     <Popup.Main
+      add={{
+        urls: [],
+        onUrlChange: action('url change'),
+      }}
       isInitialized={true}
       search={{
         urls: [],
@@ -186,6 +195,10 @@ export const PopupOnline: React.FunctionComponent = () => {
 
   return (
     <Popup.Main
+      add={{
+        urls: Object.keys(filteredResults),
+        onUrlChange: action('url change'),
+      }}
       isInitialized={true}
       search={{
         urls: Object.keys(filteredResults),
@@ -242,6 +255,10 @@ export const PopupOnlineLoading: React.FunctionComponent = () => {
 
   return (
     <Popup.Main
+      add={{
+        urls: Object.keys(sessions),
+        onUrlChange: action('url change'),
+      }}
       isInitialized={true}
       search={{
         urls: Object.keys(sessions),
@@ -273,6 +290,34 @@ export const PopupMultiple: React.FunctionComponent = () => {
     'foo.example.com': { '1278': results['1278'] },
     'bar.example.com': { '1279': results['1279'] },
   });
+  const [vaults, setVaults] = useState<Vault[]>();
+  const [templates, setTemplates] = useState<Template[]>();
+
+  const allVaults: {
+    [url: string]: Vault[];
+  } = {
+    'foo.example.com': [
+      { title: 'Foo 1', id: '1' },
+      { title: 'Foo 2', id: '2' },
+    ],
+    'bar.example.com': [
+      { title: 'Bar 1', id: '7' },
+      { title: 'Bar 2', id: '2' },
+    ],
+  }
+
+  const allTemplates: {
+    [url: string]: Template[];
+  } = {
+    'foo.example.com': [
+      { title: 'T1', icon: '', id: '1', fields: [] },
+      { title: 'T2', icon: '', id: '4', fields: [] },
+    ],
+    'bar.example.com': [
+      { title: 'T3', icon: '', id: '3', fields: [] },
+      { title: 'T2', icon: '', id: '4', fields: [] },
+    ],
+  }
 
   const sessions: Sessions = {
     'foo.example.com': {
@@ -382,8 +427,20 @@ export const PopupMultiple: React.FunctionComponent = () => {
     },
   };
 
+  const onUrlChange = (url: string): void => {
+    setVaults(allVaults[url]);
+    setTemplates(allTemplates[url]);
+    action('url change')(url);
+  };
+
   return (
     <Popup.Main
+      add={{
+        urls: Object.keys(sessions),
+        vaults,
+        templates,
+        onUrlChange,
+      }}
       isInitialized={true}
       search={{
         urls: Object.keys(sessions),
