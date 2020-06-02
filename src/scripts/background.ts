@@ -1,5 +1,4 @@
 import StoredSafe from 'storedsafe';
-import './cipher';
 import { actions } from '../model/StoredSafe';
 import * as Sessions from '../model/Sessions';
 import * as Settings from '../model/Settings';
@@ -103,6 +102,13 @@ function onStorageChange(
   if (area === 'local' && sessions !== undefined && sessions.newValue !== undefined) {
     Settings.actions.fetch().then((settings) => {
       const newSessions = sessions.newValue;
+      if (Object.keys(newSessions).length > 0) {
+        console.log('online');
+        browser.browserAction.setIcon({path: "ico/icon.png"});
+      } else {
+        console.log('offline');
+        browser.browserAction.setIcon({path: "ico/icon-inactive.png"});
+      }
       Object.keys(sessionTimers).forEach((url) => {
         clearTimeout(sessionTimers[url]);
       });
@@ -203,11 +209,11 @@ function onMessage(
 // TODO: Remove debug pritnout
 console.log('Background script initialized: ', new Date(Date.now()));
 
-// Invalidate all sessions on launch
-browser.runtime.onStartup.addListener(onStartup);
-
 // Listen to changes in storage to know when sessions are updated
 browser.storage.onChanged.addListener(onStorageChange);
+
+// Invalidate all sessions on launch
+browser.runtime.onStartup.addListener(onStartup);
 
 // Open options page and set up context menus
 browser.runtime.onInstalled.addListener(onInstalled);

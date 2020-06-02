@@ -60,7 +60,7 @@ const PopupAdd: React.FunctionComponent<AddProps> = ({
     }}
   />;
 
-  const right: React.ReactNode = null;
+  const right: React.ReactNode = <p>Implementation still in progress.</p>;
 
   return (
     <section className="popup-add content">

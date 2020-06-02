@@ -28421,7 +28421,7 @@ const PopupAdd = ({ urls, vaults, templates, onUrlChange, }) => {
             values: templates,
             onChange: handleTemplateChange,
         } });
-    const right = null;
+    const right = react_1.default.createElement("p", null, "Implementation still in progress.");
     return (react_1.default.createElement("section", { className: "popup-add content" },
         react_1.default.createElement("article", null, left),
         react_1.default.createElement("article", null, right)));

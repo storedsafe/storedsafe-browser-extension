@@ -2737,7 +2737,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const storedsafe_1 = __importDefault(__webpack_require__(/*! storedsafe */ "./node_modules/storedsafe/dist/index.js"));
-__webpack_require__(/*! ./cipher */ "./src/scripts/cipher.js");
 const StoredSafe_1 = __webpack_require__(/*! ../model/StoredSafe */ "./src/model/StoredSafe.ts");
 const Sessions = __importStar(__webpack_require__(/*! ../model/Sessions */ "./src/model/Sessions.ts"));
 const Settings = __importStar(__webpack_require__(/*! ../model/Settings */ "./src/model/Settings.ts"));
@@ -2828,6 +2827,14 @@ function onStorageChange({ sessions }, area) {
     if (area === 'local' && sessions !== undefined && sessions.newValue !== undefined) {
         Settings.actions.fetch().then((settings) => {
             const newSessions = sessions.newValue;
+            if (Object.keys(newSessions).length > 0) {
+                console.log('online');
+                browser.browserAction.setIcon({ path: "ico/icon.png" });
+            }
+            else {
+                console.log('offline');
+                browser.browserAction.setIcon({ path: "ico/icon-inactive.png" });
+            }
             Object.keys(sessionTimers).forEach((url) => {
                 clearTimeout(sessionTimers[url]);
             });
@@ -2912,10 +2919,10 @@ function onMessage(message, sender) {
  * */
 // TODO: Remove debug pritnout
 console.log('Background script initialized: ', new Date(Date.now()));
-// Invalidate all sessions on launch
-browser.runtime.onStartup.addListener(onStartup);
 // Listen to changes in storage to know when sessions are updated
 browser.storage.onChanged.addListener(onStorageChange);
+// Invalidate all sessions on launch
+browser.runtime.onStartup.addListener(onStartup);
 // Open options page and set up context menus
 browser.runtime.onInstalled.addListener(onInstalled);
 // Invalidate sessions on suspend
@@ -2929,17 +2936,6 @@ browser.contextMenus.onClicked.addListener(onMenuClick);
 // React to messages from other parts of the extension
 browser.runtime.onMessage.addListener(onMessage);
 
-
-/***/ }),
-
-/***/ "./src/scripts/cipher.js":
-/*!*******************************!*\
-  !*** ./src/scripts/cipher.js ***!
-  \*******************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-throw new Error("Module build failed (from ./node_modules/source-map-loader/index.js):\nError: ENOENT: no such file or directory, open '/home/oscar/work/storedsafe/browser_extension/storedsafe-browser-extension/src/scripts/cipher.js'");
 
 /***/ })
 
