@@ -31,7 +31,6 @@ loggar, eller kod)
 
 (om du kan, länka till en rad kod som kan vara ansvarig för buggen)
 
-/label ~bug
+/label ~Bug
 /cc @oscar
 /assign @oscar
-
