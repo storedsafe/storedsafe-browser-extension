@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Site } from '../../model/Sites';
 import { Sessions } from '../../model/Sessions';
 import { SitePrefs } from '../../model/SitePrefs';
+import { ListView } from '../common';
 import * as Auth from '../Auth';
+import './Auth.scss';
 
 export interface LoginStatus {
   [url: string]: {
@@ -28,39 +30,34 @@ const PopupAuth: React.FunctionComponent<AuthProps> = ({
   onLogout,
   loginStatus,
 }: AuthProps) => {
-  const lastUsed = sites.findIndex(({ url }) => sitePrefs.lastUsed === url);
-  const [selected, setSelected] = useState<number>(lastUsed === -1 ? 0 : lastUsed);
+  const items = sites.map((site) => {
+    const { url } = site;
+    const session = sessions[url];
+    const isOnline = session !== undefined;
 
-  const left = <Auth.SiteList
-    sites={sites}
-    sessions={sessions}
-    selected={selected}
-    onSelect={setSelected}
-  />;
-
-  const url = sites[selected].url;
-  const isOnline = sessions[url] !== undefined;
-
-  const right = isOnline ? (
-    (<Auth.SiteStatus
+    const title = <Auth.SiteTitle
       url={url}
-      session={sessions[url]}
-      onLogout={onLogout}
-    />)
-  ) : (
-    <Auth.Login
-      key={url}
-      site={sites[selected]}
-      onLogin={onLogin}
-      sitePrefs={sitePrefs.sites[url]}
-      {...loginStatus[url]}
-    />
-  );
+      session={session}
+    />;
+
+    const content = isOnline ? (
+      <Auth.SiteStatus url={url} session={session} onLogout={onLogout}></Auth.SiteStatus>
+    ) : (
+      <Auth.Login site={site} onLogin={onLogin} sitePrefs={sitePrefs.sites[url]} {...loginStatus[url]}></Auth.Login>
+    );
+
+    return {
+      key: url,
+      title,
+      content,
+    };
+  });
+
+  const defaultSelected = sites.length === 1 ? sites[0].url : Object.keys(sessions).length <= 1 ? sitePrefs.lastUsed : undefined;
 
   return (
-    <section className="auth content">
-      <article>{left}</article>
-      <article>{right}</article>
+    <section className="popup-auth">
+      <ListView items={items} defaultSelected={defaultSelected} />
     </section>
   );
 };

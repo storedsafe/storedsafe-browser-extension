@@ -3,10 +3,9 @@
 .site-list {
   width: 100%;
   height: 100%;
-  overflow: visible auto;
+  overflow: hidden auto;
   display: flex;
   flex-direction: column;
-  padding-right: $spacing;
 
   .site-list-entry {
     width: 100%;
@@ -29,10 +28,6 @@
       overflow: hidden;
     }
 
-    &.selected {
-      margin-left: $spacing;
-    }
-
     &:hover {
       background-color: $color-bg;
     }
@@ -50,6 +45,11 @@
       flex-direction: row;
       align-items: center;
       margin-left: $spacing;
+    }
+
+    .site-icons .icon {
+      height: $menu-size - $spacing * 2;
+      width: $menu-size - $spacing * 2;
     }
 
     .icon:not(:last-child) {

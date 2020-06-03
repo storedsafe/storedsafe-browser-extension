@@ -1,31 +1,41 @@
 @import '../../variables';
 
 .popup {
-  display: grid;
-  height: 490px;
-  width: 700px;
-  grid-template-rows: 64px 398px 28px;
+  display: flex;
+  flex-direction: column;
+  height: 520px;
+  width: 400px;
   background-color: $color-primary-0;
+  background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.15), rgba(0, 0, 0, 0) 20%, rgba(0, 0, 0, 0) 80%, rgba(0, 0, 0, 0.15));
   color: $color-fg-alt;
 
   .popup-header {
     display: grid;
-    grid-template-columns: auto 1fr;
+    grid-template-rows: auto 1fr;
   }
 
   .banner {
     display: grid;
+    background: none;
 
     .logo {
-      height: 64px - $spacing * 3;
+      height: $menu-size * 0.8;
+      margin: auto;
     }
   };
 
+  .loading-component {
+    flex-grow: 1;
+  }
+
   .popup-main {
-    display: grid;
-    grid-template-columns: auto $menu-size + $spacing;
-    margin: 0 $spacing;
     height: 100%;
+    display: grid;
+    grid-template-columns: auto $menu-size;
+    grid-column-gap: $spacing;
+    margin: 0 $spacing;
+    flex-grow: 1;
+    overflow: hidden;
   }
 
   .popup-content {
@@ -36,11 +46,13 @@
 
   .popup-search-bar {
     width: 100%;
+
+    .search-bar {
+      padding-top: 0;
+    }
   }
 
   .popup-menu {
-    margin-left: $spacing;
-
     > li {
       list-style: none;
     }
@@ -52,10 +64,8 @@
 
   .popup-status {
     display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    margin-right: $menu-size + $spacing * 2;
+    flex-direction: column;
+    padding: $spacing;
 
     .popup-status-error {
       font-weight: bold;

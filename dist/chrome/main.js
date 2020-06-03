@@ -25411,7 +25411,7 @@ module.exports = {
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, ".add-object {\n  padding: 10px;\n}", ""]);
+exports.push([module.i, ".add-object {\n  padding: 8px;\n}", ""]);
 // Exports
 module.exports = exports;
 
@@ -25429,7 +25429,7 @@ module.exports = exports;
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, ".login {\n  display: grid;\n  grid-template-rows: 1fr auto;\n  background-color: #f9f9f9;\n  height: 100%;\n  color: #232d33;\n  border-radius: 0 10px 10px 0;\n  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);\n  overflow: hidden auto;\n}\n.login .login-form {\n  padding: 10px;\n  overflow: hidden auto;\n}\n.login .form {\n  display: flex;\n  flex-direction: column;\n}\n.login label {\n  display: flex;\n  flex-direction: column;\n}\n.login label:not(:last-child),\n.login .button:not(:last-child),\n.login .message:not(:last-child) {\n  margin-bottom: 10px;\n}\n.login .label-checkbox {\n  flex-direction: row;\n  justify-content: space-between;\n}", ""]);
+exports.push([module.i, ".login {\n  display: grid;\n  grid-template-rows: 1fr auto;\n  height: 100%;\n  overflow: hidden auto;\n}\n.login .login-form {\n  overflow: hidden auto;\n}\n.login .form {\n  display: flex;\n  flex-direction: column;\n}\n.login label {\n  display: flex;\n  flex-direction: column;\n}\n.login label:not(:last-child),\n.login .button:not(:last-child),\n.login .message:not(:last-child) {\n  margin-bottom: 8px;\n}\n.login .message {\n  margin-top: 8px;\n}\n.login .label-checkbox {\n  flex-direction: row;\n  justify-content: space-between;\n}", ""]);
 // Exports
 module.exports = exports;
 
@@ -25447,7 +25447,7 @@ module.exports = exports;
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, ".site-list {\n  width: 100%;\n  height: 100%;\n  overflow: visible auto;\n  display: flex;\n  flex-direction: column;\n  padding-right: 10px;\n}\n.site-list .site-list-entry {\n  width: 100%;\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  justify-content: space-between;\n  padding: 10px;\n  background-color: #f9f9f9;\n  color: #526a78;\n  font-weight: bold;\n  cursor: pointer;\n  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);\n  fill: #526a78;\n  transition: margin-left 0.1s;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n}\n.site-list .site-list-entry .site-url {\n  flex-grow: 1;\n  overflow: hidden;\n}\n.site-list .site-list-entry.selected {\n  margin-left: 10px;\n}\n.site-list .site-list-entry:hover {\n  background-color: #fff;\n}\n.site-list .site-list-entry.online {\n  fill: #03a388;\n}\n.site-list .site-list-entry:not(:last-child) {\n  margin-bottom: 10px;\n}\n.site-list .site-list-entry .site-icons {\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  margin-left: 10px;\n}\n.site-list .site-list-entry .icon:not(:last-child) {\n  margin-right: 10px;\n}\n.site-list .site-list-entry .icon.icon-warning {\n  fill: #f59815;\n}\n.site-list .site-list-entry .icon.icon-error {\n  fill: #c5283e;\n}", ""]);
+exports.push([module.i, ".site-list {\n  width: 100%;\n  height: 100%;\n  overflow: hidden auto;\n  display: flex;\n  flex-direction: column;\n}\n.site-list .site-list-entry {\n  width: 100%;\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  justify-content: space-between;\n  padding: 8px;\n  background-color: #f9f9f9;\n  color: #526a78;\n  font-weight: bold;\n  cursor: pointer;\n  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);\n  fill: #526a78;\n  transition: margin-left 0.1s;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n}\n.site-list .site-list-entry .site-url {\n  flex-grow: 1;\n  overflow: hidden;\n}\n.site-list .site-list-entry:hover {\n  background-color: #fff;\n}\n.site-list .site-list-entry.online {\n  fill: #03a388;\n}\n.site-list .site-list-entry:not(:last-child) {\n  margin-bottom: 8px;\n}\n.site-list .site-list-entry .site-icons {\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  margin-left: 8px;\n}\n.site-list .site-list-entry .site-icons .icon {\n  height: 24px;\n  width: 24px;\n}\n.site-list .site-list-entry .icon:not(:last-child) {\n  margin-right: 8px;\n}\n.site-list .site-list-entry .icon.icon-warning {\n  fill: #f59815;\n}\n.site-list .site-list-entry .icon.icon-error {\n  fill: #c5283e;\n}", ""]);
 // Exports
 module.exports = exports;
 
@@ -25465,7 +25465,25 @@ module.exports = exports;
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, ".site-status {\n  background-color: #f9f9f9;\n  padding: 10px;\n  height: 100%;\n  color: #232d33;\n  border-radius: 0 10px 10px 0;\n  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);\n  overflow: hidden auto;\n}\n.site-status .site-status-info {\n  margin-bottom: 10px;\n}\n.site-status .warnings-title {\n  color: #f59815;\n}\n.site-status .errors-title {\n  color: #c5283e;\n}\n.site-status .button {\n  width: 100%;\n}", ""]);
+exports.push([module.i, ".site-status {\n  max-height: 100%;\n  overflow: hidden auto;\n}\n.site-status .site-status-info {\n  margin-bottom: 8px;\n}\n.site-status .warnings-title {\n  color: #f59815;\n}\n.site-status .errors-title {\n  color: #c5283e;\n}\n.site-status .button {\n  width: 100%;\n}", ""]);
+// Exports
+module.exports = exports;
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/Auth/SiteTitle.scss":
+/*!***********************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src!./node_modules/sass-loader/dist/cjs.js!./src/components/Auth/SiteTitle.scss ***!
+  \***********************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// Imports
+var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+exports = ___CSS_LOADER_API_IMPORT___(false);
+// Module
+exports.push([module.i, ".site-title {\n  width: 100%;\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  justify-content: space-between;\n  color: #526a78;\n  font-weight: bold;\n  fill: #526a78;\n}\n.site-title .site-title-url {\n  flex-grow: 1;\n  overflow: hidden;\n}\n.site-title.online {\n  fill: #03a388;\n}\n.site-title .site-title-icons {\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  margin-left: 8px;\n}\n.site-title .site-title-icons .icon {\n  height: 24px;\n  width: 24px;\n}\n.site-title .icon:not(:last-child) {\n  margin-right: 8px;\n}\n.site-title .icon.icon-warning {\n  fill: #f59815;\n}\n.site-title .icon.icon-error {\n  fill: #c5283e;\n}", ""]);
 // Exports
 module.exports = exports;
 
@@ -25483,7 +25501,7 @@ module.exports = exports;
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, ".general-settings .general-settings-article .general-settings-form {\n  display: flex;\n  flex-direction: column;\n  align-items: stretch;\n  width: 100%;\n  padding: 10px;\n}\n.general-settings .general-settings-article label {\n  margin-bottom: 10px;\n}\n.general-settings .general-settings-article input {\n  width: 100%;\n}", ""]);
+exports.push([module.i, ".general-settings .general-settings-article .general-settings-form {\n  display: flex;\n  flex-direction: column;\n  align-items: stretch;\n  width: 100%;\n  padding: 8px;\n}\n.general-settings .general-settings-article label {\n  margin-bottom: 8px;\n}\n.general-settings .general-settings-article input {\n  width: 100%;\n}", ""]);
 // Exports
 module.exports = exports;
 
@@ -25501,7 +25519,7 @@ module.exports = exports;
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, ".options .card > *:first-child {\n  padding-top: 10px;\n  border-top-left-radius: 10px;\n  border-top-right-radius: 10px;\n}\n.options .card > *:last-child {\n  padding-bottom: 10px;\n  border-bottom-left-radius: 10px;\n  border-bottom-right-radius: 10px;\n}\n.options .options-content {\n  max-width: 800px;\n  margin: auto;\n  padding: 10px;\n  transition: padding 0.1s;\n}\n.options .options-article:not(:last-child) {\n  margin-bottom: 10px;\n}\n.options .options-article .options-article-header,\n.options .options-article .options-article-footer {\n  background-color: #fff;\n  padding: 20px;\n  border-bottom: 1px solid #d4d7d8;\n}\n.options .banner {\n  height: 64px;\n  padding: 20px;\n  text-align: center;\n}\n\n@media (min-width: 600px) {\n  .options .options-content {\n    padding: 40px;\n  }\n  .options .banner {\n    padding: 20px;\n  }\n}", ""]);
+exports.push([module.i, ".options .card > *:first-child {\n  padding-top: 8px;\n  border-top-left-radius: 8px;\n  border-top-right-radius: 8px;\n}\n.options .card > *:last-child {\n  padding-bottom: 8px;\n  border-bottom-left-radius: 8px;\n  border-bottom-right-radius: 8px;\n}\n.options .options-content {\n  max-width: 800px;\n  margin: auto;\n  padding: 8px;\n  transition: padding 0.1s;\n}\n.options .options-article:not(:last-child) {\n  margin-bottom: 8px;\n}\n.options .options-article .options-article-header,\n.options .options-article .options-article-footer {\n  background-color: #fff;\n  padding: 16px;\n  border-bottom: 1px solid #d4d7d8;\n}\n.options .banner {\n  height: 64px;\n  padding: 16px;\n  text-align: center;\n}\n\n@media (min-width: 600px) {\n  .options .options-content {\n    padding: 32px;\n  }\n  .options .banner {\n    padding: 16px;\n  }\n}", ""]);
 // Exports
 module.exports = exports;
 
@@ -25519,7 +25537,7 @@ module.exports = exports;
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, ".sites .sites-article .sites-article-header {\n  padding: 10px 20px;\n  background-color: #f3f7f8;\n  color: #526a78;\n}\n.sites .sites-list > li {\n  list-style: none;\n  display: flex;\n  flex-direction: row;\n  align-items: space-between;\n  justify-content: space-between;\n  padding-left: 20px;\n}\n.sites .sites-list > li:nth-child(odd) {\n  background-color: #f9fbfc;\n}\n.sites .sites-list span {\n  padding: 10px;\n}\n.sites .sites-add .sites-add-form {\n  display: flex;\n  flex-direction: column;\n  align-items: stretch;\n  width: 100%;\n  padding: 10px;\n}\n.sites .sites-add label:not(:last-child),\n.sites .sites-add .button:not(:last-child),\n.sites .sites-add .message:not(:last-child) {\n  margin-bottom: 10px;\n}\n.sites .sites-add input {\n  width: 100%;\n}\n\n@media (min-width: 600px) {\n  .sites .sites-article .sites-article-header {\n    min-width: -webkit-max-content;\n    min-width: -moz-max-content;\n    min-width: max-content;\n  }\n  .sites .sites-add {\n    display: flex;\n    flex-direction: row;\n  }\n}", ""]);
+exports.push([module.i, ".sites .sites-article .sites-article-header {\n  padding: 8px 16px;\n  background-color: #f3f7f8;\n  color: #526a78;\n}\n.sites .sites-list > li {\n  list-style: none;\n  display: flex;\n  flex-direction: row;\n  align-items: space-between;\n  justify-content: space-between;\n  padding-left: 16px;\n}\n.sites .sites-list > li:nth-child(odd) {\n  background-color: #f9fbfc;\n}\n.sites .sites-list span {\n  padding: 8px;\n}\n.sites .sites-add .sites-add-form {\n  display: flex;\n  flex-direction: column;\n  align-items: stretch;\n  width: 100%;\n  padding: 8px;\n}\n.sites .sites-add label:not(:last-child),\n.sites .sites-add .button:not(:last-child),\n.sites .sites-add .message:not(:last-child) {\n  margin-bottom: 8px;\n}\n.sites .sites-add input {\n  width: 100%;\n}\n\n@media (min-width: 600px) {\n  .sites .sites-article .sites-article-header {\n    min-width: -webkit-max-content;\n    min-width: -moz-max-content;\n    min-width: max-content;\n  }\n  .sites .sites-add {\n    display: flex;\n    flex-direction: row;\n  }\n}", ""]);
 // Exports
 module.exports = exports;
 
@@ -25537,7 +25555,25 @@ module.exports = exports;
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, ".popup-add {\n  background-color: #f9f9f9;\n  color: #232d33;\n  border-radius: 10px;\n  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);\n}\n.popup-add.popup-search-empty {\n  display: grid;\n  width: 100%;\n  height: 100%;\n  align-items: center;\n}\n.popup-add.popup-search-empty p {\n  text-align: center;\n}", ""]);
+exports.push([module.i, ".popup-add {\n  background-color: #f9f9f9;\n  color: #232d33;\n  border-radius: 0 8px 8px 8px;\n  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);\n}", ""]);
+// Exports
+module.exports = exports;
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/Popup/Auth.scss":
+/*!*******************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src!./node_modules/sass-loader/dist/cjs.js!./src/components/Popup/Auth.scss ***!
+  \*******************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// Imports
+var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+exports = ___CSS_LOADER_API_IMPORT___(false);
+// Module
+exports.push([module.i, ".popup-auth {\n  height: 100%;\n}", ""]);
 // Exports
 module.exports = exports;
 
@@ -25555,7 +25591,7 @@ module.exports = exports;
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, ".popup {\n  display: grid;\n  height: 490px;\n  width: 700px;\n  grid-template-rows: 64px 398px 28px;\n  background-color: #526a78;\n  color: #fff;\n}\n.popup .popup-header {\n  display: grid;\n  grid-template-columns: auto 1fr;\n}\n.popup .banner {\n  display: grid;\n}\n.popup .banner .logo {\n  height: 34px;\n}\n.popup .popup-main {\n  display: grid;\n  grid-template-columns: auto 54px;\n  margin: 0 10px;\n  height: 100%;\n}\n.popup .popup-content {\n  height: 100%;\n  width: 100%;\n  overflow: hidden;\n}\n.popup .popup-search-bar {\n  width: 100%;\n}\n.popup .popup-menu {\n  margin-left: 10px;\n}\n.popup .popup-menu > li {\n  list-style: none;\n}\n.popup .popup-menu > li:not(:last-child) {\n  margin-bottom: 10px;\n}\n.popup .popup-status {\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  justify-content: space-between;\n  margin-right: 64px;\n}\n.popup .popup-status .popup-status-error {\n  font-weight: bold;\n  color: #fdd2d8;\n}", ""]);
+exports.push([module.i, ".popup {\n  display: flex;\n  flex-direction: column;\n  height: 520px;\n  width: 400px;\n  background-color: #526a78;\n  background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.15), rgba(0, 0, 0, 0) 20%, rgba(0, 0, 0, 0) 80%, rgba(0, 0, 0, 0.15));\n  color: #fff;\n}\n.popup .popup-header {\n  display: grid;\n  grid-template-rows: auto 1fr;\n}\n.popup .banner {\n  display: grid;\n  background: none;\n}\n.popup .banner .logo {\n  height: 32px;\n  margin: auto;\n}\n.popup .loading-component {\n  flex-grow: 1;\n}\n.popup .popup-main {\n  height: 100%;\n  display: grid;\n  grid-template-columns: auto 40px;\n  grid-column-gap: 8px;\n  margin: 0 8px;\n  flex-grow: 1;\n  overflow: hidden;\n}\n.popup .popup-content {\n  height: 100%;\n  width: 100%;\n  overflow: hidden;\n}\n.popup .popup-search-bar {\n  width: 100%;\n}\n.popup .popup-search-bar .search-bar {\n  padding-top: 0;\n}\n.popup .popup-menu > li {\n  list-style: none;\n}\n.popup .popup-menu > li:not(:last-child) {\n  margin-bottom: 8px;\n}\n.popup .popup-status {\n  display: flex;\n  flex-direction: column;\n  padding: 8px;\n}\n.popup .popup-status .popup-status-error {\n  font-weight: bold;\n  color: #fdd2d8;\n}", ""]);
 // Exports
 module.exports = exports;
 
@@ -25573,7 +25609,7 @@ module.exports = exports;
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, ".popup-search {\n  background-color: #f9f9f9;\n  color: #232d33;\n  border-radius: 10px;\n  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);\n}\n.popup-search.popup-search-empty {\n  display: grid;\n  width: 100%;\n  height: 100%;\n  align-items: center;\n}\n.popup-search.popup-search-empty p {\n  text-align: center;\n}", ""]);
+exports.push([module.i, ".popup-search {\n  height: 100%;\n}\n.popup-search.popup-search-empty, .popup-search.popup-search-loading {\n  background-color: #f9f9f9;\n  color: #232d33;\n  border-radius: 0 8px 8px 8px;\n  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);\n  display: grid;\n  width: 100%;\n  height: 100%;\n  align-items: center;\n}\n.popup-search.popup-search-empty p, .popup-search.popup-search-loading p {\n  text-align: center;\n}", ""]);
 // Exports
 module.exports = exports;
 
@@ -25609,7 +25645,7 @@ module.exports = exports;
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, ".object-view {\n  height: 100%;\n}\n.object-view .object-view-title {\n  background: no-repeat 10px center/30px 30px;\n  padding-left: 50px;\n  margin-bottom: 10px;\n}\n.object-view .object-view-container {\n  background-color: #fff;\n  padding: 10px;\n  overflow: hidden auto;\n  max-height: 100%;\n}\n.object-view .object-view-field {\n  padding: 10px;\n  display: flex;\n  flex-direction: row;\n  justify-content: space-between;\n  align-items: center;\n  transition: background-color 0.1s;\n}\n.object-view .object-view-field:hover {\n  background-color: #f3f7f8;\n}\n.object-view .object-view-field:hover .object-view-field-copy {\n  opacity: 1;\n}\n.object-view .object-view-fill {\n  width: 100%;\n}\n.object-view .object-view-field-text {\n  display: flex;\n  flex-direction: column;\n}\n.object-view .object-view-field-copy {\n  padding: 10px;\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  border: 0;\n  outline: 0;\n  background: transparent;\n  color: #03a388;\n  font-weight: bold;\n  cursor: pointer;\n  transition: 0.1s;\n  transition-property: opacity, background-color, color;\n  opacity: 0;\n}\n.object-view .object-view-field-copy:active {\n  background-color: #03a388;\n  color: #fff;\n}\n.object-view .field-title {\n  font-size: 0.8em;\n  color: #526a78;\n}\n.object-view .field-value .number {\n  color: #c5283e;\n}\n.object-view .field-value .uppercase {\n  color: #03a388;\n  font-weight: bold;\n}\n.object-view .field-value .lowercase {\n  color: #526a78;\n}\n.object-view .field-value .symbol {\n  color: #f59815;\n}\n.object-view .field-value .show {\n  border: 0;\n  outline: 0;\n  background: none;\n  color: #c5283e;\n  cursor: pointer;\n  font-size: 1em;\n  font-weight: normal;\n  padding: 0 inherit 0 0;\n}", ""]);
+exports.push([module.i, ".object-view {\n  height: 100%;\n  overflow: hidden auto;\n  max-height: 100%;\n}\n.object-view .object-view-container {\n  overflow: hidden auto;\n  max-height: 100%;\n}\n.object-view .object-view-field {\n  padding: 8px;\n  display: flex;\n  flex-direction: row;\n  justify-content: space-between;\n  align-items: center;\n  transition: background-color 0.1s;\n}\n.object-view .object-view-field:hover {\n  background-color: #f3f7f8;\n}\n.object-view .object-view-field:hover .object-view-field-copy {\n  opacity: 1;\n}\n.object-view .object-view-fill {\n  width: 100%;\n}\n.object-view .object-view-field-text {\n  display: flex;\n  flex-direction: column;\n}\n.object-view .object-view-field-copy {\n  padding: 8px;\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  border: 0;\n  outline: 0;\n  background: transparent;\n  color: #03a388;\n  font-weight: bold;\n  cursor: pointer;\n  transition: 0.1s;\n  transition-property: opacity, background-color, color;\n  opacity: 0;\n}\n.object-view .object-view-field-copy:active {\n  background-color: #03a388;\n  color: #fff;\n}\n.object-view .field-title {\n  font-size: 0.8em;\n  color: #526a78;\n}\n.object-view .field-value .number {\n  color: #c5283e;\n}\n.object-view .field-value .uppercase {\n  color: #03a388;\n  font-weight: bold;\n}\n.object-view .field-value .lowercase {\n  color: #526a78;\n}\n.object-view .field-value .symbol {\n  color: #f59815;\n}\n.object-view .field-value .show {\n  border: 0;\n  outline: 0;\n  background: none;\n  color: #c5283e;\n  cursor: pointer;\n  font-size: 1em;\n  font-weight: normal;\n  padding: 0 inherit 0 0;\n}", ""]);
 // Exports
 module.exports = exports;
 
@@ -25627,7 +25663,7 @@ module.exports = exports;
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, ".search-bar {\n  position: relative;\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  height: 100%;\n  padding: 10px;\n}\n.search-bar.disabled {\n  visibility: hidden;\n}\n.search-bar .search-bar-input {\n  flex-grow: 1;\n  height: 44px;\n  background: #2e424f;\n  color: #fff;\n  border-bottom-color: #102531;\n  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);\n}\n.search-bar .search-bar-input:focus {\n  border-bottom-color: #03a388;\n}\n.search-bar .search-bar-button {\n  border: 0;\n  outline: 0;\n  background-color: #03a388;\n  cursor: pointer;\n  height: 44px;\n  width: 44px;\n  border-radius: 0 10px 10px 0;\n  padding: 10px;\n  transition: 0.1s;\n  transition-property: background-color;\n  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);\n}\n.search-bar .search-bar-button:hover, .search-bar .search-bar-button:focus, .search-bar .search-bar-button.selected {\n  background-color: #fff;\n}\n.search-bar .search-bar-button > svg {\n  height: 100%;\n  width: 100%;\n  transition: fill 0.1s;\n  fill: #fff;\n}\n.search-bar .search-bar-button:hover > svg, .search-bar .search-bar-button:focus > svg, .search-bar .search-bar-button.selected > svg {\n  fill: #03a388;\n}", ""]);
+exports.push([module.i, ".search-bar {\n  position: relative;\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  height: 100%;\n  padding: 8px;\n}\n.search-bar.disabled {\n  display: none;\n}\n.search-bar .search-bar-input {\n  flex-grow: 1;\n  height: 40px;\n  background: #2e424f;\n  color: #fff;\n  border-bottom-color: #102531;\n  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);\n}\n.search-bar .search-bar-input:focus {\n  border-bottom-color: #03a388;\n}\n.search-bar .search-bar-button {\n  border: 0;\n  outline: 0;\n  background-color: #03a388;\n  cursor: pointer;\n  height: 40px;\n  width: 40px;\n  border-radius: 0 8px 8px 0;\n  padding: 8px;\n  transition: 0.1s;\n  transition-property: background-color;\n  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);\n}\n.search-bar .search-bar-button:hover, .search-bar .search-bar-button:focus, .search-bar .search-bar-button.selected {\n  background-color: #fff;\n}\n.search-bar .search-bar-button > svg {\n  height: 100%;\n  width: 100%;\n  transition: fill 0.1s;\n  fill: #fff;\n}\n.search-bar .search-bar-button:hover > svg, .search-bar .search-bar-button:focus > svg, .search-bar .search-bar-button.selected > svg {\n  fill: #03a388;\n}\n.search-bar .search-bar-button.loading > svg {\n  -webkit-animation: loading 0.5s ease-in-out alternate infinite;\n          animation: loading 0.5s ease-in-out alternate infinite;\n}\n\n@-webkit-keyframes loading {\n  60% {\n    transform: scale(1);\n  }\n  100% {\n    transform: scale(1.1);\n  }\n}\n\n@keyframes loading {\n  60% {\n    transform: scale(1);\n  }\n  100% {\n    transform: scale(1.1);\n  }\n}", ""]);
 // Exports
 module.exports = exports;
 
@@ -25645,7 +25681,25 @@ module.exports = exports;
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, ".search-results {\n  overflow: hidden auto;\n  flex-grow: 1;\n}\n.search-results .search-results-url {\n  text-align: center;\n  font-weight: bold;\n  color: #526a78;\n  padding: 10px;\n}\n.search-results .search-results-url .searching {\n  margin-left: 10px;\n  position: absolute;\n  width: 12pt;\n  height: 12pt;\n}\n.search-results .search-results-url .searching::after {\n  position: absolute;\n  content: \"\";\n  border-radius: 100%;\n  box-sizing: border-box;\n  left: 0;\n  top: 0;\n  height: 100%;\n  width: 100%;\n  border: 2pt solid #fff;\n  border-top-color: #03a388;\n  -webkit-animation: spin 1s infinite;\n          animation: spin 1s infinite;\n  transition: all 0.3s;\n}\n@-webkit-keyframes spin {\n  from {\n    transform: rotate(0deg);\n  }\n  to {\n    transform: rotate(360deg);\n  }\n}\n@keyframes spin {\n  from {\n    transform: rotate(0deg);\n  }\n  to {\n    transform: rotate(360deg);\n  }\n}\n.search-results .search-result {\n  background: no-repeat 10px center/30px 30px;\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  background-color: #fff;\n  padding: 10px;\n  padding-left: 50px;\n  cursor: pointer;\n}\n.search-results .search-result:not(:last-child) {\n  margin-bottom: 10px;\n}\n.search-results .search-result .search-result-text {\n  display: flex;\n  flex-direction: column;\n}\n.search-results .search-result.selected {\n  background-color: #2e424f;\n  color: #fff;\n}", ""]);
+exports.push([module.i, ".search-results {\n  overflow: hidden auto;\n  flex-grow: 1;\n}\n.search-results .search-results-url {\n  text-align: center;\n  font-weight: bold;\n  color: #526a78;\n  padding: 8px;\n}\n.search-results .search-results-url .searching {\n  margin-left: 8px;\n  position: absolute;\n  width: 12pt;\n  height: 12pt;\n}\n.search-results .search-results-url .searching::after {\n  position: absolute;\n  content: \"\";\n  border-radius: 100%;\n  box-sizing: border-box;\n  left: 0;\n  top: 0;\n  height: 100%;\n  width: 100%;\n  border: 2pt solid #fff;\n  border-top-color: #03a388;\n  -webkit-animation: spin 1s infinite;\n          animation: spin 1s infinite;\n  transition: all 0.3s;\n}\n@-webkit-keyframes spin {\n  from {\n    transform: rotate(0deg);\n  }\n  to {\n    transform: rotate(360deg);\n  }\n}\n@keyframes spin {\n  from {\n    transform: rotate(0deg);\n  }\n  to {\n    transform: rotate(360deg);\n  }\n}\n.search-results .search-result {\n  background: no-repeat 8px center/30px 30px;\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  background-color: #fff;\n  padding: 8px;\n  padding-left: 46px;\n  cursor: pointer;\n}\n.search-results .search-result:not(:last-child) {\n  margin-bottom: 8px;\n}\n.search-results .search-result .search-result-text {\n  display: flex;\n  flex-direction: column;\n}\n.search-results .search-result.selected {\n  background-color: #2e424f;\n  color: #fff;\n}", ""]);
+// Exports
+module.exports = exports;
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/Search/SearchTitle.scss":
+/*!***************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src!./node_modules/sass-loader/dist/cjs.js!./src/components/Search/SearchTitle.scss ***!
+  \***************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// Imports
+var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+exports = ___CSS_LOADER_API_IMPORT___(false);
+// Module
+exports.push([module.i, ".search-title {\n  background-repeat: no-repeat;\n  background-size: 24px;\n  background-position: left center;\n  padding-left: 40px;\n}", ""]);
 // Exports
 module.exports = exports;
 
@@ -25663,7 +25717,7 @@ module.exports = exports;
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, ".banner {\n  background-color: #526a78;\n  padding: 15px;\n  min-width: -webkit-max-content;\n  min-width: -moz-max-content;\n  min-width: max-content;\n}", ""]);
+exports.push([module.i, ".banner {\n  background-color: #526a78;\n  padding: 12px;\n  min-width: -webkit-max-content;\n  min-width: -moz-max-content;\n  min-width: max-content;\n}", ""]);
 // Exports
 module.exports = exports;
 
@@ -25681,7 +25735,7 @@ module.exports = exports;
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, ".button {\n  border: 0;\n  outline: 0;\n  background: none;\n}\n\n.button {\n  position: relative;\n  display: inline-flex;\n  flex-direction: row;\n  align-items: center;\n  justify-content: center;\n  transition: 0.1s;\n  transition-property: border-color, background-color, color, width;\n  font-family: \"Roboto\", sans-serif;\n  padding: 10px;\n  border: 1px solid #526a78;\n  background-color: #526a78;\n  color: #fff;\n  cursor: pointer;\n  font-weight: bold;\n  font-size: 12pt;\n  transition: padding-right 0.1s;\n}\n.button.button-loading {\n  padding-right: 36px;\n}\n.button .button-spinner {\n  position: absolute;\n  right: 10px;\n  margin-left: 10px;\n  width: 12pt;\n  height: 12pt;\n  opacity: 0;\n  transition: opacity 0.1s;\n}\n.button .button-spinner::after {\n  position: absolute;\n  content: \"\";\n  border-radius: 100%;\n  box-sizing: border-box;\n  left: 0;\n  top: 0;\n  height: 100%;\n  width: 100%;\n  border: 2pt solid #fff;\n  border-top-color: #03a388;\n  -webkit-animation: spin 1s infinite;\n          animation: spin 1s infinite;\n  transition: all 0.3s;\n}\n.button.button-loading .button-spinner {\n  opacity: 1;\n}\n@-webkit-keyframes spin {\n  from {\n    transform: rotate(0deg);\n  }\n  to {\n    transform: rotate(360deg);\n  }\n}\n@keyframes spin {\n  from {\n    transform: rotate(0deg);\n  }\n  to {\n    transform: rotate(360deg);\n  }\n}\n.button:disabled {\n  cursor: arrow;\n}\n.button:hover:not(:disabled) {\n  background-color: #fff;\n  color: #526a78;\n}\n.button:focus:not(:disabled) {\n  background-color: #fff;\n  color: #526a78;\n}\n.button:active:not(:disabled) {\n  background-color: #f3f7f8;\n}\n.button.button-accent {\n  background-color: #03a388;\n  border-color: #03a388;\n}\n.button.button-accent:hover {\n  color: #03a388;\n}\n.button.button-accent:focus {\n  color: #03a388;\n}\n.button.button-accent:active {\n  background-color: #bff8ef;\n}\n.button.button-warning {\n  background-color: #f59815;\n  border-color: #f59815;\n}\n.button.button-warning:hover {\n  color: #f59815;\n}\n.button.button-warning:focus {\n  color: #f59815;\n}\n.button.button-warning:active {\n  background-color: #fff3e2;\n}\n.button.button-danger {\n  background-color: #c5283e;\n  border-color: #c5283e;\n}\n.button.button-danger:hover {\n  color: #c5283e;\n}\n.button.button-danger:focus {\n  color: #c5283e;\n}\n.button.button-danger:active {\n  background-color: #fdd2d8;\n}", ""]);
+exports.push([module.i, ".button {\n  border: 0;\n  outline: 0;\n  background: none;\n}\n\n.button {\n  position: relative;\n  display: inline-flex;\n  flex-direction: row;\n  align-items: center;\n  justify-content: center;\n  transition: 0.1s;\n  transition-property: border-color, background-color, color, width;\n  font-family: \"Roboto\", sans-serif;\n  padding: 8px;\n  border: 1px solid #526a78;\n  background-color: #526a78;\n  color: #fff;\n  cursor: pointer;\n  font-weight: bold;\n  font-size: 12pt;\n  transition: padding-right 0.1s;\n}\n.button.button-loading {\n  padding-right: 32px;\n}\n.button .button-spinner {\n  position: absolute;\n  right: 8px;\n  margin-left: 8px;\n  width: 12pt;\n  height: 12pt;\n  opacity: 0;\n  transition: opacity 0.1s;\n}\n.button .button-spinner::after {\n  position: absolute;\n  content: \"\";\n  border-radius: 100%;\n  box-sizing: border-box;\n  left: 0;\n  top: 0;\n  height: 100%;\n  width: 100%;\n  border: 2pt solid #fff;\n  border-top-color: #03a388;\n  -webkit-animation: spin 1s infinite;\n          animation: spin 1s infinite;\n  transition: all 0.3s;\n}\n.button.button-loading .button-spinner {\n  opacity: 1;\n}\n@-webkit-keyframes spin {\n  from {\n    transform: rotate(0deg);\n  }\n  to {\n    transform: rotate(360deg);\n  }\n}\n@keyframes spin {\n  from {\n    transform: rotate(0deg);\n  }\n  to {\n    transform: rotate(360deg);\n  }\n}\n.button:disabled {\n  cursor: arrow;\n}\n.button:hover:not(:disabled) {\n  background-color: #fff;\n  color: #526a78;\n}\n.button:focus:not(:disabled) {\n  background-color: #fff;\n  color: #526a78;\n}\n.button:active:not(:disabled) {\n  background-color: #f3f7f8;\n}\n.button.button-accent {\n  background-color: #03a388;\n  border-color: #03a388;\n}\n.button.button-accent:hover {\n  color: #03a388;\n}\n.button.button-accent:focus {\n  color: #03a388;\n}\n.button.button-accent:active {\n  background-color: #bff8ef;\n}\n.button.button-warning {\n  background-color: #f59815;\n  border-color: #f59815;\n}\n.button.button-warning:hover {\n  color: #f59815;\n}\n.button.button-warning:focus {\n  color: #f59815;\n}\n.button.button-warning:active {\n  background-color: #fff3e2;\n}\n.button.button-danger {\n  background-color: #c5283e;\n  border-color: #c5283e;\n}\n.button.button-danger:hover {\n  color: #c5283e;\n}\n.button.button-danger:focus {\n  color: #c5283e;\n}\n.button.button-danger:active {\n  background-color: #fdd2d8;\n}", ""]);
 // Exports
 module.exports = exports;
 
@@ -25700,6 +25754,24 @@ var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../node_modules/
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
 exports.push([module.i, ".checkbox input {\n  height: 0;\n  opacity: 0;\n  position: absolute;\n  width: 0;\n}\n.checkbox .custom-checkbox {\n  padding: 2px;\n  position: relative;\n  border: 1px solid #d4d7d8;\n  border-radius: 2px;\n  box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.1) inset;\n  width: 20px;\n  height: 20px;\n  cursor: pointer;\n}\n.checkbox .custom-checkbox::before {\n  display: none;\n  position: absolute;\n  content: \"\";\n  width: 14px;\n  height: 14px;\n  background-color: #03a388;\n  box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.1);\n  border-radius: 2px;\n}\n.checkbox input:checked ~ .custom-checkbox::before {\n  display: block;\n}\n.checkbox input:hover ~ .custom-checkbox,\n.checkbox input:active ~ .custom-checkbox,\n.checkbox input:focus ~ .custom-checkbox {\n  box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.1) inset, 0 0 3px 0 rgba(0, 0, 0, 0.1);\n}\n.checkbox input:hover ~ .custom-checkbox {\n  border-color: #c7cacc;\n  background-color: #f9fbfc;\n}\n.checkbox input:focus ~ .custom-checkbox {\n  border-color: #03a388;\n  background-color: #f9fbfc;\n}\n.checkbox input:active ~ .custom-checkbox {\n  border-color: #d4d7d8;\n  background-color: #ebeef0;\n}", ""]);
+// Exports
+module.exports = exports;
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/common/ListView.scss":
+/*!************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src!./node_modules/sass-loader/dist/cjs.js!./src/components/common/ListView.scss ***!
+  \************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// Imports
+var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+exports = ___CSS_LOADER_API_IMPORT___(false);
+// Module
+exports.push([module.i, ".list-view {\n  height: 100%;\n  overflow: hidden auto;\n}\n.list-view.has-selected {\n  overflow: hidden;\n}\n.list-view .list-view-item-title {\n  padding: 8px;\n  background-color: #f9f9f9;\n  color: #232d33;\n  cursor: pointer;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);\n}\n.list-view .list-view-item-title:hover {\n  background-color: #fff;\n}\n.list-view .list-view-item-content {\n  display: none;\n  background-color: #f9f9f9;\n  color: #232d33;\n  padding: 8px;\n  overflow: hidden auto;\n  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);\n}\n.list-view .list-view-item.selected {\n  display: flex;\n  flex-direction: column;\n  height: 100%;\n}\n.list-view .list-view-item.selected .list-view-item-title {\n  position: relative;\n  padding-left: 16px;\n  border-radius: 0 8px 0 0;\n}\n.list-view .list-view-item.selected .list-view-item-title::before {\n  position: absolute;\n  left: 0;\n  top: 50%;\n  content: \"\";\n  border: solid #526a78;\n  border-width: 2px 0 0 2px;\n  display: inline-block;\n  width: 6px;\n  height: 6px;\n  transform: rotate(-45deg);\n  margin: -4px 0 0 5.5px;\n}\n.list-view .list-view-item.selected .list-view-item-content {\n  display: block;\n  border-radius: 0 0 8px 8px;\n}\n.list-view .list-view-item.selected .list-view-item-title,\n.list-view .list-view-item.selected .list-view-item-content {\n  transition: border-radius 0.1s;\n}\n.list-view .list-view-item.hidden .list-view-item-title {\n  display: none;\n}", ""]);
 // Exports
 module.exports = exports;
 
@@ -25780,7 +25852,7 @@ module.exports = exports;
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, ".menu-button {\n  position: relative;\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  width: -webkit-fit-content;\n  width: -moz-fit-content;\n  width: fit-content;\n}\n.menu-button .menu-button-title {\n  position: absolute;\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  right: 0;\n  background: #fff;\n  color: #232d33;\n  margin-right: 54px;\n  height: 44px;\n  width: -webkit-max-content;\n  width: -moz-max-content;\n  width: max-content;\n  border-radius: 10px;\n  padding: 10px;\n  opacity: 0.8;\n  visibility: hidden;\n  transition-duration: 0s, 0.1s, 0.1s, 0.1s;\n  transition-delay: 0.1s, 0s, 0s, 0s;\n  transition-property: visibility, opacity, border-radius, margin-right;\n  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);\n}\n.menu-button .menu-button-icon:hover + .menu-button-title {\n  transition-delay: 0s;\n  visibility: visible;\n  margin-right: 44px;\n  opacity: 1;\n  border-radius: 10px 0 0 10px;\n}\n.menu-button .menu-button-icon:focus + .menu-button-title {\n  border: 1px solid #03a388;\n  border-right-width: 0;\n}\n.menu-button .menu-button-icon {\n  border: 0;\n  outline: 0;\n  border: 1px solid #f9f9f9;\n  background-color: #f9f9f9;\n  cursor: pointer;\n  height: 44px;\n  width: 44px;\n  border-radius: 10px;\n  padding: 10px;\n  transition: 0.1s;\n  transition-property: background-color, border-radius, border-color;\n  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);\n}\n.menu-button .menu-button-icon:hover {\n  background-color: #fff;\n  border-radius: 0 10px 10px 0;\n}\n.menu-button .menu-button-icon.selected:not(:hover) {\n  border-radius: 0 10px 10px 10px;\n}\n.menu-button .menu-button-icon > svg {\n  height: 100%;\n  width: 100%;\n  transition: fill 0.1s;\n  fill: #526a78;\n}\n.menu-button .menu-button-icon:focus {\n  border-color: #03a388;\n}\n.menu-button .menu-button-icon:focus:hover {\n  border-left-color: transparent;\n}\n.menu-button .menu-button-icon:hover > svg, .menu-button .menu-button-icon:focus > svg, .menu-button .menu-button-icon.selected > svg {\n  fill: #03a388;\n}", ""]);
+exports.push([module.i, ".menu-button {\n  position: relative;\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  width: -webkit-fit-content;\n  width: -moz-fit-content;\n  width: fit-content;\n}\n.menu-button .menu-button-title {\n  position: absolute;\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  right: 0;\n  background: #fff;\n  color: #232d33;\n  margin-right: 48px;\n  height: 40px;\n  width: -webkit-max-content;\n  width: -moz-max-content;\n  width: max-content;\n  border-radius: 8px;\n  padding: 8px;\n  opacity: 0.8;\n  visibility: hidden;\n  transition-duration: 0s, 0.1s, 0.1s, 0.1s;\n  transition-delay: 0.1s, 0s, 0s, 0s;\n  transition-property: visibility, opacity, border-radius, margin-right;\n  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);\n}\n.menu-button .menu-button-icon:hover + .menu-button-title {\n  transition-delay: 0s;\n  visibility: visible;\n  margin-right: 40px;\n  opacity: 1;\n  border-radius: 8px 0 0 8px;\n}\n.menu-button .menu-button-icon:focus + .menu-button-title {\n  border: 1px solid #03a388;\n  border-right-width: 0;\n}\n.menu-button .menu-button-icon {\n  border: 0;\n  outline: 0;\n  border: 1px solid #f9f9f9;\n  background-color: #f9f9f9;\n  cursor: pointer;\n  height: 40px;\n  width: 40px;\n  border-radius: 8px;\n  padding: 8px;\n  transition: 0.1s;\n  transition-property: background-color, border-radius, border-color;\n  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);\n}\n.menu-button .menu-button-icon:hover {\n  background-color: #fff;\n  border-radius: 0 8px 8px 0;\n}\n.menu-button .menu-button-icon.selected:not(:hover) {\n  border-radius: 0 8px 8px 8px;\n}\n.menu-button .menu-button-icon > svg {\n  height: 100%;\n  width: 100%;\n  transition: fill 0.1s;\n  fill: #526a78;\n}\n.menu-button .menu-button-icon:focus {\n  border-color: #03a388;\n}\n.menu-button .menu-button-icon:focus:hover {\n  border-left-color: transparent;\n}\n.menu-button .menu-button-icon:hover > svg, .menu-button .menu-button-icon:focus > svg, .menu-button .menu-button-icon.selected > svg {\n  fill: #03a388;\n}", ""]);
 // Exports
 module.exports = exports;
 
@@ -25798,7 +25870,7 @@ module.exports = exports;
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, ".message {\n  padding: 10px;\n  border: 0 solid #03a388;\n  border-left-width: 6px;\n  background-color: #bff8ef;\n  color: #006352;\n}\n.message.warning {\n  border-color: #f59815;\n  background-color: #fff3e2;\n  color: #b76b00;\n}\n.message.error {\n  border-color: #c5283e;\n  background-color: #fdd2d8;\n  color: #7e0314;\n}", ""]);
+exports.push([module.i, ".message {\n  padding: 8px;\n  border: 0 solid #03a388;\n  border-left-width: 6px;\n  background-color: #bff8ef;\n  color: #006352;\n}\n.message.warning {\n  border-color: #f59815;\n  background-color: #fff3e2;\n  color: #b76b00;\n}\n.message.error {\n  border-color: #c5283e;\n  background-color: #fdd2d8;\n  color: #7e0314;\n}", ""]);
 // Exports
 module.exports = exports;
 
@@ -25834,7 +25906,7 @@ module.exports = exports;
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, ".select .custom-select::after {\n  border: solid transparent;\n  border-top-color: #526a78;\n  border-width: 8px 5px;\n  box-sizing: border-box;\n  content: \"\";\n  height: 16px;\n  margin-top: -0.2em;\n  position: absolute;\n  right: 10px;\n  top: 50%;\n  transform-origin: 4px 2.5px;\n  width: 10px;\n  pointer-events: none;\n}\n\n.select .custom-select select {\n  -moz-appearance: none;\n  -webkit-appearance: none;\n  appearance: none;\n  padding-right: 28px;\n  width: 100%;\n  border: 1px solid #d4d7d8;\n  cursor: pointer;\n  transition: border-color 0.1s;\n}\n.select .custom-select select:hover {\n  border-color: #c7cacc;\n}\n.select .custom-select select:focus {\n  border-color: #03a388;\n}\n.select .custom-select {\n  position: relative;\n  width: 100%;\n}\n.select .custom-select::after {\n  transition: 0.1s;\n}", ""]);
+exports.push([module.i, ".select .custom-select::after {\n  border: solid transparent;\n  border-top-color: #526a78;\n  border-width: 8px 5px;\n  box-sizing: border-box;\n  content: \"\";\n  height: 16px;\n  margin-top: -0.2em;\n  position: absolute;\n  right: 8px;\n  top: 50%;\n  transform-origin: 4px 2.5px;\n  width: 10px;\n  pointer-events: none;\n}\n\n.select .custom-select select {\n  -moz-appearance: none;\n  -webkit-appearance: none;\n  appearance: none;\n  padding-right: 24px;\n  width: 100%;\n  border: 1px solid #d4d7d8;\n  cursor: pointer;\n  transition: border-color 0.1s;\n}\n.select .custom-select select:hover {\n  border-color: #c7cacc;\n}\n.select .custom-select select:focus {\n  border-color: #03a388;\n}\n.select .custom-select {\n  position: relative;\n  width: 100%;\n}\n.select .custom-select::after {\n  transition: 0.1s;\n}", ""]);
 // Exports
 module.exports = exports;
 
@@ -25853,7 +25925,7 @@ var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../node_modules/css-lo
 exports = ___CSS_LOADER_API_IMPORT___(false);
 exports.push([module.i, "@import url(https://fonts.googleapis.com/css?family=Montserrat|Roboto&display=swap);"]);
 // Module
-exports.push([module.i, ".card {\n  background-color: #f9f9f9;\n  color: #232d33;\n  border-radius: 10px;\n  box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.1);\n}\n\ninput,\nselect,\ntextarea,\nfieldset {\n  border: 0;\n  outline: 0;\n  background: none;\n  transition: 0.1s;\n  transition-property: border-color, background-color, color;\n  font-family: \"Roboto\", sans-serif;\n  background-color: #fff;\n  color: #232d33;\n  padding: 10px;\n  transition-duration: 0.1s;\n  transition-property: background-color, color, border-color;\n  font-size: 1rem;\n}\ninput::-moz-placeholder, select::-moz-placeholder, textarea::-moz-placeholder, fieldset::-moz-placeholder {\n  font-size: 1rem;\n}\ninput:-ms-input-placeholder, select:-ms-input-placeholder, textarea:-ms-input-placeholder, fieldset:-ms-input-placeholder {\n  font-size: 1rem;\n}\ninput::-ms-input-placeholder, select::-ms-input-placeholder, textarea::-ms-input-placeholder, fieldset::-ms-input-placeholder {\n  font-size: 1rem;\n}\ninput::placeholder,\nselect::placeholder,\ntextarea::placeholder,\nfieldset::placeholder {\n  font-size: 1rem;\n}\ninput:disabled,\nselect:disabled,\ntextarea:disabled,\nfieldset:disabled {\n  cursor: default;\n}\n\nlabel {\n  color: #526a78;\n  font-family: \"Montserrat\", sans-serif;\n  font-size: 0.9em;\n  text-transform: uppercase;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n}\n\n.label-disabled {\n  color: #ad9f9f;\n  background-color: #f9f9f9;\n}\n.label-disabled input,\n.label-disabled input:hover,\n.label-disabled input:focus,\n.label-disabled input:active {\n  background-color: #f9f9f9;\n  border-color: #d4d7d8;\n  color: #ad9f9f;\n}\n\n.label-altered {\n  color: #b76b00;\n}\n\n.label-checkbox {\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  cursor: pointer;\n}\n.label-checkbox :first-child {\n  margin-right: 10px;\n}\n\ninput {\n  border: 0;\n  border-bottom: 1px solid #d4d7d8;\n}\ninput:focus {\n  border-bottom-color: #03a388;\n}\ninput:active {\n  border-bottom-color: #d4d7d8;\n}\n\n* {\n  padding: 0;\n  margin: 0;\n  box-sizing: border-box;\n}\n\nbody {\n  background-color: #f2f2f2;\n  color: #232d33;\n  font-family: \"Roboto\", sans-serif;\n  font-size: 12pt;\n}\n\nh1,\nh2 {\n  font-family: \"Montserrat\", sans-serif;\n  color: #526a78;\n}\n\nh3,\nh4,\nh5,\nh6 {\n  font-weight: 500;\n}\n\nh1 {\n  font-size: 1.8em;\n}\n\nh2 {\n  font-size: 1.3em;\n}\n\nh3 {\n  font-size: 1.2em;\n}\n\nh4 {\n  font-size: 1.1em;\n}\n\nh5 {\n  font-size: 1.05em;\n}\n\nh6 {\n  font-size: 1.02em;\n}\n\n.menu-item {\n  position: relative;\n  cursor: pointer;\n  padding-left: inherit;\n  transition: padding-left 0.1s ease-out;\n}\n.menu-item.selected {\n  padding-left: 10px;\n}\n\n.content {\n  display: grid;\n  grid-template-columns: 1fr 1fr;\n  overflow: hidden;\n  width: 100%;\n  height: 100%;\n}\n.content > * {\n  height: 100%;\n  width: 100%;\n  overflow: visible auto;\n}", ""]);
+exports.push([module.i, ".card {\n  background-color: #f9f9f9;\n  color: #232d33;\n  border-radius: 8px;\n  box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.1);\n}\n\ninput,\nselect,\ntextarea,\nfieldset {\n  border: 0;\n  outline: 0;\n  background: none;\n  transition: 0.1s;\n  transition-property: border-color, background-color, color;\n  font-family: \"Roboto\", sans-serif;\n  background-color: #fff;\n  color: #232d33;\n  padding: 8px;\n  transition-duration: 0.1s;\n  transition-property: background-color, color, border-color;\n  font-size: 1em;\n}\ninput::-moz-placeholder, select::-moz-placeholder, textarea::-moz-placeholder, fieldset::-moz-placeholder {\n  font-size: 1rem;\n}\ninput:-ms-input-placeholder, select:-ms-input-placeholder, textarea:-ms-input-placeholder, fieldset:-ms-input-placeholder {\n  font-size: 1rem;\n}\ninput::-ms-input-placeholder, select::-ms-input-placeholder, textarea::-ms-input-placeholder, fieldset::-ms-input-placeholder {\n  font-size: 1rem;\n}\ninput::placeholder,\nselect::placeholder,\ntextarea::placeholder,\nfieldset::placeholder {\n  font-size: 1rem;\n}\ninput:disabled,\nselect:disabled,\ntextarea:disabled,\nfieldset:disabled {\n  cursor: default;\n}\n\nlabel {\n  color: #526a78;\n  font-family: \"Montserrat\", sans-serif;\n  font-size: 0.9em;\n  text-transform: uppercase;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n}\n\n.label-disabled {\n  color: #ad9f9f;\n  background-color: #f9f9f9;\n}\n.label-disabled input,\n.label-disabled input:hover,\n.label-disabled input:focus,\n.label-disabled input:active {\n  background-color: #f9f9f9;\n  border-color: #d4d7d8;\n  color: #ad9f9f;\n}\n\n.label-altered {\n  color: #b76b00;\n}\n\n.label-checkbox {\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  cursor: pointer;\n}\n.label-checkbox :first-child {\n  margin-right: 8px;\n}\n\ninput {\n  border: 0;\n  border-bottom: 1px solid #d4d7d8;\n}\ninput:focus {\n  border-bottom-color: #03a388;\n}\ninput:active {\n  border-bottom-color: #d4d7d8;\n}\n\n* {\n  padding: 0;\n  margin: 0;\n  box-sizing: border-box;\n}\n\nbody {\n  background-color: #f2f2f2;\n  color: #232d33;\n  font-family: \"Roboto\", sans-serif;\n  font-size: 12pt;\n}\n\nh1,\nh2 {\n  font-family: \"Montserrat\", sans-serif;\n  color: #526a78;\n}\n\nh3,\nh4,\nh5,\nh6 {\n  font-weight: 500;\n}\n\nh1 {\n  font-size: 1.8em;\n}\n\nh2 {\n  font-size: 1.3em;\n}\n\nh3 {\n  font-size: 1.2em;\n}\n\nh4 {\n  font-size: 1.1em;\n}\n\nh5 {\n  font-size: 1.05em;\n}\n\nh6 {\n  font-size: 1.02em;\n}\n\n.menu-item {\n  position: relative;\n  cursor: pointer;\n  padding-left: inherit;\n  transition: padding-left 0.1s ease-out;\n}\n.menu-item.selected {\n  padding-left: 8px;\n}\n\n.content {\n  display: flex;\n  flex-direction: column;\n  overflow: hidden auto;\n  width: 100%;\n  height: 100%;\n}\n.content > * {\n  height: 100%;\n  width: 100%;\n  overflow: visible auto;\n}\n\n.warning {\n  color: #f59815;\n}\n\n.danger {\n  color: #c5283e;\n}", ""]);
 // Exports
 module.exports = exports;
 
@@ -27580,7 +27652,6 @@ const YubiKey = __importStar(__webpack_require__(/*! ./YubiKey */ "./src/compone
 const TOTP = __importStar(__webpack_require__(/*! ./TOTP */ "./src/components/Auth/TOTP.tsx"));
 __webpack_require__(/*! ./Login.scss */ "./src/components/Auth/Login.scss");
 exports.Login = ({ site, error, loading, sitePrefs, onLogin, formEvents, }) => {
-    const { url } = site;
     const { username, loginType } = sitePrefs && sitePrefs || {};
     const initialValues = {
         loginType: loginType || 'totp',
@@ -27595,23 +27666,23 @@ exports.Login = ({ site, error, loading, sitePrefs, onLogin, formEvents, }) => {
         event.preventDefault();
         onLogin(site, values);
     };
+    const id = (name) => site.url + '-' + name;
     return (react_1.default.createElement("section", { className: "login" },
         react_1.default.createElement("article", { className: "login-form" },
-            react_1.default.createElement("h2", null, url),
             react_1.default.createElement("form", { className: "form", onSubmit: handleSubmit },
-                react_1.default.createElement("label", { htmlFor: "loginType" },
+                react_1.default.createElement("label", { htmlFor: id('loginType') },
                     react_1.default.createElement("span", null, "Login Type"),
-                    react_1.default.createElement(common_1.Select, Object.assign({ id: "loginType", name: "loginType", value: values.loginType }, events),
+                    react_1.default.createElement(common_1.Select, Object.assign({ id: id('loginType'), name: "loginType", value: values.loginType }, events),
                         react_1.default.createElement("option", { value: "yubikey" }, "YubiKey"),
                         react_1.default.createElement("option", { value: "totp" }, "TOTP"))),
-                react_1.default.createElement("label", { htmlFor: "username" },
+                react_1.default.createElement("label", { htmlFor: id('username') },
                     react_1.default.createElement("span", null, "Username"),
-                    react_1.default.createElement("input", Object.assign({ type: "text", id: "username", name: "username", value: values.username, required: true }, events))),
-                values.loginType === 'yubikey' && YubiKey.renderFields([values, events, reset]),
-                values.loginType === 'totp' && TOTP.renderFields([values, events, reset]),
-                react_1.default.createElement("label", { htmlFor: "remember", className: "label-checkbox" },
+                    react_1.default.createElement("input", Object.assign({ type: "text", id: id('username'), name: "username", value: values.username, required: true }, events))),
+                values.loginType === 'yubikey' && YubiKey.renderFields([values, events, reset], id),
+                values.loginType === 'totp' && TOTP.renderFields([values, events, reset], id),
+                react_1.default.createElement("label", { htmlFor: id('remember'), className: "label-checkbox" },
                     react_1.default.createElement("span", null, "Remember Username"),
-                    react_1.default.createElement(common_1.Checkbox, Object.assign({ id: "remember", name: "remember", checked: values.remember }, events))),
+                    react_1.default.createElement(common_1.Checkbox, Object.assign({ id: id('remember'), name: "remember", checked: values.remember }, events))),
                 react_1.default.createElement(common_1.Button, { type: "submit", color: "accent", isLoading: loading }, "Login"))),
         error && (react_1.default.createElement(common_1.Message, { type: "error" }, error))));
 };
@@ -27669,8 +27740,8 @@ exports.SiteList = ({ sites, sessions, selected, onSelect, }) => (react_1.defaul
     const session = sessions[url];
     const isOnline = session !== undefined;
     return (react_1.default.createElement("article", { key: url, className: `site-list-entry${isOnline ? ' online' : ''}${index === selected ? ' selected' : ''}`, onClick: () => onSelect(index) },
-        react_1.default.createElement("p", { className: "site-url" }, url),
-        react_1.default.createElement("div", { className: "site-icons" },
+        react_1.default.createElement("p", { className: "site-list-url" }, url),
+        react_1.default.createElement("div", { className: "site-list-icons" },
             isOnline && Object.values(session.warnings).length > 0 && svg_1.default.warning,
             isOnline && Object.values(session.violations).length > 0 && svg_1.default.error,
             isOnline && svg_1.default.vaultOpen,
@@ -27736,7 +27807,6 @@ exports.SiteStatus = ({ url, session, onLogout, }) => {
     const minutesActive = Math.floor((Date.now() - session.createdAt) / (1000 * 60));
     const dateStamp = new Date(session.createdAt).toLocaleTimeString('sv');
     return (react_1.default.createElement("section", { className: "site-status" },
-        react_1.default.createElement("h2", null, url),
         react_1.default.createElement("section", { className: "site-status-info" },
             react_1.default.createElement("article", { className: "site-status-online" },
                 react_1.default.createElement("h3", null, "Session status"),
@@ -27750,6 +27820,66 @@ exports.SiteStatus = ({ url, session, onLogout, }) => {
             Object.values(session.warnings).length > 0 && (warningMessages)),
         react_1.default.createElement("section", { className: "site-status-logout" },
             react_1.default.createElement(common_1.Button, { type: "submit", color: "danger", onClick: () => onLogout(url) }, "Logout"))));
+};
+
+
+/***/ }),
+
+/***/ "./src/components/Auth/SiteTitle.scss":
+/*!********************************************!*\
+  !*** ./src/components/Auth/SiteTitle.scss ***!
+  \********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var api = __webpack_require__(/*! ../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
+            var content = __webpack_require__(/*! !../../../node_modules/css-loader/dist/cjs.js!../../../node_modules/postcss-loader/src!../../../node_modules/sass-loader/dist/cjs.js!./SiteTitle.scss */ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/Auth/SiteTitle.scss");
+
+            content = content.__esModule ? content.default : content;
+
+            if (typeof content === 'string') {
+              content = [[module.i, content, '']];
+            }
+
+var options = {};
+
+options.insert = "head";
+options.singleton = false;
+
+var update = api(content, options);
+
+
+
+module.exports = content.locals || {};
+
+/***/ }),
+
+/***/ "./src/components/Auth/SiteTitle.tsx":
+/*!*******************************************!*\
+  !*** ./src/components/Auth/SiteTitle.tsx ***!
+  \*******************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.SiteTitle = void 0;
+const react_1 = __importDefault(__webpack_require__(/*! react */ "react"));
+const svg_1 = __importDefault(__webpack_require__(/*! ../../ico/svg */ "./src/ico/svg.tsx"));
+__webpack_require__(/*! ./SiteTitle.scss */ "./src/components/Auth/SiteTitle.scss");
+exports.SiteTitle = ({ url, session, }) => {
+    const isOnline = session !== undefined;
+    return (react_1.default.createElement("article", { className: `site-title${isOnline ? ' online' : ''}` },
+        react_1.default.createElement("p", { className: "site-title-url" }, url),
+        react_1.default.createElement("div", { className: "site-title-icons" },
+            isOnline && Object.values(session.warnings).length > 0 && svg_1.default.warning,
+            isOnline && Object.values(session.violations).length > 0 && svg_1.default.error,
+            isOnline && svg_1.default.vaultOpen,
+            !isOnline && svg_1.default.vault)));
 };
 
 
@@ -27786,13 +27916,13 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.renderFields = void 0;
 const react_1 = __importStar(__webpack_require__(/*! react */ "react"));
-exports.renderFields = ([values, events]) => (react_1.default.createElement(react_1.Fragment, null,
+exports.renderFields = ([values, events], id) => (react_1.default.createElement(react_1.Fragment, null,
     react_1.default.createElement("label", { htmlFor: "passphrase" },
         react_1.default.createElement("span", null, "Passphrase"),
-        react_1.default.createElement("input", Object.assign({ type: "password", name: "passphrase", id: "passphrase", required: true, value: values.passphrase }, events))),
+        react_1.default.createElement("input", Object.assign({ type: "password", name: "passphrase", id: id('passphrase'), required: true, value: values.passphrase }, events))),
     react_1.default.createElement("label", { htmlFor: "otp" },
         react_1.default.createElement("span", null, "OTP"),
-        react_1.default.createElement("input", Object.assign({ type: "text", name: "otp", id: "otp", required: true, value: values.otp }, events)))));
+        react_1.default.createElement("input", Object.assign({ type: "text", name: "otp", id: id('otp'), required: true, value: values.otp }, events)))));
 
 
 /***/ }),
@@ -27828,10 +27958,10 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.renderFields = void 0;
 const react_1 = __importStar(__webpack_require__(/*! react */ "react"));
-exports.renderFields = ([values, events]) => (react_1.default.createElement(react_1.Fragment, null,
+exports.renderFields = ([values, events], id) => (react_1.default.createElement(react_1.Fragment, null,
     react_1.default.createElement("label", { htmlFor: "keys" },
         react_1.default.createElement("span", null, "Passphrase + YubiKey"),
-        react_1.default.createElement("input", Object.assign({ type: "password", name: "keys", id: "keys", required: true, title: "Passphrase + YubiKey", value: values.keys }, events)))));
+        react_1.default.createElement("input", Object.assign({ type: "password", name: "keys", id: id('password'), required: true, title: "Passphrase + YubiKey", value: values.keys }, events)))));
 
 
 /***/ }),
@@ -27846,6 +27976,8 @@ exports.renderFields = ([values, events]) => (react_1.default.createElement(reac
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
+var SiteTitle_1 = __webpack_require__(/*! ./SiteTitle */ "./src/components/Auth/SiteTitle.tsx");
+Object.defineProperty(exports, "SiteTitle", { enumerable: true, get: function () { return SiteTitle_1.SiteTitle; } });
 var SiteList_1 = __webpack_require__(/*! ./SiteList */ "./src/components/Auth/SiteList.tsx");
 Object.defineProperty(exports, "SiteList", { enumerable: true, get: function () { return SiteList_1.SiteList; } });
 var SiteStatus_1 = __webpack_require__(/*! ./SiteStatus */ "./src/components/Auth/SiteStatus.tsx");
@@ -28394,6 +28526,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = __importStar(__webpack_require__(/*! react */ "react"));
+const common_1 = __webpack_require__(/*! ../common */ "./src/components/common/index.ts");
 const Add_1 = __webpack_require__(/*! ../Add */ "./src/components/Add/index.ts");
 __webpack_require__(/*! ./Add.scss */ "./src/components/Popup/Add.scss");
 const PopupAdd = ({ urls, vaults, templates, onUrlChange, }) => {
@@ -28408,7 +28541,7 @@ const PopupAdd = ({ urls, vaults, templates, onUrlChange, }) => {
     const handleTemplateChange = (id) => {
         setState((prevState) => (Object.assign(Object.assign({}, prevState), { template: id })));
     };
-    const left = react_1.default.createElement(Add_1.AddObject, { url: {
+    const content = react_1.default.createElement(Add_1.AddObject, { url: {
             selected: state.url,
             values: urls,
             onChange: handleUrlChange,
@@ -28421,13 +28554,41 @@ const PopupAdd = ({ urls, vaults, templates, onUrlChange, }) => {
             values: templates,
             onChange: handleTemplateChange,
         } });
-    const right = react_1.default.createElement("p", null, "Implementation still in progress.");
-    return (react_1.default.createElement("section", { className: "popup-add content" },
-        react_1.default.createElement("article", null, left),
-        react_1.default.createElement("article", null, right)));
+    return (react_1.default.createElement("section", { className: "popup-add" },
+        content,
+        react_1.default.createElement(common_1.Message, { type: "warning" }, "Section currently under development.")));
 };
 exports.default = PopupAdd;
 
+
+/***/ }),
+
+/***/ "./src/components/Popup/Auth.scss":
+/*!****************************************!*\
+  !*** ./src/components/Popup/Auth.scss ***!
+  \****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var api = __webpack_require__(/*! ../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
+            var content = __webpack_require__(/*! !../../../node_modules/css-loader/dist/cjs.js!../../../node_modules/postcss-loader/src!../../../node_modules/sass-loader/dist/cjs.js!./Auth.scss */ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/Popup/Auth.scss");
+
+            content = content.__esModule ? content.default : content;
+
+            if (typeof content === 'string') {
+              content = [[module.i, content, '']];
+            }
+
+var options = {};
+
+options.insert = "head";
+options.singleton = false;
+
+var update = api(content, options);
+
+
+
+module.exports = content.locals || {};
 
 /***/ }),
 
@@ -28459,19 +28620,30 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const react_1 = __importStar(__webpack_require__(/*! react */ "react"));
+const react_1 = __importDefault(__webpack_require__(/*! react */ "react"));
+const common_1 = __webpack_require__(/*! ../common */ "./src/components/common/index.ts");
 const Auth = __importStar(__webpack_require__(/*! ../Auth */ "./src/components/Auth/index.ts"));
+__webpack_require__(/*! ./Auth.scss */ "./src/components/Popup/Auth.scss");
 const PopupAuth = ({ sites, sessions, sitePrefs, onLogin, onLogout, loginStatus, }) => {
-    const lastUsed = sites.findIndex(({ url }) => sitePrefs.lastUsed === url);
-    const [selected, setSelected] = react_1.useState(lastUsed === -1 ? 0 : lastUsed);
-    const left = react_1.default.createElement(Auth.SiteList, { sites: sites, sessions: sessions, selected: selected, onSelect: setSelected });
-    const url = sites[selected].url;
-    const isOnline = sessions[url] !== undefined;
-    const right = isOnline ? ((react_1.default.createElement(Auth.SiteStatus, { url: url, session: sessions[url], onLogout: onLogout }))) : (react_1.default.createElement(Auth.Login, Object.assign({ key: url, site: sites[selected], onLogin: onLogin, sitePrefs: sitePrefs.sites[url] }, loginStatus[url])));
-    return (react_1.default.createElement("section", { className: "auth content" },
-        react_1.default.createElement("article", null, left),
-        react_1.default.createElement("article", null, right)));
+    const items = sites.map((site) => {
+        const { url } = site;
+        const session = sessions[url];
+        const isOnline = session !== undefined;
+        const title = react_1.default.createElement(Auth.SiteTitle, { url: url, session: session });
+        const content = isOnline ? (react_1.default.createElement(Auth.SiteStatus, { url: url, session: session, onLogout: onLogout })) : (react_1.default.createElement(Auth.Login, Object.assign({ site: site, onLogin: onLogin, sitePrefs: sitePrefs.sites[url] }, loginStatus[url])));
+        return {
+            key: url,
+            title,
+            content,
+        };
+    });
+    const defaultSelected = sites.length === 1 ? sites[0].url : Object.keys(sessions).length <= 1 ? sitePrefs.lastUsed : undefined;
+    return (react_1.default.createElement("section", { className: "popup-auth" },
+        react_1.default.createElement(common_1.ListView, { items: items, defaultSelected: defaultSelected })));
 };
 exports.default = PopupAuth;
 
@@ -28567,26 +28739,39 @@ exports.Popup = ({ isInitialized, add, auth, search, openOptions, }) => {
             setPage(Page.Sessions);
         }
     }
+    const menu = isInitialized ? (react_1.default.createElement("ul", { className: "popup-menu" },
+        isOnline && (react_1.default.createElement("li", null,
+            react_1.default.createElement(common_1.MenuButton, { icon: svg_1.default.add, title: "Add New Object", onClick: () => setPage(Page.Add), selected: page === Page.Add }))),
+        react_1.default.createElement("li", null,
+            react_1.default.createElement(common_1.MenuButton, { icon: svg_1.default.vault, title: "Sessions", onClick: () => setPage(Page.Sessions), selected: page === Page.Sessions })),
+        react_1.default.createElement("li", null,
+            react_1.default.createElement(common_1.MenuButton, { icon: svg_1.default.settings, title: "Options", onClick: openOptions })))) : null;
+    const isLoading = Object.values(search.searchStatus).reduce((loading, status) => {
+        return loading || status.loading;
+    }, false);
     return (react_1.default.createElement("section", { className: "popup" },
         react_1.default.createElement("header", { className: "popup-header" },
-            react_1.default.createElement(common_1.Banner, null),
+            react_1.default.createElement("h1", null,
+                react_1.default.createElement(common_1.Banner, null)),
             react_1.default.createElement("article", { className: "popup-search-bar" },
-                react_1.default.createElement(Search_1.SearchBar, Object.assign({}, search, { disabled: !isOnline, onFocus: () => setPage(Page.Search) })))),
-        react_1.default.createElement("section", { className: "popup-main" },
+                react_1.default.createElement(Search_1.SearchBar, Object.assign({}, search, { disabled: !isOnline, onFocus: () => setPage(Page.Search), isLoading: isLoading })))),
+        page === undefined ? (react_1.default.createElement(common_1.LoadingComponent, null)) : (react_1.default.createElement("section", { className: "popup-main" },
             react_1.default.createElement("section", { className: "popup-content" },
                 page === Page.Add && react_1.default.createElement(Add_1.default, Object.assign({}, add)),
                 page === Page.Search && react_1.default.createElement(Search_2.default, Object.assign({}, search)),
-                page === Page.Sessions && react_1.default.createElement(Auth_1.default, Object.assign({}, auth)),
-                page === undefined && react_1.default.createElement(common_1.LoadingComponent, null)),
-            isInitialized && (react_1.default.createElement("ul", { className: "popup-menu" },
-                isOnline && (react_1.default.createElement("li", null,
-                    react_1.default.createElement(common_1.MenuButton, { icon: svg_1.default.add, title: "Add New Object", onClick: () => setPage(Page.Add), selected: page === Page.Add }))),
-                react_1.default.createElement("li", null,
-                    react_1.default.createElement(common_1.MenuButton, { icon: svg_1.default.vault, title: "Sessions", onClick: () => setPage(Page.Sessions), selected: page === Page.Sessions })),
-                react_1.default.createElement("li", null,
-                    react_1.default.createElement(common_1.MenuButton, { icon: svg_1.default.settings, title: "Options", onClick: openOptions }))))),
+                page === Page.Sessions && react_1.default.createElement(Auth_1.default, Object.assign({}, auth))),
+            menu)),
         react_1.default.createElement("section", { className: "popup-status" },
-            react_1.default.createElement(StatusBar_1.StatusBar, { activeSessions: Object.keys(sessions).length }))));
+            react_1.default.createElement(StatusBar_1.StatusBar, { activeSessions: Object.keys(sessions).length }),
+            Object.keys(search.searchStatus).map((url) => (react_1.default.createElement(react_1.Fragment, { key: url },
+                search.searchStatus[url].loading && react_1.default.createElement("p", null,
+                    "Searching ",
+                    url,
+                    "..."),
+                search.searchStatus[url].error && (react_1.default.createElement("p", { className: "danger" },
+                    url,
+                    ": ",
+                    search.searchStatus[url].error))))))));
 };
 
 
@@ -28649,12 +28834,28 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const react_1 = __importStar(__webpack_require__(/*! react */ "react"));
+const react_1 = __importDefault(__webpack_require__(/*! react */ "react"));
 const common_1 = __webpack_require__(/*! ../common */ "./src/components/common/index.ts");
+const common_2 = __webpack_require__(/*! ../common */ "./src/components/common/index.ts");
 const Search = __importStar(__webpack_require__(/*! ../Search */ "./src/components/Search/index.ts"));
 __webpack_require__(/*! ./Search.scss */ "./src/components/Popup/Search.scss");
 const PopupSearch = ({ urls, results, onShow, onCopy, onFill, searchStatus, }) => {
+    const numResults = Object.keys(results).reduce((acc, url) => acc + Object.keys(results[url]).length, 0);
+    const isLoading = Object.values(searchStatus).reduce((loading, status) => {
+        return loading || status.loading;
+    }, false);
+    if (numResults === 0) {
+        if (isLoading) {
+            return (react_1.default.createElement("section", { className: "popup-search popup-search-loading" },
+                react_1.default.createElement(common_1.LoadingComponent, null)));
+        }
+        return (react_1.default.createElement("section", { className: "popup-search popup-search-empty" },
+            react_1.default.createElement("p", null, "No results found")));
+    }
     // Initialize selected to first object if it exists.
     let firstUrl = undefined, firstId = undefined;
     const resultUrls = Object.keys(results);
@@ -28667,32 +28868,18 @@ const PopupSearch = ({ urls, results, onShow, onCopy, onFill, searchStatus, }) =
             firstId = id;
         }
     }
-    const [selected, setSelected] = react_1.useState({ url: firstUrl, id: firstId });
-    const isLoading = Object.values(searchStatus).reduce((loading, status) => {
-        return loading || status.loading;
-    }, false);
-    if (firstUrl === undefined && firstId === undefined) {
-        if (isLoading) {
-            return (react_1.default.createElement("section", { className: "popup-search content" },
-                react_1.default.createElement("article", null,
-                    react_1.default.createElement(common_1.LoadingComponent, null)),
-                react_1.default.createElement("article", null)));
-        }
-        return (react_1.default.createElement("section", { className: "popup-search popup-search-empty" },
-            react_1.default.createElement("p", null, "No results found")));
-    }
-    else if ((results[selected.url] === undefined || results[selected.url][selected.id] === undefined) &&
-        (firstUrl !== undefined && firstId !== undefined)) {
-        // Skip single frame while selected state updates.
-        setSelected({ url: firstUrl, id: firstId });
-        return null;
-    }
-    const { url, id } = selected;
-    const left = react_1.default.createElement(Search.SearchResults, { urls: urls, results: results, onSelect: (newSelected) => setSelected(newSelected), searchStatus: searchStatus });
-    const right = react_1.default.createElement(Search.ObjectView, { url: url, id: id, result: results[url][id], onShow: onShow, onCopy: onCopy, onFill: onFill });
-    return (react_1.default.createElement("section", { className: "popup-search content" },
-        react_1.default.createElement("article", null, left),
-        react_1.default.createElement("article", null, right)));
+    const items = Object.keys(results).reduce(((acc, url) => ([
+        ...acc,
+        ...Object.keys(results[url]).map(((id) => ({
+            key: url + id,
+            title: react_1.default.createElement(Search.SearchTitle, { url: url, result: results[url][id] }),
+            content: react_1.default.createElement(Search.ObjectView, { url: url, id: id, result: results[url][id], onShow: onShow, onCopy: onCopy, onFill: onFill }),
+        })))
+    ])), []);
+    // Select the first result if there are no other results
+    const defaultSelected = numResults === 1 ? firstUrl + firstId : undefined;
+    return (react_1.default.createElement("section", { className: "popup-search" },
+        react_1.default.createElement(common_2.ListView, { items: items, defaultSelected: defaultSelected })));
 };
 exports.default = PopupSearch;
 
@@ -28816,7 +29003,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ObjectView = void 0;
 const react_1 = __importDefault(__webpack_require__(/*! react */ "react"));
 const common_1 = __webpack_require__(/*! ../common */ "./src/components/common/index.ts");
-const ico_1 = __importDefault(__webpack_require__(/*! ../../ico */ "./src/ico/index.ts"));
 __webpack_require__(/*! ./ObjectView.scss */ "./src/components/Search/ObjectView.scss");
 exports.ObjectView = ({ url, id, result, onShow, onCopy, onFill, }) => {
     const encryptedFieldText = (field, onShow) => {
@@ -28842,9 +29028,6 @@ exports.ObjectView = ({ url, id, result, onShow, onCopy, onFill, }) => {
     };
     return (react_1.default.createElement("section", { className: "object-view" },
         react_1.default.createElement("article", { className: "object-view-container" },
-            react_1.default.createElement("hgroup", { className: "object-view-title", style: { backgroundImage: `url('${ico_1.default[result.icon]}')` } },
-                react_1.default.createElement("h2", { className: "object-view-name" }, result.name),
-                react_1.default.createElement("h3", { className: "obejct-view-url" }, url)),
             react_1.default.createElement(common_1.Button, { className: "object-view-fill", onClick: () => onFill(url, id) }, "Fill"),
             Object.keys(result.fields).map((field) => {
                 let value;
@@ -28911,7 +29094,7 @@ exports.SearchBar = void 0;
 const react_1 = __importDefault(__webpack_require__(/*! react */ "react"));
 const svg_1 = __importDefault(__webpack_require__(/*! ../../ico/svg */ "./src/ico/svg.tsx"));
 __webpack_require__(/*! ./SearchBar.scss */ "./src/components/Search/SearchBar.scss");
-exports.SearchBar = ({ needle, onNeedleChange, onSearch, onFocus, onBlur, disabled, }) => {
+exports.SearchBar = ({ needle, onNeedleChange, onSearch, onFocus, onBlur, disabled, isLoading, }) => {
     const onSubmit = (event) => {
         event.preventDefault();
         onSearch();
@@ -28920,7 +29103,7 @@ exports.SearchBar = ({ needle, onNeedleChange, onSearch, onFocus, onBlur, disabl
         react_1.default.createElement("input", { className: "search-bar-input", type: "search", value: needle, placeholder: "Search", "aria-label": "Search Text", disabled: disabled, onChange: ({ target }) => {
                 onNeedleChange(target.value);
             }, onFocus: () => onFocus && onFocus(), onBlur: () => onBlur && onBlur() }),
-        react_1.default.createElement("button", { className: "search-bar-button", type: "submit", "aria-label": "Search Submit", disabled: disabled }, svg_1.default.search)));
+        react_1.default.createElement("button", { className: `search-bar-button${isLoading ? ' loading' : ''}`, type: "submit", "aria-label": "Search Submit", disabled: disabled }, svg_1.default.search)));
 };
 exports.SearchBar.defaultProps = {
     disabled: false,
@@ -28995,6 +29178,59 @@ exports.SearchResults = ({ urls, results, onSelect, selected, searchStatus, }) =
 
 /***/ }),
 
+/***/ "./src/components/Search/SearchTitle.scss":
+/*!************************************************!*\
+  !*** ./src/components/Search/SearchTitle.scss ***!
+  \************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var api = __webpack_require__(/*! ../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
+            var content = __webpack_require__(/*! !../../../node_modules/css-loader/dist/cjs.js!../../../node_modules/postcss-loader/src!../../../node_modules/sass-loader/dist/cjs.js!./SearchTitle.scss */ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/Search/SearchTitle.scss");
+
+            content = content.__esModule ? content.default : content;
+
+            if (typeof content === 'string') {
+              content = [[module.i, content, '']];
+            }
+
+var options = {};
+
+options.insert = "head";
+options.singleton = false;
+
+var update = api(content, options);
+
+
+
+module.exports = content.locals || {};
+
+/***/ }),
+
+/***/ "./src/components/Search/SearchTitle.tsx":
+/*!***********************************************!*\
+  !*** ./src/components/Search/SearchTitle.tsx ***!
+  \***********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.SearchTitle = void 0;
+const react_1 = __importDefault(__webpack_require__(/*! react */ "react"));
+const ico_1 = __importDefault(__webpack_require__(/*! ../../ico */ "./src/ico/index.ts"));
+__webpack_require__(/*! ./SearchTitle.scss */ "./src/components/Search/SearchTitle.scss");
+exports.SearchTitle = ({ url, result, }) => (react_1.default.createElement("article", { style: { backgroundImage: `url('${ico_1.default[result.icon]}')` }, className: "search-title" },
+    react_1.default.createElement("div", { className: "search-title-text" },
+        react_1.default.createElement("p", { className: "search-title-name" }, result.name))));
+
+
+/***/ }),
+
 /***/ "./src/components/Search/index.ts":
 /*!****************************************!*\
   !*** ./src/components/Search/index.ts ***!
@@ -29007,6 +29243,8 @@ exports.SearchResults = ({ urls, results, onSelect, selected, searchStatus, }) =
 Object.defineProperty(exports, "__esModule", { value: true });
 var SearchResults_1 = __webpack_require__(/*! ./SearchResults */ "./src/components/Search/SearchResults.tsx");
 Object.defineProperty(exports, "SearchResults", { enumerable: true, get: function () { return SearchResults_1.SearchResults; } });
+var SearchTitle_1 = __webpack_require__(/*! ./SearchTitle */ "./src/components/Search/SearchTitle.tsx");
+Object.defineProperty(exports, "SearchTitle", { enumerable: true, get: function () { return SearchTitle_1.SearchTitle; } });
 var ObjectView_1 = __webpack_require__(/*! ./ObjectView */ "./src/components/Search/ObjectView.tsx");
 Object.defineProperty(exports, "ObjectView", { enumerable: true, get: function () { return ObjectView_1.ObjectView; } });
 var SearchBar_1 = __webpack_require__(/*! ./SearchBar */ "./src/components/Search/SearchBar.tsx");
@@ -29206,6 +29444,92 @@ exports.Checkbox = (props) => (React.createElement(React.Fragment, null,
     React.createElement("div", { style: { display: 'inline-block' }, className: "checkbox" },
         React.createElement("input", Object.assign({ type: "checkbox" }, props)),
         React.createElement("div", { className: "custom-checkbox" }))));
+
+
+/***/ }),
+
+/***/ "./src/components/common/ListView.scss":
+/*!*********************************************!*\
+  !*** ./src/components/common/ListView.scss ***!
+  \*********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var api = __webpack_require__(/*! ../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
+            var content = __webpack_require__(/*! !../../../node_modules/css-loader/dist/cjs.js!../../../node_modules/postcss-loader/src!../../../node_modules/sass-loader/dist/cjs.js!./ListView.scss */ "./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/src/index.js!./node_modules/sass-loader/dist/cjs.js!./src/components/common/ListView.scss");
+
+            content = content.__esModule ? content.default : content;
+
+            if (typeof content === 'string') {
+              content = [[module.i, content, '']];
+            }
+
+var options = {};
+
+options.insert = "head";
+options.singleton = false;
+
+var update = api(content, options);
+
+
+
+module.exports = content.locals || {};
+
+/***/ }),
+
+/***/ "./src/components/common/ListView.tsx":
+/*!********************************************!*\
+  !*** ./src/components/common/ListView.tsx ***!
+  \********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ListView = void 0;
+const react_1 = __importStar(__webpack_require__(/*! react */ "react"));
+__webpack_require__(/*! ./ListView.scss */ "./src/components/common/ListView.scss");
+exports.ListView = ({ items, defaultSelected, }) => {
+    const [selected, setSelected] = react_1.useState(defaultSelected);
+    react_1.useEffect(() => {
+        setSelected(defaultSelected);
+    }, [defaultSelected]);
+    const list = items.map((item) => {
+        const isSelected = selected === item.key;
+        const onSelect = () => {
+            if (isSelected) {
+                setSelected(undefined);
+            }
+            else {
+                setSelected(item.key);
+            }
+        };
+        return (react_1.default.createElement("article", { className: `list-view-item${isSelected ? ' selected' : ''}${selected && !isSelected ? ' hidden' : ''}`, key: item.key },
+            react_1.default.createElement("article", { className: "list-view-item-title", onClick: onSelect }, item.title),
+            react_1.default.createElement("article", { className: "list-view-item-content" }, item.content)));
+    });
+    return (react_1.default.createElement("section", { className: `list-view${selected !== undefined ? ' has-selected' : ''}` }, list));
+};
 
 
 /***/ }),
@@ -29622,6 +29946,8 @@ var LoadingComponent_1 = __webpack_require__(/*! ./LoadingComponent */ "./src/co
 Object.defineProperty(exports, "LoadingComponent", { enumerable: true, get: function () { return LoadingComponent_1.LoadingComponent; } });
 var MenuButton_1 = __webpack_require__(/*! ./MenuButton */ "./src/components/common/MenuButton.tsx");
 Object.defineProperty(exports, "MenuButton", { enumerable: true, get: function () { return MenuButton_1.MenuButton; } });
+var ListView_1 = __webpack_require__(/*! ./ListView */ "./src/components/common/ListView.tsx");
+Object.defineProperty(exports, "ListView", { enumerable: true, get: function () { return ListView_1.ListView; } });
 
 
 /***/ }),
@@ -30183,7 +30509,7 @@ exports.default = {
         react_1.default.createElement("path", { transform: "scale(.26458)", d: "m27.486 0a12.5 12.5 0 00-12.486 12.5 12.5 12.5 0 002.3145 7.2441 12.5 12.5 0 000 .001953l-17.314 17.312 2.9414 2.9414 17.312-17.312a12.5 12.5 0 007.2461 2.3125 12.5 12.5 0 0012.5-12.5 12.5 12.5 0 00-12.5-12.5 12.5 12.5 0 00-.013672 0zm-.11914 3.6641a8.8361 8.8361 0 01.13281 0 8.8361 8.8361 0 018.8359 8.8359 8.8361 8.8361 0 01-8.8359 8.8359 8.8361 8.8361 0 01-8.8359-8.8359 8.8361 8.8361 0 018.7031-8.8359z" }))),
     vault: (react_1.default.createElement("svg", { className: "icon icon-vault", width: "40", height: "40", version: "1.1", viewBox: "0 0 10.583 10.583", xmlns: "http://www.w3.org/2000/svg" },
         react_1.default.createElement("path", { transform: "scale(.26458)", d: "m5.2637 0c-2.9158 5.9212e-16-5.2637 2.288-5.2637 5.1309v28.738c5.9212e-16 2.8429 2.3479 5.1309 5.2637 5.1309h-.26367v1h3v-1h24v1h3v-1h-.26367c2.9158 0 5.2637-2.288 5.2637-5.1309v-28.738c0-2.8429-2.3479-5.1309-5.2637-5.1309h-29.473zm1.2812 1.6973h26.91c2.662 0 4.8047 2.0901 4.8047 4.6855v26.234c0 2.5955-2.1427 4.6855-4.8047 4.6855h-26.91c-2.662 0-4.8047-2.0901-4.8047-4.6855v-26.234c0-2.5955 2.1427-4.6855 4.8047-4.6855zm.83984 1.1074c-2.4963 0-4.5078 1.9607-4.5078 4.3945v24.602c0 2.4338 2.0116 4.3945 4.5078 4.3945h25.23c2.4963 0 4.5078-1.9607 4.5078-4.3945v-24.602c0-2.4338-2.0116-4.3945-4.5078-4.3945h-25.23zm20.492 11.256a5.9606 5.9606 0 01.125 0 5.9606 5.9606 0 015.959 5.959 5.9606 5.9606 0 01-5.959 5.959 5.9606 5.9606 0 01-5.9629-5.959 5.9606 5.9606 0 015.8379-5.959zm.125 1.4453a4.5134 4.5134 0 00-4.5137 4.5137 4.5134 4.5134 0 004.5137 4.5137 4.5134 4.5134 0 004.5117-4.5137 4.5134 4.5134 0 00-4.5117-4.5137zm-18.609.14844a4.3661 4.3661 0 012.2793.58398 4.3661 4.3661 0 012.0449 2.6992h3.0117c.39944 0 .7207.32127.7207.7207v.72266c0 .39944-.32126.7207-.7207.7207h-3.0117a4.3661 4.3661 0 01-.44727 1.1016 4.3661 4.3661 0 01-5.9648 1.5977 4.3661 4.3661 0 01-1.5977-5.9648 4.3661 4.3661 0 013.6855-2.1816zm18.609 1a3.3644 3.3644 0 013.3633 3.3652 3.3644 3.3644 0 01-3.3633 3.3652 3.3644 3.3644 0 01-3.3652-3.3652 3.3644 3.3644 0 013.3652-3.3652zm-18.57.58203a2.7845 2.7845 0 00-2.3555 1.3906 2.7845 2.7845 0 001.0195 3.8027 2.7845 2.7845 0 003.8027-1.0176 2.7845 2.7845 0 00-1.0176-3.8027 2.7845 2.7845 0 00-1.4492-.37305z" }))),
-    vaultOpen: (react_1.default.createElement("svg", { className: "site-icon site-icon-online", width: "40", height: "40", version: "1.1", viewBox: "0 0 10.583 10.583", xmlns: "http://www.w3.org/2000/svg" },
+    vaultOpen: (react_1.default.createElement("svg", { className: "icon icon-online", width: "40", height: "40", version: "1.1", viewBox: "0 0 10.583 10.583", xmlns: "http://www.w3.org/2000/svg" },
         react_1.default.createElement("path", { transform: "scale(.26458)", d: "m5.2637 0c-2.9158 0-5.2637 2.288-5.2637 5.1309v28.738c0 2.8429 2.3479 5.1309 5.2637 5.1309h-.26367v1h3v-1h24v1h3v-1h-.26367c2.9158 0 5.2637-2.288 5.2637-5.1309v-28.738c0-2.8429-2.3479-5.1309-5.2637-5.1309h-29.473zm1.2812 1.6973h26.91c2.662 0 4.8047 2.0901 4.8047 4.6855v26.234c0 2.5955-2.1427 4.6855-4.8047 4.6855h-26.91c-2.662 0-4.8047-2.0901-4.8047-4.6855v-26.234c0-2.5955 2.1427-4.6855 4.8047-4.6855zm15.625 1.7344c-1.2013 0-2.1699 1.8859-2.1699 4.2285v23.68c0 2.3426.9686 4.2285 2.1699 4.2285h12.143c1.2013 0 2.168-1.8859 2.168-4.2285v-23.68c0-2.3426-.96665-4.2285-2.168-4.2285h-12.143zm9.9219 10.832a2.8686 5.7371 0 012.8672 5.7363 2.8686 5.7371 0 01-2.8672 5.7363 2.8686 5.7371 0 01-2.8691-5.7363 2.8686 5.7371 0 012.8691-5.7363zm0 1.3926a2.1721 4.3442 0 00-2.1719 4.3438 2.1721 4.3442 0 002.1719 4.3438 2.1721 4.3442 0 002.1719-4.3438 2.1721 4.3442 0 00-2.1719-4.3438zm-8.9551.14258a2.1012 4.2024 0 011.0957.5625 2.1012 4.2024 0 01.98438 2.5977h1.4492c.19223 0 .34766.3089.34766.69336v.69531c0 .38446-.15542.69336-.34766.69336h-1.4492a2.1012 4.2024 0 01-.21484 1.0605 2.1012 4.2024 0 01-2.8711 1.5371 2.1012 4.2024 0 01-.76953-5.7402 2.1012 4.2024 0 011.7754-2.0996zm8.9551.96289a1.6191 3.2383 0 011.6191 3.2383 1.6191 3.2383 0 01-1.6191 3.2383 1.6191 3.2383 0 01-1.6191-3.2383 1.6191 3.2383 0 011.6191-3.2383zm-8.9375.55859a1.3401 2.6801 0 00-1.1328 1.3398 1.3401 2.6801 0 00.49024 3.6602 1.3401 2.6801 0 001.8301-.98047 1.3401 2.6801 0 00-.49024-3.6602 1.3401 2.6801 0 00-.69726-.35938z" }))),
     settings: (react_1.default.createElement("svg", { className: "icon icon-settings", width: "40", height: "40", version: "1.1", viewBox: "0 0 10.583 10.583", xmlns: "http://www.w3.org/2000/svg" },
         react_1.default.createElement("g", { transform: "translate(0 -286.42)" },
@@ -30274,10 +30600,16 @@ if (true) {
     /* eslint @typescript-eslint/no-var-requires: off */
     const axe = __webpack_require__(/*! react-axe */ "./node_modules/react-axe/index.js");
     axe(React, ReactDOM, 1000, {
-        rules: [{
+        rules: [
+            {
                 id: 'color-contrast',
                 selector: '*:not(.button-accent .button-children)',
-            }],
+            },
+            {
+                id: 'page-has-heading-one',
+                selector: '*:not(.popup)',
+            }
+        ],
     });
 }
 ReactDOM.render(React.createElement(Extension_1.default, null), document.getElementById('app'));

@@ -12,10 +12,16 @@ if (process.env.NODE_ENV !== 'production') {
   /* eslint @typescript-eslint/no-var-requires: off */
   const axe = require('react-axe');
   axe(React, ReactDOM, 1000, {
-    rules: [{
-      id: 'color-contrast',
-      selector: '*:not(.button-accent .button-children)',
-    }],
+    rules: [
+      {
+        id: 'color-contrast',
+        selector: '*:not(.button-accent .button-children)',
+      },
+      {
+        id: 'page-has-heading-one',
+        selector: '*:not(.popup)',
+      }
+    ],
   });
 }
 

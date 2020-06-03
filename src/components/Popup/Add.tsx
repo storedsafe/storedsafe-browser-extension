@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Vault, Template } from '../../model/StoredSafe';
-import { LoadingComponent } from '../common';
+import { Message } from '../common';
 import { AddObject } from '../Add';
 import './Add.scss';
 
@@ -42,7 +42,7 @@ const PopupAdd: React.FunctionComponent<AddProps> = ({
     }));
   };
 
-  const left = <AddObject
+  const content = <AddObject
     url={{
       selected: state.url,
       values: urls,
@@ -60,12 +60,10 @@ const PopupAdd: React.FunctionComponent<AddProps> = ({
     }}
   />;
 
-  const right: React.ReactNode = <p>Implementation still in progress.</p>;
-
   return (
-    <section className="popup-add content">
-      <article>{left}</article>
-      <article>{right}</article>
+    <section className="popup-add">
+      {content}
+      <Message type="warning">Section currently under development.</Message>
     </section>
   );
 };

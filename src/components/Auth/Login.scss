@@ -3,15 +3,10 @@
 .login {
   display: grid;
   grid-template-rows: 1fr auto;
-  background-color: $color-bg-alt;
   height: 100%;
-  color: $color-fg;
-  border-radius: 0 $border-radius $border-radius 0;
-  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
   overflow: hidden auto;
 
   .login-form {
-    padding: $spacing;
     overflow: hidden auto;
   }
 
@@ -31,6 +26,10 @@
     &:not(:last-child) {
       margin-bottom: $spacing;
     }
+  }
+
+  .message {
+    margin-top: $spacing;
   }
 
   .label-checkbox {

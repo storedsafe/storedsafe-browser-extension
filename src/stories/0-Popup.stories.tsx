@@ -214,7 +214,7 @@ export const PopupOnline: React.FunctionComponent = () => {
       auth={{
         sites,
         sessions,
-        sitePrefs: { sites: {} },
+        sitePrefs: { lastUsed: 'foo.example.com',  sites: {} },
         onLogin: action('login'),
         onLogout: action('login'),
         loginStatus: {},
@@ -394,7 +394,7 @@ export const PopupMultiple: React.FunctionComponent = () => {
   ];
 
   const sitePrefs = {
-    lastUsed: 'offline.example.com',
+    lastUsed: 'foo.example.com',
     sites: {
       'offline.example.com': {
         loginType: 'totp' as 'totp',

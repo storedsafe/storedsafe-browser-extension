@@ -2,14 +2,14 @@ import React, { Fragment } from 'react';
 import { FormHook } from '../../hooks/useForm';
 import { TOTPFields } from '../../model/StoredSafe';
 
-export const renderFields: (formHook: FormHook<TOTPFields>) => React.ReactNode = ([values, events]) => (
+export const renderFields: (formHook: FormHook<TOTPFields>, id: (name: string) => string) => React.ReactNode = ([values, events], id) => (
   <Fragment>
     <label htmlFor="passphrase">
       <span>Passphrase</span>
       <input
         type="password"
         name="passphrase"
-        id="passphrase"
+        id={id('passphrase')}
         required
         value={values.passphrase}
         {...events}
@@ -20,7 +20,7 @@ export const renderFields: (formHook: FormHook<TOTPFields>) => React.ReactNode =
       <input
         type="text"
         name="otp"
-        id="otp"
+        id={id('otp')}
         required
         value={values.otp}
         {...events}

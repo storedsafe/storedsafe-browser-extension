@@ -1,0 +1,45 @@
+@import '../../variables';
+
+.site-title {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  color: $color-primary-0;
+  font-weight: bold;
+  fill: $color-primary-0;
+
+  .site-title-url {
+    flex-grow: 1;
+    overflow: hidden;
+  }
+
+  &.online {
+    fill: $color-accent-0;
+  }
+
+  .site-title-icons {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-left: $spacing;
+  }
+
+  .site-title-icons .icon {
+    height: $menu-size - $spacing * 2;
+    width: $menu-size - $spacing * 2;
+  }
+
+  .icon:not(:last-child) {
+    margin-right: $spacing;
+  }
+
+  .icon.icon-warning {
+    fill: $color-warning-0;
+  }
+
+  .icon.icon-error {
+    fill: $color-danger-0;
+  }
+}

@@ -2,16 +2,10 @@
 
 .object-view {
   height: 100%;
-
-  .object-view-title {
-    background: no-repeat $spacing center / 30px 30px;
-    padding-left: $spacing * 2 + 30px;
-    margin-bottom: $spacing;
-  }
+  overflow: hidden auto;
+  max-height: 100%;
 
   .object-view-container {
-    background-color: $color-bg;
-    padding: $spacing;
     overflow: hidden auto;
     max-height: 100%;
   }

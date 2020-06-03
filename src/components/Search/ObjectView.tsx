@@ -50,13 +50,9 @@ export const ObjectView: React.FunctionComponent<ObjectViewProps> = ({
   return (
     <section className="object-view">
       <article className="object-view-container">
-        <hgroup
-          className="object-view-title"
-          style={{ backgroundImage: `url('${icons[result.icon]}')`}}>
-          <h2 className="object-view-name">{result.name}</h2>
-          <h3 className="obejct-view-url">{url}</h3>
-        </hgroup>
-        <Button className="object-view-fill" onClick={(): void => onFill(url, id)}>Fill</Button>
+        <Button className="object-view-fill" onClick={(): void => onFill(url, id)}>
+          Fill
+        </Button>
         {Object.keys(result.fields).map((field) => {
           let value: React.ReactNode;
           if (result.fields[field].isEncrypted) {

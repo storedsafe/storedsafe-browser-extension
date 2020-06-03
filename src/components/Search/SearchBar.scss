@@ -9,12 +9,12 @@
   padding: $spacing;
 
   &.disabled {
-    visibility: hidden;
+    display: none;
   }
 
   .search-bar-input {
     flex-grow: 1;
-    height: 64px - $spacing * 2;
+    height: $menu-size;
     background: $color-primary-3;
     color: $color-fg-alt;
     border-bottom-color: $color-primary-4;
@@ -56,5 +56,19 @@
     &.selected > svg {
       fill: $color-accent-0;
     }
+
+    &.loading > svg {
+      animation: loading 0.5s ease-in-out alternate infinite;
+    }
+  }
+}
+
+@keyframes loading {
+  60% {
+    transform: scale(1);
+  }
+
+  100% {
+    transform: scale(1.1);
   }
 }

@@ -12,6 +12,7 @@ export interface SearchBarProps {
   onNeedleChange: OnNeedleChangeCallback;
   onSearch: OnSearchCallback;
   disabled?: boolean;
+  isLoading: boolean;
 }
 
 export const SearchBar: React.FunctionComponent<SearchBarProps> = ({
@@ -21,6 +22,7 @@ export const SearchBar: React.FunctionComponent<SearchBarProps> = ({
   onFocus,
   onBlur,
   disabled,
+  isLoading,
 }: SearchBarProps) => {
   const onSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
@@ -42,7 +44,11 @@ export const SearchBar: React.FunctionComponent<SearchBarProps> = ({
         onFocus={(): void => onFocus && onFocus()}
         onBlur={(): void => onBlur && onBlur()}
       />
-      <button className="search-bar-button" type="submit" aria-label="Search Submit" disabled={disabled}>
+      <button
+        className={`search-bar-button${isLoading ? ' loading' : ''}`}
+        type="submit"
+        aria-label="Search Submit"
+        disabled={disabled}>
         {svg.search}
       </button>
     </form>

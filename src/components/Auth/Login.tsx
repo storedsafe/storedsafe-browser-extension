@@ -34,7 +34,6 @@ export const Login: React.FunctionComponent<LoginProps> = ({
   onLogin,
   formEvents,
 }: LoginProps) => {
-  const { url } = site;
   const { username, loginType } = sitePrefs && sitePrefs || {};
   const initialValues: LoginFormValues = {
     loginType: loginType || 'totp', // Set default to TOTP
@@ -51,15 +50,16 @@ export const Login: React.FunctionComponent<LoginProps> = ({
     onLogin(site, values);
   };
 
+  const id = (name: string): string => site.url + '-' + name;
+
   return (
     <section className="login">
       <article className="login-form">
-        <h2>{url}</h2>
         <form className="form" onSubmit={handleSubmit}>
-          <label htmlFor="loginType">
+          <label htmlFor={id('loginType')}>
             <span>Login Type</span>
             <Select
-              id="loginType"
+              id={id('loginType')}
               name="loginType"
               value={values.loginType}
               {...events}>
@@ -67,23 +67,23 @@ export const Login: React.FunctionComponent<LoginProps> = ({
               <option value="totp">TOTP</option>
             </Select>
           </label>
-          <label htmlFor="username">
+          <label htmlFor={id('username')}>
             <span>Username</span>
             <input
               type="text"
-              id="username"
+              id={id('username')}
               name="username"
               value={values.username}
               required
               {...events}
             />
           </label>
-          {values.loginType === 'yubikey' && YubiKey.renderFields([values, events, reset])}
-          {values.loginType === 'totp' && TOTP.renderFields([values, events, reset])}
-          <label htmlFor="remember" className="label-checkbox">
+          {values.loginType === 'yubikey' && YubiKey.renderFields([values, events, reset], id)}
+          {values.loginType === 'totp' && TOTP.renderFields([values, events, reset], id)}
+          <label htmlFor={id('remember')} className="label-checkbox">
             <span>Remember Username</span>
             <Checkbox
-              id="remember"
+              id={id('remember')}
               name="remember"
               checked={values.remember}
               {...events} />

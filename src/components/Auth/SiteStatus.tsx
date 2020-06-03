@@ -38,7 +38,6 @@ export const SiteStatus: React.FunctionComponent<SiteStatusProps> = ({
 
   return (
     <section className="site-status">
-      <h2>{url}</h2>
       <section className="site-status-info">
         <article className="site-status-online">
           <h3>Session status</h3>

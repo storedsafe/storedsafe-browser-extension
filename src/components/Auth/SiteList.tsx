@@ -26,8 +26,8 @@ export const SiteList: React.FunctionComponent<SiteListProps> = ({
           key={url}
           className={`site-list-entry${isOnline ? ' online' : ''}${index === selected ? ' selected' : ''}`}
           onClick={(): void => onSelect(index)}>
-          <p className="site-url">{url}</p>
-          <div className="site-icons">
+          <p className="site-list-url">{url}</p>
+          <div className="site-list-icons">
             {isOnline && Object.values(session.warnings).length > 0 && svg.warning}
             {isOnline && Object.values(session.violations).length > 0 && svg.error}
             {isOnline && svg.vaultOpen}

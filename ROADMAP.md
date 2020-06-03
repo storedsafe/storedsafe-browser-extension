@@ -30,5 +30,12 @@
 - [x] Popup-ruta
   - [x] Inloggning
   - [x] Sökning
-  - [ ] **Lägg till object** (påbörjad)
+  - [ ] **Lägg till objekt i StoredSafe** (påbörjad)
+  - [ ] Lösenordsgenerator (del av lägg till objekt eller även som separat?)
 
+
+# v2.0 (förslag)
+
+## Sessioner
+-  Byt ut utloggning efter inaktivitet mot PIN-kod som låser tillägget för att slippa göra en full inloggning efter kort inaktivitet.
+  - Evenutellt kryptera pågående sessioner (sparad token) och cachade sökningar med hash av PIN-kod. (lagra hash lokalt i webbläsaren tills användaren har varit inaktiv en viss tid)

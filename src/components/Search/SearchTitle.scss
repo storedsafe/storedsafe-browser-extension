@@ -1,0 +1,8 @@
+@import '../../variables';
+
+.search-title {
+  background-repeat: no-repeat;
+  background-size: $menu-size - $spacing * 2;
+  background-position: left center;
+  padding-left: $menu-size;
+}

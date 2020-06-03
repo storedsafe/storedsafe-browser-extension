@@ -118,3 +118,34 @@ export const MenuButton: React.FunctionComponent = () => (
     </div>
   </div>
 );
+
+export const ListView: React.FunctionComponent = () => {
+  const items = [
+    {
+      key: 'foo',
+      title: <p>Foo</p>,
+      content: <p>This is Foo.</p>,
+    },
+    {
+      key: 'bar',
+      title: <p>Bar</p>,
+      content: <p>This is Bar.</p>,
+    },
+    {
+      key: 'zot',
+      title: <p>Zot</p>,
+      content: <p>This is Zot.</p>,
+    },
+    {
+      key: 'long',
+      title: <p>Long</p>,
+      content: <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec tempor sagittis justo, quis blandit dui. Proin ullamcorper eget purus ut pellentesque. Cras lectus enim, viverra facilisis mollis eget, cursus id nisl. Phasellus enim eros, ullamcorper et rutrum eu, hendrerit eu nibh. Quisque id aliquet justo, in ultricies ipsum. Proin scelerisque imperdiet rutrum. In hac habitasse platea dictumst. Fusce tincidunt nibh ante, ut laoreet lorem fermentum id. Sed purus ex, posuere nec tempus eu, efficitur vitae justo. Nunc varius nisi diam, ac dictum nulla accumsan ac. Ut aliquam imperdiet leo, vel tincidunt lectus. Maecenas ut massa placerat, dictum lectus non, vehicula nibh. Curabitur ullamcorper, lacus quis volutpat condimentum, lacus ante dignissim justo, vel porta nibh mauris non sapien. Quisque nec sapien tortor. In vel dictum felis.</p>,
+    },
+  ];
+
+  return (
+    <div style={{ backgroundColor: '#526a78', color: '#fff', padding: '10px', width: '300px', height: '300px' }}>
+      <UI.ListView items={items} />
+    </div>
+  );
+};

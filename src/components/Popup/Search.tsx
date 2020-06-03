@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { SearchResults } from '../../model/Search';
 import { LoadingComponent } from '../common';
+import { ListView } from '../common';
 import * as Search from '../Search';
 import './Search.scss';
 
@@ -28,6 +29,26 @@ const PopupSearch: React.FunctionComponent<SearchProps> = ({
   onFill,
   searchStatus,
 }: SearchProps) => {
+  const numResults = Object.keys(results).reduce((acc, url) => acc + Object.keys(results[url]).length, 0);
+  const isLoading = Object.values(searchStatus).reduce((loading, status) => {
+    return loading || status.loading;
+  }, false);
+
+  if (numResults === 0) {
+    if (isLoading) {
+      return (
+        <section className="popup-search popup-search-loading">
+          <LoadingComponent />
+        </section>
+      );
+    }
+    return (
+      <section className="popup-search popup-search-empty">
+        <p>No results found</p>
+      </section>
+    );
+  }
+
   // Initialize selected to first object if it exists.
   let firstUrl: string = undefined, firstId: string = undefined;
   const resultUrls = Object.keys(results);
@@ -41,60 +62,31 @@ const PopupSearch: React.FunctionComponent<SearchProps> = ({
     }
   }
 
-  const [selected, setSelected] = useState<{
-    url: string;
-    id: string;
-  }>({ url: firstUrl, id: firstId });
+  const items = Object.keys(results).reduce(((acc, url) => ([
+    ...acc,
+    ...Object.keys(results[url]).map(((id) => ({
+      key: url + id,
+      title: <Search.SearchTitle
+        url={url}
+        result={results[url][id]}
+      />,
+      content: <Search.ObjectView
+        url={url}
+        id={id}
+        result={results[url][id]}
+        onShow={onShow}
+        onCopy={onCopy}
+        onFill={onFill}
+      />,
+    })))
+  ])), []);
 
-  const isLoading = Object.values(searchStatus).reduce((loading, status) => {
-    return loading || status.loading;
-  }, false);
-
-  if (firstUrl === undefined && firstId === undefined) {
-    if (isLoading) {
-      return (
-        <section className="popup-search content">
-          <article><LoadingComponent /></article>
-          <article></article>
-        </section>
-      );
-    }
-    return (
-      <section className="popup-search popup-search-empty">
-        <p>No results found</p>
-      </section>
-    );
-  } else if (
-    (results[selected.url] === undefined || results[selected.url][selected.id] === undefined) &&
-    (firstUrl !== undefined && firstId !== undefined)
-  ) {
-    // Skip single frame while selected state updates.
-    setSelected({ url: firstUrl, id: firstId });
-    return null;
-  }
-
-  const { url, id } = selected;
-
-  const left = <Search.SearchResults
-    urls={urls}
-    results={results}
-    onSelect={(newSelected): void => setSelected(newSelected)}
-    searchStatus={searchStatus}
-  />;
-
-  const right = <Search.ObjectView
-    url={url}
-    id={id}
-    result={results[url][id]}
-    onShow={onShow}
-    onCopy={onCopy}
-    onFill={onFill}
-  />;
+  // Select the first result if there are no other results
+  const defaultSelected = numResults === 1 ? firstUrl + firstId : undefined;
 
   return (
-    <section className="popup-search content">
-      <article>{left}</article>
-      <article>{right}</article>
+    <section className="popup-search">
+      <ListView items={items} defaultSelected={defaultSelected} />
     </section>
   );
 };
