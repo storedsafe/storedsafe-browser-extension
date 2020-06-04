@@ -165,11 +165,6 @@ function onIdle(
   });
 }
 
-function onSuspend(): void {
-  console.log('Suspended, invalidate all sessions.');
-  invalidateAllSessions();
-}
-
 function onMenuClick(
   info: browser.contextMenus.OnClickData,
   tab: browser.tabs.Tab,
@@ -217,11 +212,6 @@ browser.runtime.onStartup.addListener(onStartup);
 
 // Open options page and set up context menus
 browser.runtime.onInstalled.addListener(onInstalled);
-
-// Invalidate sessions on suspend
-if (browser.runtime.onSuspend) { // Not implemented in firefox
-  browser.runtime.onSuspend.addListener(onSuspend);
-}
 
 // Invalidate sessions after being idle for some time
 browser.idle.onStateChanged.addListener(onIdle);
