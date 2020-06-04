@@ -58,6 +58,7 @@
 
     .list-view-item-content {
       display: block;
+      flex-grow: 1;
       border-radius: 0 0 $border-radius $border-radius;
     }
 

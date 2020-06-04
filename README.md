@@ -112,8 +112,9 @@ Check package.json for all scripts or use `yarn <command>` to use the installed 
 
 ### Known bugs
 - [ ] Doesn't invalidate session if one exists when a site is removed
-- [ ] Show flag on encrypted fields resets when clicking fill/copy or show on another object.
 - [ ] Fields occasionally change order when clicked "show" on encrypted field.
+- [x] ~~Decrypts on copy even when object is already decrypted.~~
+- [x] ~~Show flag on encrypted fields resets when clicking fill/copy or show on another object.~~
 - [x] ~~Errors if writing in search bar while search is ongoing (automatic currently search disabled as temporary fix).~~
 
 ### Questions

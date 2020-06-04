@@ -25771,7 +25771,7 @@ module.exports = exports;
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, ".list-view {\n  height: 100%;\n  overflow: hidden auto;\n}\n.list-view.has-selected {\n  overflow: hidden;\n}\n.list-view .list-view-item-title {\n  padding: 8px;\n  background-color: #f9f9f9;\n  color: #232d33;\n  cursor: pointer;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);\n}\n.list-view .list-view-item-title:hover {\n  background-color: #fff;\n}\n.list-view .list-view-item-content {\n  display: none;\n  background-color: #f9f9f9;\n  color: #232d33;\n  padding: 8px;\n  overflow: hidden auto;\n  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);\n}\n.list-view .list-view-item.selected {\n  display: flex;\n  flex-direction: column;\n  height: 100%;\n}\n.list-view .list-view-item.selected .list-view-item-title {\n  position: relative;\n  padding-left: 16px;\n  border-radius: 0 8px 0 0;\n}\n.list-view .list-view-item.selected .list-view-item-title::before {\n  position: absolute;\n  left: 0;\n  top: 50%;\n  content: \"\";\n  border: solid #526a78;\n  border-width: 2px 0 0 2px;\n  display: inline-block;\n  width: 6px;\n  height: 6px;\n  transform: rotate(-45deg);\n  margin: -4px 0 0 5.5px;\n}\n.list-view .list-view-item.selected .list-view-item-content {\n  display: block;\n  border-radius: 0 0 8px 8px;\n}\n.list-view .list-view-item.selected .list-view-item-title,\n.list-view .list-view-item.selected .list-view-item-content {\n  transition: border-radius 0.1s;\n}\n.list-view .list-view-item.hidden .list-view-item-title {\n  display: none;\n}", ""]);
+exports.push([module.i, ".list-view {\n  height: 100%;\n  overflow: hidden auto;\n}\n.list-view.has-selected {\n  overflow: hidden;\n}\n.list-view .list-view-item-title {\n  padding: 8px;\n  background-color: #f9f9f9;\n  color: #232d33;\n  cursor: pointer;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);\n}\n.list-view .list-view-item-title:hover {\n  background-color: #fff;\n}\n.list-view .list-view-item-content {\n  display: none;\n  background-color: #f9f9f9;\n  color: #232d33;\n  padding: 8px;\n  overflow: hidden auto;\n  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);\n}\n.list-view .list-view-item.selected {\n  display: flex;\n  flex-direction: column;\n  height: 100%;\n}\n.list-view .list-view-item.selected .list-view-item-title {\n  position: relative;\n  padding-left: 16px;\n  border-radius: 0 8px 0 0;\n}\n.list-view .list-view-item.selected .list-view-item-title::before {\n  position: absolute;\n  left: 0;\n  top: 50%;\n  content: \"\";\n  border: solid #526a78;\n  border-width: 2px 0 0 2px;\n  display: inline-block;\n  width: 6px;\n  height: 6px;\n  transform: rotate(-45deg);\n  margin: -4px 0 0 5.5px;\n}\n.list-view .list-view-item.selected .list-view-item-content {\n  display: block;\n  flex-grow: 1;\n  border-radius: 0 0 8px 8px;\n}\n.list-view .list-view-item.selected .list-view-item-title,\n.list-view .list-view-item.selected .list-view-item-content {\n  transition: border-radius 0.1s;\n}\n.list-view .list-view-item.hidden .list-view-item-title {\n  display: none;\n}", ""]);
 // Exports
 module.exports = exports;
 
@@ -30219,24 +30219,34 @@ exports.useSearch = () => {
         });
     };
     const onCopy = (url, objectId, field) => {
-        dispatch({
-            search: {
-                type: 'decrypt',
-                url,
-                objectId,
-            },
-        }, {
-            onSuccess: (newState) => {
-                const value = newState.search[url][objectId].fields[field].value;
-                // TODO: More reliable copy in background script.
-                // browser.runtime.sendMessage({ type: 'copy', value });
-                navigator.clipboard.writeText(value).then(() => {
-                    setTimeout(() => {
-                        navigator.clipboard.writeText('');
-                    }, 30000);
-                });
-            },
-        });
+        const copy = (value) => {
+            // TODO: More reliable copy in background script.
+            // browser.runtime.sendMessage({ type: 'copy', value });
+            navigator.clipboard.writeText(value).then(() => {
+                setTimeout(() => {
+                    navigator.clipboard.writeText('');
+                }, 30000);
+            });
+        };
+        // Only decrypt if needed
+        const isEncryptedField = state.search[url][objectId].fields[field].isEncrypted;
+        const isDecrypted = state.search[url][objectId].isDecrypted;
+        if (!isEncryptedField || isDecrypted) {
+            copy(state.search[url][objectId].fields[field].value);
+        }
+        else {
+            dispatch({
+                search: {
+                    type: 'decrypt',
+                    url,
+                    objectId,
+                },
+            }, {
+                onSuccess: (newState) => {
+                    copy(newState.search[url][objectId].fields[field].value);
+                },
+            });
+        }
     };
     const onFill = (url, objectId) => {
         const fill = (data) => {
@@ -30249,6 +30259,7 @@ exports.useSearch = () => {
                 });
             });
         };
+        // Only decrypt if needed
         if (!state.search[url][objectId].isDecrypted) {
             dispatch({
                 search: {
@@ -31312,7 +31323,13 @@ exports.reducer = (state, action) => {
      * Decrypt object in search results.
      * */
     function decrypt(url, objectId) {
-        return StoredSafe_1.actions.decrypt(url, objectId).then((result) => (Object.assign(Object.assign({}, state), { [url]: Object.assign(Object.assign({}, state[url]), { [objectId]: result }) })));
+        return StoredSafe_1.actions.decrypt(url, objectId).then((result) => (Object.assign(Object.assign({}, state), { [url]: Object.assign(Object.assign({}, state[url]), { [objectId]: result }) }))).then((newState) => {
+            const fields = newState[url][objectId].fields;
+            Object.keys(fields).forEach((field) => {
+                fields[field].isShowing = state[url][objectId].fields[field].isShowing;
+            });
+            return newState;
+        });
     }
     switch (action.type) {
         /**

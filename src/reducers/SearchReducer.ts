@@ -45,7 +45,13 @@ export const reducer: PromiseReducer<State, Action> = (state, action) => {
         ...state[url],
         [objectId]: result,
       },
-    }));
+    })).then((newState) => {
+      const fields = newState[url][objectId].fields;
+      Object.keys(fields).forEach((field) => {
+        fields[field].isShowing = state[url][objectId].fields[field].isShowing;
+      });
+      return newState;
+    });
   }
 
   switch(action.type) {
