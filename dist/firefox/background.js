@@ -2885,10 +2885,6 @@ function onIdle(state) {
         }
     });
 }
-function onSuspend() {
-    console.log('Suspended, invalidate all sessions.');
-    invalidateAllSessions();
-}
 function onMenuClick(info, tab) {
     switch (info.menuItemId) {
         case 'open-popup': {
@@ -2925,10 +2921,6 @@ browser.storage.onChanged.addListener(onStorageChange);
 browser.runtime.onStartup.addListener(onStartup);
 // Open options page and set up context menus
 browser.runtime.onInstalled.addListener(onInstalled);
-// Invalidate sessions on suspend
-if (browser.runtime.onSuspend) { // Not implemented in firefox
-    browser.runtime.onSuspend.addListener(onSuspend);
-}
 // Invalidate sessions after being idle for some time
 browser.idle.onStateChanged.addListener(onIdle);
 // React to contect menu click (menu set up during onInstall)

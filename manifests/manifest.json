@@ -10,6 +10,13 @@
     "default_title": "StoredSafe",
     "default_popup": "index.html#popup"
   },
+  "commands": {
+    "_execute_browser_action": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+S"
+      }
+    }
+  },
   "background": {
     "scripts": [
       "browser-polyfill.min.js",
