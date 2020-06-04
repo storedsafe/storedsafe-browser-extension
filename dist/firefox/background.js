@@ -2774,37 +2774,56 @@ function invalidateAllSessions() {
  * Find search results related to loaded tab.
  * */
 function tabFind(tab) {
-    const { id, url } = tab;
+    const { id: tabId, url } = tab;
     const match = url.match(/^(?:https?:\/\/)?(?:www)?([^/]*)\//i);
     const needle = match !== null ? match[1] : url;
-    return StoredSafe_1.actions.tabFind(id, needle).then((search) => {
+    console.log(needle);
+    return StoredSafe_1.actions.tabFind(tabId, needle).then((search) => {
         Settings.actions.fetch().then((settings) => {
-            // if (settings.autoFill) { // TODO: Fix repeated attempts when auto submitting invalid form
-            // console.log('SEARCH', search, id);
-            // const results = search[id];
-            // console.log('RESULTS', results);
-            // const resultUrls = Object.keys(results);
-            // let selectedResult: Search.SearchResult;
-            // for (let i = 0; i < resultUrls.length; i++) {
-            // const url = resultUrls[i];
-            // const ids = Object.keys(results[url]);
-            // console.log(results, url, ids);
-            // if (ids.length > 0) {
-            // selectedResult = results[url][ids[0]];
-            // }
-            // }
-            // if (selectedResult) {
-            // const fields = selectedResult.fields;
-            // const data: { [field: string]: string } = {};
-            // Object.keys(fields).forEach((field) => {
-            // data[field] = fields[field].value;
-            // });
-            // browser.tabs.sendMessage(id, {
-            // type: 'fill',
-            // data: data,
-            // });
-            // }
-            // }
+            if (settings.autoFill.value) { // TODO: Fix repeated attempts when auto submitting invalid form
+                console.log(settings.autoFill.value);
+                // Get results specific to tab, there may be other cached results
+                const results = search[tabId];
+                const resultUrls = Object.keys(results);
+                // Select the first result TODO: Sort results
+                let url;
+                let id;
+                let selectedResult;
+                for (let i = 0; i < resultUrls.length; i++) {
+                    url = resultUrls[i];
+                    const ids = Object.keys(results[url]);
+                    if (ids.length > 0) {
+                        id = ids[0];
+                        selectedResult = results[url][id];
+                        break;
+                    }
+                }
+                // Parse result and send to tab
+                const fill = (fields) => {
+                    const data = {};
+                    Object.keys(fields).forEach((field) => {
+                        data[field] = fields[field].value;
+                    });
+                    browser.tabs.sendMessage(tabId, {
+                        type: 'fill',
+                        data: data,
+                    });
+                };
+                // If a result was found, fill on tab
+                if (selectedResult) {
+                    const fields = selectedResult.fields;
+                    const fieldNames = Object.keys(fields);
+                    for (let i = 0; i < fieldNames.length; i++) {
+                        const field = fields[fieldNames[i]];
+                        if (field.isEncrypted) {
+                            return StoredSafe_1.actions.decrypt(url, id).then((result) => {
+                                fill(result.fields);
+                            });
+                        }
+                    }
+                    fill(fields);
+                }
+            }
         });
     });
 }
@@ -2823,18 +2842,21 @@ function copyToClipboard(value) {
 function onStartup() {
     invalidateAllSessions();
 }
+function updateOnlineStatus(sessions) {
+    if (Object.keys(sessions).length > 0) {
+        console.log('online');
+        browser.browserAction.setIcon({ path: "ico/icon.png" });
+    }
+    else {
+        console.log('offline');
+        browser.browserAction.setIcon({ path: "ico/icon-inactive.png" });
+    }
+}
 function onStorageChange({ sessions }, area) {
     if (area === 'local' && sessions !== undefined && sessions.newValue !== undefined) {
         Settings.actions.fetch().then((settings) => {
             const newSessions = sessions.newValue;
-            if (Object.keys(newSessions).length > 0) {
-                console.log('online');
-                browser.browserAction.setIcon({ path: "ico/icon.png" });
-            }
-            else {
-                console.log('offline');
-                browser.browserAction.setIcon({ path: "ico/icon-inactive.png" });
-            }
+            updateOnlineStatus(newSessions);
             Object.keys(sessionTimers).forEach((url) => {
                 clearTimeout(sessionTimers[url]);
             });
@@ -2852,6 +2874,9 @@ function onInstalled({ reason }) {
         id: 'open-popup',
         title: 'Show StoredSafe',
         contexts: ['editable'],
+    });
+    Sessions.actions.fetch().then((sessions) => {
+        updateOnlineStatus(sessions);
     });
     if (reason === 'install' || reason === 'update') {
         browser.runtime.openOptionsPage();
@@ -2908,7 +2933,11 @@ function onMessage(message, sender) {
     else if (message.type === 'copy') {
         return copyToClipboard(message.value);
     }
-    return Promise.reject(`Unknown message type: ${message.type}.`);
+    else if (message.type === 'submit') {
+        console.log('Submitted form (values omitted): ', new Map(message.values).keys());
+        return Promise.resolve();
+    }
+    Promise.reject(`Invalid message type: ${message.type}`);
 }
 /**
  * Subscribe to events and initialization

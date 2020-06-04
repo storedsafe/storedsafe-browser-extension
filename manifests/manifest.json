@@ -8,7 +8,10 @@
   },
   "browser_action": {
     "default_title": "StoredSafe",
-    "default_popup": "index.html#popup"
+    "default_popup": "index.html#popup",
+    "default_icon": {
+      "64": "ico/icon-inactive.png"
+    }
   },
   "commands": {
     "_execute_browser_action": {
