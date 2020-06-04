@@ -2775,16 +2775,16 @@ function invalidateAllSessions() {
  * */
 function tabFind(tab) {
     const { id: tabId, url } = tab;
-    const match = url.match(/^(?:https?:\/\/)?(?:www)?([^/]*)\//i);
+    const match = url.match(/^(?:https?:\/\/)?(?:www\.)?([^/]*)\//i);
     const needle = match !== null ? match[1] : url;
     console.log(needle);
     return StoredSafe_1.actions.tabFind(tabId, needle).then((search) => {
         Settings.actions.fetch().then((settings) => {
             if (settings.autoFill.value) { // TODO: Fix repeated attempts when auto submitting invalid form
-                console.log(settings.autoFill.value);
                 // Get results specific to tab, there may be other cached results
                 const results = search[tabId];
                 const resultUrls = Object.keys(results);
+                console.log('Found', resultUrls.reduce((acc, url) => acc + Object.keys(results[url]).length, 0), 'results');
                 // Select the first result TODO: Sort results
                 let url;
                 let id;

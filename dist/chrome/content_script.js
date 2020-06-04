@@ -263,18 +263,28 @@ function onMessage(message) {
         console.log(message.data);
         for (let i = 0; i < fillForms.length; i++) {
             let filled = false;
-            Object.keys(message.data).forEach((field) => {
-                for (let j = 0; j < fillForms[i].length; j++) {
-                    const element = fillForms[i][j];
-                    console.log('Attempting to fill', field, 'in', element);
-                    if (isMatch(field, element)) {
-                        console.log('Filled field', field);
-                        filled = true;
-                        element.value = message.data[field];
-                        return;
+            for (let j = 0; j < fillForms[i].length; j++) {
+                const element = fillForms[i][j];
+                if (element instanceof HTMLInputElement) {
+                    let elementFilled = false;
+                    Object.keys(message.data).forEach((field) => {
+                        console.log('Attempting to fill', field, 'in', element);
+                        if (isMatch(field, element)) {
+                            console.log('Filled field', field);
+                            elementFilled = true;
+                            filled = true;
+                            element.value = message.data[field];
+                            return;
+                        }
+                    });
+                    if (!elementFilled) { // If no field matched this element
+                        if (!['hidden', 'button', 'submit', 'reset'].includes(element.type)) {
+                            console.log('Focus unfilled element', element);
+                            element.focus(); // Focus element for easier access (example otp field)
+                        }
                     }
                 }
-            });
+            }
             if (filled) {
                 // fillForms[i].submit(); // TODO: Fix compatibility with autofill on failed login.
             }
