@@ -95,9 +95,6 @@
 
 // const types = /text|url|password|email/i;
 // const ids = /user|name|pass|mail|url|server|site/i;
-// browser.runtime.sendMessage({
-// type: 'tabSearch',
-// });
 var FormType;
 (function (FormType) {
     FormType["Login"] = "login";
@@ -146,6 +143,7 @@ const matchers = new Map([
 const formMatchers = new Map([
     [FormType.Search, {
             name: /search/,
+            role: /search/,
             fields: [{
                     type: /text|search/,
                     name: /search/,
@@ -184,6 +182,14 @@ function getFormType(form) {
         if (name.test(form.id) || name.test(form.name)) {
             return formType;
         }
+        // Check for form role
+        const formRole = form.attributes.getNamedItem('role');
+        if (formTypeMatchers.role && formRole) {
+            const role = new RegExp(formTypeMatchers.role, 'i');
+            if (role.test(formRole.value)) {
+                return formType;
+            }
+        }
         // Check for fields match
         let match = formTypeMatchers.fields.length === 0 ? false : true;
         for (let i = 0; i < formTypeMatchers.fields.length; i++) {
@@ -206,25 +212,71 @@ function getFormType(form) {
     }
     return FormType.Unknown;
 }
-const { forms } = document;
-for (let i = 0; i < forms.length; i++) {
-    console.log(getFormType(forms[i]), forms[i]);
+const fillFormTypes = [
+    FormType.Login,
+    FormType.Card,
+];
+const saveFormTypes = [
+    FormType.Login,
+    FormType.Register,
+];
+let fillForms = [];
+function setup() {
+    const { forms } = document;
+    fillForms = [];
+    for (let i = 0; i < forms.length; i++) {
+        const formType = getFormType(forms[i]);
+        console.log(formType, forms[i]);
+        if (fillFormTypes.includes(formType)) {
+            console.log('Adding form to fillable: ', forms[i]);
+            fillForms.push(forms[i]);
+        }
+        if (saveFormTypes.includes(formType)) {
+            console.log('Attaching submit handler to: ', forms[i]);
+            forms[i].addEventListener('submit', (event) => {
+                const values = new Map();
+                const target = event.target;
+                for (const [field] of matchers) {
+                    for (let i = 0; i < target.length; i++) {
+                        const element = target[i];
+                        if (element instanceof HTMLInputElement && isMatch(field, element)) {
+                            console.log(field, element.value);
+                            values.set(field, element.value);
+                        }
+                    }
+                }
+                browser.runtime.sendMessage({ type: 'submit', values: Array.from(values) });
+            });
+        }
+    }
+    if (fillForms.length > 0) {
+        browser.runtime.sendMessage({
+            type: 'tabSearch',
+        });
+    }
 }
+setup();
+const observer = new MutationObserver((m, o) => { console.log(m, o); setup(); });
+observer.observe(document.body, { childList: true });
 function onMessage(message) {
     if (message.type === 'fill') {
-        for (let i = 0; i < forms.length; i++) {
+        console.log(message.data);
+        for (let i = 0; i < fillForms.length; i++) {
             let filled = false;
-            for (let j = 0; j < forms[i].length; j++) {
-                const element = forms[i][j];
-                Object.keys(message.data).forEach((field) => {
+            Object.keys(message.data).forEach((field) => {
+                for (let j = 0; j < fillForms[i].length; j++) {
+                    const element = fillForms[i][j];
+                    console.log('Attempting to fill', field, 'in', element);
                     if (isMatch(field, element)) {
+                        console.log('Filled field', field);
                         filled = true;
                         element.value = message.data[field];
+                        return;
                     }
-                });
-            }
+                }
+            });
             if (filled) {
-                forms[i].submit();
+                // fillForms[i].submit(); // TODO: Fix compatibility with autofill on failed login.
             }
         }
     }
