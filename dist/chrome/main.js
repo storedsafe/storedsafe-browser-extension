@@ -29893,24 +29893,34 @@ exports.useSearch = () => {
         });
     };
     const onCopy = (url, objectId, field) => {
-        dispatch({
-            search: {
-                type: 'decrypt',
-                url,
-                objectId,
-            },
-        }, {
-            onSuccess: (newState) => {
-                const value = newState.search[url][objectId].fields[field].value;
-                // TODO: More reliable copy in background script.
-                // browser.runtime.sendMessage({ type: 'copy', value });
-                navigator.clipboard.writeText(value).then(() => {
-                    setTimeout(() => {
-                        navigator.clipboard.writeText('');
-                    }, 30000);
-                });
-            },
-        });
+        const copy = (value) => {
+            // TODO: More reliable copy in background script.
+            // browser.runtime.sendMessage({ type: 'copy', value });
+            navigator.clipboard.writeText(value).then(() => {
+                setTimeout(() => {
+                    navigator.clipboard.writeText('');
+                }, 30000);
+            });
+        };
+        // Only decrypt if needed
+        const isEncryptedField = state.search[url][objectId].fields[field].isEncrypted;
+        const isDecrypted = state.search[url][objectId].isDecrypted;
+        if (!isEncryptedField || isDecrypted) {
+            copy(state.search[url][objectId].fields[field].value);
+        }
+        else {
+            dispatch({
+                search: {
+                    type: 'decrypt',
+                    url,
+                    objectId,
+                },
+            }, {
+                onSuccess: (newState) => {
+                    copy(newState.search[url][objectId].fields[field].value);
+                },
+            });
+        }
     };
     const onFill = (url, objectId) => {
         const fill = (data) => {
@@ -29923,6 +29933,7 @@ exports.useSearch = () => {
                 });
             });
         };
+        // Only decrypt if needed
         if (!state.search[url][objectId].isDecrypted) {
             dispatch({
                 search: {
@@ -30980,7 +30991,13 @@ exports.reducer = (state, action) => {
      * Decrypt object in search results.
      * */
     function decrypt(url, objectId) {
-        return StoredSafe_1.actions.decrypt(url, objectId).then((result) => (Object.assign(Object.assign({}, state), { [url]: Object.assign(Object.assign({}, state[url]), { [objectId]: result }) })));
+        return StoredSafe_1.actions.decrypt(url, objectId).then((result) => (Object.assign(Object.assign({}, state), { [url]: Object.assign(Object.assign({}, state[url]), { [objectId]: result }) }))).then((newState) => {
+            const fields = newState[url][objectId].fields;
+            Object.keys(fields).forEach((field) => {
+                fields[field].isShowing = state[url][objectId].fields[field].isShowing;
+            });
+            return newState;
+        });
     }
     switch (action.type) {
         /**

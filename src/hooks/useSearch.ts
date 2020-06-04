@@ -77,24 +77,34 @@ export const useSearch = (): SearchHook => {
   };
 
   const onCopy: OnCopyCallback = (url, objectId, field) => {
-    dispatch({
-      search: {
-        type: 'decrypt',
-        url,
-        objectId,
-      },
-    }, {
-      onSuccess: (newState) => {
-        const value = newState.search[url][objectId].fields[field].value;
-        // TODO: More reliable copy in background script.
-        // browser.runtime.sendMessage({ type: 'copy', value });
-        navigator.clipboard.writeText(value).then(() => {
-          setTimeout(() => {
-            navigator.clipboard.writeText('');
-          }, 30000);
-        });
-      },
-    });
+    const copy = (value: string): void => {
+      // TODO: More reliable copy in background script.
+      // browser.runtime.sendMessage({ type: 'copy', value });
+      navigator.clipboard.writeText(value).then(() => {
+        setTimeout(() => {
+          navigator.clipboard.writeText('');
+        }, 30000);
+      });
+    };
+
+    // Only decrypt if needed
+    const isEncryptedField = state.search[url][objectId].fields[field].isEncrypted;
+    const isDecrypted = state.search[url][objectId].isDecrypted;
+    if (!isEncryptedField || isDecrypted) {
+      copy(state.search[url][objectId].fields[field].value);
+    } else {
+      dispatch({
+        search: {
+          type: 'decrypt',
+          url,
+          objectId,
+        },
+      }, {
+        onSuccess: (newState) => {
+          copy(newState.search[url][objectId].fields[field].value);
+        },
+      });
+    }
   };
 
   const onFill: OnFillCallback = (url, objectId) => {
@@ -108,6 +118,8 @@ export const useSearch = (): SearchHook => {
         });
       });
     };
+
+    // Only decrypt if needed
     if (!state.search[url][objectId].isDecrypted) {
       dispatch({
         search: {
