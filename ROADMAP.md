@@ -16,8 +16,8 @@
   - [x] Kan visa (dekryptera) innehåll i fält.
   - [x] Kan fylla i fält på aktiv webbläsar-tabb.
     - [x] Kan skicka formulär efter att ha fyllt i fält.
-- [ ] **Kan söka i bakgrunden när användaren navigerar till en hemsida (resultat cachade lokalt i webbläsaren (ej krypterade fält)).** (påbörjad)
-  - [ ] Kan automatiskt fylla i fält när användaren navigerar till en hemsida.
+- [x] Kan söka i bakgrunden när användaren navigerar till en hemsida (resultat cachade lokalt i webbläsaren (ej krypterade fält)).
+  - [x] Kan automatiskt fylla i fält när användaren navigerar till en hemsida.
   - [x] Kan visa sökningar relaterade till aktiv webbläsar-tabb i popup-rutan när ingen manuell sökning har gjorts.
 
 ## Spara
