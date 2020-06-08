@@ -27541,23 +27541,23 @@ exports.AddObject = ({ url, vault, template, }) => {
     const onSelectTemplate = ({ target }) => {
         template.onChange(Number(target.value));
     };
-    const sites = (react_1.default.createElement("label", { htmlFor: "url" },
+    const sites = url.values.length > 1 ? (react_1.default.createElement("label", { htmlFor: "url" },
         react_1.default.createElement("span", null, "Site"),
         react_1.default.createElement(common_1.Select, { id: "url", value: url.selected, onChange: onSelectUrl },
             react_1.default.createElement("option", { value: undefined }, "Choose site..."),
-            url.values.map((url, id) => (react_1.default.createElement("option", { key: url, value: id }, url))))));
+            url.values.map((url, id) => (react_1.default.createElement("option", { key: url, value: id }, url)))))) : null;
     const hasVaults = (vault && vault.values) !== undefined;
-    const vaults = (react_1.default.createElement("label", { htmlFor: "vault" },
+    const vaults = !hasVaults || (hasVaults && vault.values.length > 1) ? (react_1.default.createElement("label", { htmlFor: "vault" },
         react_1.default.createElement("span", null, "Vault"),
         react_1.default.createElement(common_1.Select, { id: "vault", value: vault.selected, onChange: onSelectVault, disabled: !hasVaults },
             react_1.default.createElement("option", { value: undefined }, "Choose vault..."),
-            hasVaults && vault.values.map(({ id: vaultId, title }, id) => (react_1.default.createElement("option", { key: vaultId, value: id }, title))))));
+            hasVaults && vault.values.map(({ id: vaultId, title }, id) => (react_1.default.createElement("option", { key: vaultId, value: id }, title)))))) : null;
     const hasTemplates = (template && template.values) !== undefined;
-    const templates = (react_1.default.createElement("label", { htmlFor: "template" },
+    const templates = !hasTemplates || (hasTemplates && template.values.length > 1) ? (react_1.default.createElement("label", { htmlFor: "template" },
         react_1.default.createElement("span", null, "Template"),
         react_1.default.createElement(common_1.Select, { id: "template", value: template.selected, onChange: onSelectTemplate, disabled: !hasTemplates },
             react_1.default.createElement("option", { value: undefined }, "Choose template..."),
-            hasTemplates && template.values.map(({ id: templateId, title }, id) => (react_1.default.createElement("option", { key: templateId, value: id }, title))))));
+            hasTemplates && template.values.map(({ id: templateId, title }, id) => (react_1.default.createElement("option", { key: templateId, value: id }, title)))))) : null;
     return (react_1.default.createElement("section", { className: "add-object" },
         sites,
         vaults,
@@ -28629,6 +28629,10 @@ const common_1 = __webpack_require__(/*! ../common */ "./src/components/common/i
 const Auth = __importStar(__webpack_require__(/*! ../Auth */ "./src/components/Auth/index.ts"));
 __webpack_require__(/*! ./Auth.scss */ "./src/components/Popup/Auth.scss");
 const PopupAuth = ({ sites, sessions, sitePrefs, onLogin, onLogout, loginStatus, }) => {
+    if (sites.length === 0) {
+        return (react_1.default.createElement("section", { className: "popup-auth" },
+            react_1.default.createElement("p", null, "No sites available, go to options to add a new site.")));
+    }
     const items = sites.map((site) => {
         const { url } = site;
         const session = sessions[url];
@@ -29028,6 +29032,7 @@ exports.ObjectView = ({ url, id, result, onShow, onCopy, onFill, }) => {
     };
     return (react_1.default.createElement("section", { className: "object-view" },
         react_1.default.createElement("article", { className: "object-view-container" },
+            react_1.default.createElement("p", { className: "object-view-url" }, url),
             react_1.default.createElement(common_1.Button, { className: "object-view-fill", onClick: () => onFill(url, id) }, "Fill"),
             Object.keys(result.fields).map((field) => {
                 let value;

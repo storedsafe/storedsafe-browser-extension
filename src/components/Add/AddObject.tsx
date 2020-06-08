@@ -40,7 +40,7 @@ export const AddObject: React.FunctionComponent<AddObjectProps> = ({
     template.onChange(Number(target.value));
   };
 
-  const sites = (
+  const sites = url.values.length > 1 ? (
     <label htmlFor="url">
       <span>Site</span>
       <Select
@@ -53,10 +53,10 @@ export const AddObject: React.FunctionComponent<AddObjectProps> = ({
         ))}
       </Select>
     </label>
-  );
+  ) : null;
 
   const hasVaults = (vault && vault.values) !== undefined;
-  const vaults = (
+  const vaults = !hasVaults || (hasVaults && vault.values.length > 1) ? (
     <label htmlFor="vault">
       <span>Vault</span>
       <Select
@@ -73,10 +73,10 @@ export const AddObject: React.FunctionComponent<AddObjectProps> = ({
         ))}
       </Select>
     </label>
-  );
+  ) : null;
 
   const hasTemplates = (template && template.values) !== undefined;
-  const templates = (
+  const templates = !hasTemplates || (hasTemplates && template.values.length > 1) ? (
     <label htmlFor="template">
       <span>Template</span>
       <Select
@@ -93,7 +93,7 @@ export const AddObject: React.FunctionComponent<AddObjectProps> = ({
         ))}
       </Select>
     </label>
-  );
+  ) : null;
 
   return (
     <section className="add-object">

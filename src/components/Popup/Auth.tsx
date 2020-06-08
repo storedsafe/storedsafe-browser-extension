@@ -30,6 +30,14 @@ const PopupAuth: React.FunctionComponent<AuthProps> = ({
   onLogout,
   loginStatus,
 }: AuthProps) => {
+  if (sites.length === 0) {
+    return (
+      <section className="popup-auth">
+        <p>No sites available, go to options to add a new site.</p>
+      </section>
+    );
+  }
+
   const items = sites.map((site) => {
     const { url } = site;
     const session = sessions[url];
