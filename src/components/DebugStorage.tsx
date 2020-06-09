@@ -57,21 +57,39 @@ const DebugStorage: React.FC = () => {
   });
 
   return (
-    <section className="card">
+    <section>
       <h2>Storage</h2>
-      <h3>State</h3>
-      <p>Is Initialized: {isInitialized.toString()}</p>
-      <h3>Settings</h3>
-      {settings}
-      <h3>System Sites</h3>
-      {systemSites}
-      <h3>User Sites</h3>
-      {userSites}
-      <h3>Sessions</h3>
-      {sessions}
-      <h3>Site Prefs</h3>
-      <p>Last used: {state.sitePrefs.lastUsed}</p>
-      {sitePrefs}
+      <section
+        style={{
+          display: 'grid',
+          gridGap: '8px',
+        }}>
+        <article>
+          <h3>State</h3>
+          <p>Is Initialized: {isInitialized.toString()}</p>
+        </article>
+        <article>
+          <h3>Settings</h3>
+          {settings}
+        </article>
+        <article>
+          <h3>System Sites</h3>
+          {systemSites}
+        </article>
+        <article>
+          <h3>User Sites</h3>
+          {userSites}
+        </article>
+        <article>
+          <h3>Sessions</h3>
+          {sessions}
+        </article>
+        <article>
+          <h3>Site Prefs</h3>
+          <p>Last used: {state.sitePrefs.lastUsed}</p>
+          {sitePrefs}
+        </article>
+      </section>
     </section>
   );
 };
