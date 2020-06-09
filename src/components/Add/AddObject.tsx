@@ -3,9 +3,10 @@ import { Select } from '../common';
 import { Vault, Template } from '../../model/StoredSafe';
 import './AddObject.scss';
 
+export type OnAddCallback = (params: object) => void;
 export type OnPropertyChangeCallback = (id: number) => void;
 
-interface AddObjectProperty<T> {
+export interface AddObjectProperty<T> {
   selected?: number;
   values: T[];
   onChange: OnPropertyChangeCallback;

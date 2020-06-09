@@ -49,7 +49,7 @@
   }
 }
 
-@media (min-width: 600px) {
+@media (min-width: $mobile-size) {
   .sites {
     .sites-article {
       .sites-article-header {

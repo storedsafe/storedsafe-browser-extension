@@ -16,7 +16,7 @@
   }
 
   .options-content {
-    max-width: 800px;
+    max-width: $mobile-size;
     margin: auto;
     padding: $spacing;
     transition: padding $transition-duration;
@@ -42,7 +42,7 @@
   }
 }
 
-@media (min-width: 600px) {
+@media (min-width: $mobile-size) {
   .options {
     .options-content {
       padding: $spacing * 4;

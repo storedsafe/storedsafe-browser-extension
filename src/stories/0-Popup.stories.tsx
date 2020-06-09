@@ -297,12 +297,16 @@ export const PopupMultiple: React.FunctionComponent = () => {
     [url: string]: Vault[];
   } = {
     'foo.example.com': [
-      { title: 'Foo 1', id: '1' },
-      { title: 'Foo 2', id: '2' },
+      { title: 'Foo 1', id: '1', write: true },
+      { title: 'Foo 2', id: '2', write: true },
     ],
     'bar.example.com': [
-      { title: 'Bar 1', id: '7' },
-      { title: 'Bar 2', id: '2' },
+      { title: 'Bar 1', id: '7', write: true },
+      { title: 'Bar 2', id: '2', write: false },
+    ],
+    'zot.example.com': [
+      { title: 'Bar 1', id: '7', write: false },
+      { title: 'Bar 2', id: '2', write: false },
     ],
   }
 
@@ -316,6 +320,10 @@ export const PopupMultiple: React.FunctionComponent = () => {
     'bar.example.com': [
       { title: 'T3', icon: '', id: '3', fields: [] },
       { title: 'T2', icon: '', id: '4', fields: [] },
+    ],
+    'zot.example.com': [
+      { title: 'T2', icon: '', id: '2', fields: [] },
+      { title: 'T4', icon: '', id: '4', fields: [] },
     ],
   }
 

@@ -25,7 +25,7 @@ export const GeneralSettings: React.FunctionComponent = () => {
 
   // Create form fields
   const settingsFields = Object.keys(fields).map((field) => {
-    const { label, attributes } = fields[field];
+    const { label, unit, attributes } = fields[field];
     const disabled = state.settings[field].managed;
     attributes.id = field;
     attributes.name = field;
@@ -51,11 +51,14 @@ export const GeneralSettings: React.FunctionComponent = () => {
       return (
         <label key={field} htmlFor={field} className={labelClassNames}>
           <span>{label}</span>
-          <input
-            value={values[field] as string | number}
-            {...events}
-            {...attributes}
-          />
+          <div className="general-settings-input">
+            <input
+              value={values[field] as string | number}
+              {...events}
+              {...attributes}
+            />
+            <span>{unit}</span>
+          </div>
         </label>);
     }
   });

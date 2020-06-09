@@ -25501,7 +25501,7 @@ module.exports = exports;
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, ".general-settings .general-settings-article .general-settings-form {\n  display: flex;\n  flex-direction: column;\n  align-items: stretch;\n  width: 100%;\n  padding: 8px;\n}\n.general-settings .general-settings-article label {\n  margin-bottom: 8px;\n}\n.general-settings .general-settings-article input {\n  width: 100%;\n}", ""]);
+exports.push([module.i, ".general-settings .general-settings-article .general-settings-form {\n  display: flex;\n  flex-direction: column;\n  align-items: stretch;\n  width: 100%;\n  padding: 8px;\n}\n.general-settings .general-settings-article .general-settings-input {\n  display: grid;\n  grid-template-columns: 1fr auto;\n  grid-column-gap: 8px;\n  align-items: center;\n}\n.general-settings .general-settings-article label {\n  margin-bottom: 8px;\n}", ""]);
 // Exports
 module.exports = exports;
 
@@ -25519,7 +25519,7 @@ module.exports = exports;
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, ".options .card > *:first-child {\n  padding-top: 8px;\n  border-top-left-radius: 8px;\n  border-top-right-radius: 8px;\n}\n.options .card > *:last-child {\n  padding-bottom: 8px;\n  border-bottom-left-radius: 8px;\n  border-bottom-right-radius: 8px;\n}\n.options .options-content {\n  max-width: 800px;\n  margin: auto;\n  padding: 8px;\n  transition: padding 0.1s;\n}\n.options .options-article:not(:last-child) {\n  margin-bottom: 8px;\n}\n.options .options-article .options-article-header,\n.options .options-article .options-article-footer {\n  background-color: #fff;\n  padding: 16px;\n  border-bottom: 1px solid #d4d7d8;\n}\n.options .banner {\n  height: 64px;\n  padding: 16px;\n  text-align: center;\n}\n\n@media (min-width: 600px) {\n  .options .options-content {\n    padding: 32px;\n  }\n  .options .banner {\n    padding: 16px;\n  }\n}", ""]);
+exports.push([module.i, ".options .card > *:first-child {\n  padding-top: 8px;\n  border-top-left-radius: 8px;\n  border-top-right-radius: 8px;\n}\n.options .card > *:last-child {\n  padding-bottom: 8px;\n  border-bottom-left-radius: 8px;\n  border-bottom-right-radius: 8px;\n}\n.options .options-content {\n  max-width: 520px;\n  margin: auto;\n  padding: 8px;\n  transition: padding 0.1s;\n}\n.options .options-article:not(:last-child) {\n  margin-bottom: 8px;\n}\n.options .options-article .options-article-header,\n.options .options-article .options-article-footer {\n  background-color: #fff;\n  padding: 16px;\n  border-bottom: 1px solid #d4d7d8;\n}\n.options .banner {\n  height: 64px;\n  padding: 16px;\n  text-align: center;\n}\n\n@media (min-width: 520px) {\n  .options .options-content {\n    padding: 32px;\n  }\n  .options .banner {\n    padding: 16px;\n  }\n}", ""]);
 // Exports
 module.exports = exports;
 
@@ -25537,7 +25537,7 @@ module.exports = exports;
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, ".sites .sites-article .sites-article-header {\n  padding: 8px 16px;\n  background-color: #f3f7f8;\n  color: #526a78;\n}\n.sites .sites-list > li {\n  list-style: none;\n  display: flex;\n  flex-direction: row;\n  align-items: space-between;\n  justify-content: space-between;\n  padding-left: 16px;\n}\n.sites .sites-list > li:nth-child(odd) {\n  background-color: #f9fbfc;\n}\n.sites .sites-list span {\n  padding: 8px;\n}\n.sites .sites-add .sites-add-form {\n  display: flex;\n  flex-direction: column;\n  align-items: stretch;\n  width: 100%;\n  padding: 8px;\n}\n.sites .sites-add label:not(:last-child),\n.sites .sites-add .button:not(:last-child),\n.sites .sites-add .message:not(:last-child) {\n  margin-bottom: 8px;\n}\n.sites .sites-add input {\n  width: 100%;\n}\n\n@media (min-width: 600px) {\n  .sites .sites-article .sites-article-header {\n    min-width: -webkit-max-content;\n    min-width: -moz-max-content;\n    min-width: max-content;\n  }\n  .sites .sites-add {\n    display: flex;\n    flex-direction: row;\n  }\n}", ""]);
+exports.push([module.i, ".sites .sites-article .sites-article-header {\n  padding: 8px 16px;\n  background-color: #f3f7f8;\n  color: #526a78;\n}\n.sites .sites-list > li {\n  list-style: none;\n  display: flex;\n  flex-direction: row;\n  align-items: space-between;\n  justify-content: space-between;\n  padding-left: 16px;\n}\n.sites .sites-list > li:nth-child(odd) {\n  background-color: #f9fbfc;\n}\n.sites .sites-list span {\n  padding: 8px;\n}\n.sites .sites-add .sites-add-form {\n  display: flex;\n  flex-direction: column;\n  align-items: stretch;\n  width: 100%;\n  padding: 8px;\n}\n.sites .sites-add label:not(:last-child),\n.sites .sites-add .button:not(:last-child),\n.sites .sites-add .message:not(:last-child) {\n  margin-bottom: 8px;\n}\n.sites .sites-add input {\n  width: 100%;\n}\n\n@media (min-width: 520px) {\n  .sites .sites-article .sites-article-header {\n    min-width: -webkit-max-content;\n    min-width: -moz-max-content;\n    min-width: max-content;\n  }\n  .sites .sites-add {\n    display: flex;\n    flex-direction: row;\n  }\n}", ""]);
 // Exports
 module.exports = exports;
 
@@ -25645,7 +25645,7 @@ module.exports = exports;
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, ".object-view {\n  height: 100%;\n  overflow: hidden auto;\n  max-height: 100%;\n}\n.object-view .object-view-container {\n  overflow: hidden auto;\n  max-height: 100%;\n}\n.object-view .object-view-field {\n  padding: 8px;\n  display: flex;\n  flex-direction: row;\n  justify-content: space-between;\n  align-items: center;\n  transition: background-color 0.1s;\n}\n.object-view .object-view-field:hover {\n  background-color: #f3f7f8;\n}\n.object-view .object-view-field:hover .object-view-field-copy {\n  opacity: 1;\n}\n.object-view .object-view-fill {\n  width: 100%;\n}\n.object-view .object-view-field-text {\n  display: flex;\n  flex-direction: column;\n}\n.object-view .object-view-field-copy {\n  padding: 8px;\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  border: 0;\n  outline: 0;\n  background: transparent;\n  color: #03a388;\n  font-weight: bold;\n  cursor: pointer;\n  transition: 0.1s;\n  transition-property: opacity, background-color, color;\n  opacity: 0;\n}\n.object-view .object-view-field-copy:active {\n  background-color: #03a388;\n  color: #fff;\n}\n.object-view .field-title {\n  font-size: 0.8em;\n  color: #526a78;\n}\n.object-view .field-value .number {\n  color: #c5283e;\n}\n.object-view .field-value .uppercase {\n  color: #03a388;\n  font-weight: bold;\n}\n.object-view .field-value .lowercase {\n  color: #526a78;\n}\n.object-view .field-value .symbol {\n  color: #f59815;\n}\n.object-view .field-value .show {\n  border: 0;\n  outline: 0;\n  background: none;\n  color: #c5283e;\n  cursor: pointer;\n  font-size: 1em;\n  font-weight: normal;\n  padding: 0 inherit 0 0;\n}", ""]);
+exports.push([module.i, ".object-view {\n  height: 100%;\n  overflow: hidden auto;\n  max-height: 100%;\n}\n.object-view .object-view-container {\n  overflow: hidden auto;\n  max-height: 100%;\n}\n.object-view .object-view-url {\n  text-align: center;\n  color: #526a78;\n}\n.object-view .object-view-field {\n  padding: 8px;\n  display: flex;\n  flex-direction: row;\n  justify-content: space-between;\n  align-items: center;\n  transition: background-color 0.1s;\n}\n.object-view .object-view-field:hover {\n  background-color: #f3f7f8;\n}\n.object-view .object-view-field:hover .object-view-field-copy {\n  opacity: 1;\n}\n.object-view .object-view-fill {\n  width: 100%;\n}\n.object-view .object-view-field-text {\n  display: flex;\n  flex-direction: column;\n}\n.object-view .object-view-field-copy {\n  padding: 8px;\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  border: 0;\n  outline: 0;\n  background: transparent;\n  color: #03a388;\n  font-weight: bold;\n  cursor: pointer;\n  transition: 0.1s;\n  transition-property: opacity, background-color, color;\n  opacity: 0;\n}\n.object-view .object-view-field-copy:active {\n  background-color: #03a388;\n  color: #fff;\n}\n.object-view .field-title {\n  font-size: 0.8em;\n  color: #526a78;\n}\n.object-view .field-value .number {\n  color: #c5283e;\n}\n.object-view .field-value .uppercase {\n  color: #03a388;\n  font-weight: bold;\n}\n.object-view .field-value .lowercase {\n  color: #526a78;\n}\n.object-view .field-value .symbol {\n  color: #f59815;\n}\n.object-view .field-value .show {\n  border: 0;\n  outline: 0;\n  background: none;\n  color: #c5283e;\n  cursor: pointer;\n  font-size: 1em;\n  font-weight: normal;\n  padding: 0 inherit 0 0;\n}", ""]);
 // Exports
 module.exports = exports;
 
@@ -28165,7 +28165,7 @@ exports.GeneralSettings = () => {
         return react_1.default.createElement("p", null, "Loading...");
     // Create form fields
     const settingsFields = Object.keys(Settings_1.fields).map((field) => {
-        const { label, attributes } = Settings_1.fields[field];
+        const { label, unit, attributes } = Settings_1.fields[field];
         const disabled = state.settings[field].managed;
         attributes.id = field;
         attributes.name = field;
@@ -28184,7 +28184,9 @@ exports.GeneralSettings = () => {
         else {
             return (react_1.default.createElement("label", { key: field, htmlFor: field, className: labelClassNames },
                 react_1.default.createElement("span", null, label),
-                react_1.default.createElement("input", Object.assign({ value: values[field] }, events, attributes))));
+                react_1.default.createElement("div", { className: "general-settings-input" },
+                    react_1.default.createElement("input", Object.assign({ value: values[field] }, events, attributes)),
+                    react_1.default.createElement("span", null, unit))));
         }
     });
     /**
@@ -30785,21 +30787,22 @@ exports.fields = {
         },
     },
     idleMax: {
-        label: 'Max Idle Minutes',
+        label: 'Logout after being idle for',
+        unit: 'minutes',
         attributes: {
             type: 'number',
             required: true,
             min: 1,
-            max: 60,
+            max: 120,
         },
     },
     maxTokenLife: {
-        label: 'Max Token Life Minutes',
+        label: 'Always log out after being online for',
+        unit: 'hours',
         attributes: {
             type: 'number',
             required: true,
-            min: 60,
-            max: 300,
+            min: 1,
         },
     },
 };
@@ -31164,12 +31167,48 @@ function tabFind(tabId, needle) {
         });
     });
 }
+function getVaults(url) {
+    return getHandler(url).then((storedSafe) => {
+        return handleErrors(storedSafe.listVaults()).then((data) => {
+            const vaults = data.VAULTS;
+            return vaults.map((vault) => ({
+                title: vault.groupname,
+                id: vault.id,
+                write: ['2', '4'].includes(vault.status),
+            }));
+        });
+    });
+}
+function getTemplates(url) {
+    return getHandler(url).then((storedSafe) => {
+        return handleErrors(storedSafe.listTemplates()).then((data) => {
+            const templates = data.TEMPLATES;
+            return templates.map((template) => ({
+                title: template.info.name,
+                icon: template.info.ico,
+                id: template.id,
+                fields: template.structure.map((field) => ({
+                    name: field.translation,
+                    type: field.type,
+                })),
+            }));
+        });
+    });
+}
+function addObject(url, params) {
+    return getHandler(url).then((storedSafe) => {
+        return handleErrors(storedSafe.createObject(params)).then();
+    });
+}
 exports.actions = {
     login,
     logout,
     find,
     decrypt,
     tabFind,
+    getVaults,
+    getTemplates,
+    addObject,
 };
 
 

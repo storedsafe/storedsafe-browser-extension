@@ -46,6 +46,7 @@ export interface Template {
 export interface Vault {
   title: string;
   id: string;
+  write: boolean;
 }
 
 const handleErrors = (promise: StoredSafePromise): Promise<StoredSafeResponse> => (
@@ -188,7 +189,7 @@ function find(
   return getHandler(url).then((storedSafe) => {
     return handleErrors(storedSafe.find(needle)).then((data) => {
       const siteSearchResults: SiteSearchResults = {};
-      for(let i = 0; i < data.OBJECT.length; i++) {
+      for (let i = 0; i < data.OBJECT.length; i++) {
         const ssObject = data.OBJECT[i];
         const objectId = ssObject.id;
         const ssTemplate = data.TEMPLATES.find((template) => template.id === ssObject.templateid);
@@ -247,10 +248,49 @@ function tabFind(
   });
 }
 
+function getVaults(url: string): Promise<Vault[]> {
+  return getHandler(url).then((storedSafe) => {
+    return handleErrors(storedSafe.listVaults()).then((data) => {
+      const vaults = data.VAULTS;
+      return vaults.map((vault) => ({
+        title: vault.groupname,
+        id: vault.id,
+        write: ['2', '4'].includes(vault.status), // Write or Admin bits
+      }));
+    });
+  });
+}
+
+function getTemplates(url: string): Promise<Template[]> {
+  return getHandler(url).then((storedSafe) => {
+    return handleErrors(storedSafe.listTemplates()).then((data) => {
+      const templates = data.TEMPLATES;
+      return templates.map((template) => ({
+        title: template.info.name,
+        icon: template.info.ico,
+        id: template.id,
+        fields: template.structure.map((field) => ({
+          name: field.translation,
+          type: field.type,
+        })),
+      }));
+    });
+  });
+}
+
+function addObject(url: string, params: object): Promise<void> {
+  return getHandler(url).then((storedSafe) => {
+    return handleErrors(storedSafe.createObject(params)).then()
+  })
+}
+
 export const actions = {
   login,
   logout,
   find,
   decrypt,
   tabFind,
+  getVaults,
+  getTemplates,
+  addObject,
 };

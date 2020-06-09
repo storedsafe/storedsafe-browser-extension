@@ -11,11 +11,11 @@
     ],
     "settings": {
       "enforced": {
-        "maxTokenLife": 60
+        "maxTokenLife": 8
       },
       "defaults": {
         "autoFill": false,
-        "idleMax": 10
+        "idleMax": 60
       }
     }
   }

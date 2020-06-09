@@ -10,17 +10,20 @@
       padding: $spacing;
     }
 
-    label {
-      margin-bottom: $spacing;
+    .general-settings-input {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      grid-column-gap: $spacing;
+      align-items: center;
     }
 
-    input {
-      width: 100%;
+    label {
+      margin-bottom: $spacing;
     }
   }
 }
 
-@media (min-width: 600px) {
+@media (min-width: $mobile-size) {
   // Non-mobile specific
 }
 

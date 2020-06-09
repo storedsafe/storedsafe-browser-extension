@@ -2439,21 +2439,22 @@ exports.fields = {
         },
     },
     idleMax: {
-        label: 'Max Idle Minutes',
+        label: 'Logout after being idle for',
+        unit: 'minutes',
         attributes: {
             type: 'number',
             required: true,
             min: 1,
-            max: 60,
+            max: 120,
         },
     },
     maxTokenLife: {
-        label: 'Max Token Life Minutes',
+        label: 'Always log out after being online for',
+        unit: 'hours',
         attributes: {
             type: 'number',
             required: true,
-            min: 60,
-            max: 300,
+            min: 1,
         },
     },
 };
@@ -2693,12 +2694,48 @@ function tabFind(tabId, needle) {
         });
     });
 }
+function getVaults(url) {
+    return getHandler(url).then((storedSafe) => {
+        return handleErrors(storedSafe.listVaults()).then((data) => {
+            const vaults = data.VAULTS;
+            return vaults.map((vault) => ({
+                title: vault.groupname,
+                id: vault.id,
+                write: ['2', '4'].includes(vault.status),
+            }));
+        });
+    });
+}
+function getTemplates(url) {
+    return getHandler(url).then((storedSafe) => {
+        return handleErrors(storedSafe.listTemplates()).then((data) => {
+            const templates = data.TEMPLATES;
+            return templates.map((template) => ({
+                title: template.info.name,
+                icon: template.info.ico,
+                id: template.id,
+                fields: template.structure.map((field) => ({
+                    name: field.translation,
+                    type: field.type,
+                })),
+            }));
+        });
+    });
+}
+function addObject(url, params) {
+    return getHandler(url).then((storedSafe) => {
+        return handleErrors(storedSafe.createObject(params)).then();
+    });
+}
 exports.actions = {
     login,
     logout,
     find,
     decrypt,
     tabFind,
+    getVaults,
+    getTemplates,
+    addObject,
 };
 
 

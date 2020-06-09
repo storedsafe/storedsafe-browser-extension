@@ -23,6 +23,7 @@ export const defaults: SettingsValues = {
 export interface FieldsProps {
   [name: string]: {
     label: string;
+    unit?: string;
     attributes: {
       type: string;
       [attr: string]: string | number | boolean;
@@ -38,21 +39,22 @@ export const fields: FieldsProps = {
     },
   },
   idleMax: {
-    label: 'Max Idle Minutes',
+    label: 'Logout after being idle for',
+    unit: 'minutes',
     attributes: {
       type: 'number',
       required: true,
       min: 1,
-      max: 60,
+      max: 120,
     },
   },
   maxTokenLife: {
-    label: 'Max Token Life Minutes',
+    label: 'Always log out after being online for',
+    unit: 'hours',
     attributes: {
       type: 'number',
       required: true,
-      min: 60,
-      max: 300,
+      min: 1,
     },
   },
 }
