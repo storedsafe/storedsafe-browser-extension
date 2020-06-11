@@ -30,7 +30,10 @@ export const useSearch = (): SearchHook => {
   };
 
   const onSearch = useCallback<OnSearchCallback>(() => {
+    setSearching(needle);
+    console.log('Search', needle);
     Object.keys(state.sessions).forEach((url) => {
+      console.log('Searching site', url);
       setSearchStatus((prevSearchStatus) => ({
         ...prevSearchStatus,
         [url]: {
@@ -44,7 +47,8 @@ export const useSearch = (): SearchHook => {
           needle,
         },
       }, {
-        onSuccess: () => {
+        onSuccess: (res) => {
+          console.log('SUCCESS', res.search);
           setSearchStatus((prevSearchStatus) => ({
             ...prevSearchStatus,
             [url]: {
@@ -53,6 +57,7 @@ export const useSearch = (): SearchHook => {
           }));
         },
         onError: (error) => {
+          console.log('ERROR', error);
           setSearchStatus((prevSearchStatus) => ({
             ...prevSearchStatus,
             [url]: {
@@ -151,7 +156,6 @@ export const useSearch = (): SearchHook => {
     const search = (): void => {
       if (searching !== needle) {
         onSearch();
-        setSearching(needle);
       }
     };
     // Search when there's 500ms since the last keystroke.

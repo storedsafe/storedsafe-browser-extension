@@ -55,7 +55,6 @@
     "sass-loader": "^8.0.2",
     "schema-utils": "1.0.0",
     "source-map-loader": "^0.2.4",
-    "storedsafe": "git+ssh://git@git.xpd.se:19922/oscar/storedsafe-javascript.git",
     "style-loader": "^1.1.3",
     "stylelint": "^13.3.2",
     "stylelint-config-sass-guidelines": "^7.0.0",
@@ -68,6 +67,7 @@
   "dependencies": {
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "storedsafe": "git+ssh://git@git.xpd.se:19922/storedsafe/storedsafe-javascript.git",
     "webextension-polyfill": "^0.6.0"
   }
 }

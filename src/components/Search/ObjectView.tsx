@@ -50,7 +50,6 @@ export const ObjectView: React.FunctionComponent<ObjectViewProps> = ({
   return (
     <section className="object-view">
       <article className="object-view-container">
-        <p className="object-view-url">{url}</p>
         <Button className="object-view-fill" onClick={(): void => onFill(url, id)}>
           Fill
         </Button>

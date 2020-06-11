@@ -1,8 +1,8 @@
 import StoredSafe from 'storedsafe';
-import { actions } from '../model/StoredSafe';
-import * as Sessions from '../model/Sessions';
-import * as Settings from '../model/Settings';
-import * as Search from '../model/Search';
+import { actions as StoredSafeActions } from '../model/StoredSafe';
+import { actions as SessionsActions } from '../model/Sessions';
+import { actions as SettingsActions } from '../model/Settings';
+import { actions as TabResultsActions } from '../model/TabResults';
 
 //
 // Session management functions and initialization
@@ -19,7 +19,7 @@ let idleTimer: number;
  * */
 function invalidateSession(url: string): void {
   console.log('Invalidating session: ', url);
-  actions.logout(url);
+  StoredSafeActions.logout(url);
 }
 
 /**
@@ -28,14 +28,13 @@ function invalidateSession(url: string): void {
  * */
 function invalidateAllSessions(): void {
   console.log('Invalidating all sessions');
-  Sessions.actions.fetch().then((sessions) => {
-    Object.keys(sessions).forEach((url) => {
-      const { apikey, token } = sessions[url];
-      const storedSafe = new StoredSafe(url, apikey, token);
+  SessionsActions.fetch().then((sessions) => {
+    for(const [host, { token }] of sessions) {
+      const storedSafe = new StoredSafe({ host, token });
       storedSafe.logout();
-    });
-    Sessions.actions.clear();
-    Search.actions.clear();
+    }
+    SessionsActions.clear();
+    TabResultsActions.clear();
   });
 }
 
@@ -47,9 +46,9 @@ function tabFind(tab: browser.tabs.Tab): Promise<void> {
   const match = url.match(/^(?:https?:\/\/)?(?:www\.)?([^/]*)\//i);
   const needle = match !== null ? match[1] : url;
   console.log(needle);
-  return actions.tabFind(tabId, needle).then((search) => {
-    Settings.actions.fetch().then((settings) => {
-      if (settings.autoFill.value) { // TODO: Fix repeated attempts when auto submitting invalid form
+  return StoredSafeActions.tabFind(tabId, needle).then((search) => {
+    SettingsActions.fetch().then((settings) => {
+      if (settings.get('autoFill').value) { // TODO: Fix repeated attempts when auto submitting invalid form
         // Get results specific to tab, there may be other cached results
         const results = search[tabId];
         const resultUrls = Object.keys(results);
@@ -58,7 +57,7 @@ function tabFind(tab: browser.tabs.Tab): Promise<void> {
         // Select the first result TODO: Sort results
         let url: string;
         let id: string;
-        let selectedResult: Search.SearchResult;
+        let selectedResult: SSObject;
         for (let i = 0; i < resultUrls.length; i++) {
           url = resultUrls[i];
           const ids = Object.keys(results[url]);
@@ -70,7 +69,7 @@ function tabFind(tab: browser.tabs.Tab): Promise<void> {
         }
 
         // Parse result and send to tab
-        const fill = (fields: Search.SearchResultFields): void => {
+        const fill = (fields: SSField[]): void => {
           const data: { [field: string]: string } = {};
           Object.keys(fields).forEach((field) => {
             data[field] = fields[field].value;
@@ -117,7 +116,7 @@ function onStartup(): void {
   invalidateAllSessions();
 }
 
-function updateOnlineStatus(sessions: Sessions.Sessions): void {
+function updateOnlineStatus(sessions: Sessions): void {
   if (Object.keys(sessions).length > 0) {
     console.log('online');
     browser.browserAction.setIcon({path: "ico/icon.png"});
@@ -141,7 +140,8 @@ function onStorageChange(
       sessionTimers = {};
       Object.keys(newSessions).forEach((url) => {
         const tokenLife = Date.now() - newSessions[url].createdAt;
-        const tokenTimeout = (settings.maxTokenLife.value as number * 60 * 1000) - tokenLife;
+        const maxTokenLife = settings.get('maxTokenLife').value as number;
+        const tokenTimeout = maxTokenLife * 3600 * 10e3 - tokenLife;
         sessionTimers[url] = window.setTimeout(() => invalidateSession(url), tokenTimeout);
       });
     });
@@ -170,18 +170,12 @@ function onIdle(
   state: browser.idle.IdleState
 ): void {
   Settings.actions.fetch().then((settings) => {
-    if (state === 'locked') {
-      console.log('Device is locked, invalidate all sessions.');
-      invalidateAllSessions();
-      if (idleTimer) {
-        window.clearTimeout(idleTimer);
-      }
-    } else if (state === 'idle') {
+    if (state === 'idle') {
       console.log('Idle timer started.');
       if (idleTimer) {
         window.clearTimeout(idleTimer);
       }
-      const idleTimeout = settings.idleMax.value as number * 1000 * 60;
+      const idleTimeout = settings.get('idleMax').value as number * 1000 * 60;
       idleTimer = window.setTimeout(() => {
         console.log('Idle timer expired, invalidate all sessions.');
         invalidateAllSessions()

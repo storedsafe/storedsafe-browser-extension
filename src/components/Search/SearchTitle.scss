@@ -5,4 +5,9 @@
   background-size: $menu-size - $spacing * 2;
   background-position: left center;
   padding-left: $menu-size;
+
+  .search-title-url {
+    color: $color-primary-0;
+    font-size: 0.9em;
+  }
 }

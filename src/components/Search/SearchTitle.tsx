@@ -4,7 +4,7 @@ import icons from '../../ico';
 import './SearchTitle.scss';
 
 interface SearchTitleProps {
-  url: string;
+  url?: string;
   result: SearchResult;
 }
 
@@ -17,6 +17,7 @@ export const SearchTitle: React.FunctionComponent<SearchTitleProps> = ({
     className="search-title">
     <div className="search-title-text">
       <p className="search-title-name">{result.name}</p>
+      {url && <p className="search-title-url">{url}</p>}
     </div>
   </article>
 );

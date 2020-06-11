@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, SetStateAction } from 'react';
 
 /**
  * Initialization action allowing for fetching the initial state asynchronously.
@@ -9,13 +9,12 @@ export interface InitAction {
 
 /**
  * All reducer functions should implement this type.
- * @type {State} Type of the state the reducer presents.
  * @type {Action} Dispatch action presenting allowed parameters.
+ * @return {Promise<React.SetStateAction<State>>} Promise of new state or function of old state.
  * */
 export type PromiseReducer<State, Action> = (
-  state: State,
   action: Action | InitAction,
-) => Promise<State>;
+) => Promise<SetStateAction<State | SetStateAction<State>>>;
 
 /**
  * Allow clients to listen to the state of their dispatch.
@@ -47,7 +46,6 @@ function usePromiseReducer<State, Action>(
   reducer: PromiseReducer<State, Action>,
   emptyState: State
 ): PromiseReducerHook<State, Action> {
-  // const [promise, setPromise] = useState<Promise<State>>(Promise.resolve(emptyState));
   const [isInitialized, setIsInitialized] = useState<boolean>(false);
   const [state, setState] = useState<State>(emptyState);
 
@@ -55,7 +53,7 @@ function usePromiseReducer<State, Action>(
    * Perfom asynchronous initialization.
    * */
   useEffect(() => {
-    reducer(emptyState, { type: 'init' }).then((newState: State) => {
+    reducer({ type: 'init' }).then((newState: State) => {
       setState(newState);
       setIsInitialized(true);
     });
@@ -66,8 +64,7 @@ function usePromiseReducer<State, Action>(
    * changes in promise state.
    * */
   const dispatch = (action: Action | InitAction, listener?: ActionListener<State>): void => {
-    // setPromise(promise.then((prevState) => {
-    reducer(state, action).then((newState: State) => {
+    reducer(action).then((newState: State) => {
       setState(newState);
       listener && listener.onSuccess && listener.onSuccess(newState);
       return newState;
@@ -75,7 +72,6 @@ function usePromiseReducer<State, Action>(
       listener && listener.onError && listener.onError(error);
       return state;
     });
-    // }));
   };
 
   return {

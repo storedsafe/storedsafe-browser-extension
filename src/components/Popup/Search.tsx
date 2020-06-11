@@ -1,6 +1,5 @@
 import React from 'react';
 import { SearchResults } from '../../model/Search';
-import { LoadingComponent } from '../common';
 import { ListView } from '../common';
 import * as Search from '../Search';
 import './Search.scss';
@@ -34,14 +33,7 @@ const PopupSearch: React.FunctionComponent<SearchProps> = ({
     return loading || status.loading;
   }, false);
 
-  if (numResults === 0) {
-    if (isLoading) {
-      return (
-        <section className="popup-search popup-search-loading">
-          <LoadingComponent />
-        </section>
-      );
-    }
+  if (numResults === 0 && !isLoading) {
     return (
       <section className="popup-search popup-search-empty">
         <p>No results found</p>
@@ -67,7 +59,7 @@ const PopupSearch: React.FunctionComponent<SearchProps> = ({
     ...Object.keys(results[url]).map(((id) => ({
       key: url + id,
       title: <Search.SearchTitle
-        url={url}
+        url={urls.length > 0 && url}
         result={results[url][id]}
       />,
       content: <Search.ObjectView

@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    "outDir": "./dist/",
     "sourceMap": true,
     "noImplicitAny": true,
     "resolveJsonModule": true,
@@ -8,6 +7,6 @@
     "module": "commonjs",
     "target": "es6",
     "jsx": "react",
-    "typeRoots": ["./node_modules/@types", "./src/custom_typings"]
+    "typeRoots": ["./node_modules/@types", "./src/types"]
   }
 }

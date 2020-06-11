@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useStorage } from '../../hooks/useStorage';
 import { useForm } from '../../hooks/useForm';
-import { fields, Settings, SettingsValues } from '../../model/Settings';
+import { fields, SettingsValues } from '../../model/storage/Settings';
 import { Button, Checkbox } from '../common';
 import './GeneralSettings.scss';
 

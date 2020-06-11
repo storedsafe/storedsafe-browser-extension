@@ -321,16 +321,16 @@ interface MockError extends Error {
 }
 
 export default class StoredSafe {
-  url: string;
-  apikey: string;
+  host: string;
+  apikey?: string;
   token?: string;
 
-  constructor(
-    url: string,
+  constructor({ host, apikey, token}: {
+    host: string,
     apikey: string,
     token?: string
-  ) {
-    this.url = url;
+  }) {
+    this.host = host;
     this.apikey = apikey;
     this.token = token;
   }
@@ -341,7 +341,7 @@ export default class StoredSafe {
     otp: string,
   ): Promise<MockResponse> {
     if (
-      this.url === 'host' &&
+      this.host === 'host' &&
       this.apikey === 'apikey' &&
       username === 'username' &&
       passphrase === 'passphrase' &&
@@ -372,7 +372,7 @@ export default class StoredSafe {
     otp: string,
   ): Promise<MockResponse> {
     if (
-      this.url === 'host' &&
+      this.host === 'host' &&
       this.apikey === 'apikey' &&
       username === 'username' &&
       passphrase === 'passphrase' &&
@@ -399,7 +399,7 @@ export default class StoredSafe {
 
   logout(): Promise<MockResponse> {
     if(
-      this.url === 'host' &&
+      this.host === 'host' &&
       this.apikey === 'apikey' &&
       this.token === 'token'
     ) {
@@ -424,7 +424,7 @@ export default class StoredSafe {
 
   find(needle: string): Promise<MockResponse> {
     if(
-      this.url === 'host' &&
+      this.host === 'host' &&
       this.apikey === 'apikey' &&
       this.token === 'token' &&
       needle === 'host'
@@ -450,7 +450,7 @@ export default class StoredSafe {
 
   decryptObject(id: string): Promise<MockResponse> {
     if(
-      this.url === 'host' &&
+      this.host === 'host' &&
       this.apikey === 'apikey' &&
       this.token === 'token' &&
       id === '1'
