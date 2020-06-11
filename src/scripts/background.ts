@@ -170,13 +170,7 @@ function onIdle(
   state: browser.idle.IdleState
 ): void {
   Settings.actions.fetch().then((settings) => {
-    if (state === 'locked') {
-      console.log('Device is locked, invalidate all sessions.');
-      invalidateAllSessions();
-      if (idleTimer) {
-        window.clearTimeout(idleTimer);
-      }
-    } else if (state === 'idle') {
+    if (state === 'idle') {
       console.log('Idle timer started.');
       if (idleTimer) {
         window.clearTimeout(idleTimer);
