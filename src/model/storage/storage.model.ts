@@ -66,6 +66,7 @@ interface Session {
   createdAt: number;
   warnings: { [key: string]: string };
   violations: { [key: string]: string };
+  timeout: number;
 }
 
 /**

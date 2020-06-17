@@ -1,3 +1,6 @@
+/**
+ * Mock server imitating StoredSafe for testing.
+ * */
 import { StoredSafeResponse } from 'storedsafe';
 
 export const data: {
@@ -23,6 +26,24 @@ export const data: {
       "status": "FAIL",
       "errors": 2,
       "errorcodes": 1
+    }
+  },
+
+  check: {
+    "DATA": {
+      "token": "token"
+    },
+    "HEADERS": {
+      "Host": "host"
+    },
+    "PARAMS": [],
+    "CALLINFO": {
+      "token": "token",
+      "general": [],
+      "handler": "AuthHandler",
+      "status": "SUCCESS",
+      "errors": 0,
+      "errorcodes": 0
     }
   },
 
@@ -326,9 +347,9 @@ export default class StoredSafe {
   token?: string;
 
   constructor({ host, apikey, token}: {
-    host: string,
-    apikey: string,
-    token?: string
+    host: string;
+    apikey?: string;
+    token?: string;
   }) {
     this.host = host;
     this.apikey = apikey;
@@ -400,7 +421,6 @@ export default class StoredSafe {
   logout(): Promise<MockResponse> {
     if(
       this.host === 'host' &&
-      this.apikey === 'apikey' &&
       this.token === 'token'
     ) {
       return Promise.resolve({
@@ -422,10 +442,33 @@ export default class StoredSafe {
     }
   }
 
+  check(): Promise<MockResponse> {
+    if (
+      (this.host === 'host' || this.host === 'other') &&
+      this.token === 'token'
+    ) {
+      return Promise.resolve({
+        status: 200,
+        statusText: 'success',
+        data: data.check,
+      });
+    } else {
+      const error: MockError = {
+        name: 'name',
+        message: 'message',
+        response: {
+          status: 403,
+          statusText: 'check error',
+          data: data.error,
+        },
+      };
+      return Promise.reject(error);
+    }
+  }
+
   find(needle: string): Promise<MockResponse> {
     if(
       this.host === 'host' &&
-      this.apikey === 'apikey' &&
       this.token === 'token' &&
       needle === 'host'
     ) {
@@ -451,7 +494,6 @@ export default class StoredSafe {
   decryptObject(id: string): Promise<MockResponse> {
     if(
       this.host === 'host' &&
-      this.apikey === 'apikey' &&
       this.token === 'token' &&
       id === '1'
     ) {

@@ -32,18 +32,18 @@ export const useSearch = (): SearchHook => {
   const onSearch = useCallback<OnSearchCallback>(() => {
     setSearching(needle);
     console.log('Search', needle);
-    Object.keys(state.sessions).forEach((url) => {
-      console.log('Searching site', url);
+    for (const host of state.sessions.keys()) {
+      console.log('Searching site', host);
       setSearchStatus((prevSearchStatus) => ({
         ...prevSearchStatus,
-        [url]: {
+        [host]: {
           loading: true,
         },
       }));
       dispatch({
         search: {
           type: 'find',
-          url,
+          host,
           needle,
         },
       }, {
@@ -51,7 +51,7 @@ export const useSearch = (): SearchHook => {
           console.log('SUCCESS', res.search);
           setSearchStatus((prevSearchStatus) => ({
             ...prevSearchStatus,
-            [url]: {
+            [host]: {
               loading: false,
             },
           }));
@@ -60,28 +60,29 @@ export const useSearch = (): SearchHook => {
           console.log('ERROR', error);
           setSearchStatus((prevSearchStatus) => ({
             ...prevSearchStatus,
-            [url]: {
+            [host]: {
               loading: false,
               error: error.message,
             },
           }));
         },
       });
-    });
+    }
   }, [needle, dispatch, state.sessions]);
 
-  const onShow: OnShowCallback = (url, objectId, field) => {
+  const onShow: OnShowCallback = (host, resultId, fieldId) => {
     dispatch({
       search: {
         type: 'show',
-        url,
-        objectId,
-        field,
+        results: state.search,
+        host,
+        resultId,
+        fieldId,
       },
     });
   };
 
-  const onCopy: OnCopyCallback = (url, objectId, field) => {
+  const onCopy: OnCopyCallback = (host, resultId, fieldId) => {
     const copy = (value: string): void => {
       // TODO: More reliable copy in background script.
       // browser.runtime.sendMessage({ type: 'copy', value });
@@ -93,31 +94,36 @@ export const useSearch = (): SearchHook => {
     };
 
     // Only decrypt if needed
-    const isEncryptedField = state.search[url][objectId].fields[field].isEncrypted;
-    const isDecrypted = state.search[url][objectId].isDecrypted;
+    const ssObject = state.search.get(host)[resultId];
+    const isEncryptedField = ssObject.fields[fieldId].isEncrypted;
+    const isDecrypted = ssObject.isDecrypted;
     if (!isEncryptedField || isDecrypted) {
-      copy(state.search[url][objectId].fields[field].value);
+      copy(ssObject.fields[fieldId].value);
     } else {
       dispatch({
         search: {
           type: 'decrypt',
-          url,
-          objectId,
+          results: state.search,
+          host,
+          resultId,
         },
       }, {
         onSuccess: (newState) => {
-          copy(newState.search[url][objectId].fields[field].value);
+          copy(newState.search.get(host)[resultId].fields[fieldId].value);
         },
       });
     }
   };
 
-  const onFill: OnFillCallback = (url, objectId) => {
-    const fill = (data: { [field: string]: string }): void => {
-      browser.tabs.query({ currentWindow: true, active: true }).then(([tab]) => {
+  const onFill: OnFillCallback = (host, resultId) => {
+    const fill = (data: Map<string, string>): void => {
+      browser.tabs.query({
+        currentWindow: true,
+        active: true,
+      }).then(([tab]) => {
         browser.tabs.sendMessage(tab.id, {
           type: 'fill',
-          data: data,
+          data: [...data],
         }).then(() => {
           window.close();
         });
@@ -125,29 +131,30 @@ export const useSearch = (): SearchHook => {
     };
 
     // Only decrypt if needed
-    if (!state.search[url][objectId].isDecrypted) {
+    if (!state.search.get(host)[resultId].isDecrypted) {
       dispatch({
         search: {
           type: 'decrypt',
-          url,
-          objectId,
+          results: state.search,
+          host,
+          resultId,
         },
       }, {
         onSuccess: (newState) => {
-          const fields = newState.search[url][objectId].fields;
-          const data: { [field: string]: string } = {};
-          Object.keys(fields).forEach((field) => {
-            data[field] = fields[field].value;
-          });
+          const fields = newState.search.get(host)[resultId].fields;
+          const data: Map<string, string> = new Map();
+          for (const field of fields) {
+            data.set(field.name, field.value);
+          }
           fill(data);
         },
       });
     } else {
-      const fields = state.search[url][objectId].fields;
-      const data: { [field: string]: string } = {};
-      Object.keys(fields).forEach((field) => {
-        data[field] = fields[field].value;
-      });
+      const fields = state.search.get(host)[resultId].fields;
+      const data: Map<string, string> = new Map();
+      for (const field of fields) {
+        data.set(field.name, field.value);
+      }
       fill(data);
     }
   };

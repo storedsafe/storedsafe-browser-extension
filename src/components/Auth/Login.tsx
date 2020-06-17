@@ -1,8 +1,6 @@
 import React from 'react';
-import { Site } from '../../model/Sites';
 import { useForm, FormEventCallbacks } from '../../hooks/useForm';
 import { Select, Checkbox, Message, Button } from '../common';
-import { LoginFields, LoginType } from '../../model/StoredSafe';
 import * as YubiKey from './YubiKey';
 import * as TOTP from './TOTP';
 import './Login.scss';
@@ -18,10 +16,7 @@ interface LoginProps {
   site: Site;
   error?: string;
   loading?: boolean;
-  sitePrefs?: {
-    username?: string;
-    loginType?: LoginType;
-  };
+  sitePreferences?: SitePreferences;
   onLogin: OnLoginCallback;
   formEvents?: FormEventCallbacks;
 }
@@ -30,11 +25,11 @@ export const Login: React.FunctionComponent<LoginProps> = ({
   site,
   error,
   loading,
-  sitePrefs,
+  sitePreferences,
   onLogin,
   formEvents,
 }: LoginProps) => {
-  const { username, loginType } = sitePrefs && sitePrefs || {};
+  const { username, loginType } = sitePreferences && sitePreferences || {};
   const initialValues: LoginFormValues = {
     loginType: loginType || 'totp', // Set default to TOTP
     username: username || '',
@@ -50,7 +45,7 @@ export const Login: React.FunctionComponent<LoginProps> = ({
     onLogin(site, values);
   };
 
-  const id = (name: string): string => site.url + '-' + name;
+  const id = (name: string): string => site.host + '-' + name;
 
   return (
     <section className="login">

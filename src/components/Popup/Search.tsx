@@ -1,34 +1,35 @@
 import React from 'react';
-import { SearchResults } from '../../model/Search';
 import { ListView } from '../common';
 import * as Search from '../Search';
 import './Search.scss';
 
 export interface SearchStatus {
-  [url: string]: {
+  [host: string]: {
     loading: boolean;
     error?: string;
   };
 }
 
 export interface SearchProps {
-  urls: string[];
-  results: SearchResults;
-  onShow: (url: string, objectId: string, field: string) => void;
-  onCopy: (url: string, objectId: string, field: string) => void;
-  onFill: (url: string, objectId: string) => void;
+  hosts: string[];
+  results: Results;
+  onShow: Search.OnShowCallback;
+  onCopy: Search.OnCopyCallback;
+  onFill: Search.OnFillCallback;
   searchStatus: SearchStatus;
 }
 
 const PopupSearch: React.FunctionComponent<SearchProps> = ({
-  urls,
+  hosts,
   results,
   onShow,
   onCopy,
   onFill,
   searchStatus,
 }: SearchProps) => {
-  const numResults = Object.keys(results).reduce((acc, url) => acc + Object.keys(results[url]).length, 0);
+  const numResults = [...results.keys()].reduce((acc, host) => (
+    acc + results.get(host).length
+  ), 0);
   const isLoading = Object.values(searchStatus).reduce((loading, status) => {
     return loading || status.loading;
   }, false);
@@ -42,30 +43,26 @@ const PopupSearch: React.FunctionComponent<SearchProps> = ({
   }
 
   // Initialize selected to first object if it exists.
-  let firstUrl: string = undefined, firstId: string = undefined;
-  const resultUrls = Object.keys(results);
-  for (let i = 0; i < resultUrls.length; i++) {
-    const url = resultUrls[i];
-    const ids = Object.keys(results[url]);
-    if (ids.length > 0) {
-      const id = ids[0];
-      firstUrl = url;
-      firstId = id;
+  let firstHost: string = undefined, firstId: number = undefined;
+  for (const [host, hostResults] of results) {
+    if (hostResults.length > 0) {
+      firstHost = host;
+      firstId = 0;
     }
   }
 
-  const items = Object.keys(results).reduce(((acc, url) => ([
+  const items = Array.from(results.keys()).reduce(((acc, host) => ([
     ...acc,
-    ...Object.keys(results[url]).map(((id) => ({
-      key: url + id,
+    ...results.get(host).map(((ssObject, resultId) => ({
+      key: host + resultId,
       title: <Search.SearchTitle
-        url={urls.length > 0 && url}
-        result={results[url][id]}
+        host={hosts.length > 0 ? host : undefined}
+        result={ssObject}
       />,
       content: <Search.ObjectView
-        url={url}
-        id={id}
-        result={results[url][id]}
+        host={host}
+        resultId={resultId}
+        result={ssObject}
         onShow={onShow}
         onCopy={onCopy}
         onFill={onFill}
@@ -74,7 +71,7 @@ const PopupSearch: React.FunctionComponent<SearchProps> = ({
   ])), []);
 
   // Select the first result if there are no other results
-  const defaultSelected = numResults === 1 ? firstUrl + firstId : undefined;
+  const defaultSelected = numResults === 1 ? firstHost + firstId : undefined;
 
   return (
     <section className="popup-search">

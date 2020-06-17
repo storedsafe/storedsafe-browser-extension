@@ -1,3 +1,7 @@
+/**
+ * Entrypoint for the extension UI.
+ * Performs routings based on the browser URL.
+ * */
 import React, { useState, useEffect } from 'react';
 import { StorageProvider, useStorage } from './hooks/useStorage';
 import DebugStorage from './components/DebugStorage';
@@ -10,6 +14,9 @@ enum Page {
     Debug = 'debug'
 }
 
+/**
+ * Listen for storage updates and update application context accordingly.
+ * */
 const StorageListener: React.FunctionComponent = () => {
   const { dispatch } = useStorage();
   useEffect(() => {
@@ -24,9 +31,14 @@ const StorageListener: React.FunctionComponent = () => {
   return null;
 };
 
+/**
+ * @returns Extension UI.
+ * */
 const Extension: React.FunctionComponent = () => {
   const [page, setPage] = useState<Page>();
 
+  // Once the component is loaded, set the page based on the URL.
+  // Defaults to Options page.
   React.useEffect(() => {
     const path = window.location.href.split('#')[1];
     switch(path) {
@@ -42,7 +54,6 @@ const Extension: React.FunctionComponent = () => {
         setPage(Page.Options);
       }
     }
-
   }, []);
 
   return (

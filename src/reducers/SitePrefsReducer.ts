@@ -1,23 +1,21 @@
 import PromiseReducer from './PromiseReducer';
-import { actions, SitePrefs } from '../model/SitePrefs';
-import { LoginType } from '../model/StoredSafe';
+import { actions } from '../model/storage/Preferences';
 
-export type State = SitePrefs;
+export type State = Preferences;
 export type Action = {
   type: 'update';
-  url: string;
-  username: string;
-  loginType: LoginType;
+  host: string;
+  sitePreferences: SitePreferences;
 } | {
   type: 'remove';
-  url: string;
+  host: string;
 };
 
-export const reducer: PromiseReducer<State, Action> = (count, action) => {
+export const reducer: PromiseReducer<State, Action> = (action) => {
   switch(action.type) {
     case 'update': {
-      const { url, username, loginType } = action;
-      return actions.update(url, username, loginType);
+      const { host, sitePreferences } = action;
+      return actions.updateSitePreferences(host, sitePreferences);
     }
     case 'init': {
       return actions.fetch();

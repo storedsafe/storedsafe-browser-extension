@@ -1,25 +1,24 @@
 import { useState } from 'react';
 import { OnAddCallback, AddObjectProperty, OnPropertyChangeCallback } from '../components/Add/AddObject';
-import { Vault, Template } from '../model/StoredSafe';
 import { useStorage } from './useStorage';
 
 interface AddHook {
-  url: AddObjectProperty<string>;
-  vault: AddObjectProperty<Vault>;
-  template: AddObjectProperty<Template>;
+  host: AddObjectProperty<string>;
+  vault: AddObjectProperty<SSVault>;
+  template: AddObjectProperty<SSTemplate>;
   onAdd: OnAddCallback;
 }
 
 const useAdd = (): AddHook => {
   const { state } = useStorage();
 
-  const [url, setUrl] = useState<number>(0);
+  const [host, setHost] = useState<number>(0);
   const [vault, setVault] = useState<number>(0);
   const [template, setTemplate] = useState<number>(0);
 
-  const onUrlChange: OnPropertyChangeCallback = (id) => {
+  const onHostChange: OnPropertyChangeCallback = (id) => {
     // TODO: Fetch vaults and templates
-    setUrl(id)
+    setHost(id)
   }
 
   const onAdd: OnAddCallback = (params) => {
@@ -27,10 +26,10 @@ const useAdd = (): AddHook => {
   }
 
   return {
-    url: {
-      selected: url,
-      onChange: onUrlChange,
-      values: state.sites.list.map(({ url }) => url),
+    host: {
+      selected: host,
+      onChange: onHostChange,
+      values: state.sites.list.map(({ host }) => host),
     },
     vault: {
       selected: vault,

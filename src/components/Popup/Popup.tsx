@@ -37,7 +37,7 @@ export const Popup: React.FunctionComponent<PopupProps> = ({
   const [page, setPage] = useState<Page>();
 
   const { sessions } = auth;
-  const isOnline = Object.keys(sessions).length > 0;
+  const isOnline = sessions.size > 0;
 
   if (isInitialized && page === undefined) {
     if (isOnline) {
@@ -108,14 +108,14 @@ export const Popup: React.FunctionComponent<PopupProps> = ({
       )}
       <section className="popup-status">
         <StatusBar
-          activeSessions={Object.keys(sessions).length}
+          activeSessions={sessions.size}
         />
-        {Object.keys(search.searchStatus).map((url) => (
-          <Fragment key={url}>
-            {search.searchStatus[url].loading && <p>Searching {url}...</p>}
-            {search.searchStatus[url].error && (
+        {Object.keys(search.searchStatus).map((host) => (
+          <Fragment key={host}>
+            {search.searchStatus[host].loading && <p>Searching {host}...</p>}
+            {search.searchStatus[host].error && (
               <p className="danger">
-                {url}: {search.searchStatus[url].error}
+                {host}: {search.searchStatus[host].error}
               </p>
             )}
           </Fragment>

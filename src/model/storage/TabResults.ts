@@ -62,6 +62,24 @@ export const actions = {
   ),
 
   /**
+   * Purge host from tab results.
+   * @returns Updated cached results from all tabs, with values from host removed.
+   * */
+  purgeHost: (host: string): Promise<TabResults> => (
+    get().then((prevTabResults) => {
+      const newTabResults = new Map(prevTabResults);
+      for (const results of newTabResults.values()) {
+        for (const resultsHost of results.keys()) {
+          if (resultsHost === host) {
+            results.delete(host);
+          }
+        }
+      }
+      return set(newTabResults).then(get);
+    })
+  ),
+
+  /**
    * Clear all search results from storage.
    * @returns Updated cached results from all tabs (empty).
    * */

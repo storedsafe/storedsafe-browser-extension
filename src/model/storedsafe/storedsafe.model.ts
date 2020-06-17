@@ -55,6 +55,7 @@ interface SSTemplateField {
 interface SSTemplate {
   id: string;
   name: string;
+  icon: string;
   structure: SSTemplateField[];
 }
 

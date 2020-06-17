@@ -1,18 +1,15 @@
 import React from 'react';
-import { SearchResults as Results, SearchResult as Result } from '../../model/Search';
 import { Message, LoadingComponent } from '../common';
 import icons from '../../ico';
 import './SearchResults.scss';
 
-interface SearchStatus {
-  [url: string]: {
-    loading: boolean;
-    error?: string;
-  };
-}
+type SearchStatus = Map<string /* host */, {
+  loading: boolean;
+  error?: string;
+}>;
 
 interface SearchResultProps {
-  result: Result;
+  result: SSObject;
   onClick: () => void;
   selected: boolean;
 }
@@ -23,7 +20,7 @@ const SearchResult: React.FunctionComponent<SearchResultProps> = ({
   selected,
 }: SearchResultProps) => (
   <article
-    style={{ backgroundImage: `url('${icons[result.icon]}')`}}
+    style={{ backgroundImage: `host('${icons[result.icon]}')`}}
     className={`search-result${selected ? ' selected' : ''}`}
     onClick={onClick}>
     <div className="search-result-text">
@@ -34,53 +31,53 @@ const SearchResult: React.FunctionComponent<SearchResultProps> = ({
 );
 
 export interface SearchResultsProps {
-  urls: string[];
+  hosts: string[];
   results: Results;
-  onSelect: (selected: { url: string; id: string }) => void;
+  onSelect: (selected: { host: string; id: string }) => void;
   selected?: {
-    url: string;
+    host: string;
     id: string;
   };
   searchStatus: SearchStatus;
 }
 
 export const SearchResults: React.FunctionComponent<SearchResultsProps> = ({
-  urls,
+  hosts,
   results,
   onSelect,
   selected,
   searchStatus,
 }: SearchResultsProps) => (
   <section className="search-results">
-    {urls.map((url) => (
-      // Hide url results if there is nothing to show..
-      (results[url] || searchStatus[url] && (searchStatus[url].loading || searchStatus[url].error)) && (
-        <article key={url} className="search-results-site">
-          {/* Only show url if more than one session is active. */}
-          {urls.length > 1 && (
-            <div className="search-results-url">
-              {url} {searchStatus[url] && searchStatus[url].loading && <span className="searching" />}
-              {searchStatus[url] && searchStatus[url].error && (
+    {hosts.map((host) => (
+      // Hide host results if there is nothing to show..
+      (results.get(host) || searchStatus.get(host) && (searchStatus.get(host).loading || searchStatus.get(host).error)) && (
+        <article key={host} className="search-results-site">
+          {/* Only show host if more than one session is active. */}
+          {hosts.length > 1 && (
+            <div className="search-results-host">
+              {host} {searchStatus.get(host) && searchStatus.get(host).loading && <span className="searching" />}
+              {searchStatus.get(host) && searchStatus.get(host).error && (
                 <Message type="error">
-                  {searchStatus[url] && searchStatus[url].error}
+                  {searchStatus.get(host) && searchStatus.get(host).error}
                 </Message>
               )}
             </div>
           )}
-          {urls.length === 1 && searchStatus[url] && searchStatus[url].error && (
+          {hosts.length === 1 && searchStatus.get(host) && searchStatus.get(host).error && (
             <Message type="error">
-              {searchStatus[url] && searchStatus[url].error}
+              {searchStatus.get(host) && searchStatus.get(host).error}
             </Message>
           )}
-          {urls.length === 1 && searchStatus[url] && searchStatus[url].loading && (
+          {hosts.length === 1 && searchStatus.get(host) && searchStatus.get(host).loading && (
             <LoadingComponent />
           )}
-          {results[url] && Object.keys(results[url]).map((id) => (
+          {results.get(host) && results.get(host).map((ssObject, resultId) => (
             <SearchResult
-              key={id}
-              onClick={(): void => onSelect({ url, id })}
-              selected={selected && selected.url === url && selected.id === id}
-              result={results[url][id]}
+              key={`${host}-${ssObject.id}`}
+              onClick={(): void => onSelect({ host, id: ssObject.id })}
+              selected={selected && selected.host === host && selected.id === ssObject.id}
+              result={results.get(host)[resultId]}
             />
           ))}
         </article>

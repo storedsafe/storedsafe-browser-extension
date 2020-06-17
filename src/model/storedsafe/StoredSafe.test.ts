@@ -7,7 +7,7 @@ const results: Results = new Map<string, SSObject[]>([
   ['host', [{
     id: '1',
     templateId: '4',
-    vaultId: '5',
+    vaultId: '139',
     name: 'Host',
     type: 'Login',
     icon: 'ico_server',
@@ -83,10 +83,11 @@ const serializableTabResults = [
 const sessions: Sessions = new Map([
   ['other', {
     apikey: 'abc123',
-    token: 'asdfhjk',
+    token: 'token',
     createdAt: 1,
     warnings: {},
     violations: {},
+    timeout: 14400000,
   }],
 ]);
 const serializableSessions: SerializableSessions = Array.from(sessions);
@@ -98,6 +99,7 @@ const mockSessions: Sessions = new Map([
     createdAt: 0,
     warnings: {},
     violations: { key: 'violation' },
+    timeout: 14400000,
   }],
 ]);
 const serializableMockSessions: SerializableSessions = Array.from(mockSessions);
@@ -187,15 +189,12 @@ describe('Search', () => {
   });
 
   test('.find()', () => {
-    localGetMock.mockImplementationOnce((key: string) => Promise.resolve({
+    localGetMock.mockImplementation((key: string) => Promise.resolve({
       [key]: serializableMockSessions,
     }));
 
-    return StoredSafe.actions.find(
-      'host',
-      'host'
-    ).then((results) => {
-      expect(results).toEqual(results.get('host'));
+    return StoredSafe.actions.find('host', 'host').then((findResults) => {
+      expect(findResults).toEqual(results.get('host'));
     })
   });
 

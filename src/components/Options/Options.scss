@@ -1,6 +1,10 @@
 @import '../../variables';
 
 .options {
+  .options-clear-data {
+    width: 100%;
+  }
+
   .card {
     > *:first-child {
       padding-top: $border-radius;

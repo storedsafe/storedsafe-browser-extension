@@ -1,26 +1,27 @@
 import PromiseReducer from './PromiseReducer';
-import { Session } from '../model/Sessions';
-import { actions as search, SearchResults } from '../model/Search';
-import { actions as storedsafe } from '../model/StoredSafe';
+import { actions as TabResultsActions } from '../model/storage/TabResults';
+import { actions as StoredSafeActions } from '../model/storedsafe/StoredSafe';
 
-export type State = SearchResults;
+export type State = Results;
 export type Action = {
   type: 'find';
   needle: string;
-  url: string;
+  host: string;
 } | {
   type: 'show';
-  url: string;
-  objectId: string;
-  field: string;
+  results: Results;
+  host: string;
+  resultId: number;
+  fieldId: number;
   show?: boolean;
 } | {
   type: 'decrypt';
-  url: string;
-  objectId: string;
+  results: Results;
+  host: string;
+  resultId: number;
 };
 
-export const reducer: PromiseReducer<State, Action> = (state, action) => {
+export const reducer: PromiseReducer<State, Action> = (action) => {
   /**
    * Get results from the active tab if they exist.
    * */
@@ -29,29 +30,51 @@ export const reducer: PromiseReducer<State, Action> = (state, action) => {
       active: true,
       currentWindow: true,
     }).then(([tab]) => {
-      return search.fetch().then((results) => (
-        results[tab.id] || {}
+      return TabResultsActions.fetch().then((results) => (
+        results.get(tab.id) || new Map()
       ));
     });
   }
 
   /**
-   * Decrypt object in search results.
+   * Decrypt search result object.
+   * @param host - Host server to request decryption from.
+   * @param encryptedResult - Previous, encrypted result object.
    * */
-  function decrypt(url: string, objectId: string): Promise<State> {
-    return storedsafe.decrypt(url, objectId).then((result) => ({
-      ...state,
-      [url]: {
-        ...state[url],
-        [objectId]: result,
-      },
-    })).then((newState) => {
-      const fields = newState[url][objectId].fields;
-      Object.keys(fields).forEach((field) => {
-        fields[field].isShowing = state[url][objectId].fields[field].isShowing;
+  function decrypt(
+    host: string,
+    encryptedResult: SSObject
+  ): Promise<SSObject> {
+    return StoredSafeActions.decrypt(
+      host, encryptedResult.id
+    ).then((result) => {
+      result.fields.forEach((field) => {
+        const prevField = encryptedResult.fields.find(({ name }) => (
+          name === field.name
+        ));
+        field.isShowing = prevField.isShowing;
       });
-      return newState;
+      return result;
     });
+  }
+
+  /**
+   * Helper function to merge a decrypted result into the previous state.
+   * @param host - Host the result belongs to.
+   * @param result - The result to merge into the previous state.
+   * */
+  function mergeResults(
+    host: string,
+    result: SSObject
+  ): (state: State) => State {
+    return (prevState: State): State => {
+      const hostResults = [...prevState.get(host)];
+      const prevResultId = hostResults.findIndex(({ id }) => (
+        id === result.id
+      ));
+      hostResults[prevResultId] = result;
+      return new Map([...prevState, [host, hostResults]])
+    };
   }
 
   switch(action.type) {
@@ -59,14 +82,15 @@ export const reducer: PromiseReducer<State, Action> = (state, action) => {
      * Perform manual search on provided sites.
      * */
     case 'find': {
-      const { url, needle } = action;
+      const { host, needle } = action;
       if (needle === '') {
         return init();
       }
-      return storedsafe.find(url, needle).then((results) => ({
-        ...state,
-        [url]: results,
-      }));
+      return StoredSafeActions.find(host, needle).then((results) => (
+        (state: State): State => (
+          new Map([...state, [host, results]])
+        )
+      ));
     }
 
     /**
@@ -74,22 +98,31 @@ export const reducer: PromiseReducer<State, Action> = (state, action) => {
      * Decrypts object first if object isn't already decrypted.
      * */
     case 'show': {
-      const { url, objectId, field } = action;
+      const { results, host, resultId, fieldId } = action;
       const show = action.show || true;
-      if (show && !state[url][objectId].isDecrypted) {
-        return decrypt(url, objectId).then((newState) => {
-          newState[url][objectId].fields[field].isShowing = true;
-          return newState;
+      const encryptedResult = results.get(host)[resultId];
+      if (show && !encryptedResult.isDecrypted) {
+        return decrypt(host, encryptedResult).then((result) => {
+          result.fields[fieldId].isShowing = true;
+          return mergeResults(host, result);
         });
       }
-      const newState = { ...state };
-      newState[url][objectId].fields[field].isShowing = show;
-      return Promise.resolve(newState);
+      return Promise.resolve((prevState: State) => {
+        const newState = new Map([...prevState]);
+        newState.get(host)[resultId].fields[fieldId].isShowing = show;
+        return newState;
+      });
     }
 
+    /**
+     * Decrypt object in results.
+     * */
     case 'decrypt': {
-      const { url, objectId } = action;
-      return decrypt(url, objectId);
+      const { results, host, resultId } = action;
+      const encryptedResult = results.get(host)[resultId];
+      return decrypt(host, encryptedResult).then((result) => (
+        mergeResults(host, result)
+      ));
     }
 
     case 'init': {
@@ -99,4 +132,4 @@ export const reducer: PromiseReducer<State, Action> = (state, action) => {
 };
 
 
-export const emptyState: State = {};
+export const emptyState: State = new Map();

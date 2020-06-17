@@ -9,12 +9,12 @@ export interface InitAction {
 
 /**
  * All reducer functions should implement this type.
- * @type {Action} Dispatch action presenting allowed parameters.
- * @return {Promise<React.SetStateAction<State>>} Promise of new state or function of old state.
+ * @type Dispatch action presenting allowed parameters.
+ * @returns Promise of new state or function of old state.
  * */
 export type PromiseReducer<State, Action> = (
   action: Action | InitAction,
-) => Promise<SetStateAction<State | SetStateAction<State>>>;
+) => Promise<State | SetStateAction<State>>;
 
 /**
  * Allow clients to listen to the state of their dispatch.
@@ -25,9 +25,9 @@ interface ActionListener<State> {
 }
 
 /**
- * @param {0} State
- * @param {1} Dispatch function
- * @param {2} Is initialized?
+ * @param state - Current state of completed dispatches.
+ * @param dispatch - Function to pass actions to reducers.
+ * @param isInitialized True if first init dispatches are complete.
  * */
 export type PromiseReducerHook<State, Action> = {
   state: State;
@@ -65,8 +65,12 @@ function usePromiseReducer<State, Action>(
    * */
   const dispatch = (action: Action | InitAction, listener?: ActionListener<State>): void => {
     reducer(action).then((newState: State) => {
+      if (newState instanceof Function) {
+        listener && listener.onSuccess && listener.onSuccess(newState(state));
+      } else {
+        listener && listener.onSuccess && listener.onSuccess(newState);
+      }
       setState(newState);
-      listener && listener.onSuccess && listener.onSuccess(newState);
       return newState;
     }).catch((error: Error) => {
       listener && listener.onError && listener.onError(error);

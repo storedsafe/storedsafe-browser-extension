@@ -8,7 +8,7 @@ import './Sites.scss';
  * Form values in the add site form.
  * */
 interface AddSiteValues {
-  url: string;
+  host: string;
   apikey: string;
 }
 
@@ -19,7 +19,7 @@ export const Sites: React.FunctionComponent = () => {
   /**
    * Initial values for the add site form.
    * */
-  const addSiteInitialValues = { url: '', apikey: '' };
+  const addSiteInitialValues = { host: '', apikey: '' };
   const [
     addSiteValues, events, reset
   ] = useForm<AddSiteValues>(addSiteInitialValues, {
@@ -34,29 +34,29 @@ export const Sites: React.FunctionComponent = () => {
   /**
    * List of sites managed by the system administrator
    * */
-  const managedSites = system.map((site) => (
-    <li key={site.url}><span>{site.url}</span></li>
-  ));
+  const managedSites = system.map((site) => {
+    return <li key={site.host}><span>{site.host}</span></li>;
+  });
 
   /**
-   * Creates a closure around a url to be used as a callback
+   * Creates a closure around a host to be used as a callback
    * funtion for a button click to remove a site from storage.
    * */
   const onRemove = (
-    removeUrl: string
+    removeHost: string
   ): () => void => (): void => {
-    setLoading({ ...loading, [removeUrl]: true });
-    const id = user.findIndex(({ url }) => url === removeUrl);
+    setLoading({ ...loading, [removeHost]: true });
+    const id = user.findIndex(({ host }) => host === removeHost);
     dispatch({
       sites: {
         type: 'remove', id
       },
     }, {
       onSuccess: () => {
-        setLoading({ ...loading, [removeUrl]: false })
+        setLoading({ ...loading, [removeHost]: false })
       },
       onError: () => {
-        setLoading({ ...loading, [removeUrl]: false })
+        setLoading({ ...loading, [removeHost]: false })
       },
     })
   };
@@ -65,12 +65,12 @@ export const Sites: React.FunctionComponent = () => {
    * List of sites managed by the user.
    * */
   const userSites = user.map((site) => (
-    <li key={site.url}>
-      <span>{site.url}</span>
+    <li key={site.host}>
+      <span>{site.host}</span>
       <Button
         color="danger"
-        onClick={onRemove(site.url)}
-        isLoading={loading[site.url] || false}>
+        onClick={onRemove(site.host)}
+        isLoading={loading[site.host] || false}>
         Delete
       </Button>
     </li>
@@ -84,21 +84,21 @@ export const Sites: React.FunctionComponent = () => {
     event: React.FormEvent<HTMLFormElement>
   ): void => {
     event.preventDefault();
-    const { url, apikey } = addSiteValues;
-    const match = url.match(/^.*:\/\/([^/]+)(\/.*|\/?$)/);
-    const matchedUrl = match === null ? url : match[1];
-    const hasSite = state.sites.list.reduce((hasUrl, { url: siteUrl }) => (
-      hasUrl || siteUrl === matchedUrl
+    const { host, apikey } = addSiteValues;
+    const match = host.match(/^.*:\/\/([^/]+)(\/.*|\/?$)/);
+    const matchedHost = match === null ? host : match[1];
+    const hasSite = state.sites.list.reduce((hasHost, { host: siteHost }) => (
+      hasHost || siteHost === matchedHost
     ), false);
     if (hasSite) {
-      setError(`Duplicate site: ${matchedUrl}`);
+      setError(`Duplicate site: ${matchedHost}`);
       return
     }
     setLoading({ ...loading, add: true });
     dispatch({
       sites: {
         type: 'add',
-        site: { url: matchedUrl, apikey },
+        site: { host: matchedHost, apikey },
       },
     }, {
       onSuccess: () => {
@@ -119,15 +119,15 @@ export const Sites: React.FunctionComponent = () => {
           <h3>Add new site</h3>
         </header>
         <form className="sites-add-form" onSubmit={onAdd}>
-          <label htmlFor="url">
-            URL
+          <label htmlFor="host">
+            Host
             <input
               type="text"
-              name="url"
-              id="url"
-              placeholder="URL"
+              name="host"
+              id="host"
+              placeholder="Host"
               required
-              value={addSiteValues.url}
+              value={addSiteValues.host}
               {...events}
             />
           </label>

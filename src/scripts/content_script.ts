@@ -99,6 +99,15 @@ function isMatch(
   );
 }
 
+function isElementFillable(element: Element): boolean {
+  return element instanceof HTMLInputElement && ![
+    'hidden',
+    'button',
+    'submit',
+    'reset'
+  ].includes(element.type);
+}
+
 function getFormType(form: HTMLFormElement): FormType {
   for(const [formType, formTypeMatchers] of formMatchers) {
 
@@ -192,9 +201,7 @@ observer.observe(document.body, { childList: true });
 
 interface Message {
   type: string;
-  data: {
-    [field: string]: string;
-  };
+  data: [string, string][];
 }
 
 function onMessage(
@@ -202,27 +209,24 @@ function onMessage(
 ): void {
   if (message.type === 'fill') {
     console.log(message.data);
-    for (let i = 0; i < fillForms.length; i++) {
+    for (const form of fillForms) {
       let filled = false;
-      for (let j = 0; j < fillForms[i].length; j++) {
-        const element = fillForms[i][j];
-        if (element instanceof HTMLInputElement) {
+      for (const element of form) {
+        if (element instanceof HTMLInputElement && isElementFillable(element)) {
           let elementFilled = false;
-          Object.keys(message.data).forEach((field) => {
+          for (const [field, value] of new Map(message.data)) {
             console.log('Attempting to fill', field, 'in', element);
             if (isMatch(field, element)) {
               console.log('Filled field', field);
               elementFilled = true;
               filled = true;
-              element.value = message.data[field];
-              return;
+              element.value = value;
+              break;
             }
-          });
+          }
           if (!elementFilled) { // If no field matched this element
-            if (!['hidden', 'button', 'submit', 'reset'].includes(element.type)) {
-              console.log('Focus unfilled element', element);
-              element.focus(); // Focus element for easier access (example otp field)
-            }
+            console.log('Focus unfilled element', element);
+            element.focus(); // Focus element for easier access (example otp field)
           }
         }
       }

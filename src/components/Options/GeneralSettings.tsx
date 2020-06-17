@@ -11,12 +11,11 @@ export const GeneralSettings: React.FunctionComponent = () => {
   const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
-    if (Object.keys(values).length === 0 &&
-        Object.keys(state.settings).length > 0) {
+    if (Object.keys(values).length === 0 && state.settings.size > 0) {
       const initialValues: SettingsValues = {};
-      Object.keys(state.settings).forEach(
-        (field) => initialValues[field] = state.settings[field].value
-      );
+      for (const [field, { value }] of state.settings) {
+        initialValues[field] = value;
+      }
       setValues(initialValues);
     }
   }, [state, values, setValues]);
@@ -26,7 +25,7 @@ export const GeneralSettings: React.FunctionComponent = () => {
   // Create form fields
   const settingsFields = Object.keys(fields).map((field) => {
     const { label, unit, attributes } = fields[field];
-    const disabled = state.settings[field].managed;
+    const disabled = state.settings.get(field).managed;
     attributes.id = field;
     attributes.name = field;
     attributes.disabled = disabled;
@@ -34,7 +33,7 @@ export const GeneralSettings: React.FunctionComponent = () => {
     const labelClassNames = [
       disabled ? 'label-disabled' : '',
       attributes.type === 'checkbox' ? 'label-checkbox' : '',
-      values[field] !== state.settings[field].value ? 'label-altered' : '',
+      values[field] !== state.settings.get(field).value ? 'label-altered' : '',
     ].join(' ');
 
     if (attributes.type === 'checkbox') {
@@ -69,10 +68,10 @@ export const GeneralSettings: React.FunctionComponent = () => {
   const onSave = (event: React.FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
     setLoading(true);
-    const newSettings: Settings = {...state.settings};
+    const newSettings: Settings = new Map(state.settings);
     Object.keys(values).forEach((field) => {
-      if (!state.settings[field].managed) {
-        newSettings[field].value =  values[field];
+      if (!state.settings.get(field).managed) {
+        newSettings.get(field).value =  values[field];
       }
     });
     dispatch({

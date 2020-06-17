@@ -3,16 +3,14 @@
  * relevant data to storage and parsing the raw StoredSafe response into
  * the more relevant application data structures.
  * - actions object provides the public interface for the model.
- *
- * @packageDocumentation
  * */
 
 import StoredSafe, {
   StoredSafePromise,
   StoredSafeResponse,
 } from 'storedsafe';
-import { actions as sessions } from '../storage/Sessions';
-import { actions as tabResults } from '../storage/TabResults';
+import { actions as SessionsActions } from '../storage/Sessions';
+import { actions as TabResultsActions } from '../storage/TabResults';
 import { actions as objectHandler } from './ObjectHandler';
 import { actions as authHandler } from './AuthHandler';
 import { actions as miscHandler } from './MiscHandler';
@@ -62,11 +60,11 @@ const handleErrors = (promise: StoredSafePromise): Promise<StoredSafeResponse> =
  * @returns StoredSafe handler or promise with error if no session was found.
  * */
 function getHandler(host: string): Promise<StoredSafe> {
-  return sessions.fetch().then((currentSessions) => {
-    if (currentSessions.get(host) === undefined) {
+  return SessionsActions.fetch().then((sessions) => {
+    if (sessions.get(host) === undefined) {
       throw new Error(`No active session for ${host}`);
     }
-    const { token } = currentSessions.get(host);
+    const { token } = sessions.get(host);
     return new StoredSafe({ host, token });
   });
 }
@@ -101,7 +99,7 @@ function login(
     handleErrors(cb(handler))
   );
   return authHandler.login(request, fields).then((session) => (
-    sessions.add(host, session)
+    SessionsActions.add(host, session)
   ));
 }
 
@@ -115,8 +113,24 @@ function logout(host: string): Promise<Sessions> {
   return authHandler.logout(makeRequest(host)).catch((error) => {
     console.error('StoredSafe Logout Error', error);
   }).then(() => (
-    sessions.remove(host)
+    SessionsActions.remove(host)
   ))
+}
+
+/**
+ * Logout from all sites.
+ * Will silently remove sessions even if logout fails.
+ * @returns Updated list of active sessions (empty).
+ * */
+function logoutAll(): Promise<Sessions> {
+  return SessionsActions.fetch().then((sessions) => {
+    Array.from(sessions.keys()).forEach((host) => {
+      authHandler.logout(makeRequest(host)).catch((error) => {
+        console.error('StoredSafe Logout Error', error);
+      });
+    });
+    return Promise.resolve<Sessions>(SessionsActions.clear());
+  });
 }
 
 /**
@@ -125,9 +139,26 @@ function logout(host: string): Promise<Sessions> {
  * @returns Updated list of active sessions.
  * */
 function check(host: string): Promise<Sessions> {
-  return authHandler.check(makeRequest(host)).then((isValid) => (
-    isValid ? sessions.fetch() : sessions.remove(host)
-  ))
+  return authHandler.check(makeRequest(host)).then((isValid) => {
+    return isValid ? SessionsActions.fetch() : SessionsActions.remove(host)
+  })
+}
+
+/**
+ * Check if sessions are still valid, remove those that are not.
+ * @returns Updated list of active sessions.
+ * */
+function checkAll(): Promise<Sessions> {
+  return SessionsActions.fetch().then(async (sessions) => {
+    const invalidHosts: string[] = [];
+    for (const host of sessions.keys()) {
+      const isValid = await authHandler.check(makeRequest(host));
+      if (!isValid) {
+        invalidHosts.push(host);
+      }
+    }
+    return SessionsActions.remove(...invalidHosts);
+  });
 }
 
 ////////////////////////////////////////////////////////////
@@ -139,9 +170,11 @@ function check(host: string): Promise<Sessions> {
  * @param needle - Search string to match against in StoredSafe.
  * @returns Matched results from host.
  * */
-function find(host: string, needle: string): Promise<Results> {
-  return objectHandler.find(makeRequest(host), needle).then((results) => {
-    return new Map([[host, results]]) as Results;
+function find(host: string, needle: string): Promise<SSObject[]> {
+  return check(host).then(() => {
+    return objectHandler.find(makeRequest(host), needle).then((results) => {
+      return results;
+    });
   });
 }
 
@@ -173,22 +206,22 @@ function addObject(host: string, params: object): Promise<void> {
  * */
 function tabFind(
   tabId: number,
-  needle: string
+  needle: string,
 ): Promise<TabResults> {
-  return sessions.fetch().then((sessions) => {
-    const hosts = Object.keys(sessions);
+  return SessionsActions.fetch().then((sessions) => {
+    const hosts = Array.from(sessions.keys());
     const promises: Promise<SSObject[]>[] = hosts.map((host) => {
       return find(host, needle).catch((error) => {
         // Log error rather than failing all results in Promise.all
         console.error(error);
-      }).then();
+      }).then((data) => data || []); // Ensure array
     });
     return Promise.all(promises).then((siteResults) => {
       const results: Results = new Map();
       for (let i = 0; i < siteResults.length; i++) {
         results.set(hosts[i], siteResults[i]);
       }
-      return tabResults.setTabResults(tabId, results)
+      return TabResultsActions.setTabResults(tabId, results)
     });
   });
 }
@@ -237,7 +270,9 @@ function generatePassword(
 export const actions = {
   login,
   logout,
+  logoutAll,
   check,
+  checkAll,
   find,
   decrypt,
   tabFind,

@@ -1,18 +1,17 @@
 import React  from 'react';
-import { Session } from '../../model/Sessions';
 import { Button, Message } from '../common';
 import './SiteStatus.scss';
 
-export type OnLogoutCallback = (url: string) => void;
+export type OnLogoutCallback = (host: string) => void;
 
 interface SiteStatusProps {
-  url: string;
+  host: string;
   session: Session;
   onLogout: OnLogoutCallback;
 }
 
 export const SiteStatus: React.FunctionComponent<SiteStatusProps> = ({
-  url,
+  host,
   session,
   onLogout,
 }: SiteStatusProps) => {
@@ -50,7 +49,7 @@ export const SiteStatus: React.FunctionComponent<SiteStatusProps> = ({
         <Button
           type="submit"
           color="danger"
-          onClick={(): void => onLogout(url)}>
+          onClick={(): void => onLogout(host)}>
           Logout
         </Button>
       </section>

@@ -46,14 +46,16 @@ export const actions = {
   ),
 
   /**
-   * Remove session from storage.
-   * @param host - Host that the session is associated with.
+   * Remove sessions from storage.
+   * @param hosts - Hosts that the sessions are associated with.
    * @returns Updated active sessions.
    * */
-  remove: (host: string): Promise<Sessions> => (
+  remove: (...hosts: string[]): Promise<Sessions> => (
     get().then((sessions) => {
       const newSessions = new Map(sessions);
-      newSessions.delete(host);
+      for (const host of hosts) {
+        newSessions.delete(host);
+      }
       return set(newSessions).then(get);
     })
   ),

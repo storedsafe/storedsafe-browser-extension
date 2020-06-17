@@ -1,6 +1,4 @@
 import React from 'react';
-import { Site } from '../../model/Sites';
-import { Sessions } from '../../model/Sessions';
 import svg from '../../ico/svg';
 import './SiteList.scss';
 
@@ -18,15 +16,15 @@ export const SiteList: React.FunctionComponent<SiteListProps> = ({
   onSelect,
 }: SiteListProps) => (
   <section className="site-list">
-    {sites.map(({ url }, index) => {
-      const session = sessions[url];
+    {sites.map(({ host }, index) => {
+      const session = sessions.get(host);
       const isOnline = session !== undefined;
       return (
         <article
-          key={url}
+          key={host}
           className={`site-list-entry${isOnline ? ' online' : ''}${index === selected ? ' selected' : ''}`}
           onClick={(): void => onSelect(index)}>
-          <p className="site-list-url">{url}</p>
+          <p className="site-list-host">{host}</p>
           <div className="site-list-icons">
             {isOnline && Object.values(session.warnings).length > 0 && svg.warning}
             {isOnline && Object.values(session.violations).length > 0 && svg.error}

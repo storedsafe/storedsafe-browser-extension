@@ -41,7 +41,7 @@ function login(
     }
     return promise;
   }).then((data) => {
-    const { token, audit } = data.CALLINFO;
+    const { token, audit, timeout } = data.CALLINFO;
     const violations = (Array.isArray(audit.violations) ? {} : audit.violations);
     const warnings = (Array.isArray(audit.warnings) ? {} : audit.warnings);
 
@@ -50,6 +50,7 @@ function login(
       createdAt: Date.now(),
       violations,
       warnings,
+      timeout,
     };
   });
 }

@@ -14,19 +14,19 @@ export const PopupContainer: React.FunctionComponent = () => {
   return (
     <Popup.Main
       add={{
-        urls: Object.keys(state.sessions),
-        onUrlChange: (url: string): void => { console.log(url) },
+        hosts: [...state.sessions.keys()],
+        onHostChange: (host: string): void => { console.log(host) },
       }}
       isInitialized={isInitialized}
       search={{
-        urls: Object.keys(state.sessions),
+        hosts: Object.keys(state.sessions),
         results: state.search,
         ...search,
       }}
       auth={{
         sites: state.sites.list,
         sessions: state.sessions,
-        sitePrefs: state.sitePrefs,
+        preferences: state.sitePrefs,
         ...auth,
       }}
       openOptions={openOptions}

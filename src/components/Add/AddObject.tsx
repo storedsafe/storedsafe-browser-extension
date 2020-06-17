@@ -1,6 +1,5 @@
 import React from 'react';
 import { Select } from '../common';
-import { Vault, Template } from '../../model/StoredSafe';
 import './AddObject.scss';
 
 export type OnAddCallback = (params: object) => void;
@@ -13,20 +12,20 @@ export interface AddObjectProperty<T> {
 }
 
 interface AddObjectProps {
-  url: AddObjectProperty<string>;
-  vault?: AddObjectProperty<Vault>;
-  template?: AddObjectProperty<Template>;
+  host: AddObjectProperty<string>;
+  vault?: AddObjectProperty<SSVault>;
+  template?: AddObjectProperty<SSTemplate>;
 }
 
 export const AddObject: React.FunctionComponent<AddObjectProps> = ({
-  url,
+  host,
   vault,
   template,
 }: AddObjectProps) => {
-  const onSelectUrl = ({
+  const onSelectHost = ({
     target
   }: React.ChangeEvent<HTMLSelectElement>): void => {
-    url.onChange(Number(target.value));
+    host.onChange(Number(target.value));
   };
 
   const onSelectVault = ({
@@ -41,16 +40,16 @@ export const AddObject: React.FunctionComponent<AddObjectProps> = ({
     template.onChange(Number(target.value));
   };
 
-  const sites = url.values.length > 1 ? (
-    <label htmlFor="url">
+  const sites = host.values.length > 1 ? (
+    <label htmlFor="host">
       <span>Site</span>
       <Select
-        id="url"
-        value={url.selected}
-        onChange={onSelectUrl}>
+        id="host"
+        value={host.selected}
+        onChange={onSelectHost}>
         <option value={undefined}>Choose site...</option>
-        {url.values.map((url, id) => (
-          <option key={url} value={id}>{url}</option>
+        {host.values.map((host, id) => (
+          <option key={host} value={id}>{host}</option>
         ))}
       </Select>
     </label>
@@ -68,9 +67,9 @@ export const AddObject: React.FunctionComponent<AddObjectProps> = ({
         <option value={undefined}>Choose vault...</option>
         {hasVaults && vault.values.map(({
           id: vaultId,
-          title
+          name,
         }, id) => (
-          <option key={vaultId} value={id}>{title}</option>
+          <option key={vaultId} value={id}>{name}</option>
         ))}
       </Select>
     </label>
@@ -88,9 +87,9 @@ export const AddObject: React.FunctionComponent<AddObjectProps> = ({
         <option value={undefined}>Choose template...</option>
         {hasTemplates && template.values.map(({
           id: templateId,
-          title
+          name,
         }, id) => (
-          <option key={templateId} value={id}>{title}</option>
+          <option key={templateId} value={id}>{name}</option>
         ))}
       </Select>
     </label>

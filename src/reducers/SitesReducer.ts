@@ -1,5 +1,5 @@
 import PromiseReducer from './PromiseReducer';
-import { actions, Sites, Site } from '../model/Sites';
+import { actions } from '../model/storage/Sites';
 
 export type State = Sites;
 export type Action = {
@@ -10,7 +10,7 @@ export type Action = {
   id: number;
 };
 
-export const reducer: PromiseReducer<State, Action> = (count, action) => {
+export const reducer: PromiseReducer<State, Action> = (action) => {
   switch(action.type) {
     case 'add': {
       const { site } = action;

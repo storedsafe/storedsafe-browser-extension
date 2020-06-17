@@ -1,6 +1,5 @@
 import React, { Fragment } from 'react';
 import { FormHook } from '../../hooks/useForm';
-import { TOTPFields } from '../../model/StoredSafe';
 
 export const renderFields: (formHook: FormHook<TOTPFields>, id: (name: string) => string) => React.ReactNode = ([values, events], id) => (
   <Fragment>

@@ -16,14 +16,16 @@ export const useAuth = (): AuthHook => {
   const onLogin: OnLoginCallback = (site, fields) => {
     setLoginStatus((prevLoginStatus) => ({
       ...prevLoginStatus,
-      [site.url]: { loading: true, error: undefined },
+      [site.host]: { loading: true, error: undefined },
     }));
     dispatch({
       sitePrefs: {
         type: 'update',
-        url: site.url,
-        username: fields.remember ? fields.username : undefined,
-        loginType: fields.loginType,
+        host: site.host,
+        sitePreferences: {
+          username: fields.remember ? fields.username : undefined,
+          loginType: fields.loginType,
+        },
       },
       sessions: {
         type: 'login',
@@ -34,23 +36,23 @@ export const useAuth = (): AuthHook => {
       onSuccess: () => {
         setLoginStatus((prevLoginStatus) => ({
           ...prevLoginStatus,
-          [site.url]: { loading: false, error: undefined },
+          [site.host]: { loading: false, error: undefined },
         }));
       },
       onError: (error) => {
         setLoginStatus((prevLoginStatus) => ({
           ...prevLoginStatus,
-          [site.url]: { loading: false, error: error.message },
+          [site.host]: { loading: false, error: error.message },
         }));
       },
     });
   };
 
-  const onLogout: OnLogoutCallback = (url: string) => {
+  const onLogout: OnLogoutCallback = (host: string) => {
     dispatch({
       sessions: {
         type: 'logout',
-        url,
+        host,
       },
     })
   };

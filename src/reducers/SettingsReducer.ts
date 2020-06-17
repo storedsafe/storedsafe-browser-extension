@@ -1,5 +1,5 @@
 import PromiseReducer from './PromiseReducer';
-import { actions, Settings } from '../model/Settings';
+import { actions } from '../model/storage/Settings';
 
 export type State = Settings;
 export type Action = {
@@ -7,7 +7,7 @@ export type Action = {
   settings: Settings;
 };
 
-export const reducer: PromiseReducer<State, Action> = (count, action) => {
+export const reducer: PromiseReducer<State, Action> = (action) => {
   switch(action.type) {
     case 'update': {
       const { settings } = action;
@@ -19,4 +19,4 @@ export const reducer: PromiseReducer<State, Action> = (count, action) => {
   }
 };
 
-export const emptyState: State = {};
+export const emptyState: State = new Map();

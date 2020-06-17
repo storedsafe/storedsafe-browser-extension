@@ -48,6 +48,7 @@ describe('uses mocked browser.storage', () => {
         createdAt: 0,
         warnings: { 'key': 'warning' },
         violations: { 'key': 'error' },
+        timeout: 0,
       }],
     ];
     localGetMock.mockImplementationOnce(mockGet(mockSessions));
@@ -63,6 +64,7 @@ describe('uses mocked browser.storage', () => {
       createdAt: 0,
       warnings: { 'key': 'warning' },
       violations: { 'key': 'error' },
+      timeout: 0,
     };
     const newSessions: SerializableSessions = [[host, session]];
     localGetMock.mockImplementationOnce(mockGet([]));
@@ -82,6 +84,7 @@ describe('uses mocked browser.storage', () => {
       createdAt: 0,
       warnings: { 'key': 'warning' },
       violations: { 'key': 'error' },
+      timeout: 0,
     };
     const mockSessions: SerializableSessions = [[host, session]];
     localGetMock.mockImplementationOnce(mockGet(mockSessions));

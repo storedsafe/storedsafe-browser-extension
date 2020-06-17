@@ -1,32 +1,31 @@
 import React from 'react';
-import { SearchResult, SearchResultField } from '../../model/Search';
 import { Button } from '../common';
 import icons from '../../ico';
 import './ObjectView.scss';
 
-export type OnShowCallback = (url: string, objectId: string, field: string) => void;
-export type OnCopyCallback = (url: string, objectId: string, field: string) => void;
-export type OnFillCallback = (url: string, objectId: string) => void;
+export type OnShowCallback = (host: string, resultId: number, fieldId: number) => void;
+export type OnCopyCallback = (host: string, resultId: number, fieldId: number) => void;
+export type OnFillCallback = (host: string, resultId: number) => void;
 
 interface ObjectViewProps {
-  url: string;
-  id: string;
-  result: SearchResult;
-  onShow: (url: string, objectId: string, field: string) => void;
-  onCopy: (url: string, objectId: string, field: string) => void;
-  onFill: (url: string, objectId: string) => void;
+  host: string;
+  resultId: number;
+  result: SSObject;
+  onShow: OnShowCallback;
+  onCopy: OnCopyCallback;
+  onFill: OnFillCallback;
 }
 
 export const ObjectView: React.FunctionComponent<ObjectViewProps> = ({
-  url,
-  id,
+  host,
+  resultId,
   result,
   onShow,
   onCopy,
   onFill,
 }: ObjectViewProps) => {
   const encryptedFieldText = (
-    field: SearchResultField,
+    field: SSField,
     onShow: () => void
   ): React.ReactNode => {
     if (!field.isShowing) {
@@ -50,24 +49,21 @@ export const ObjectView: React.FunctionComponent<ObjectViewProps> = ({
   return (
     <section className="object-view">
       <article className="object-view-container">
-        <Button className="object-view-fill" onClick={(): void => onFill(url, id)}>
+        <Button className="object-view-fill" onClick={(): void => onFill(host, resultId)}>
           Fill
         </Button>
-        {Object.keys(result.fields).map((field) => {
+        {result.fields.map((field, fieldId) => {
           let value: React.ReactNode;
-          if (result.fields[field].isEncrypted) {
-            value = encryptedFieldText(
-              result.fields[field],
-              (): void => onShow(url, id, field)
-            );
+          if (field.isEncrypted) {
+            value = encryptedFieldText(field, (): void => onShow(host, resultId, fieldId));
           } else {
-            value = result.fields[field].value;
+            value = field.value;
           }
           return (
-            <div className="object-view-field" key={field}>
+            <div className="object-view-field" key={field.name}>
               <p className="object-view-field-text">
                 <span className="field-title">
-                  {result.fields[field].title}
+                  {field.title}
                 </span>
                 <span className="field-value">
                   {value}
@@ -75,7 +71,7 @@ export const ObjectView: React.FunctionComponent<ObjectViewProps> = ({
               </p>
               <button
                 className="object-view-field-copy"
-                onClick={(): void => onCopy(url, id, field)}>
+                onClick={(): void => onCopy(host, resultId, fieldId)}>
                 Copy
               </button>
             </div>

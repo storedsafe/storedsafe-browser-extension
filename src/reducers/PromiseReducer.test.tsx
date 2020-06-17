@@ -11,20 +11,22 @@ const increment = jest.fn((count) => count + 1);
 const decrementError = new Error('Cannot decrement count any further.');
 const invalidError = new Error('Invalid action');
 
-const countReducer: PromiseReducer<number, { type: string }> = (count, action) => {
+const countReducer: PromiseReducer<number, { type: string }> = (action) => {
   switch(action.type) {
     case 'increment': {
-      return Promise.resolve(increment(count));
+      return Promise.resolve((count: number) => increment(count));
     }
     case 'decrement': {
-      if (count > 0) {
-        return Promise.resolve(init(count));
-      } else {
-        return Promise.reject(decrementError);
-      }
+      return Promise.resolve((count: number) => {
+        if (count > 0) {
+          return init(count);
+        } else {
+          throw decrementError;
+        }
+      });
     }
     case 'init': {
-      return Promise.resolve(init(count));
+      return Promise.resolve((count: number) => init(count));
     }
     default: {
       return Promise.reject(invalidError);
@@ -70,6 +72,13 @@ const App: React.FunctionComponent = () => {
  * */
 beforeAll(() => {
   jest.useFakeTimers()
+});
+
+beforeEach(() => {
+  init.mockClear();
+  increment.mockClear();
+  onSuccess.mockClear();
+  onError.mockClear();
 });
 
 test("usePromiseReducer, success", async () => {

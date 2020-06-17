@@ -1,95 +1,103 @@
-import React from 'react';
-import { useStorage } from '../hooks/useStorage';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import React, { useState, useEffect } from 'react';
+import './DebugStorage.scss';
+
+function debugStorage(storage: unknown): React.ReactNode {
+  function isMap(storage: Array<any>): boolean {
+    return storage.reduce((acc, element) => (
+      acc && element instanceof Array && element.length === 2
+    ), true);
+  }
+
+  function drawMap(storage: Map<any, any>): React.ReactNode {
+    return [...storage].map(([key, value]) => {
+      return (
+        <li key={key}>
+          <span>(map) <b>{key}</b>: {debugStorage(value)}</span>
+        </li>
+      );
+    });
+  }
+
+  function drawArray(storage: Array<any>): React.ReactNode {
+    return storage.map((value, id) => (
+      <li key={id}>
+        <span>(array) {debugStorage(value)}</span>
+      </li>
+    ));
+  }
+
+  function drawFunction(storage: Function): React.ReactNode {
+    return (
+      <span>(function) {storage.toString()}</span>
+    );
+  }
+
+  function drawObject(storage: Record<string, any>): React.ReactNode {
+    return Object.keys(storage).map((key) => (
+      <li key={key}>
+        <span>(object) <b>{key}</b>: {debugStorage(storage[key])}</span>
+      </li>
+    ));
+  }
+
+  if (storage === null) return storage;
+
+  if (storage instanceof Map) {
+    return storage.size > 0 ? <ul>{drawMap(storage)}</ul> : null;
+  } else if (storage instanceof Array) {
+    if (storage.length === 0) return '[]';
+    if (isMap(storage)) {
+      return <ul>{drawMap(new Map(storage))}</ul>;
+    } else {
+      return <ul>{drawArray(storage)}</ul>;
+    }
+  } else if (storage instanceof Function) {
+    return <>{drawFunction(storage)}</>;
+  } else if (storage instanceof Object) {
+    return Object.keys(storage).length > 0 ? <ul>{drawObject(storage)}</ul> : null;
+  } else {
+    return <span>{storage.toString()}</span>
+  }
+}
 
 const DebugStorage: React.FC = () => {
-  const { state, isInitialized } = useStorage();
+  const [local, setLocal] = useState<React.ReactNode>(null);
+  const [sync, setSync] = useState<React.ReactNode>(null);
+  const [managed, setManaged] = useState<React.ReactNode>(null);
 
-  const settings = Object.keys(state.settings).map((key) => {
-    const { value, managed } = state.settings[key];
-    return (
-      <p key={key}>
-        <strong>{key}: </strong>{value.toString()}<br />
-        <strong>Managed: </strong>{managed.toString()}
-      </p>
-    );
-  })
+  useEffect(() => {
+    let mounted = true;
+    browser.storage.local.get().then((storage) => {
+      if (mounted) setLocal(storage);
+    });
 
-  const systemSites = state.sites.collections.system.map((site) => {
-    const { url, apikey } = site;
-    return (
-      <p key={url}>
-        <strong>URL: </strong>{url}<br />
-        <strong>API Key: </strong>{apikey}
-      </p>
-    );
-  })
+    browser.storage.sync.get().then((storage) => {
+      if (mounted) setSync(storage);
+    });
 
-  const userSites = state.sites.collections.user.map((site) => {
-    const { url, apikey } = site;
-    return (
-      <p key={url}>
-        <strong>URL: </strong>{url}<br />
-        <strong>API Key: </strong>{apikey}
-      </p>
-    );
-  })
+    browser.storage.managed.get().then((storage) => {
+      if (mounted) setManaged(storage);
+    });
 
-  const sessions = Object.keys(state.sessions).map((url) => {
-    const { apikey, token, createdAt } = state.sessions[url];
-    return (
-      <p key={url}>
-        <strong>URL: </strong>{url}<br />
-        <strong>API Key: </strong>{apikey}<br />
-        <strong>Token: </strong>{token}<br />
-        <strong>Created At: </strong>{createdAt}
-      </p>
-    );
-  });
-
-  const sitePrefs = Object.keys(state.sitePrefs.sites).map((url) => {
-    const { username, loginType } = state.sitePrefs.sites[url];
-    return (
-      <p key={url}>
-        <strong>Username: </strong>{username}<br />
-        <strong>Login Type: </strong>{loginType}<br />
-      </p>
-    );
-  });
+    return (): void => { mounted = false };
+  }, []);
 
   return (
-    <section>
-      <h2>Storage</h2>
-      <section
-        style={{
-          display: 'grid',
-          gridGap: '8px',
-        }}>
-        <article>
-          <h3>State</h3>
-          <p>Is Initialized: {isInitialized.toString()}</p>
-        </article>
-        <article>
-          <h3>Settings</h3>
-          {settings}
-        </article>
-        <article>
-          <h3>System Sites</h3>
-          {systemSites}
-        </article>
-        <article>
-          <h3>User Sites</h3>
-          {userSites}
-        </article>
-        <article>
-          <h3>Sessions</h3>
-          {sessions}
-        </article>
-        <article>
-          <h3>Site Prefs</h3>
-          <p>Last used: {state.sitePrefs.lastUsed}</p>
-          {sitePrefs}
-        </article>
-      </section>
+    <section className="debug-storage">
+      <h1>Debug Storage</h1>
+      <article className="storage-area storage-area-local">
+        <h2>Local</h2>
+        {local && debugStorage(local)}
+      </article>
+      <article className="storage-area storage-area-sync">
+        <h2>Sync</h2>
+        {sync && debugStorage(sync)}
+      </article>
+      <article className="storage-area storage-area-managed">
+        <h2>Managed</h2>
+        {managed && debugStorage(managed)}
+      </article>
     </section>
   );
 };

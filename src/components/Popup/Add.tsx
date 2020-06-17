@@ -1,31 +1,30 @@
 import React, { useState } from 'react';
-import { Vault, Template } from '../../model/StoredSafe';
 import { Message } from '../common';
 import { AddObject } from '../Add';
 import './Add.scss';
 
 export interface AddProps {
-  urls: string[];
-  vaults?: Vault[];
-  templates?: Template[];
-  onUrlChange: (url: string) => void;
+  hosts: string[];
+  vaults?: SSVault[];
+  templates?: SSTemplate[];
+  onHostChange: (host: string) => void;
 }
 
 const PopupAdd: React.FunctionComponent<AddProps> = ({
-  urls,
+  hosts,
   vaults,
   templates,
-  onUrlChange,
+  onHostChange,
 }: AddProps) => {
   const [state, setState] = useState<{
-    url?: number;
+    host?: number;
     vault?: number;
     template?: number;
   }>({});
 
-  const handleUrlChange = (id: number): void => {
-    setState({ url: id });
-    onUrlChange(urls[id]);
+  const handleHostChange = (id: number): void => {
+    setState({ host: id });
+    onHostChange(hosts[id]);
   };
 
   const handleVaultChange = (id: number): void => {
@@ -43,10 +42,10 @@ const PopupAdd: React.FunctionComponent<AddProps> = ({
   };
 
   const content = <AddObject
-    url={{
-      selected: state.url,
-      values: urls,
-      onChange: handleUrlChange,
+    host={{
+      selected: state.host,
+      values: hosts,
+      onChange: handleHostChange,
     }}
     vault={{
       selected: state.vault,

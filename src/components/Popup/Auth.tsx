@@ -1,13 +1,10 @@
 import React from 'react';
-import { Site } from '../../model/Sites';
-import { Sessions } from '../../model/Sessions';
-import { SitePrefs } from '../../model/SitePrefs';
 import { ListView } from '../common';
 import * as Auth from '../Auth';
 import './Auth.scss';
 
 export interface LoginStatus {
-  [url: string]: {
+  [host: string]: {
     loading: boolean;
     error: string;
   };
@@ -16,7 +13,7 @@ export interface LoginStatus {
 export interface AuthProps {
   sites: Site[];
   sessions: Sessions;
-  sitePrefs: SitePrefs;
+  preferences: Preferences;
   onLogin: Auth.OnLoginCallback;
   onLogout: Auth.OnLogoutCallback;
   loginStatus: LoginStatus;
@@ -25,7 +22,7 @@ export interface AuthProps {
 const PopupAuth: React.FunctionComponent<AuthProps> = ({
   sites,
   sessions,
-  sitePrefs,
+  preferences,
   onLogin,
   onLogout,
   loginStatus,
@@ -39,29 +36,43 @@ const PopupAuth: React.FunctionComponent<AuthProps> = ({
   }
 
   const items = sites.map((site) => {
-    const { url } = site;
-    const session = sessions[url];
+    const { host } = site;
+    const session = sessions.get(host);
     const isOnline = session !== undefined;
 
     const title = <Auth.SiteTitle
-      url={url}
+      host={host}
       session={session}
     />;
 
-    const content = isOnline ? (
-      <Auth.SiteStatus url={url} session={session} onLogout={onLogout}></Auth.SiteStatus>
-    ) : (
-      <Auth.Login site={site} onLogin={onLogin} sitePrefs={sitePrefs.sites[url]} {...loginStatus[url]}></Auth.Login>
-    );
+    let content
+    if (isOnline) {
+      content = (
+        <Auth.SiteStatus
+          host={host}
+          session={session}
+          onLogout={onLogout}>
+        </Auth.SiteStatus>
+      );
+    } else {
+      content = (
+        <Auth.Login
+          site={site}
+          onLogin={onLogin}
+          sitePreferences={preferences.sites[host]}
+          {...loginStatus[host]}>
+        </Auth.Login>
+      );
+    }
 
     return {
-      key: url,
+      key: host,
       title,
       content,
     };
   });
 
-  const defaultSelected = sites.length === 1 ? sites[0].url : Object.keys(sessions).length <= 1 ? sitePrefs.lastUsed : undefined;
+  const defaultSelected = sites.length === 1 ? sites[0].host : sessions.size <= 1 ? preferences.lastUsedSite : undefined;
 
   return (
     <section className="popup-auth">

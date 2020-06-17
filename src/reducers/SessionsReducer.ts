@@ -1,7 +1,6 @@
 import PromiseReducer from './PromiseReducer';
-import { actions, Sessions } from '../model/Sessions';
-import { Site } from '../model/Sites';
-import { actions as storedsafe, LoginFields } from '../model/StoredSafe';
+import { actions } from '../model/storage/Sessions';
+import { actions as storedsafe } from '../model/storedsafe/StoredSafe';
 
 export type State = Sessions;
 export type Action = {
@@ -10,18 +9,18 @@ export type Action = {
   fields: LoginFields;
 } | {
   type: 'logout';
-  url: string;
+  host: string;
 };
 
-export const reducer: PromiseReducer<State, Action> = (state, action) => {
+export const reducer: PromiseReducer<State, Action> = (action) => {
   switch(action.type) {
     case 'login': {
       const { site, fields } = action;
       return storedsafe.login(site, fields);
     }
     case 'logout': {
-      const { url } = action;
-      return storedsafe.logout(url);
+      const { host } = action;
+      return storedsafe.logout(host);
     }
     case 'init': {
       return actions.fetch();
@@ -30,4 +29,4 @@ export const reducer: PromiseReducer<State, Action> = (state, action) => {
 };
 
 
-export const emptyState: State = {};
+export const emptyState: State = new Map();

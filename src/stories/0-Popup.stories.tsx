@@ -1,21 +1,18 @@
 import React, { useState } from 'react';
 import { action } from '@storybook/addon-actions';
 import { StoredSafeResponse  } from 'storedsafe';
-import { Sessions } from '../model/Sessions';
-import { Site } from '../model/Sites';
-import { SearchResults, SiteSearchResults, SearchResultFields } from '../model/Search';
-import { Vault, Template } from '../model/StoredSafe';
 import data from './ssVault';
 import * as Popup from '../components/Popup';
 
 const ssResponse: StoredSafeResponse = data;
-const results: SiteSearchResults = {};
+const results: SSObject[] = [];
 ssResponse.OBJECTS.forEach((ssObject) => {
   const ssTemplate = ssResponse.TEMPLATES.find((template) => template.id === ssObject.templateid);
+  const { id, groupid: vaultId, templateid: templateId } = ssObject;
   const isFile = ssObject.templateid === '3';
   const name = isFile ? ssObject.filename : ssObject.objectname;
   const { name: type, ico: icon } = ssTemplate.info;
-  const fields: SearchResultFields = {};
+  const fields: SSField[] = [];
   const isDecrypted = ssObject.crypted !== undefined;
   ssTemplate.structure.forEach((templateField) => {
     const field = templateField.fieldname;
@@ -32,9 +29,9 @@ ssResponse.OBJECTS.forEach((ssObject) => {
         ? (isDecrypted ? ssObject.crypted[field] : undefined)
         : ssObject.public[field]
     );
-    fields[field] = { title, value, isEncrypted, isShowing, isPassword };
+    fields.push({ title, value, isEncrypted, isShowing, isPassword, name: field });
   });
-  results[ssObject.id] = { name, type, icon, isDecrypted, fields };
+  results.push({ id, vaultId, templateId, name, type, icon, isDecrypted, fields });
 });
 
 export default {
@@ -55,7 +52,7 @@ const useSearch = (): {
 };
 
 export const PopupLoading: React.FunctionComponent = () => {
-  const sessions: Sessions = {};
+  const sessions: Sessions = new Map();
   const sites: Site[] = [];
   const { needle, onNeedleChange } = useSearch();
 
@@ -63,12 +60,12 @@ export const PopupLoading: React.FunctionComponent = () => {
     <Popup.Main
       isInitialized={false}
       add={{
-        urls: [],
-        onUrlChange: action('url change'),
+        hosts: [],
+        onHostChange: action('host change'),
       }}
       search={{
-        urls: [],
-        results: {},
+        hosts: [],
+        results: new Map(),
         onShow: action('show'),
         onCopy: action('copy'),
         onFill: action('fill'),
@@ -80,7 +77,7 @@ export const PopupLoading: React.FunctionComponent = () => {
       auth={{
         sites,
         sessions,
-        sitePrefs: { sites: {} },
+        preferences: { sites: {} },
         onLogin: action('login'),
         onLogout: action('login'),
         loginStatus: {},
@@ -92,10 +89,10 @@ export const PopupLoading: React.FunctionComponent = () => {
 
 export const PopupOffline: React.FunctionComponent = () => {
   const { needle, onNeedleChange } = useSearch();
-  const sessions: Sessions = {};
+  const sessions: Sessions = new Map();
   const sites: Site[] = [
     {
-      url: 'foo.example.com',
+      host: 'foo.example.com',
       apikey: 'abc123',
     }
   ];
@@ -103,13 +100,13 @@ export const PopupOffline: React.FunctionComponent = () => {
   return (
     <Popup.Main
       add={{
-        urls: [],
-        onUrlChange: action('url change'),
+        hosts: [],
+        onHostChange: action('host change'),
       }}
       isInitialized={true}
       search={{
-        urls: [],
-        results: {},
+        hosts: [],
+        results: new Map(),
         onShow: action('show'),
         onCopy: action('copy'),
         onFill: action('fill'),
@@ -121,7 +118,7 @@ export const PopupOffline: React.FunctionComponent = () => {
       auth={{
         sites,
         sessions,
-        sitePrefs: { sites: {} },
+        preferences: { sites: {} },
         onLogin: action('login'),
         onLogout: action('login'),
         loginStatus: {},
@@ -133,75 +130,76 @@ export const PopupOffline: React.FunctionComponent = () => {
 
 export const PopupOnline: React.FunctionComponent = () => {
   const { needle, onNeedleChange } = useSearch();
-  const [searchResults, setSearchResults] = useState<SearchResults>({
-    'foo.example.com': results
-  });
+  const [searchResults, setSearchResults] = useState<Results>(new Map([
+    ['foo.example.com', results]
+  ]));
 
-  const sessions: Sessions = {
-    'foo.example.com': {
+  const sessions: Sessions = new Map([
+    ['foo.example.com', {
       apikey: 'abc123',
       token: 'abcdefgh12345678',
       createdAt: Date.now() - Math.random() * 60000,
       violations: {},
       warnings: {},
-    },
-  };
+      timeout: 0,
+    }],
+  ]);
 
   const sites: Site[] = [
     {
-      url: 'foo.example.com',
+      host: 'foo.example.com',
       apikey: 'abc123',
     },
     {
-      url: 'bar.example.com',
+      host: 'bar.example.com',
       apikey: 'xyz987',
     }
   ];
 
-  const onShow = (url: string, id: string, field: string): void => {
+  const onShow = (host: string, resultId: number, fieldId: number): void => {
     setSearchResults((prevSearchResults) => {
-      const newSearchResults = { ...prevSearchResults };
+      const newSearchResults = new Map(prevSearchResults);
       // Mimic API behavior of decrypting the entire object,
       // but only set isDecrypted on requested field.
-      newSearchResults[url][id].isDecrypted = true;
-      Object.keys(newSearchResults[url][id].fields).forEach((resultField) => {
-        if (newSearchResults[url][id].fields[resultField].isEncrypted) {
-          newSearchResults[url][id].fields[resultField].value = 'd3<ryPTed';
+      newSearchResults.get(host)[resultId].isDecrypted = true;
+      newSearchResults.get(host)[resultId].fields.forEach((field) => {
+        if (field.isEncrypted) {
+          field.value = 'd3<ryPTed';
         }
       });
-      newSearchResults[url][id].fields[field].isShowing = true;
+      newSearchResults.get(host)[resultId].fields[fieldId].isShowing = true;
       return newSearchResults;
     });
-    action('show')(url, id, field);
+    action('show')(host, resultId, fieldId);
   };
 
   let searchStatus: {
-    [url: string]: { loading: boolean };
+    [host: string]: { loading: boolean };
   } = {};
 
-  const filteredResults = needle === '' ? searchResults : {};
+  const filteredResults = needle === '' ? searchResults : new Map();
   if (needle !== '') {
     searchStatus = {};
-    Object.keys(searchResults).forEach((url) => {
-      filteredResults[url] = {};
-      searchStatus[url] = { loading: false };
-      Object.keys(searchResults[url]).forEach((id) => {
-        if (new RegExp(needle, 'i').test(searchResults[url][id].name)) {
-          filteredResults[url][id] = searchResults[url][id];
+    for (const [host, results] of searchResults) {
+      filteredResults.set(host, []);
+      searchStatus[host] = { loading: false };
+      results.forEach((result) => {
+        if (new RegExp(needle, 'i').test(result.name)) {
+          filteredResults.get(host).push(result);
         }
-      });
-    });
+      })
+    }
   }
 
   return (
     <Popup.Main
       add={{
-        urls: Object.keys(filteredResults),
-        onUrlChange: action('url change'),
+        hosts: Object.keys(filteredResults),
+        onHostChange: action('host change'),
       }}
       isInitialized={true}
       search={{
-        urls: Object.keys(filteredResults),
+        hosts: Array.from(filteredResults.keys()),
         needle,
         onNeedleChange,
         onSearch: action('search'),
@@ -214,7 +212,7 @@ export const PopupOnline: React.FunctionComponent = () => {
       auth={{
         sites,
         sessions,
-        sitePrefs: { lastUsed: 'foo.example.com',  sites: {} },
+        preferences: { lastUsedSite: 'foo.example.com',  sites: {} },
         onLogin: action('login'),
         onLogout: action('login'),
         loginStatus: {},
@@ -227,25 +225,23 @@ export const PopupOnline: React.FunctionComponent = () => {
 export const PopupOnlineLoading: React.FunctionComponent = () => {
   const { needle, onNeedleChange } = useSearch();
 
-  const sessions: Sessions = {
-    'foo.example.com': {
+  const sessions: Sessions = new Map([
+    ['foo.example.com', {
       apikey: 'abc123',
       token: 'abcdefgh12345678',
       createdAt: Date.now() - Math.random() * 60000,
       violations: {},
       warnings: {},
-    },
-  };
+      timeout: 0,
+    }],
+  ]);
 
   const sites: Site[] = [
-    {
-      url: 'foo.example.com',
-      apikey: 'abc123',
-    },
+    { host: 'foo.example.com', apikey: 'abc123' },
   ];
 
   const searchStatus: {
-    [url: string]: { loading: boolean; error?: string };
+    [host: string]: { loading: boolean; error?: string };
   } = {
     'foo.example.com': {
       loading: true,
@@ -256,16 +252,16 @@ export const PopupOnlineLoading: React.FunctionComponent = () => {
   return (
     <Popup.Main
       add={{
-        urls: Object.keys(sessions),
-        onUrlChange: action('url change'),
+        hosts: Array.from(sessions.keys()),
+        onHostChange: action('host change'),
       }}
       isInitialized={true}
       search={{
-        urls: Object.keys(sessions),
+        hosts: Object.keys(sessions),
         needle,
         onNeedleChange,
         onSearch: action('search'),
-        results: {},
+        results: new Map(),
         onShow: action('show'),
         onCopy: action('copy'),
         onFill: action('fill'),
@@ -274,7 +270,7 @@ export const PopupOnlineLoading: React.FunctionComponent = () => {
       auth={{
         sites,
         sessions,
-        sitePrefs: { sites: {} },
+        preferences: { sites: {} },
         onLogin: action('login'),
         onLogout: action('login'),
         loginStatus: {},
@@ -286,77 +282,79 @@ export const PopupOnlineLoading: React.FunctionComponent = () => {
 
 export const PopupMultiple: React.FunctionComponent = () => {
   const { needle, onNeedleChange } = useSearch();
-  const [searchResults, setSearchResults] = useState<SearchResults>({
-    'foo.example.com': { '1278': results['1278'] },
-    'bar.example.com': { '1279': results['1279'] },
-  });
-  const [vaults, setVaults] = useState<Vault[]>();
-  const [templates, setTemplates] = useState<Template[]>();
+  const [searchResults, setSearchResults] = useState<Results>(new Map([
+    ['foo.example.com', [results.find((res) => res.id === '1278')]],
+    ['bar.example.com', [results.find((res) => res.id === '1279')]],
+  ]));
+  const [site, setSite] = useState<string>();
 
-  const allVaults: {
-    [url: string]: Vault[];
-  } = {
-    'foo.example.com': [
-      { title: 'Foo 1', id: '1', write: true },
-      { title: 'Foo 2', id: '2', write: true },
-    ],
-    'bar.example.com': [
-      { title: 'Bar 1', id: '7', write: true },
-      { title: 'Bar 2', id: '2', write: false },
-    ],
-    'zot.example.com': [
-      { title: 'Bar 1', id: '7', write: false },
-      { title: 'Bar 2', id: '2', write: false },
-    ],
-  }
+  const siteInfo: Map<string, SSSiteInfo> = new Map([
+    ['foo.example.com', {
+      vaults: [
+        { name: 'Foo 1', id: '1', canWrite: true },
+        { name: 'Foo 2', id: '2', canWrite: true },
+      ],
+      templates: [
+        { name: 'T1', icon: '', id: '1', structure: [] },
+        { name: 'T2', icon: '', id: '4', structure: [] },
+      ],
+    }],
+    ['bar.example.com', {
+      vaults: [
+        { name: 'Bar 1', id: '7', canWrite: true },
+        { name: 'Bar 2', id: '2', canWrite: false },
+      ],
+      templates: [
+        { name: 'T3', icon: '', id: '3', structure: [] },
+        { name: 'T2', icon: '', id: '4', structure: [] },
+      ],
+    }],
+    ['zot.example.com', {
+      vaults: [
+        { name: 'Bar 1', id: '7', canWrite: false },
+        { name: 'Bar 2', id: '2', canWrite: false },
+      ],
+      templates: [
+        { name: 'T2', icon: '', id: '2', structure: [] },
+        { name: 'T4', icon: '', id: '4', structure: [] },
+      ],
+    }],
+  ]);
 
-  const allTemplates: {
-    [url: string]: Template[];
-  } = {
-    'foo.example.com': [
-      { title: 'T1', icon: '', id: '1', fields: [] },
-      { title: 'T2', icon: '', id: '4', fields: [] },
-    ],
-    'bar.example.com': [
-      { title: 'T3', icon: '', id: '3', fields: [] },
-      { title: 'T2', icon: '', id: '4', fields: [] },
-    ],
-    'zot.example.com': [
-      { title: 'T2', icon: '', id: '2', fields: [] },
-      { title: 'T4', icon: '', id: '4', fields: [] },
-    ],
-  }
-
-  const sessions: Sessions = {
-    'foo.example.com': {
+  const sessions: Sessions = new Map([
+    ['foo.example.com', {
       apikey: 'abc123',
       token: 'abcdefgh12345678',
       createdAt: Date.now() - Math.random() * 3600000,
       violations: {},
       warnings: {},
-    },
-    'bar.example.com': {
+      timeout: 0,
+    }],
+    ['bar.example.com', {
       apikey: 'xyz987',
       token: 'abcdefgh12345678',
       createdAt: Date.now() - Math.random() * 3600000,
       violations: { 'KEY': 'Maximum number of users exceeded.' },
       warnings: { 'KEY': 'Weak password detected' },
-    },
-    'error.example.com': {
+      timeout: 0,
+    }],
+    ['error.example.com', {
       apikey: 'xyz987',
       token: 'abcdefgh12345678',
       createdAt: Date.now() - Math.random() * 3600000,
       violations: { 'KEY': 'Maximum number of users exceeded.' },
       warnings: {},
-    },
-    'warning.example.com': {
+      timeout: 0,
+    }],
+    ['warning.example.com', {
       apikey: 'xyz987',
       token: 'abcdefgh12345678',
       createdAt: Date.now() - Math.random() * 3600000,
       violations: {},
       warnings: { 'KEY': 'Weak password detected' },
-    },
-  };
+      timeout: 0,
+    }],
+  ]);
 
   const searchStatus = {
     'foo.example.com': {
@@ -376,33 +374,33 @@ export const PopupMultiple: React.FunctionComponent = () => {
 
   const sites: Site[] = [
     {
-      url: 'foo.example.com',
+      host: 'foo.example.com',
       apikey: 'abc123',
     },
     {
-      url: 'bar.example.com',
+      host: 'bar.example.com',
       apikey: 'xyz987',
     },
     {
-      url: 'error.example.com',
+      host: 'error.example.com',
       apikey: 'xyz987',
     },
     {
-      url: 'warning.example.com',
+      host: 'warning.example.com',
       apikey: 'xyz987',
     },
     {
-      url: 'offline.example.com',
+      host: 'offline.example.com',
       apikey: 'xyz987',
     },
     {
-      url: 'extra.example.com',
+      host: 'extra.example.com',
       apikey: 'xyz987',
     },
   ];
 
-  const sitePrefs = {
-    lastUsed: 'foo.example.com',
+  const preferences: Preferences = {
+    lastUsedSite: 'foo.example.com',
     sites: {
       'offline.example.com': {
         loginType: 'totp' as 'totp',
@@ -411,21 +409,21 @@ export const PopupMultiple: React.FunctionComponent = () => {
     },
   };
 
-  const onShow = (url: string, id: string, field: string): void => {
+  const onShow = (host: string, resultId: number, fieldId: number): void => {
     setSearchResults((prevSearchResults) => {
       const newSearchResults = { ...prevSearchResults };
       // Mimic API behavior of decrypting the entire object,
       // but only set isDecrypted on requested field.
-      newSearchResults[url][id].isDecrypted = true;
-      Object.keys(newSearchResults[url][id].fields).forEach((resultField) => {
-        if (newSearchResults[url][id].fields[resultField].isEncrypted) {
-          newSearchResults[url][id].fields[resultField].value = 'd3<ryPTed';
+      newSearchResults.get(host)[resultId].isDecrypted = true;
+      newSearchResults.get(host)[resultId].fields.forEach((field) => {
+        if (field.isEncrypted) {
+          field.value = 'd3<ryPTed';
         }
       });
-      newSearchResults[url][id].fields[field].isShowing = true;
+      newSearchResults.get(host)[resultId].fields[fieldId].isShowing = true;
       return newSearchResults;
     });
-    action('show')(url, id, field);
+    action('show')(host, resultId, fieldId);
   };
 
   const loginStatus = {
@@ -435,23 +433,22 @@ export const PopupMultiple: React.FunctionComponent = () => {
     },
   };
 
-  const onUrlChange = (url: string): void => {
-    setVaults(allVaults[url]);
-    setTemplates(allTemplates[url]);
-    action('url change')(url);
+  const onHostChange = (host: string): void => {
+    setSite(host);
+    action('host change')(host);
   };
 
   return (
     <Popup.Main
       add={{
-        urls: Object.keys(sessions),
-        vaults,
-        templates,
-        onUrlChange,
+        hosts: Array.from(sessions.keys()),
+        vaults: siteInfo.get(site).vaults,
+        templates: siteInfo.get(site).templates,
+        onHostChange,
       }}
       isInitialized={true}
       search={{
-        urls: Object.keys(sessions),
+        hosts: Object.keys(sessions),
         needle,
         onNeedleChange,
         onSearch: action('search'),
@@ -464,7 +461,7 @@ export const PopupMultiple: React.FunctionComponent = () => {
       auth={{
         sites,
         sessions,
-        sitePrefs,
+        preferences,
         onLogin: action('login'),
         onLogout: action('login'),
         loginStatus,

@@ -8,18 +8,18 @@ import * as SearchReducer from './SearchReducer';
 
 type AreaState = (
   SessionsReducer.State |
-    SettingsReducer.State |
-    SitesReducer.State |
-    SitePrefsReducer.State |
-    SearchReducer.State
+  SettingsReducer.State |
+  SitesReducer.State |
+  SitePrefsReducer.State |
+  SearchReducer.State
 );
 
 export type State = {
   sessions: SessionsReducer.State;
   settings: SettingsReducer.State;
-  sites:  SitesReducer.State;
-  sitePrefs:  SitePrefsReducer.State;
-  search:  SearchReducer.State;
+  sites: SitesReducer.State;
+  sitePrefs: SitePrefsReducer.State;
+  search: SearchReducer.State;
 }
 
 export type Action = {
@@ -31,14 +31,30 @@ export type Action = {
   search?: SearchReducer.Action;
 };
 
+const parseState = <T>(
+  state: unknown | SetStateAction<unknown> | void,
+  prevState: T
+): T => {
+  if (state) {
+    state = state as T | SetStateAction<T>;
+    if (state instanceof Function) {
+      return state(prevState) as T;
+    } else {
+      return state as T;
+    }
+  } else {
+    return prevState;
+  }
+};
+
 export const reducer: PromiseReducer<State, Action> = (action) => {
   if (action.type === 'init') {
-    return Promise.all([
-      SessionsReducer.reducer({ type: 'init' }),
-      SettingsReducer.reducer({ type: 'init' }),
-      SitesReducer.reducer({ type: 'init' }),
-      SitePrefsReducer.reducer({ type: 'init' }),
-      SearchReducer.reducer({ type: 'init' }),
+    return Promise.all<Sessions, Settings, Sites, Preferences, Results>([
+      SessionsReducer.reducer({ type: 'init' }) as Promise<Sessions>,
+      SettingsReducer.reducer({ type: 'init' }) as Promise<Settings>,
+      SitesReducer.reducer({ type: 'init' }) as Promise<Sites>,
+      SitePrefsReducer.reducer({ type: 'init' }) as Promise<Preferences>,
+      SearchReducer.reducer({ type: 'init' }) as Promise<Results>,
     ]).then(([sessions, settings, sites, sitePrefs, search]) => ({
       sessions, settings, sites, sitePrefs, search,
     }));
@@ -68,22 +84,22 @@ export const reducer: PromiseReducer<State, Action> = (action) => {
       ? SearchReducer.reducer(action.search)
       : Promise.resolve()
     );
-    return Promise.all<SetStateAction<AreaState | void>>([
+
+    return Promise.all<AreaState | SetStateAction<AreaState> | void>([
       sessions, settings, sites, sitePrefs, search,
     ]).then(([sessions, settings, sites, sitePrefs, search]) => {
       return (prevState: State): State => {
-        sessions = (sessions || prevState.sessions) as SessionsReducer.State;
-        settings = (settings || prevState.settings) as SettingsReducer.State;
-        sites = (sites || prevState.sites) as SitesReducer.State;
-        sitePrefs = (sitePrefs || prevState.sitePrefs) as SitePrefsReducer.State;
-        search = (search || prevState.search) as SearchReducer.State;
+        sessions = parseState<Sessions>(sessions, prevState.sessions);
+        settings = parseState<Settings>(settings, prevState.settings);
+        sites = parseState<Sites>(sites, prevState.sites);
+        sitePrefs = parseState<Preferences>(sitePrefs, prevState.sitePrefs);
+        search = parseState<Results>(search, prevState.search);
         return {
           sessions, settings, sites, sitePrefs, search,
         }
       };
     });
   }
-
 };
 
 export const emptyState: State = {
