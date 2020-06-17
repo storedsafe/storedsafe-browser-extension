@@ -1,6 +1,7 @@
 @import '../../variables';
 
 .popup-add {
+  height: 100%;
   background-color: $color-bg-alt;
   color: $color-fg;
   border-radius: 0 $border-radius $border-radius $border-radius;

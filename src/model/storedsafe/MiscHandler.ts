@@ -41,7 +41,8 @@ function getTemplates(request: MakeStoredSafeRequest): Promise<SSTemplate[]> {
       structure: Object.keys(template.STRUCTURE).map((fieldName) => {
         const field = template.STRUCTURE[fieldName];
         return {
-          name: field.translation,
+          title: field.translation,
+          name: fieldName,
           type: field.type,
           isEncrypted: field.encrypted,
         };

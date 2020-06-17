@@ -279,18 +279,18 @@ function scanPage() {
         if (saveFormTypes.includes(formType)) {
             console.log('Attaching submit handler to: ', forms[i]);
             forms[i].addEventListener('submit', (event) => {
-                const values = new Map();
+                const values = {};
                 const target = event.target;
                 for (const [field] of matchers) {
                     for (let i = 0; i < target.length; i++) {
                         const element = target[i];
                         if (element instanceof HTMLInputElement && isMatch(field, element)) {
                             console.log(field, element.value);
-                            values.set(field, element.value);
+                            values[field] = element.value;
                         }
                     }
                 }
-                browser.runtime.sendMessage({ type: 'submit', values: Array.from(values) });
+                browser.runtime.sendMessage({ type: 'submit', data: values });
             });
         }
     }

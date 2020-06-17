@@ -44,6 +44,7 @@ interface SSVault {
  * Representation of field in StoredSafe Template.
  * */
 interface SSTemplateField {
+  title: string;
   name: string;
   type: string;
   isEncrypted: boolean;

@@ -25411,7 +25411,7 @@ module.exports = {
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, ".add-object {\n  padding: 8px;\n}", ""]);
+exports.push([module.i, ".add-object {\n  display: flex;\n  flex-direction: column;\n  padding: 8px;\n  overflow: hidden auto;\n  height: 100%;\n}\n.add-object .add-object-form {\n  display: flex;\n  flex-direction: column;\n}\n.add-object .add-object-field {\n  display: flex;\n  flex-direction: column;\n}", ""]);
 // Exports
 module.exports = exports;
 
@@ -25573,7 +25573,7 @@ module.exports = exports;
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, ".popup-add {\n  background-color: #f9f9f9;\n  color: #232d33;\n  border-radius: 0 8px 8px 8px;\n  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);\n}", ""]);
+exports.push([module.i, ".popup-add {\n  height: 100%;\n  background-color: #f9f9f9;\n  color: #232d33;\n  border-radius: 0 8px 8px 8px;\n  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);\n}", ""]);
 // Exports
 module.exports = exports;
 
@@ -27585,36 +27585,34 @@ function PropertySelector(property, label, getOptionValues) {
     };
     return !hasProperty || (hasProperty && property.values.length > 1) ? (react_1.default.createElement("label", { htmlFor: "vault" },
         react_1.default.createElement("span", null, label),
-        react_1.default.createElement(common_1.Select, { id: "vault", value: property.selected, onChange: onSelectProperty, disabled: !hasProperty },
-            react_1.default.createElement("option", { value: undefined },
-                "Choose ",
-                label,
-                "..."),
-            hasProperty && property.values.map((value, id) => {
-                const { key, title } = getOptionValues(value);
-                return (react_1.default.createElement("option", { key: key, value: id }, title));
-            })))) : null;
+        react_1.default.createElement(common_1.Select, { id: label, value: property.selected, onChange: onSelectProperty, disabled: !hasProperty }, hasProperty && property.values.map((value, id) => {
+            const { key, title } = getOptionValues(value);
+            return (react_1.default.createElement("option", { key: key, value: id }, title));
+        })))) : null;
 }
-exports.AddObject = ({ host, vault, template, onAdd, initialValues, }) => {
+exports.AddObject = ({ host, vault, template, onAdd, initialValues, isLoading, error, }) => {
     const hostSelector = PropertySelector(host, 'Site', (host) => ({ key: host, title: host }));
     const vaultSelector = PropertySelector(vault, 'Vault', (vault) => ({ key: vault.id, title: vault.name }));
     const templateSelector = PropertySelector(template, 'Template', (template) => ({ key: template.id, title: template.name }));
     const [values, events] = useForm_1.useForm(initialValues);
-    const onSubmit = (() => {
+    const onSubmit = ((event) => {
+        event.preventDefault();
         onAdd(values);
     });
     const hasTemplate = (template && template.selected) !== undefined;
     const structure = hasTemplate &&
         template.values[template.selected].structure;
-    const fields = structure && structure.map(({ name, isEncrypted }) => (react_1.default.createElement("label", { key: name },
-        react_1.default.createElement("span", { className: "label" }, name),
-        react_1.default.createElement("input", Object.assign({ className: `add-object-field${isEncrypted ? ' encrypted' : ''}`, type: "text", id: name, name: name, value: values[name] }, events))))) || null;
+    const fields = structure && structure.map(({ title, name, isEncrypted, type }) => (react_1.default.createElement("label", { key: name, htmlFor: name, className: "add-object-field" },
+        react_1.default.createElement("span", null, title),
+        react_1.default.createElement("input", Object.assign({ className: `add-object-field${isEncrypted ? ' encrypted' : ''}`, type: type === 'text-passwdgen' ? 'password' : 'text', id: name, name: name, value: values[name] || '' }, events))))) || null;
     return (react_1.default.createElement("section", { className: "add-object" },
-        react_1.default.createElement("form", { onSubmit: onSubmit },
-            hostSelector,
-            vaultSelector,
-            templateSelector,
-            fields)));
+        hostSelector,
+        vaultSelector,
+        templateSelector,
+        react_1.default.createElement("form", { onSubmit: onSubmit, className: "add-object-form" },
+            fields,
+            fields && (react_1.default.createElement(common_1.Button, { type: "submit", color: "accent", isLoading: isLoading }, "Add to StoredSafe"))),
+        error && react_1.default.createElement(common_1.Message, { type: "error" }, error.message)));
 };
 
 
@@ -28675,39 +28673,56 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = __importStar(__webpack_require__(/*! react */ "react"));
 const StoredSafe_1 = __webpack_require__(/*! ../../model/storedsafe/StoredSafe */ "./src/model/storedsafe/StoredSafe.ts");
-const common_1 = __webpack_require__(/*! ../common */ "./src/components/common/index.ts");
 const Add_1 = __webpack_require__(/*! ../Add */ "./src/components/Add/index.ts");
 __webpack_require__(/*! ./Add.scss */ "./src/components/Popup/Add.scss");
-const PopupAdd = ({ hosts, vaults, templates, onHostChange, }) => {
-    const [state, setState] = react_1.useState({});
+const PopupAdd = ({ hosts, values }) => {
+    const [selected, setSelected] = react_1.useState({ host: hosts.length > 0 ? 0 : undefined });
+    const [siteInfo, setSiteInfo] = react_1.useState();
+    const [loading, setLoading] = react_1.useState(false);
+    const [error, setError] = react_1.useState();
+    const getSiteInfo = react_1.useCallback(() => {
+        StoredSafe_1.actions.getSiteInfo(hosts[selected.host]).then((siteInfo) => {
+            setSiteInfo(Object.assign(Object.assign({}, siteInfo), { vaults: siteInfo.vaults.filter(({ canWrite }) => (canWrite)) }));
+            setSelected((prevSelected) => (Object.assign(Object.assign({}, prevSelected), { vault: 0, template: siteInfo.templates.findIndex(({ id }) => id === '20') || 0 })));
+        });
+    }, [hosts, selected.host]);
+    react_1.useEffect(() => {
+        getSiteInfo();
+    }, [getSiteInfo]);
     const handleHostChange = (id) => {
-        setState({ host: id });
-        onHostChange(hosts[id]);
+        setSelected({
+            host: id,
+        });
     };
     const handleVaultChange = (id) => {
-        setState((prevState) => (Object.assign(Object.assign({}, prevState), { vault: id })));
+        setSelected((prevState) => (Object.assign(Object.assign({}, prevState), { vault: id })));
     };
     const handleTemplateChange = (id) => {
-        setState((prevState) => (Object.assign(Object.assign({}, prevState), { template: id })));
+        setSelected((prevState) => (Object.assign(Object.assign({}, prevState), { template: id })));
     };
     const content = react_1.default.createElement(Add_1.AddObject, { host: {
-            selected: state.host,
+            selected: selected.host,
             values: hosts,
             onChange: handleHostChange,
         }, vault: {
-            selected: state.vault,
-            values: vaults,
+            selected: selected.vault,
+            values: siteInfo && siteInfo.vaults,
             onChange: handleVaultChange,
         }, template: {
-            selected: state.template,
-            values: templates,
+            selected: selected.template,
+            values: siteInfo && siteInfo.templates,
             onChange: handleTemplateChange,
-        }, initialValues: {}, onAdd: (properties) => {
-            StoredSafe_1.actions.addObject(hosts[state.host], properties);
-        } });
-    return (react_1.default.createElement("section", { className: "popup-add" },
-        content,
-        react_1.default.createElement(common_1.Message, { type: "warning" }, "Section currently under development.")));
+        }, initialValues: values || {}, onAdd: (properties) => {
+            properties = Object.assign(Object.assign({}, properties), { parentid: '0', groupid: siteInfo.vaults[selected.vault].id, templateid: siteInfo.templates[selected.template].id });
+            console.log(properties, siteInfo.templates[selected.template]);
+            setLoading(true);
+            StoredSafe_1.actions.addObject(hosts[selected.host], properties).then(() => {
+                setError(undefined);
+            }).catch((error) => {
+                setError(error);
+            }).then(() => setLoading(false));
+        }, isLoading: loading, error: error });
+    return (react_1.default.createElement("section", { className: "popup-add" }, content));
 };
 exports.default = PopupAdd;
 
@@ -28894,12 +28909,22 @@ exports.Popup = ({ isInitialized, add, auth, search, openOptions, }) => {
     const isOnline = sessions.size > 0;
     if (isInitialized && page === undefined) {
         if (isOnline) {
-            setPage(Page.Search);
+            if (add.values) {
+                setPage(Page.Add);
+            }
+            else {
+                setPage(Page.Search);
+            }
         }
         else {
             setPage(Page.Sessions);
         }
     }
+    react_1.useEffect(() => {
+        if (add.values) {
+            setPage(Page.Add);
+        }
+    }, [add.values]);
     const menu = isInitialized ? (react_1.default.createElement("ul", { className: "popup-menu" },
         isOnline && (react_1.default.createElement("li", null,
             react_1.default.createElement(common_1.MenuButton, { icon: svg_1.default.add, title: "Add New Object", onClick: () => setPage(Page.Add), selected: page === Page.Add }))),
@@ -31312,7 +31337,8 @@ function getTemplates(request) {
         structure: Object.keys(template.STRUCTURE).map((fieldName) => {
             const field = template.STRUCTURE[fieldName];
             return {
-                name: field.translation,
+                title: field.translation,
+                name: fieldName,
                 type: field.type,
                 isEncrypted: field.encrypted,
             };
@@ -31701,24 +31727,33 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PopupContainer = void 0;
-const react_1 = __importDefault(__webpack_require__(/*! react */ "react"));
+const react_1 = __importStar(__webpack_require__(/*! react */ "react"));
 const useAuth_1 = __webpack_require__(/*! ../../hooks/useAuth */ "./src/hooks/useAuth.ts");
 const useSearch_1 = __webpack_require__(/*! ../../hooks/useSearch */ "./src/hooks/useSearch.ts");
 const useStorage_1 = __webpack_require__(/*! ../../hooks/useStorage */ "./src/hooks/useStorage.tsx");
 const Popup = __importStar(__webpack_require__(/*! ../../components/Popup */ "./src/components/Popup/index.ts"));
 exports.PopupContainer = () => {
     const { state, isInitialized } = useStorage_1.useStorage();
+    const [addValues, setAddValues] = react_1.useState();
     const auth = useAuth_1.useAuth();
     const search = useSearch_1.useSearch();
     const openOptions = () => { browser.runtime.openOptionsPage(); };
+    react_1.useEffect(() => {
+        browser.runtime.onMessage.addListener((message) => {
+            console.log('Popup received message');
+            const { type } = message;
+            if (type === 'save') {
+                const { data } = message;
+                console.log('Popup received values', data);
+                setAddValues(data);
+            }
+        });
+    });
     return (react_1.default.createElement(Popup.Main, { add: {
             hosts: [...state.sessions.keys()],
-            onHostChange: (host) => { console.log(host); },
+            values: addValues,
         }, isInitialized: isInitialized, search: Object.assign({ hosts: Object.keys(state.sessions), results: state.search }, search), auth: Object.assign({ sites: state.sites.list, sessions: state.sessions, preferences: state.preferences }, auth), openOptions: openOptions }));
 };
 

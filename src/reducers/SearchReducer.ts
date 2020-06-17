@@ -19,6 +19,15 @@ export type Action = {
   results: Results;
   host: string;
   resultId: number;
+} | {
+  type: 'fetchSiteInfo';
+  host: string;
+} | {
+  type: 'add';
+  host: string;
+  templateId: string;
+  groupId: string;
+  params: object;
 };
 
 export const reducer: PromiseReducer<State, Action> = (action) => {
@@ -122,6 +131,16 @@ export const reducer: PromiseReducer<State, Action> = (action) => {
       const encryptedResult = results.get(host)[resultId];
       return decrypt(host, encryptedResult).then((result) => (
         mergeResults(host, result)
+      ));
+    }
+
+    /**
+     * Add object to StoredSafe.
+     * */
+    case 'add': {
+      const { host, params } = action;
+      return StoredSafeActions.addObject(host, params).then(() => (
+        (prevState: State): State => prevState
       ));
     }
 

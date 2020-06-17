@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useState, useEffect } from 'react';
 import { Banner, MenuButton, LoadingComponent } from '../common';
 import { SearchBar } from '../Search';
 import { StatusBar } from './StatusBar';
@@ -41,11 +41,21 @@ export const Popup: React.FunctionComponent<PopupProps> = ({
 
   if (isInitialized && page === undefined) {
     if (isOnline) {
-      setPage(Page.Search);
+      if (add.values) {
+        setPage(Page.Add);
+      } else {
+        setPage(Page.Search);
+      }
     } else {
       setPage(Page.Sessions);
     }
   }
+
+  useEffect(() => {
+    if (add.values) {
+      setPage(Page.Add);
+    }
+  }, [add.values]);
 
   const menu = isInitialized ? (
     <ul className={"popup-menu"}>

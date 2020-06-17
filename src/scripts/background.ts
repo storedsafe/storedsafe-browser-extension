@@ -165,7 +165,7 @@ function tabFind(tab: browser.tabs.Tab): Promise<void> {
   const needle = urlToNeedle(url);
   console.log('Searching for results on', url);
   return StoredSafeActions.tabFind(tabId, needle).then((tabResults) => {
-    console.log('Found ', [...tabResults.values()].reduce((acc, res) => acc + res.size, 0), 'results on ', url);
+    console.log('Found ', [...tabResults.get(tabId).values()].reduce((acc, res) => acc + res.length, 0), 'results on ', url);
     SettingsActions.fetch().then((settings) => {
       if (settings.get('autoFill').value) {
         fill(tabId, tabResults.get(tabId));
@@ -360,7 +360,7 @@ type MessageHandler<T> = (
 const messageHandlers: {
   tabSearch: MessageHandler<void>;
   copyToClipboard: MessageHandler<string>;
-  submit: MessageHandler<[string, string][]>;
+  submit: MessageHandler<object>;
   [key: string]: MessageHandler<unknown>;
 }= {
   tabSearch: (data, sender) => (
@@ -369,9 +369,40 @@ const messageHandlers: {
   copyToClipboard: (value) => (
     copyToClipboard(value)
   ),
-  submit: (values) => {
-    console.log('Submitted form (values omitted): ', new Map(values).keys());
-    return Promise.resolve();
+  submit: (values, { tab }) => {
+    const { url, id } = tab;
+    return TabResultsActions.fetch().then((tabResults) => {
+      for (const results of tabResults.get(id).values()) {
+        for (const result of results) {
+          for (const { value } of result.fields) {
+            console.log('Checking', value, 'in', result, 'against', urlToNeedle(url));
+            if (value.match(urlToNeedle(url))) {
+              console.log('Matching result already exists for', url, ', skip save');
+              return;
+            }
+          }
+        }
+      }
+      const sendSaveMessage = (): Promise<void> => {
+        values = {
+          name: urlToNeedle(url),
+          url,
+          ...values,
+        };
+        console.log('Sending values to popup', values);
+        return browser.runtime.sendMessage({
+          type: 'save',
+          data: values,
+        });
+      };
+      try {
+        console.log('Trying to open popup');
+        return browser.browserAction.openPopup().then(sendSaveMessage)
+      } catch(error) {
+        console.log(error);
+        return sendSaveMessage();
+      }
+    });
   },
 };
 

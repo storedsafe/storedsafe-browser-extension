@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import { useSearch } from '../../hooks/useSearch';
 import { useStorage } from '../../hooks/useStorage';
@@ -6,16 +6,29 @@ import * as Popup from '../../components/Popup';
 
 export const PopupContainer: React.FunctionComponent = () => {
   const { state, isInitialized } = useStorage();
+  const [addValues, setAddValues] = useState();
   const auth = useAuth();
   const search = useSearch();
 
   const openOptions = (): void => { browser.runtime.openOptionsPage() };
 
+  useEffect(() => {
+    browser.runtime.onMessage.addListener((message) => {
+      console.log('Popup received message');
+      const { type } = message;
+      if (type === 'save') {
+        const { data } = message;
+        console.log('Popup received values', data);
+        setAddValues(data);
+      }
+    });
+  });
+
   return (
     <Popup.Main
       add={{
         hosts: [...state.sessions.keys()],
-        onHostChange: (host: string): void => { console.log(host) },
+        values: addValues,
       }}
       isInitialized={isInitialized}
       search={{

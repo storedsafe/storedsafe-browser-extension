@@ -45,6 +45,9 @@ Check package.json for all scripts or use `yarn <command>` to use the installed 
 
 ### Changelog
 - **2020-06-17**
+  - Early implementation of add object feature.
+    - Able to add objects to StoredSafe through the popup.
+    - Popup opens with provided form data after a form is submitted.
   - Finished refactor.
     - Changed object types to map types where it was appropriate for easier interaction with data.
     - Changed some field names for consistency and clarity.
@@ -70,7 +73,7 @@ Check package.json for all scripts or use `yarn <command>` to use the installed 
 - [ ] Create custom logger so that logging can be toggled.
 - [ ] Add new objects to StoredSafe.
 - [ ] Unit tests of UI and hooks.
-- [ ] Better comment coverage.
+- [ ] Better comment coverage. (in progress)
 - [ ] Convert options to page-component pattern.
 - [ ] Check token validity of active sessions before opening popup.
 - [x] ~~Change promisereducer to return function depending on previous state rather than sending state to dispatch to fix sync issues?~~
@@ -89,3 +92,4 @@ Check package.json for all scripts or use `yarn <command>` to use the installed 
 - PIN code lock instead of logout after idle timer runs out.
   - Use PIN code to encrypt session-specific data (tokens, cached searches etc.)
 - Idle timer warning notification.
+- Encrypt plain text data in popup (transparent encryption update).

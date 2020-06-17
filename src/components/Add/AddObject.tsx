@@ -1,5 +1,6 @@
 import React from 'react';
-import { Select } from '../common';
+import { Select, Button, Message } from '../common';
+import { useForm } from '../../hooks/useForm';
 import './AddObject.scss';
 
 export type OnAddCallback = (params: object) => void;
@@ -11,95 +12,109 @@ export interface AddObjectProperty<T> {
   onChange: OnPropertyChangeCallback;
 }
 
+type GetOptionValues<T> = (value: T) => {
+  key: string;
+  title: string;
+};
+
+function PropertySelector <T>(
+  property: AddObjectProperty<T>,
+  label: string,
+  getOptionValues: GetOptionValues<T>,
+): React.ReactNode {
+  const hasProperty = (property && property.values) !== undefined;
+  const onSelectProperty = ({
+    target
+  }: React.ChangeEvent<HTMLSelectElement>): void => {
+    property.onChange(Number(target.value));
+  };
+
+  return !hasProperty || (hasProperty && property.values.length > 1) ? (
+    <label htmlFor="vault">
+      <span>{label}</span>
+      <Select
+        id={label}
+        value={property.selected}
+        onChange={onSelectProperty}
+        disabled={!hasProperty}>
+        {hasProperty && property.values.map((value, id) => {
+          const { key, title } = getOptionValues(value);
+          return (
+            <option key={key} value={id}>{title}</option>
+          );
+        })}
+      </Select>
+    </label>
+  ) : null;
+}
+
 interface AddObjectProps {
   host: AddObjectProperty<string>;
   vault?: AddObjectProperty<SSVault>;
   template?: AddObjectProperty<SSTemplate>;
+  onAdd: OnAddCallback;
+  initialValues: Record<string, string>;
+  isLoading: boolean;
+  error?: Error;
 }
 
 export const AddObject: React.FunctionComponent<AddObjectProps> = ({
   host,
   vault,
   template,
+  onAdd,
+  initialValues,
+  isLoading,
+  error,
 }: AddObjectProps) => {
-  const onSelectHost = ({
-    target
-  }: React.ChangeEvent<HTMLSelectElement>): void => {
-    host.onChange(Number(target.value));
-  };
+  const hostSelector = PropertySelector<string>(
+    host, 'Site', (host) => ({ key: host, title: host })
+  );
+  const vaultSelector = PropertySelector<SSVault>(
+    vault, 'Vault', (vault) => ({ key: vault.id, title: vault.name })
+  );
+  const templateSelector = PropertySelector<SSTemplate>(
+    template, 'Template', (template) => ({ key: template.id, title: template.name })
+  );
 
-  const onSelectVault = ({
-    target
-  }: React.ChangeEvent<HTMLSelectElement>): void => {
-    vault.onChange(Number(target.value));
-  };
+  const [values, events] = useForm<Record<string, string>>(initialValues);
 
-  const onSelectTemplate = ({
-    target
-  }: React.ChangeEvent<HTMLSelectElement>): void => {
-    template.onChange(Number(target.value));
-  };
+  const onSubmit = ((event: React.FormEvent<HTMLFormElement>): void => {
+    event.preventDefault();
+    onAdd(values);
+  });
 
-  const sites = host.values.length > 1 ? (
-    <label htmlFor="host">
-      <span>Site</span>
-      <Select
-        id="host"
-        value={host.selected}
-        onChange={onSelectHost}>
-        <option value={undefined}>Choose site...</option>
-        {host.values.map((host, id) => (
-          <option key={host} value={id}>{host}</option>
-        ))}
-      </Select>
+  const hasTemplate = (template && template.selected) !== undefined;
+  const structure = hasTemplate &&
+    template.values[template.selected].structure;
+  const fields = structure && structure.map(({ title, name, isEncrypted, type }) => (
+    <label key={name} htmlFor={name} className="add-object-field">
+      <span>{title}</span>
+      <input
+        className={`add-object-field${isEncrypted ? ' encrypted' : ''}`}
+        type={type === 'text-passwdgen' ? 'password' : 'text'}
+        id={name}
+        name={name}
+        value={values[name] || ''}
+        {...events}
+      />
     </label>
-  ) : null;
-
-  const hasVaults = (vault && vault.values) !== undefined;
-  const vaults = !hasVaults || (hasVaults && vault.values.length > 1) ? (
-    <label htmlFor="vault">
-      <span>Vault</span>
-      <Select
-        id="vault"
-        value={vault.selected}
-        onChange={onSelectVault}
-        disabled={!hasVaults}>
-        <option value={undefined}>Choose vault...</option>
-        {hasVaults && vault.values.map(({
-          id: vaultId,
-          name,
-        }, id) => (
-          <option key={vaultId} value={id}>{name}</option>
-        ))}
-      </Select>
-    </label>
-  ) : null;
-
-  const hasTemplates = (template && template.values) !== undefined;
-  const templates = !hasTemplates || (hasTemplates && template.values.length > 1) ? (
-    <label htmlFor="template">
-      <span>Template</span>
-      <Select
-        id="template"
-        value={template.selected}
-        onChange={onSelectTemplate}
-        disabled={!hasTemplates}>
-        <option value={undefined}>Choose template...</option>
-        {hasTemplates && template.values.map(({
-          id: templateId,
-          name,
-        }, id) => (
-          <option key={templateId} value={id}>{name}</option>
-        ))}
-      </Select>
-    </label>
-  ) : null;
+  )) || null;
 
   return (
     <section className="add-object">
-      {sites}
-      {vaults}
-      {templates}
+      {hostSelector}
+      {vaultSelector}
+      {templateSelector}
+      <form onSubmit={onSubmit} className="add-object-form">
+        {fields}
+        {fields && (
+          <Button type="submit" color="accent" isLoading={isLoading}>
+            Add to StoredSafe
+          </Button>
+        )}
+      </form>
+      {error && <Message type="error">{error.message}</Message>}
     </section>
   );
 };

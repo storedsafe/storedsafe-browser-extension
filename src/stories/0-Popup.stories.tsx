@@ -61,7 +61,6 @@ export const PopupLoading: React.FunctionComponent = () => {
       isInitialized={false}
       add={{
         hosts: [],
-        onHostChange: action('host change'),
       }}
       search={{
         hosts: [],
@@ -101,7 +100,6 @@ export const PopupOffline: React.FunctionComponent = () => {
     <Popup.Main
       add={{
         hosts: [],
-        onHostChange: action('host change'),
       }}
       isInitialized={true}
       search={{
@@ -195,7 +193,6 @@ export const PopupOnline: React.FunctionComponent = () => {
     <Popup.Main
       add={{
         hosts: Object.keys(filteredResults),
-        onHostChange: action('host change'),
       }}
       isInitialized={true}
       search={{
@@ -253,7 +250,6 @@ export const PopupOnlineLoading: React.FunctionComponent = () => {
     <Popup.Main
       add={{
         hosts: Array.from(sessions.keys()),
-        onHostChange: action('host change'),
       }}
       isInitialized={true}
       search={{
@@ -453,18 +449,10 @@ export const PopupMultiple: React.FunctionComponent = () => {
     },
   };
 
-  const onHostChange = (host: string): void => {
-    setSite(host);
-    action('host change')(host);
-  };
-
   return (
     <Popup.Main
       add={{
         hosts: Array.from(sessions.keys()),
-        vaults: site && siteInfo.get(site).vaults,
-        templates: site && siteInfo.get(site).templates,
-        onHostChange,
       }}
       isInitialized={true}
       search={{

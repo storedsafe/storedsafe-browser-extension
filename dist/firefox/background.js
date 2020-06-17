@@ -2741,7 +2741,8 @@ function getTemplates(request) {
         structure: Object.keys(template.STRUCTURE).map((fieldName) => {
             const field = template.STRUCTURE[fieldName];
             return {
-                name: field.translation,
+                title: field.translation,
+                name: fieldName,
                 type: field.type,
                 isEncrypted: field.encrypted,
             };
@@ -3277,7 +3278,7 @@ function tabFind(tab) {
     const needle = urlToNeedle(url);
     console.log('Searching for results on', url);
     return StoredSafe_1.actions.tabFind(tabId, needle).then((tabResults) => {
-        console.log('Found ', [...tabResults.values()].reduce((acc, res) => acc + res.size, 0), 'results on ', url);
+        console.log('Found ', [...tabResults.get(tabId).values()].reduce((acc, res) => acc + res.length, 0), 'results on ', url);
         Settings_1.actions.fetch().then((settings) => {
             if (settings.get('autoFill').value) {
                 fill(tabId, tabResults.get(tabId));
@@ -3441,9 +3442,37 @@ function onMenuClick(info) {
 const messageHandlers = {
     tabSearch: (data, sender) => (tabFind(sender.tab)),
     copyToClipboard: (value) => (copyToClipboard(value)),
-    submit: (values) => {
-        console.log('Submitted form (values omitted): ', new Map(values).keys());
-        return Promise.resolve();
+    submit: (values, { tab }) => {
+        const { url, id } = tab;
+        return TabResults_1.actions.fetch().then((tabResults) => {
+            for (const results of tabResults.get(id).values()) {
+                for (const result of results) {
+                    for (const { value } of result.fields) {
+                        console.log('Checking', value, 'in', result, 'against', urlToNeedle(url));
+                        if (value.match(urlToNeedle(url))) {
+                            console.log('Matching result already exists for', url, ', skip save');
+                            return;
+                        }
+                    }
+                }
+            }
+            const sendSaveMessage = () => {
+                values = Object.assign({ name: urlToNeedle(url), url }, values);
+                console.log('Sending values to popup', values);
+                return browser.runtime.sendMessage({
+                    type: 'save',
+                    data: values,
+                });
+            };
+            try {
+                console.log('Trying to open popup');
+                return browser.browserAction.openPopup().then(sendSaveMessage);
+            }
+            catch (error) {
+                console.log(error);
+                return sendSaveMessage();
+            }
+        });
     },
 };
 /**
