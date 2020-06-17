@@ -3171,10 +3171,12 @@ function getTokenLife(createdAt) {
  * */
 function setupKeepAlive() {
     Sessions_1.actions.fetch().then((sessions) => {
-        for (const [host, { timeout, createdAt }] of sessions) {
-            const tokenLife = getTokenLife(createdAt);
-            const interval = timeout * 0.75 - tokenLife; // Leave a little margin
-            console.log('Keepalive in', Math.floor(interval / 60000), 'minutes');
+        for (const [host, { timeout }] of sessions) {
+            // Perform initial check in case we're picking up an old session
+            // which will timeout in less than the saved timeout value.
+            StoredSafe_1.actions.check(host);
+            const interval = timeout * 0.75; // Leave a little margin
+            console.log('Keepalive for', host, 'in', Math.floor(interval / 60000), 'minutes');
             setInterval(StoredSafe_1.actions.check, interval, host);
         }
     });

@@ -27576,38 +27576,45 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AddObject = void 0;
 const react_1 = __importDefault(__webpack_require__(/*! react */ "react"));
 const common_1 = __webpack_require__(/*! ../common */ "./src/components/common/index.ts");
+const useForm_1 = __webpack_require__(/*! ../../hooks/useForm */ "./src/hooks/useForm.ts");
 __webpack_require__(/*! ./AddObject.scss */ "./src/components/Add/AddObject.scss");
-exports.AddObject = ({ host, vault, template, }) => {
-    const onSelectHost = ({ target }) => {
-        host.onChange(Number(target.value));
+function PropertySelector(property, label, getOptionValues) {
+    const hasProperty = (property && property.values) !== undefined;
+    const onSelectProperty = ({ target }) => {
+        property.onChange(Number(target.value));
     };
-    const onSelectVault = ({ target }) => {
-        vault.onChange(Number(target.value));
-    };
-    const onSelectTemplate = ({ target }) => {
-        template.onChange(Number(target.value));
-    };
-    const sites = host.values.length > 1 ? (react_1.default.createElement("label", { htmlFor: "host" },
-        react_1.default.createElement("span", null, "Site"),
-        react_1.default.createElement(common_1.Select, { id: "host", value: host.selected, onChange: onSelectHost },
-            react_1.default.createElement("option", { value: undefined }, "Choose site..."),
-            host.values.map((host, id) => (react_1.default.createElement("option", { key: host, value: id }, host)))))) : null;
-    const hasVaults = (vault && vault.values) !== undefined;
-    const vaults = !hasVaults || (hasVaults && vault.values.length > 1) ? (react_1.default.createElement("label", { htmlFor: "vault" },
-        react_1.default.createElement("span", null, "Vault"),
-        react_1.default.createElement(common_1.Select, { id: "vault", value: vault.selected, onChange: onSelectVault, disabled: !hasVaults },
-            react_1.default.createElement("option", { value: undefined }, "Choose vault..."),
-            hasVaults && vault.values.map(({ id: vaultId, name, }, id) => (react_1.default.createElement("option", { key: vaultId, value: id }, name)))))) : null;
-    const hasTemplates = (template && template.values) !== undefined;
-    const templates = !hasTemplates || (hasTemplates && template.values.length > 1) ? (react_1.default.createElement("label", { htmlFor: "template" },
-        react_1.default.createElement("span", null, "Template"),
-        react_1.default.createElement(common_1.Select, { id: "template", value: template.selected, onChange: onSelectTemplate, disabled: !hasTemplates },
-            react_1.default.createElement("option", { value: undefined }, "Choose template..."),
-            hasTemplates && template.values.map(({ id: templateId, name, }, id) => (react_1.default.createElement("option", { key: templateId, value: id }, name)))))) : null;
+    return !hasProperty || (hasProperty && property.values.length > 1) ? (react_1.default.createElement("label", { htmlFor: "vault" },
+        react_1.default.createElement("span", null, label),
+        react_1.default.createElement(common_1.Select, { id: "vault", value: property.selected, onChange: onSelectProperty, disabled: !hasProperty },
+            react_1.default.createElement("option", { value: undefined },
+                "Choose ",
+                label,
+                "..."),
+            hasProperty && property.values.map((value, id) => {
+                const { key, title } = getOptionValues(value);
+                return (react_1.default.createElement("option", { key: key, value: id }, title));
+            })))) : null;
+}
+exports.AddObject = ({ host, vault, template, onAdd, initialValues, }) => {
+    const hostSelector = PropertySelector(host, 'Site', (host) => ({ key: host, title: host }));
+    const vaultSelector = PropertySelector(vault, 'Vault', (vault) => ({ key: vault.id, title: vault.name }));
+    const templateSelector = PropertySelector(template, 'Template', (template) => ({ key: template.id, title: template.name }));
+    const [values, events] = useForm_1.useForm(initialValues);
+    const onSubmit = (() => {
+        onAdd(values);
+    });
+    const hasTemplate = (template && template.selected) !== undefined;
+    const structure = hasTemplate &&
+        template.values[template.selected].structure;
+    const fields = structure && structure.map(({ name, isEncrypted }) => (react_1.default.createElement("label", { key: name },
+        react_1.default.createElement("span", { className: "label" }, name),
+        react_1.default.createElement("input", Object.assign({ className: `add-object-field${isEncrypted ? ' encrypted' : ''}`, type: "text", id: name, name: name, value: values[name] }, events))))) || null;
     return (react_1.default.createElement("section", { className: "add-object" },
-        sites,
-        vaults,
-        templates));
+        react_1.default.createElement("form", { onSubmit: onSubmit },
+            hostSelector,
+            vaultSelector,
+            templateSelector,
+            fields)));
 };
 
 
@@ -29300,14 +29307,10 @@ exports.SearchTitle = void 0;
 const react_1 = __importDefault(__webpack_require__(/*! react */ "react"));
 const ico_1 = __importDefault(__webpack_require__(/*! ../../ico */ "./src/ico/index.ts"));
 __webpack_require__(/*! ./SearchTitle.scss */ "./src/components/Search/SearchTitle.scss");
-exports.SearchTitle = ({ host, result, }) => {
-    console.log(host, result);
-    console.log(ico_1.default, ico_1.default[result.icon]);
-    return (react_1.default.createElement("article", { style: { backgroundImage: `url('${ico_1.default[result.icon]}')` }, className: "search-title" },
-        react_1.default.createElement("div", { className: "search-title-text" },
-            react_1.default.createElement("p", { className: "search-title-name" }, result.name),
-            host && react_1.default.createElement("p", { className: "search-title-host" }, host))));
-};
+exports.SearchTitle = ({ host, result, }) => (react_1.default.createElement("article", { style: { backgroundImage: `url('${ico_1.default[result.icon]}')` }, className: "search-title" },
+    react_1.default.createElement("div", { className: "search-title-text" },
+        react_1.default.createElement("p", { className: "search-title-name" }, result.name),
+        host && react_1.default.createElement("p", { className: "search-title-host" }, host))));
 
 
 /***/ }),
@@ -31911,6 +31914,13 @@ exports.reducer = (action) => {
             const { results, host, resultId } = action;
             const encryptedResult = results.get(host)[resultId];
             return decrypt(host, encryptedResult).then((result) => (mergeResults(host, result)));
+        }
+        /**
+         * Add object to StoredSafe.
+         * */
+        case 'add': {
+            const { host, params } = action;
+            return StoredSafe_1.actions.addObject(host, params).then(() => ((prevState) => prevState));
         }
         case 'init': {
             return init();
