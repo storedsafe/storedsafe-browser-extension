@@ -2,7 +2,8 @@
 
 StoredSafe browser extension for Chrome and Firefox.
 
-**NOTE: Current version is only compatible with StoredSafe 2.1.0**
+**NOTE: Ändringar i strukturen i browser storage, klicka den nya knappen "Clear all data" i options ifall något ser fel ut.**
+**NOTE: Nuvarande version är endast kompatibel med StoredSafe 2.1.0**
 
 ## Setup
 
