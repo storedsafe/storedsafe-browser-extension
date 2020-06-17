@@ -18,8 +18,6 @@
  * will however not prevent the setting of fields in sync storage that also exist
  * in managed enforced storage because when fetching settings, any such overlapping
  * fields will simply be ignored in favor of higher priority settings.
- *
- * @packageDocumentation
  * */
 
 const systemStorage = browser.storage.managed;

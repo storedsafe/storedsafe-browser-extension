@@ -19,7 +19,7 @@ export const useAuth = (): AuthHook => {
       [site.host]: { loading: true, error: undefined },
     }));
     dispatch({
-      sitePrefs: {
+      preferences: {
         type: 'update',
         host: site.host,
         sitePreferences: {

@@ -1,6 +1,14 @@
-// const types = /text|url|password|email/i;
-// const ids = /user|name|pass|mail|url|server|site/i;
+/**
+ * Runs on every open tab.
+ * Handles identification of forms on the webpage, tracks submission of those
+ * forms and fills forms when credentials are received from another script
+ * using the extension message API.
+ * */
 
+/**
+ * Describes the purpose of the form. Some forms should be filled while others
+ * should be ignored or handled as special cases.
+ * */
 enum FormType {
   Login = 'login',
   Card = 'card',
@@ -8,14 +16,25 @@ enum FormType {
   ContactInfo = 'contactinfo',
   NewsLetter = 'newsletter',
   Register = 'register',
-  Unknown = 'unknown',
+  Unknown = 'unknown'
 }
 
+/**
+ * Matcher for an input field.
+ * @param type - Regular expression matching the input type attribute.
+ * @param name - Regular expression matching the input name or id attribute.
+ * */
 interface Matcher {
   type: RegExp;
   name: RegExp;
 }
 
+/**
+ * Matcher for forms to determine the type of the form.
+ * @param name - Regular expression matching the name or id attribute of the form.
+ * @param role - Regular expression matching the role attribute of the form.
+ * @param fields - List of matchers for the input fields inside the form.
+ * */
 interface FormMatcher {
   name: RegExp;
   role?: RegExp;
@@ -51,9 +70,9 @@ const matchers: Map<string, Matcher> = new Map([
 ]);
 
 /**
- * Matching the form name is considered a definite match and should return the form type,
- * not matching a name means the fields fallback should be checked.
- * If using the fields fallback, the form should only be considered a match if all fields
+ * Matching the form name is considered a definite match and should return the form type.
+ * Not matching a name means the fields fallback should be checked.
+ * If using the fields fallback, the form should only be considered a match if all field
  * matchers find a match.
  * The formMatchers will be checked in order of appearance and the first match if any will
  * be used, meaning more generic matchers should be placed further down in the list.
@@ -87,6 +106,26 @@ const formMatchers: Map<FormType, FormMatcher> = new Map([
   }],
 ]);
 
+/**
+ * Checks whether an element is of a type that is fillable by the user.
+ * @param element Element to be tested.
+ * @returns True if the element is an input that can be filled by the user.
+ * */
+function isElementFillable(element: Element): boolean {
+  return element instanceof HTMLInputElement && ![
+    'hidden',
+    'button',
+    'submit',
+    'reset'
+  ].includes(element.type);
+}
+
+/**
+ * Checks whether a field is a match for the provded input field.
+ * @param field - Name of StoredSafe field.
+ * @param element - Input element to attempt a match with.
+ * @returns True if the element is a match for the field.
+ * */
 function isMatch(
   field: string,
   element: HTMLInputElement
@@ -99,15 +138,11 @@ function isMatch(
   );
 }
 
-function isElementFillable(element: Element): boolean {
-  return element instanceof HTMLInputElement && ![
-    'hidden',
-    'button',
-    'submit',
-    'reset'
-  ].includes(element.type);
-}
-
+/**
+ * Checks a form against the form matchers to determine the type of the form.
+ * @param form - The form to be matched.
+ * @returns The type indicating the purpose of the form.
+ * */
 function getFormType(form: HTMLFormElement): FormType {
   for(const [formType, formTypeMatchers] of formMatchers) {
 
@@ -148,18 +183,31 @@ function getFormType(form: HTMLFormElement): FormType {
   return FormType.Unknown;
 }
 
+/**
+ * Form types that should be filled by the extension.
+ * */
 const fillFormTypes: FormType[] = [
   FormType.Login,
   FormType.Card,
 ];
 
+/**
+ * Form types that should be saved by the extension when the form is submitted.
+ * */
 const saveFormTypes: FormType[] = [
   FormType.Login,
   FormType.Register,
 ];
 
 let fillForms: HTMLFormElement[] = [];
-function setup(): void {
+/**
+ * Scan the webpage for forms and identify the types of those forms.
+ * If any fillable forms are found, send a message to the background script to
+ * perform a search.
+ * If any forms are of a type where we want to save the data they submit, set
+ * up an event handler to send the data to the background script when submitted.
+ * */
+function scanPage(): void {
   const { forms } = document;
   fillForms = [];
   for(let i = 0; i < forms.length; i++) {
@@ -195,46 +243,73 @@ function setup(): void {
   }
 }
 
-setup();
-const observer = new MutationObserver((m, o) => { console.log(m, o); setup() });
+// Scan page when the content script is loaded.
+scanPage();
+
+// Observe changes in the webpage in case there are forms that are not rendered
+// when the DOM is first loaded.
+const observer = new MutationObserver((m, o) => { console.log(m, o); scanPage() });
 observer.observe(document.body, { childList: true });
 
-interface Message {
-  type: string;
-  data: [string, string][];
-}
+/**
+ * Mapping of StoredSafe field names to StoredSafe values.
+ * */
+type Data = [string, string][];
 
-function onMessage(
-  message: Message,
-): void {
-  if (message.type === 'fill') {
-    console.log(message.data);
-    for (const form of fillForms) {
-      let filled = false;
-      for (const element of form) {
-        if (element instanceof HTMLInputElement && isElementFillable(element)) {
-          let elementFilled = false;
-          for (const [field, value] of new Map(message.data)) {
-            console.log('Attempting to fill', field, 'in', element);
-            if (isMatch(field, element)) {
-              console.log('Filled field', field);
-              elementFilled = true;
-              filled = true;
-              element.value = value;
-              break;
-            }
-          }
-          if (!elementFilled) { // If no field matched this element
-            console.log('Focus unfilled element', element);
-            element.focus(); // Focus element for easier access (example otp field)
+/**
+ * Fill input fields with StoredSafe data in the appropriate forms/fields.
+ * @param data - StoredSafe data.
+ * @param submit - Whether or not to submit the form after filling it.
+ * */
+function fillForm(data: Data, submit=false): void {
+  for (const form of fillForms) {
+    let filled = false;
+    for (const element of form) {
+      if (element instanceof HTMLInputElement && isElementFillable(element)) {
+        let elementFilled = false;
+        for (const [field, value] of new Map(data)) {
+          console.log('Attempting to fill', field, 'in', element);
+          if (isMatch(field, element)) {
+            console.log('Filled field', field);
+            elementFilled = true;
+            filled = true;
+            element.value = value;
+            break;
           }
         }
+        if (!elementFilled) { // If no field matched this element
+          console.log('Focus unfilled element', element);
+          element.focus(); // Focus element for easier access (example otp field)
+        }
       }
-      if (filled) {
-        // fillForms[i].submit(); // TODO: Fix compatibility with autofill on failed login.
-      }
+    }
+    if (filled && submit) {
+      // fillForms[i].submit(); // TODO: Fix compatibility with autofill on failed login.
     }
   }
 }
 
+/**
+ * The type of messages the content script expects to receive.
+ * @param type - The type of the message, contract between sender and receiver.
+ * @param data - StoredSafe data.
+ * */
+interface Message {
+  type: string;
+  data: Data;
+}
+
+/**
+ * Handle messages sent to the tab by other scripts.
+ * @param message - Message sent by other script.
+ * */
+function onMessage(
+  message: Message,
+): void {
+  if (message.type === 'fill') {
+    fillForm(message.data);
+  }
+}
+
+// Set up listener for messages from other scripts within the extension.
 browser.runtime.onMessage.addListener(onMessage);

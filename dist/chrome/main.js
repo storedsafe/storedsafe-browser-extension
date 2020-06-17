@@ -30109,7 +30109,7 @@ exports.useAuth = () => {
     const onLogin = (site, fields) => {
         setLoginStatus((prevLoginStatus) => (Object.assign(Object.assign({}, prevLoginStatus), { [site.host]: { loading: true, error: undefined } })));
         dispatch({
-            sitePrefs: {
+            preferences: {
                 type: 'update',
                 host: site.host,
                 sitePreferences: {
@@ -30691,6 +30691,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+/**
+ * Entrypoint for React, mounts React application in DOM.
+ * Sets up development tools that run on UI pages.
+ * */
 const React = __importStar(__webpack_require__(/*! react */ "react"));
 const ReactDOM = __importStar(__webpack_require__(/*! react-dom */ "react-dom"));
 __webpack_require__(/*! ./index.scss */ "./src/index.scss");
@@ -30706,12 +30710,12 @@ if (true) {
         rules: [
             {
                 id: 'color-contrast',
-                selector: '*:not(.button-accent .button-children)',
+                selector: '*:not(.button .button-children)',
             },
             {
                 id: 'page-has-heading-one',
                 selector: '*:not(.popup)',
-            }
+            },
         ],
     });
 }
@@ -30736,8 +30740,6 @@ ReactDOM.render(React.createElement(Extension_1.default, null), document.getElem
  * which site the user logged into last.
  * - get/set functions handle all storage interaction.
  * - actions object provides the public interface for the model.
- *
- * @packageDocumentation
  * */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.actions = void 0;
@@ -30803,8 +30805,6 @@ exports.actions = {
  * area as a user performs a login/logout action or when a session times out.
  * - get/set functions handle all storage interaction.
  * - actions object provides the public interface for the model.
- *
- * @packageDocumentation
  * */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.actions = void 0;
@@ -30891,8 +30891,6 @@ exports.actions = {
  * will however not prevent the setting of fields in sync storage that also exist
  * in managed enforced storage because when fetching settings, any such overlapping
  * fields will simply be ignored in favor of higher priority settings.
- *
- * @packageDocumentation
  * */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.actions = exports.fields = exports.defaults = void 0;
@@ -31027,8 +31025,6 @@ exports.actions = {
  * storage instead.
  * - get/set functions handle all storage interaction.
  * - actions object provides the public interface for the model.
- *
- * @packageDocumentation
  * */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.actions = void 0;
@@ -31124,8 +31120,6 @@ exports.actions = {
  * to implement the actual caching.
  * - get/set functions handle all storage interaction.
  * - actions object provides the public interface for the model.
- *
- * @packageDocumentation
  * */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.actions = void 0;
@@ -31719,7 +31713,7 @@ exports.PopupContainer = () => {
     return (react_1.default.createElement(Popup.Main, { add: {
             hosts: [...state.sessions.keys()],
             onHostChange: (host) => { console.log(host); },
-        }, isInitialized: isInitialized, search: Object.assign({ hosts: Object.keys(state.sessions), results: state.search }, search), auth: Object.assign({ sites: state.sites.list, sessions: state.sessions, preferences: state.sitePrefs }, auth), openOptions: openOptions }));
+        }, isInitialized: isInitialized, search: Object.assign({ hosts: Object.keys(state.sessions), results: state.search }, search), auth: Object.assign({ sites: state.sites.list, sessions: state.sessions, preferences: state.preferences }, auth), openOptions: openOptions }));
 };
 
 
@@ -31737,6 +31731,34 @@ exports.PopupContainer = () => {
 Object.defineProperty(exports, "__esModule", { value: true });
 const PopupContainer_1 = __webpack_require__(/*! ./PopupContainer */ "./src/pages/Popup/PopupContainer.tsx");
 exports.default = PopupContainer_1.PopupContainer;
+
+
+/***/ }),
+
+/***/ "./src/reducers/PreferencesReducer.ts":
+/*!********************************************!*\
+  !*** ./src/reducers/PreferencesReducer.ts ***!
+  \********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.emptyState = exports.reducer = void 0;
+const Preferences_1 = __webpack_require__(/*! ../model/storage/Preferences */ "./src/model/storage/Preferences.ts");
+exports.reducer = (action) => {
+    switch (action.type) {
+        case 'update': {
+            const { host, sitePreferences } = action;
+            return Preferences_1.actions.updateSitePreferences(host, sitePreferences);
+        }
+        case 'init': {
+            return Preferences_1.actions.fetch();
+        }
+    }
+};
+exports.emptyState = { sites: {} };
 
 
 /***/ }),
@@ -31961,34 +31983,6 @@ exports.emptyState = new Map();
 
 /***/ }),
 
-/***/ "./src/reducers/SitePrefsReducer.ts":
-/*!******************************************!*\
-  !*** ./src/reducers/SitePrefsReducer.ts ***!
-  \******************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.emptyState = exports.reducer = void 0;
-const Preferences_1 = __webpack_require__(/*! ../model/storage/Preferences */ "./src/model/storage/Preferences.ts");
-exports.reducer = (action) => {
-    switch (action.type) {
-        case 'update': {
-            const { host, sitePreferences } = action;
-            return Preferences_1.actions.updateSitePreferences(host, sitePreferences);
-        }
-        case 'init': {
-            return Preferences_1.actions.fetch();
-        }
-    }
-};
-exports.emptyState = { sites: {} };
-
-
-/***/ }),
-
 /***/ "./src/reducers/SitesReducer.ts":
 /*!**************************************!*\
   !*** ./src/reducers/SitesReducer.ts ***!
@@ -32060,7 +32054,7 @@ exports.emptyState = exports.reducer = void 0;
 const SessionsReducer = __importStar(__webpack_require__(/*! ./SessionsReducer */ "./src/reducers/SessionsReducer.ts"));
 const SettingsReducer = __importStar(__webpack_require__(/*! ./SettingsReducer */ "./src/reducers/SettingsReducer.ts"));
 const SitesReducer = __importStar(__webpack_require__(/*! ./SitesReducer */ "./src/reducers/SitesReducer.ts"));
-const SitePrefsReducer = __importStar(__webpack_require__(/*! ./SitePrefsReducer */ "./src/reducers/SitePrefsReducer.ts"));
+const PreferencesReducer = __importStar(__webpack_require__(/*! ./PreferencesReducer */ "./src/reducers/PreferencesReducer.ts"));
 const SearchReducer = __importStar(__webpack_require__(/*! ./SearchReducer */ "./src/reducers/SearchReducer.ts"));
 const parseState = (state, prevState) => {
     if (state) {
@@ -32082,10 +32076,10 @@ exports.reducer = (action) => {
             SessionsReducer.reducer({ type: 'init' }),
             SettingsReducer.reducer({ type: 'init' }),
             SitesReducer.reducer({ type: 'init' }),
-            SitePrefsReducer.reducer({ type: 'init' }),
+            PreferencesReducer.reducer({ type: 'init' }),
             SearchReducer.reducer({ type: 'init' }),
-        ]).then(([sessions, settings, sites, sitePrefs, search]) => ({
-            sessions, settings, sites, sitePrefs, search,
+        ]).then(([sessions, settings, sites, preferences, search]) => ({
+            sessions, settings, sites, preferences, search,
         }));
     }
     else {
@@ -32098,23 +32092,23 @@ exports.reducer = (action) => {
         const sites = (action.sites
             ? SitesReducer.reducer(action.sites)
             : Promise.resolve());
-        const sitePrefs = (action.sitePrefs
-            ? SitePrefsReducer.reducer(action.sitePrefs)
+        const preferences = (action.preferences
+            ? PreferencesReducer.reducer(action.preferences)
             : Promise.resolve());
         const search = (action.search
             ? SearchReducer.reducer(action.search)
             : Promise.resolve());
         return Promise.all([
-            sessions, settings, sites, sitePrefs, search,
-        ]).then(([sessions, settings, sites, sitePrefs, search]) => {
+            sessions, settings, sites, preferences, search,
+        ]).then(([sessions, settings, sites, preferences, search]) => {
             return (prevState) => {
                 sessions = parseState(sessions, prevState.sessions);
                 settings = parseState(settings, prevState.settings);
                 sites = parseState(sites, prevState.sites);
-                sitePrefs = parseState(sitePrefs, prevState.sitePrefs);
+                preferences = parseState(preferences, prevState.preferences);
                 search = parseState(search, prevState.search);
                 return {
-                    sessions, settings, sites, sitePrefs, search,
+                    sessions, settings, sites, preferences, search,
                 };
             };
         });
@@ -32124,7 +32118,7 @@ exports.emptyState = {
     sessions: SessionsReducer.emptyState,
     settings: SettingsReducer.emptyState,
     sites: SitesReducer.emptyState,
-    sitePrefs: SitePrefsReducer.emptyState,
+    preferences: PreferencesReducer.emptyState,
     search: SearchReducer.emptyState,
 };
 

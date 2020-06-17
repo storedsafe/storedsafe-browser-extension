@@ -8,8 +8,6 @@
  *
  * This module should only concern itself with sending requests and parsing incoming
  * data. Error handling and storage modifications should be handled in `StoredSafe.ts`.
- *
- * @packageDocumentation
  * */
 import { StoredSafePromise } from 'storedsafe';
 import { MakeStoredSafeRequest } from './StoredSafe';

@@ -7,8 +7,6 @@
  * storage instead.
  * - get/set functions handle all storage interaction.
  * - actions object provides the public interface for the model.
- *
- * @packageDocumentation
  * */
 
 const systemStorage = browser.storage.managed;

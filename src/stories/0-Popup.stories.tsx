@@ -319,6 +319,26 @@ export const PopupMultiple: React.FunctionComponent = () => {
         { name: 'T4', icon: '', id: '4', structure: [] },
       ],
     }],
+    ['warning.example.com', {
+      vaults: [
+        { name: 'Bar 1', id: '7', canWrite: false },
+        { name: 'Bar 2', id: '2', canWrite: false },
+      ],
+      templates: [
+        { name: 'T2', icon: '', id: '2', structure: [] },
+        { name: 'T4', icon: '', id: '4', structure: [] },
+      ],
+    }],
+    ['error.example.com', {
+      vaults: [
+        { name: 'Bar 1', id: '7', canWrite: false },
+        { name: 'Bar 2', id: '2', canWrite: false },
+      ],
+      templates: [
+        { name: 'T2', icon: '', id: '2', structure: [] },
+        { name: 'T4', icon: '', id: '4', structure: [] },
+      ],
+    }],
   ]);
 
   const sessions: Sessions = new Map([
@@ -442,8 +462,8 @@ export const PopupMultiple: React.FunctionComponent = () => {
     <Popup.Main
       add={{
         hosts: Array.from(sessions.keys()),
-        vaults: siteInfo.get(site).vaults,
-        templates: siteInfo.get(site).templates,
+        vaults: site && siteInfo.get(site).vaults,
+        templates: site && siteInfo.get(site).templates,
         onHostChange,
       }}
       isInitialized={true}

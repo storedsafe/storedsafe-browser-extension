@@ -3,14 +3,14 @@ import PromiseReducer from './PromiseReducer';
 import * as SessionsReducer from './SessionsReducer';
 import * as SettingsReducer from './SettingsReducer';
 import * as SitesReducer from './SitesReducer';
-import * as SitePrefsReducer from './SitePrefsReducer';
+import * as PreferencesReducer from './PreferencesReducer';
 import * as SearchReducer from './SearchReducer';
 
 type AreaState = (
   SessionsReducer.State |
   SettingsReducer.State |
   SitesReducer.State |
-  SitePrefsReducer.State |
+  PreferencesReducer.State |
   SearchReducer.State
 );
 
@@ -18,7 +18,7 @@ export type State = {
   sessions: SessionsReducer.State;
   settings: SettingsReducer.State;
   sites: SitesReducer.State;
-  sitePrefs: SitePrefsReducer.State;
+  preferences: PreferencesReducer.State;
   search: SearchReducer.State;
 }
 
@@ -27,7 +27,7 @@ export type Action = {
   sessions?: SessionsReducer.Action;
   settings?: SettingsReducer.Action;
   sites?: SitesReducer.Action;
-  sitePrefs?: SitePrefsReducer.Action;
+  preferences?: PreferencesReducer.Action;
   search?: SearchReducer.Action;
 };
 
@@ -53,10 +53,10 @@ export const reducer: PromiseReducer<State, Action> = (action) => {
       SessionsReducer.reducer({ type: 'init' }) as Promise<Sessions>,
       SettingsReducer.reducer({ type: 'init' }) as Promise<Settings>,
       SitesReducer.reducer({ type: 'init' }) as Promise<Sites>,
-      SitePrefsReducer.reducer({ type: 'init' }) as Promise<Preferences>,
+      PreferencesReducer.reducer({ type: 'init' }) as Promise<Preferences>,
       SearchReducer.reducer({ type: 'init' }) as Promise<Results>,
-    ]).then(([sessions, settings, sites, sitePrefs, search]) => ({
-      sessions, settings, sites, sitePrefs, search,
+    ]).then(([sessions, settings, sites, preferences, search]) => ({
+      sessions, settings, sites, preferences, search,
     }));
   } else {
     const sessions = (
@@ -74,9 +74,9 @@ export const reducer: PromiseReducer<State, Action> = (action) => {
       ? SitesReducer.reducer(action.sites)
       : Promise.resolve()
     );
-    const sitePrefs = (
-      action.sitePrefs
-      ? SitePrefsReducer.reducer(action.sitePrefs)
+    const preferences = (
+      action.preferences
+      ? PreferencesReducer.reducer(action.preferences)
       : Promise.resolve()
     );
     const search = (
@@ -86,16 +86,16 @@ export const reducer: PromiseReducer<State, Action> = (action) => {
     );
 
     return Promise.all<AreaState | SetStateAction<AreaState> | void>([
-      sessions, settings, sites, sitePrefs, search,
-    ]).then(([sessions, settings, sites, sitePrefs, search]) => {
+      sessions, settings, sites, preferences, search,
+    ]).then(([sessions, settings, sites, preferences, search]) => {
       return (prevState: State): State => {
         sessions = parseState<Sessions>(sessions, prevState.sessions);
         settings = parseState<Settings>(settings, prevState.settings);
         sites = parseState<Sites>(sites, prevState.sites);
-        sitePrefs = parseState<Preferences>(sitePrefs, prevState.sitePrefs);
+        preferences = parseState<Preferences>(preferences, prevState.preferences);
         search = parseState<Results>(search, prevState.search);
         return {
-          sessions, settings, sites, sitePrefs, search,
+          sessions, settings, sites, preferences, search,
         }
       };
     });
@@ -106,6 +106,6 @@ export const emptyState: State = {
   sessions: SessionsReducer.emptyState,
   settings: SettingsReducer.emptyState,
   sites: SitesReducer.emptyState,
-  sitePrefs: SitePrefsReducer.emptyState,
+  preferences: PreferencesReducer.emptyState,
   search: SearchReducer.emptyState,
 };

@@ -93,8 +93,16 @@
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-// const types = /text|url|password|email/i;
-// const ids = /user|name|pass|mail|url|server|site/i;
+/**
+ * Runs on every open tab.
+ * Handles identification of forms on the webpage, tracks submission of those
+ * forms and fills forms when credentials are received from another script
+ * using the extension message API.
+ * */
+/**
+ * Describes the purpose of the form. Some forms should be filled while others
+ * should be ignored or handled as special cases.
+ * */
 var FormType;
 (function (FormType) {
     FormType["Login"] = "login";
@@ -133,9 +141,9 @@ const matchers = new Map([
         }],
 ]);
 /**
- * Matching the form name is considered a definite match and should return the form type,
- * not matching a name means the fields fallback should be checked.
- * If using the fields fallback, the form should only be considered a match if all fields
+ * Matching the form name is considered a definite match and should return the form type.
+ * Not matching a name means the fields fallback should be checked.
+ * If using the fields fallback, the form should only be considered a match if all field
  * matchers find a match.
  * The formMatchers will be checked in order of appearance and the first match if any will
  * be used, meaning more generic matchers should be placed further down in the list.
@@ -168,13 +176,11 @@ const formMatchers = new Map([
             fields: [],
         }],
 ]);
-function isMatch(field, element) {
-    if (matchers.get(field) === undefined)
-        return false;
-    const types = new RegExp(matchers.get(field).type, 'i');
-    const name = new RegExp(matchers.get(field).name, 'i');
-    return (types.test(element.type) && (name.test(element.name) || name.test(element.id)));
-}
+/**
+ * Checks whether an element is of a type that is fillable by the user.
+ * @param element Element to be tested.
+ * @returns True if the element is an input that can be filled by the user.
+ * */
 function isElementFillable(element) {
     return element instanceof HTMLInputElement && ![
         'hidden',
@@ -183,6 +189,24 @@ function isElementFillable(element) {
         'reset'
     ].includes(element.type);
 }
+/**
+ * Checks whether a field is a match for the provded input field.
+ * @param field - Name of StoredSafe field.
+ * @param element - Input element to attempt a match with.
+ * @returns True if the element is a match for the field.
+ * */
+function isMatch(field, element) {
+    if (matchers.get(field) === undefined)
+        return false;
+    const types = new RegExp(matchers.get(field).type, 'i');
+    const name = new RegExp(matchers.get(field).name, 'i');
+    return (types.test(element.type) && (name.test(element.name) || name.test(element.id)));
+}
+/**
+ * Checks a form against the form matchers to determine the type of the form.
+ * @param form - The form to be matched.
+ * @returns The type indicating the purpose of the form.
+ * */
 function getFormType(form) {
     for (const [formType, formTypeMatchers] of formMatchers) {
         // Check for form name or id match
@@ -220,16 +244,29 @@ function getFormType(form) {
     }
     return FormType.Unknown;
 }
+/**
+ * Form types that should be filled by the extension.
+ * */
 const fillFormTypes = [
     FormType.Login,
     FormType.Card,
 ];
+/**
+ * Form types that should be saved by the extension when the form is submitted.
+ * */
 const saveFormTypes = [
     FormType.Login,
     FormType.Register,
 ];
 let fillForms = [];
-function setup() {
+/**
+ * Scan the webpage for forms and identify the types of those forms.
+ * If any fillable forms are found, send a message to the background script to
+ * perform a search.
+ * If any forms are of a type where we want to save the data they submit, set
+ * up an event handler to send the data to the background script when submitted.
+ * */
+function scanPage() {
     const { forms } = document;
     fillForms = [];
     for (let i = 0; i < forms.length; i++) {
@@ -263,39 +300,54 @@ function setup() {
         });
     }
 }
-setup();
-const observer = new MutationObserver((m, o) => { console.log(m, o); setup(); });
+// Scan page when the content script is loaded.
+scanPage();
+// Observe changes in the webpage in case there are forms that are not rendered
+// when the DOM is first loaded.
+const observer = new MutationObserver((m, o) => { console.log(m, o); scanPage(); });
 observer.observe(document.body, { childList: true });
-function onMessage(message) {
-    if (message.type === 'fill') {
-        console.log(message.data);
-        for (const form of fillForms) {
-            let filled = false;
-            for (const element of form) {
-                if (element instanceof HTMLInputElement && isElementFillable(element)) {
-                    let elementFilled = false;
-                    for (const [field, value] of new Map(message.data)) {
-                        console.log('Attempting to fill', field, 'in', element);
-                        if (isMatch(field, element)) {
-                            console.log('Filled field', field);
-                            elementFilled = true;
-                            filled = true;
-                            element.value = value;
-                            break;
-                        }
-                    }
-                    if (!elementFilled) { // If no field matched this element
-                        console.log('Focus unfilled element', element);
-                        element.focus(); // Focus element for easier access (example otp field)
+/**
+ * Fill input fields with StoredSafe data in the appropriate forms/fields.
+ * @param data - StoredSafe data.
+ * @param submit - Whether or not to submit the form after filling it.
+ * */
+function fillForm(data, submit = false) {
+    for (const form of fillForms) {
+        let filled = false;
+        for (const element of form) {
+            if (element instanceof HTMLInputElement && isElementFillable(element)) {
+                let elementFilled = false;
+                for (const [field, value] of new Map(data)) {
+                    console.log('Attempting to fill', field, 'in', element);
+                    if (isMatch(field, element)) {
+                        console.log('Filled field', field);
+                        elementFilled = true;
+                        filled = true;
+                        element.value = value;
+                        break;
                     }
                 }
+                if (!elementFilled) { // If no field matched this element
+                    console.log('Focus unfilled element', element);
+                    element.focus(); // Focus element for easier access (example otp field)
+                }
             }
-            if (filled) {
-                // fillForms[i].submit(); // TODO: Fix compatibility with autofill on failed login.
-            }
+        }
+        if (filled && submit) {
+            // fillForms[i].submit(); // TODO: Fix compatibility with autofill on failed login.
         }
     }
 }
+/**
+ * Handle messages sent to the tab by other scripts.
+ * @param message - Message sent by other script.
+ * */
+function onMessage(message) {
+    if (message.type === 'fill') {
+        fillForm(message.data);
+    }
+}
+// Set up listener for messages from other scripts within the extension.
 browser.runtime.onMessage.addListener(onMessage);
 
 

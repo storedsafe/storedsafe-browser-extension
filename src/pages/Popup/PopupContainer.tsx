@@ -26,7 +26,7 @@ export const PopupContainer: React.FunctionComponent = () => {
       auth={{
         sites: state.sites.list,
         sessions: state.sessions,
-        preferences: state.sitePrefs,
+        preferences: state.preferences,
         ...auth,
       }}
       openOptions={openOptions}

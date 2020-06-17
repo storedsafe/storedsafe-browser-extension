@@ -73,8 +73,9 @@ function setupTimers(sessions: Sessions): void {
       const tokenLife = getTokenLife(session.createdAt);
       const maxTokenLife = settings.get('maxTokenLife').value as number;
       const tokenTimeout = maxTokenLife * 3600 * 10e3 - tokenLife;
-      console.log(tokenTimeout);
+      console.log('Invalidate', host, 'in', Math.floor(tokenTimeout / 6e5), 'minutes');
       sessionTimers.set(host, window.setTimeout(() => {
+        console.log('Session timed out for ', host);
         invalidateSession(host);
       }, tokenTimeout));
     }
@@ -149,7 +150,6 @@ async function fill(tabId: number, results: Results): Promise<void> {
   if (result) {
     const decryptedResult = decryptResult(host, result);
     const data = parseResult(await decryptedResult);
-    console.log(result, data);
     tabFill(tabId, data);
   }
 }
@@ -161,10 +161,11 @@ async function fill(tabId: number, results: Results): Promise<void> {
 function tabFind(tab: browser.tabs.Tab): Promise<void> {
   const { id: tabId, url } = tab;
   const needle = urlToNeedle(url);
+  console.log('Searching for results on', url);
   return StoredSafeActions.tabFind(tabId, needle).then((tabResults) => {
+    console.log('Found ', [...tabResults.values()].reduce((acc, res) => acc + res.size, 0), 'results on ', url);
     SettingsActions.fetch().then((settings) => {
       if (settings.get('autoFill').value) {
-        console.log('filling form on tab', tab);
         fill(tabId, tabResults.get(tabId));
       }
     });
@@ -292,8 +293,8 @@ function setupIdleTimer(): void {
     if (idleTimer) {
       clearIdleTimer();
     }
-    console.log('Idle timer started.');
-    const idleTimeout = settings.get('idleMax').value as number * 1000 * 60;
+    const idleTimeout = settings.get('idleMax').value as number * 6e5;
+    console.log('Idle timeout in', idleTimeout, 'ms');
     idleTimer = window.setTimeout(() => {
       console.log('Idle timer expired, invalidate all sessions.');
       invalidateAllSessions()

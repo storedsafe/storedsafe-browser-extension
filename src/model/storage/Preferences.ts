@@ -5,8 +5,6 @@
  * which site the user logged into last.
  * - get/set functions handle all storage interaction.
  * - actions object provides the public interface for the model.
- *
- * @packageDocumentation
  * */
 
 /**

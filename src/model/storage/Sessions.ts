@@ -5,8 +5,6 @@
  * area as a user performs a login/logout action or when a session times out.
  * - get/set functions handle all storage interaction.
  * - actions object provides the public interface for the model.
- *
- * @packageDocumentation
  * */
 
 /**

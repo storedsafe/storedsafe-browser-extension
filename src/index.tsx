@@ -1,3 +1,7 @@
+/**
+ * Entrypoint for React, mounts React application in DOM.
+ * Sets up development tools that run on UI pages.
+ * */
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import './index.scss';
@@ -15,12 +19,12 @@ if (process.env.NODE_ENV !== 'production') {
     rules: [
       {
         id: 'color-contrast',
-        selector: '*:not(.button-accent .button-children)',
+        selector: '*:not(.button .button-children)',
       },
       {
         id: 'page-has-heading-one',
         selector: '*:not(.popup)',
-      }
+      },
     ],
   });
 }

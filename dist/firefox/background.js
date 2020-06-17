@@ -2337,8 +2337,6 @@ exports.default = StoredSafe;
  * area as a user performs a login/logout action or when a session times out.
  * - get/set functions handle all storage interaction.
  * - actions object provides the public interface for the model.
- *
- * @packageDocumentation
  * */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.actions = void 0;
@@ -2425,8 +2423,6 @@ exports.actions = {
  * will however not prevent the setting of fields in sync storage that also exist
  * in managed enforced storage because when fetching settings, any such overlapping
  * fields will simply be ignored in favor of higher priority settings.
- *
- * @packageDocumentation
  * */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.actions = exports.fields = exports.defaults = void 0;
@@ -2559,8 +2555,6 @@ exports.actions = {
  * to implement the actual caching.
  * - get/set functions handle all storage interaction.
  * - actions object provides the public interface for the model.
- *
- * @packageDocumentation
  * */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.actions = void 0;
@@ -3195,8 +3189,9 @@ function setupTimers(sessions) {
             const tokenLife = getTokenLife(session.createdAt);
             const maxTokenLife = settings.get('maxTokenLife').value;
             const tokenTimeout = maxTokenLife * 3600 * 10e3 - tokenLife;
-            console.log(tokenTimeout);
+            console.log('Invalidate', host, 'in', Math.floor(tokenTimeout / 6e5), 'minutes');
             sessionTimers.set(host, window.setTimeout(() => {
+                console.log('Session timed out for ', host);
                 invalidateSession(host);
             }, tokenTimeout));
         }
@@ -3267,7 +3262,6 @@ function fill(tabId, results) {
         if (result) {
             const decryptedResult = decryptResult(host, result);
             const data = parseResult(yield decryptedResult);
-            console.log(result, data);
             tabFill(tabId, data);
         }
     });
@@ -3279,10 +3273,11 @@ function fill(tabId, results) {
 function tabFind(tab) {
     const { id: tabId, url } = tab;
     const needle = urlToNeedle(url);
+    console.log('Searching for results on', url);
     return StoredSafe_1.actions.tabFind(tabId, needle).then((tabResults) => {
+        console.log('Found ', [...tabResults.values()].reduce((acc, res) => acc + res.size, 0), 'results on ', url);
         Settings_1.actions.fetch().then((settings) => {
             if (settings.get('autoFill').value) {
-                console.log('filling form on tab', tab);
                 fill(tabId, tabResults.get(tabId));
             }
         });
@@ -3394,8 +3389,8 @@ function setupIdleTimer() {
         if (idleTimer) {
             clearIdleTimer();
         }
-        console.log('Idle timer started.');
-        const idleTimeout = settings.get('idleMax').value * 1000 * 60;
+        const idleTimeout = settings.get('idleMax').value * 6e5;
+        console.log('Idle timeout in', idleTimeout, 'ms');
         idleTimer = window.setTimeout(() => {
             console.log('Idle timer expired, invalidate all sessions.');
             invalidateAllSessions();
