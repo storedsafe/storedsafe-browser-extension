@@ -28674,6 +28674,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = __importStar(__webpack_require__(/*! react */ "react"));
+const StoredSafe_1 = __webpack_require__(/*! ../../model/storedsafe/StoredSafe */ "./src/model/storedsafe/StoredSafe.ts");
 const common_1 = __webpack_require__(/*! ../common */ "./src/components/common/index.ts");
 const Add_1 = __webpack_require__(/*! ../Add */ "./src/components/Add/index.ts");
 __webpack_require__(/*! ./Add.scss */ "./src/components/Popup/Add.scss");
@@ -28701,6 +28702,8 @@ const PopupAdd = ({ hosts, vaults, templates, onHostChange, }) => {
             selected: state.template,
             values: templates,
             onChange: handleTemplateChange,
+        }, initialValues: {}, onAdd: (properties) => {
+            StoredSafe_1.actions.addObject(hosts[state.host], properties);
         } });
     return (react_1.default.createElement("section", { className: "popup-add" },
         content,

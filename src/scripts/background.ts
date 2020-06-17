@@ -244,7 +244,7 @@ function onStorageChange(
     const { sessions } = storage;
     // If there are changes to sessions
     if (sessions && sessions.newValue) {
-      handleSessionsChange(sessions.newValue);
+      handleSessionsChange(new Map(sessions.newValue));
     }
   }
 }
