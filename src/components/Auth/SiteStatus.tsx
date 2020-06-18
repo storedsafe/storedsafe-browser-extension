@@ -46,6 +46,27 @@ export const SiteStatus: React.FunctionComponent<SiteStatusProps> = ({
         {Object.values(session.warnings).length > 0 && (warningMessages)}
       </section>
       <section className="site-status-logout">
+        {/*<Button
+          type="button"
+          onClick={(): void => {
+            browser.tabs.query({ url: `*://${host}/*` }).then((tabs) => {
+              console.log(tabs);
+              if (tabs.length === 0) {
+                return browser.tabs.create({ url: `https://${host}/` })
+              }
+              let selectedTab = tabs[0];
+              for (const tab of tabs) {
+                if (tab.lastAccessed > selectedTab.lastAccessed) {
+                  console.log('left', tab, 'right', selectedTab);
+                  selectedTab = tab;
+                }
+              }
+              browser.tabs.update(selectedTab.id, { active: true });
+              browser.windows.update(selectedTab.windowId, { focused: true });
+            });
+          }}>
+          Go to {host}
+        </Button>*/}
         <Button
           type="submit"
           color="danger"

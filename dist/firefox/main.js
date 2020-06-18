@@ -29112,8 +29112,8 @@ __webpack_require__(/*! ./StatusBar.scss */ "./src/components/Popup/StatusBar.sc
 exports.StatusBar = ({ activeSessions }) => (react_1.default.createElement("section", { className: "status-bar" },
     react_1.default.createElement(common_1.OnlineIndicator, { online: activeSessions > 0 }),
     react_1.default.createElement("span", { className: "status-bar-sessions" },
-        activeSessions === 0 && 'No active sessions',
-        activeSessions === 1 && '1 active session',
+        activeSessions === 0 && 'Offline',
+        activeSessions === 1 && 'Online',
         activeSessions >= 2 && `${activeSessions} active sessions`)));
 
 
@@ -30929,11 +30929,14 @@ const systemStorage = browser.storage.managed;
 const userStorage = browser.storage.sync;
 /**
  * Default values for settings.
+ * @param idleMax - Number of minutes a user can be idle before being logged out.
+ * @param autoFill - Whether or not to automatically fill forms when possible.
+ * @param maxTokenLife - Number of hours a session is allowed to be maintained.
  * */
 exports.defaults = {
     idleMax: 15,
     autoFill: false,
-    maxTokenLife: 180,
+    maxTokenLife: 8,
 };
 /**
  * Fields to be passed to the React component that renders the form to update
@@ -30963,6 +30966,7 @@ exports.fields = {
             type: 'number',
             required: true,
             min: 1,
+            max: 24,
         },
     },
 };
@@ -31742,7 +31746,6 @@ exports.PopupContainer = () => {
     const openOptions = () => { browser.runtime.openOptionsPage(); };
     react_1.useEffect(() => {
         browser.runtime.onMessage.addListener((message) => {
-            console.log('Popup received message');
             const { type } = message;
             if (type === 'save') {
                 const { data } = message;

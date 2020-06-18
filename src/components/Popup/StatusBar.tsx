@@ -12,8 +12,8 @@ export const StatusBar: React.FunctionComponent<StatusBarProps> = ({
   <section className="status-bar">
     <OnlineIndicator online={activeSessions > 0} />
     <span className="status-bar-sessions">
-      {activeSessions === 0 && 'No active sessions'}
-      {activeSessions === 1 && '1 active session'}
+      {activeSessions === 0 && 'Offline'}
+      {activeSessions === 1 && 'Online'}
       {activeSessions >= 2 && `${activeSessions} active sessions`}
     </span>
   </section>

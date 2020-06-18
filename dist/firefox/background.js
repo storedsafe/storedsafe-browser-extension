@@ -2430,11 +2430,14 @@ const systemStorage = browser.storage.managed;
 const userStorage = browser.storage.sync;
 /**
  * Default values for settings.
+ * @param idleMax - Number of minutes a user can be idle before being logged out.
+ * @param autoFill - Whether or not to automatically fill forms when possible.
+ * @param maxTokenLife - Number of hours a session is allowed to be maintained.
  * */
 exports.defaults = {
     idleMax: 15,
     autoFill: false,
-    maxTokenLife: 180,
+    maxTokenLife: 8,
 };
 /**
  * Fields to be passed to the React component that renders the form to update
@@ -2464,6 +2467,7 @@ exports.fields = {
             type: 'number',
             required: true,
             min: 1,
+            max: 24,
         },
     },
 };

@@ -14,7 +14,6 @@ export const PopupContainer: React.FunctionComponent = () => {
 
   useEffect(() => {
     browser.runtime.onMessage.addListener((message) => {
-      console.log('Popup received message');
       const { type } = message;
       if (type === 'save') {
         const { data } = message;

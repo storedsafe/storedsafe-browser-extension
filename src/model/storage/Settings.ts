@@ -32,11 +32,14 @@ export type SettingsValues = {
 
 /**
  * Default values for settings.
+ * @param idleMax - Number of minutes a user can be idle before being logged out.
+ * @param autoFill - Whether or not to automatically fill forms when possible.
+ * @param maxTokenLife - Number of hours a session is allowed to be maintained.
  * */
 export const defaults: SettingsValues = {
   idleMax: 15,
   autoFill: false,
-  maxTokenLife: 180,
+  maxTokenLife: 8,
 };
 
 /**
@@ -82,6 +85,7 @@ export const fields: FieldsProps = {
       type: 'number',
       required: true,
       min: 1,
+      max: 24,
     },
   },
 }
