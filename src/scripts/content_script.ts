@@ -212,13 +212,13 @@ function scanPage(): void {
   fillForms = [];
   for(let i = 0; i < forms.length; i++) {
     const formType = getFormType(forms[i]);
-    console.log(formType, forms[i]);
+    // console.log(formType, forms[i]);
     if (fillFormTypes.includes(formType)) {
-      console.log('Adding form to fillable: ', forms[i]);
+      // console.log('Adding form to fillable: ', forms[i]);
       fillForms.push(forms[i]);
     }
     if (saveFormTypes.includes(formType)) {
-      console.log('Attaching submit handler to: ', forms[i]);
+      // console.log('Attaching submit handler to: ', forms[i]);
       forms[i].addEventListener('submit', (event) => {
         const values: Record<string, string> = {};
         const target = event.target as HTMLFormElement;
@@ -226,7 +226,7 @@ function scanPage(): void {
           for (let i = 0; i < target.length; i++) {
             const element = target[i];
             if (element instanceof HTMLInputElement && isMatch(field, element)) {
-              console.log(field, element.value);
+              // console.log(field, element.value);
               values[field] = element.value;
             }
           }
@@ -248,8 +248,15 @@ scanPage();
 
 // Observe changes in the webpage in case there are forms that are not rendered
 // when the DOM is first loaded.
-const observer = new MutationObserver((m, o) => { console.log(m, o); scanPage() });
-observer.observe(document.body, { childList: true });
+// TODO: Fix looping when other extensions change the form
+// const observer = new MutationObserver((mutation) => {
+  // console.log(mutation);
+  // for (const { addedNodes } of mutation) {
+    // console.log(addedNodes);
+  // }
+  // //scanPage()
+// });
+// observer.observe(document.body, { childList: true });
 
 /**
  * Mapping of StoredSafe field names to StoredSafe values.
@@ -268,9 +275,9 @@ function fillForm(data: Data, submit=false): void {
       if (element instanceof HTMLInputElement && isElementFillable(element)) {
         let elementFilled = false;
         for (const [field, value] of new Map(data)) {
-          console.log('Attempting to fill', field, 'in', element);
+          // console.log('Attempting to fill', field, 'in', element);
           if (isMatch(field, element)) {
-            console.log('Filled field', field);
+            // console.log('Filled field', field);
             elementFilled = true;
             filled = true;
             element.value = value;
@@ -278,7 +285,7 @@ function fillForm(data: Data, submit=false): void {
           }
         }
         if (!elementFilled) { // If no field matched this element
-          console.log('Focus unfilled element', element);
+          // console.log('Focus unfilled element', element);
           element.focus(); // Focus element for easier access (example otp field)
         }
       }

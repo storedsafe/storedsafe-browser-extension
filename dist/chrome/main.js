@@ -27569,12 +27569,28 @@ module.exports = content.locals || {};
 
 "use strict";
 
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AddObject = void 0;
-const react_1 = __importDefault(__webpack_require__(/*! react */ "react"));
+const react_1 = __importStar(__webpack_require__(/*! react */ "react"));
 const common_1 = __webpack_require__(/*! ../common */ "./src/components/common/index.ts");
 const useForm_1 = __webpack_require__(/*! ../../hooks/useForm */ "./src/hooks/useForm.ts");
 __webpack_require__(/*! ./AddObject.scss */ "./src/components/Add/AddObject.scss");
@@ -27591,10 +27607,10 @@ function PropertySelector(property, label, getOptionValues) {
         })))) : null;
 }
 exports.AddObject = ({ host, vault, template, onAdd, initialValues, isLoading, error, }) => {
+    const [values, events] = useForm_1.useForm(initialValues);
     const hostSelector = PropertySelector(host, 'Site', (host) => ({ key: host, title: host }));
     const vaultSelector = PropertySelector(vault, 'Vault', (vault) => ({ key: vault.id, title: vault.name }));
     const templateSelector = PropertySelector(template, 'Template', (template) => ({ key: template.id, title: template.name }));
-    const [values, events] = useForm_1.useForm(initialValues);
     const onSubmit = ((event) => {
         event.preventDefault();
         onAdd(values);
@@ -27605,14 +27621,23 @@ exports.AddObject = ({ host, vault, template, onAdd, initialValues, isLoading, e
     const fields = structure && structure.map(({ title, name, isEncrypted, type }) => (react_1.default.createElement("label", { key: name, htmlFor: name, className: "add-object-field" },
         react_1.default.createElement("span", null, title),
         react_1.default.createElement("input", Object.assign({ className: `add-object-field${isEncrypted ? ' encrypted' : ''}`, type: type === 'text-passwdgen' ? 'password' : 'text', id: name, name: name, value: values[name] || '' }, events))))) || null;
+    const hasVaults = (vault && vault.values && vault.values.length !== 0);
+    console.log(vault, hasVaults);
     return (react_1.default.createElement("section", { className: "add-object" },
         hostSelector,
-        vaultSelector,
-        templateSelector,
-        react_1.default.createElement("form", { onSubmit: onSubmit, className: "add-object-form" },
-            fields,
-            fields && (react_1.default.createElement(common_1.Button, { type: "submit", color: "accent", isLoading: isLoading }, "Add to StoredSafe"))),
-        error && react_1.default.createElement(common_1.Message, { type: "error" }, error.message)));
+        hasVaults ? (react_1.default.createElement(react_1.Fragment, null,
+            vaultSelector,
+            templateSelector,
+            react_1.default.createElement("form", { onSubmit: onSubmit, className: "add-object-form" },
+                fields,
+                fields && (react_1.default.createElement(common_1.Button, { type: "submit", color: "accent", isLoading: isLoading }, "Add to StoredSafe"))),
+            error && react_1.default.createElement(common_1.Message, { type: "error" }, error.message))) : (react_1.default.createElement(react_1.Fragment, null,
+            react_1.default.createElement(common_1.Message, { type: "warning" },
+                react_1.default.createElement("p", null, "You don't have write access to any vaults."),
+                react_1.default.createElement("p", null, "Visit your StoredSafe web interface or contact your administrator.")),
+            react_1.default.createElement(common_1.Button, { onClick: () => { browser.tabs.create({ url: `https://${host.values[host.selected]}/` }); } },
+                "Go to ",
+                host.values[host.selected])))));
 };
 
 

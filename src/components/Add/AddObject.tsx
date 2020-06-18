@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import { Select, Button, Message } from '../common';
 import { useForm } from '../../hooks/useForm';
 import './AddObject.scss';
@@ -67,6 +67,8 @@ export const AddObject: React.FunctionComponent<AddObjectProps> = ({
   isLoading,
   error,
 }: AddObjectProps) => {
+  const [values, events] = useForm<Record<string, string>>(initialValues);
+
   const hostSelector = PropertySelector<string>(
     host, 'Site', (host) => ({ key: host, title: host })
   );
@@ -76,8 +78,6 @@ export const AddObject: React.FunctionComponent<AddObjectProps> = ({
   const templateSelector = PropertySelector<SSTemplate>(
     template, 'Template', (template) => ({ key: template.id, title: template.name })
   );
-
-  const [values, events] = useForm<Record<string, string>>(initialValues);
 
   const onSubmit = ((event: React.FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
@@ -101,20 +101,37 @@ export const AddObject: React.FunctionComponent<AddObjectProps> = ({
     </label>
   )) || null;
 
+  const hasVaults = (vault && vault.values && vault.values.length !== 0);
+  console.log(vault, hasVaults);
+
   return (
     <section className="add-object">
       {hostSelector}
-      {vaultSelector}
-      {templateSelector}
-      <form onSubmit={onSubmit} className="add-object-form">
-        {fields}
-        {fields && (
-          <Button type="submit" color="accent" isLoading={isLoading}>
-            Add to StoredSafe
+      {hasVaults ? (
+        <Fragment>
+          {vaultSelector}
+          {templateSelector}
+          <form onSubmit={onSubmit} className="add-object-form">
+            {fields}
+            {fields && (
+              <Button type="submit" color="accent" isLoading={isLoading}>
+                Add to StoredSafe
+              </Button>
+            )}
+          </form>
+          {error && <Message type="error">{error.message}</Message>}
+        </Fragment>
+      ) : (
+        <Fragment>
+          <Message type="warning">
+            <p>You don&apos;t have write access to any vaults.</p>
+            <p>Visit your StoredSafe web interface or contact your administrator.</p>
+          </Message>
+          <Button onClick={(): void => { browser.tabs.create({ url: `https://${host.values[host.selected]}/` }); }}>
+            Go to {host.values[host.selected]}
           </Button>
-        )}
-      </form>
-      {error && <Message type="error">{error.message}</Message>}
+        </Fragment>
+      )}
     </section>
   );
 };
