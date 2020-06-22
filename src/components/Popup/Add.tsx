@@ -86,7 +86,6 @@ const PopupAdd: React.FunctionComponent<AddProps> = ({
         groupid: siteInfo.vaults[selected.vault].id,
         templateid: siteInfo.templates[selected.template].id,
       };
-      console.log(properties, siteInfo.templates[selected.template]);
       setLoading(true);
       StoredSafeActions.addObject(hosts[selected.host], properties).then(() => {
         setError(undefined);

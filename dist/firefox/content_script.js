@@ -271,13 +271,10 @@ function scanPage() {
     fillForms = [];
     for (let i = 0; i < forms.length; i++) {
         const formType = getFormType(forms[i]);
-        // console.log(formType, forms[i]);
         if (fillFormTypes.includes(formType)) {
-            // console.log('Adding form to fillable: ', forms[i]);
             fillForms.push(forms[i]);
         }
         if (saveFormTypes.includes(formType)) {
-            // console.log('Attaching submit handler to: ', forms[i]);
             forms[i].addEventListener('submit', (event) => {
                 const values = {};
                 const target = event.target;
@@ -285,7 +282,6 @@ function scanPage() {
                     for (let i = 0; i < target.length; i++) {
                         const element = target[i];
                         if (element instanceof HTMLInputElement && isMatch(field, element)) {
-                            // console.log(field, element.value);
                             values[field] = element.value;
                         }
                     }
@@ -314,9 +310,7 @@ function fillForm(data, submit = false) {
             if (element instanceof HTMLInputElement && isElementFillable(element)) {
                 let elementFilled = false;
                 for (const [field, value] of new Map(data)) {
-                    // console.log('Attempting to fill', field, 'in', element);
                     if (isMatch(field, element)) {
-                        // console.log('Filled field', field);
                         elementFilled = true;
                         filled = true;
                         element.value = value;
@@ -324,7 +318,6 @@ function fillForm(data, submit = false) {
                     }
                 }
                 if (!elementFilled) { // If no field matched this element
-                    // console.log('Focus unfilled element', element);
                     element.focus(); // Focus element for easier access (example otp field)
                 }
             }

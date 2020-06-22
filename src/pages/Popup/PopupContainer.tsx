@@ -1,3 +1,6 @@
+/**
+ * Entrypoint for Popup. Routes external data to the Popup UI component.
+ * */
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import { useSearch } from '../../hooks/useSearch';
@@ -17,7 +20,6 @@ export const PopupContainer: React.FunctionComponent = () => {
       const { type } = message;
       if (type === 'save') {
         const { data } = message;
-        console.log('Popup received values', data);
         setAddValues(data);
       }
     });
@@ -31,8 +33,7 @@ export const PopupContainer: React.FunctionComponent = () => {
       }}
       isInitialized={isInitialized}
       search={{
-        hosts: Object.keys(state.sessions),
-        results: state.search,
+        hosts: [...state.sessions.keys()],
         ...search,
       }}
       auth={{

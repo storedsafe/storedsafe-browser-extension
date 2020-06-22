@@ -25627,7 +25627,7 @@ module.exports = exports;
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, ".popup-search {\n  height: 100%;\n}\n.popup-search.popup-search-empty, .popup-search.popup-search-loading {\n  background-color: #f9f9f9;\n  color: #232d33;\n  border-radius: 0 8px 8px 8px;\n  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);\n  display: grid;\n  width: 100%;\n  height: 100%;\n  align-items: center;\n}\n.popup-search.popup-search-empty p, .popup-search.popup-search-loading p {\n  text-align: center;\n}", ""]);
+exports.push([module.i, ".popup-search {\n  height: 100%;\n}\n.popup-search.popup-search-empty, .popup-search.popup-search-loading {\n  color: #fff;\n  display: grid;\n  width: 100%;\n  height: 100%;\n  align-items: center;\n}\n.popup-search.popup-search-empty p, .popup-search.popup-search-loading p {\n  text-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);\n  text-align: center;\n}", ""]);
 // Exports
 module.exports = exports;
 
@@ -27622,7 +27622,6 @@ exports.AddObject = ({ host, vault, template, onAdd, initialValues, isLoading, e
         react_1.default.createElement("span", null, title),
         react_1.default.createElement("input", Object.assign({ className: `add-object-field${isEncrypted ? ' encrypted' : ''}`, type: type === 'text-passwdgen' ? 'password' : 'text', id: name, name: name, value: values[name] || '' }, events))))) || null;
     const hasVaults = (vault && vault.values && vault.values.length !== 0);
-    console.log(vault, hasVaults);
     return (react_1.default.createElement("section", { className: "add-object" },
         hostSelector,
         hasVaults ? (react_1.default.createElement(react_1.Fragment, null,
@@ -28739,7 +28738,6 @@ const PopupAdd = ({ hosts, values }) => {
             onChange: handleTemplateChange,
         }, initialValues: values || {}, onAdd: (properties) => {
             properties = Object.assign(Object.assign({}, properties), { parentid: '0', groupid: siteInfo.vaults[selected.vault].id, templateid: siteInfo.templates[selected.template].id });
-            console.log(properties, siteInfo.templates[selected.template]);
             setLoading(true);
             StoredSafe_1.actions.addObject(hosts[selected.host], properties).then(() => {
                 setError(undefined);
@@ -30311,45 +30309,36 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.useSearch = void 0;
 const react_1 = __webpack_require__(/*! react */ "react");
 const useStorage_1 = __webpack_require__(/*! ./useStorage */ "./src/hooks/useStorage.tsx");
+const StoredSafe_1 = __webpack_require__(/*! ../model/storedsafe/StoredSafe */ "./src/model/storedsafe/StoredSafe.ts");
 exports.useSearch = () => {
     const { state, dispatch } = useStorage_1.useStorage();
     const [needle, setNeedle] = react_1.useState('');
     const [searching, setSearching] = react_1.useState('');
     const [searchStatus, setSearchStatus] = react_1.useState({});
+    const [results, setResults] = react_1.useState(state.search);
     const onNeedleChange = (needle) => {
         setNeedle(needle);
     };
     const onSearch = react_1.useCallback(() => {
         setSearching(needle);
-        console.log('Search', needle);
+        setResults(new Map());
         for (const host of state.sessions.keys()) {
-            console.log('Searching site', host);
             setSearchStatus((prevSearchStatus) => (Object.assign(Object.assign({}, prevSearchStatus), { [host]: {
                     loading: true,
                 } })));
-            dispatch({
-                search: {
-                    type: 'find',
-                    host,
-                    needle,
-                },
-            }, {
-                onSuccess: (res) => {
-                    console.log('SUCCESS', res.search);
-                    setSearchStatus((prevSearchStatus) => (Object.assign(Object.assign({}, prevSearchStatus), { [host]: {
-                            loading: false,
-                        } })));
-                },
-                onError: (error) => {
-                    console.log('ERROR', error);
-                    setSearchStatus((prevSearchStatus) => (Object.assign(Object.assign({}, prevSearchStatus), { [host]: {
-                            loading: false,
-                            error: error.message,
-                        } })));
-                },
+            StoredSafe_1.actions.find(host, needle).then((siteResults) => {
+                setResults((prevResults) => (new Map([...prevResults, [host, siteResults]])));
+                setSearchStatus((prevSearchStatus) => (Object.assign(Object.assign({}, prevSearchStatus), { [host]: {
+                        loading: false,
+                    } })));
+            }).catch((error) => {
+                setSearchStatus((prevSearchStatus) => (Object.assign(Object.assign({}, prevSearchStatus), { [host]: {
+                        loading: false,
+                        error: error.message,
+                    } })));
             });
         }
-    }, [needle, dispatch, state.sessions]);
+    }, [needle, state.sessions]);
     const onShow = (host, resultId, fieldId) => {
         dispatch({
             search: {
@@ -30453,6 +30442,7 @@ exports.useSearch = () => {
         onShow,
         onCopy,
         onFill,
+        results,
         searchStatus,
     };
 };
@@ -30765,16 +30755,21 @@ if (true) {
     axe(React, ReactDOM, 1000, {
         rules: [
             {
+                // Accept color contrast of buttons
                 id: 'color-contrast',
                 selector: '*:not(.button .button-children)',
             },
             {
+                // Accept that popup has no header
                 id: 'page-has-heading-one',
                 selector: '*:not(.popup)',
             },
         ],
     });
 }
+/**
+ * Render extension UI onto page.
+ * */
 ReactDOM.render(React.createElement(Extension_1.default, null), document.getElementById('app'));
 
 
@@ -31758,6 +31753,9 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PopupContainer = void 0;
+/**
+ * Entrypoint for Popup. Routes external data to the Popup UI component.
+ * */
 const react_1 = __importStar(__webpack_require__(/*! react */ "react"));
 const useAuth_1 = __webpack_require__(/*! ../../hooks/useAuth */ "./src/hooks/useAuth.ts");
 const useSearch_1 = __webpack_require__(/*! ../../hooks/useSearch */ "./src/hooks/useSearch.ts");
@@ -31774,7 +31772,6 @@ exports.PopupContainer = () => {
             const { type } = message;
             if (type === 'save') {
                 const { data } = message;
-                console.log('Popup received values', data);
                 setAddValues(data);
             }
         });
@@ -31782,7 +31779,7 @@ exports.PopupContainer = () => {
     return (react_1.default.createElement(Popup.Main, { add: {
             hosts: [...state.sessions.keys()],
             values: addValues,
-        }, isInitialized: isInitialized, search: Object.assign({ hosts: Object.keys(state.sessions), results: state.search }, search), auth: Object.assign({ sites: state.sites.list, sessions: state.sessions, preferences: state.preferences }, auth), openOptions: openOptions }));
+        }, isInitialized: isInitialized, search: Object.assign({ hosts: [...state.sessions.keys()] }, search), auth: Object.assign({ sites: state.sites.list, sessions: state.sessions, preferences: state.preferences }, auth), openOptions: openOptions }));
 };
 
 
@@ -31944,6 +31941,12 @@ exports.reducer = (action) => {
     }
     switch (action.type) {
         /**
+         * Clear manual results before new search.
+         * */
+        case 'clear-find': {
+            return Promise.resolve(new Map());
+        }
+        /**
          * Perform manual search on provided sites.
          * */
         case 'find': {
@@ -31951,7 +31954,9 @@ exports.reducer = (action) => {
             if (needle === '') {
                 return init();
             }
-            return StoredSafe_1.actions.find(host, needle).then((results) => ((state) => (new Map([...state, [host, results]]))));
+            return StoredSafe_1.actions.find(host, needle).then((results) => ((state) => {
+                return new Map([...state, [host, results]]);
+            }));
         }
         /**
          * Show/hide hidden field in result.

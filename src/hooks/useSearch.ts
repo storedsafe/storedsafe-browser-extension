@@ -8,6 +8,7 @@ import {
 } from '../components/Search';
 import { SearchStatus } from '../components/Popup';
 import { useStorage } from './useStorage';
+import { actions as StoredSafeActions } from '../model/storedsafe/StoredSafe';
 
 interface SearchHook {
   needle: string;
@@ -16,6 +17,7 @@ interface SearchHook {
   onShow: OnShowCallback;
   onCopy: OnCopyCallback;
   onFill: OnFillCallback;
+  results: Results;
   searchStatus: SearchStatus;
 }
 
@@ -24,6 +26,7 @@ export const useSearch = (): SearchHook => {
   const [needle, setNeedle] = useState<string>('');
   const [searching, setSearching] = useState<string>('');
   const [searchStatus, setSearchStatus] = useState<SearchStatus>({});
+  const [results, setResults] = useState<Results>(state.search);
 
   const onNeedleChange: OnNeedleChangeCallback = (needle) => {
     setNeedle(needle);
@@ -31,44 +34,35 @@ export const useSearch = (): SearchHook => {
 
   const onSearch = useCallback<OnSearchCallback>(() => {
     setSearching(needle);
-    console.log('Search', needle);
+    setResults(new Map());
     for (const host of state.sessions.keys()) {
-      console.log('Searching site', host);
       setSearchStatus((prevSearchStatus) => ({
         ...prevSearchStatus,
         [host]: {
           loading: true,
         },
       }));
-      dispatch({
-        search: {
-          type: 'find',
-          host,
-          needle,
-        },
-      }, {
-        onSuccess: (res) => {
-          console.log('SUCCESS', res.search);
-          setSearchStatus((prevSearchStatus) => ({
-            ...prevSearchStatus,
-            [host]: {
-              loading: false,
-            },
-          }));
-        },
-        onError: (error) => {
-          console.log('ERROR', error);
-          setSearchStatus((prevSearchStatus) => ({
-            ...prevSearchStatus,
-            [host]: {
-              loading: false,
-              error: error.message,
-            },
-          }));
-        },
+      StoredSafeActions.find(host, needle).then((siteResults) => {
+        setResults((prevResults) => (
+          new Map([...prevResults, [host, siteResults]])
+        ));
+        setSearchStatus((prevSearchStatus) => ({
+          ...prevSearchStatus,
+          [host]: {
+            loading: false,
+          },
+        }));
+      }).catch((error) => {
+        setSearchStatus((prevSearchStatus) => ({
+          ...prevSearchStatus,
+          [host]: {
+            loading: false,
+            error: error.message,
+          },
+        }));
       });
     }
-  }, [needle, dispatch, state.sessions]);
+  }, [needle, state.sessions]);
 
   const onShow: OnShowCallback = (host, resultId, fieldId) => {
     dispatch({
@@ -177,6 +171,7 @@ export const useSearch = (): SearchHook => {
     onShow,
     onCopy,
     onFill,
+    results,
     searchStatus,
   };
 };

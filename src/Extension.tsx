@@ -10,8 +10,8 @@ import Popup from './pages/Popup'
 
 enum Page {
   Options = 'options',
-    Popup = 'popup',
-    Debug = 'debug'
+  Popup = 'popup',
+  Debug = 'debug'
 }
 
 /**

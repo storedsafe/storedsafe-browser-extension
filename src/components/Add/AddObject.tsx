@@ -102,7 +102,6 @@ export const AddObject: React.FunctionComponent<AddObjectProps> = ({
   )) || null;
 
   const hasVaults = (vault && vault.values && vault.values.length !== 0);
-  console.log(vault, hasVaults);
 
   return (
     <section className="add-object">

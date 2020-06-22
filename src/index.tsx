@@ -18,10 +18,12 @@ if (process.env.NODE_ENV !== 'production') {
   axe(React, ReactDOM, 1000, {
     rules: [
       {
+        // Accept color contrast of buttons
         id: 'color-contrast',
         selector: '*:not(.button .button-children)',
       },
       {
+        // Accept that popup has no header
         id: 'page-has-heading-one',
         selector: '*:not(.popup)',
       },
@@ -29,6 +31,9 @@ if (process.env.NODE_ENV !== 'production') {
   });
 }
 
+/**
+ * Render extension UI onto page.
+ * */
 ReactDOM.render(
   <Extension />,
   document.getElementById('app')

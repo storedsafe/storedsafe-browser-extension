@@ -4,6 +4,8 @@ import { actions as StoredSafeActions } from '../model/storedsafe/StoredSafe';
 
 export type State = Results;
 export type Action = {
+  type: 'clear-find';
+} | {
   type: 'find';
   needle: string;
   host: string;
@@ -88,6 +90,13 @@ export const reducer: PromiseReducer<State, Action> = (action) => {
 
   switch(action.type) {
     /**
+     * Clear manual results before new search.
+     * */
+    case 'clear-find': {
+      return Promise.resolve(new Map());
+    }
+
+    /**
      * Perform manual search on provided sites.
      * */
     case 'find': {
@@ -96,9 +105,9 @@ export const reducer: PromiseReducer<State, Action> = (action) => {
         return init();
       }
       return StoredSafeActions.find(host, needle).then((results) => (
-        (state: State): State => (
-          new Map([...state, [host, results]])
-        )
+        (state: State): State => {
+          return new Map([...state, [host, results]]);
+        }
       ));
     }
 
