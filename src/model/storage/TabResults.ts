@@ -15,9 +15,9 @@ function get (): Promise<TabResults> {
   return browser.storage.local.get('tabResults').then(({
     tabResults
   }) => {
-    const serializedTabResults = (tabResults || []) as SerializableTabResults;
+    const serializedTabResults = (tabResults || []) as SerializableTabResults
     // Convert nested serializable results to Map objects.
-    return new Map(serializedTabResults.map(([k, v]) => [k, new Map(v)])) as TabResults;
+    return new Map(serializedTabResults.map(([k, v]) => [k, new Map(v)])) as TabResults
   })
 }
 
@@ -28,8 +28,8 @@ function get (): Promise<TabResults> {
 function set (tabResults: TabResults): Promise<void> {
   return browser.storage.local.set({
     // Convert nested Map objects to serializable results.
-    tabResults: Array.from(tabResults).map(([k, v]) => [k, Array.from(v)]),
-  });
+    tabResults: Array.from(tabResults).map(([k, v]) => [k, Array.from(v)])
+  })
 }
 
 export const actions = {
@@ -41,8 +41,8 @@ export const actions = {
    * */
   setTabResults: (tabId: number, results: Results): Promise<TabResults> => (
     get().then((prevTabResults) => {
-      const newTabResults = new Map([...prevTabResults, [tabId, results]]);
-      return set(newTabResults).then(get);
+      const newTabResults = new Map([...prevTabResults, [tabId, results]])
+      return set(newTabResults).then(get)
     })
   ),
 
@@ -53,9 +53,9 @@ export const actions = {
    * */
   removeTabResults: (tabId: number): Promise<TabResults> => (
     get().then((prevResults) => {
-      const newResults = new Map(prevResults);
-      newResults.delete(tabId);
-      return set(newResults).then(get);
+      const newResults = new Map(prevResults)
+      newResults.delete(tabId)
+      return set(newResults).then(get)
     })
   ),
 
@@ -65,15 +65,15 @@ export const actions = {
    * */
   purgeHost: (host: string): Promise<TabResults> => (
     get().then((prevTabResults) => {
-      const newTabResults = new Map(prevTabResults);
+      const newTabResults = new Map(prevTabResults)
       for (const results of newTabResults.values()) {
         for (const resultsHost of results.keys()) {
           if (resultsHost === host) {
-            results.delete(host);
+            results.delete(host)
           }
         }
       }
-      return set(newTabResults).then(get);
+      return set(newTabResults).then(get)
     })
   ),
 
@@ -82,12 +82,12 @@ export const actions = {
    * @returns Updated cached results from all tabs (empty).
    * */
   clear: (): Promise<TabResults> => {
-    return set(new Map()).then(get);
+    return set(new Map()).then(get)
   },
 
   /**
    * Fetch all cached tab search results from storage.
    * @returns Cached results from all tabs.
    * */
-  fetch: get,
-};
+  fetch: get
+}

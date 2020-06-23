@@ -1,7 +1,7 @@
-import React from 'react';
-import './Select.scss';
+import React from 'react'
+import './Select.scss'
 
-type SelectProps = React.DetailedHTMLProps<React.SelectHTMLAttributes<HTMLSelectElement>, HTMLSelectElement> & { children: React.ReactNode };
+type SelectProps = React.DetailedHTMLProps<React.SelectHTMLAttributes<HTMLSelectElement>, HTMLSelectElement> & { children: React.ReactNode }
 
 export const Select: React.FunctionComponent<SelectProps> = ({
   children, ...props
@@ -13,4 +13,4 @@ export const Select: React.FunctionComponent<SelectProps> = ({
       </select>
     </div>
   </div>
-);
+)

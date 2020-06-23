@@ -9,8 +9,8 @@
  * This module should only concern itself with sending requests and parsing incoming
  * data. Error handling and storage modifications should be handled in `StoredSafe.ts`.
  * */
-import { StoredSafePromise } from 'storedsafe';
-import { MakeStoredSafeRequest } from './StoredSafe';
+import { StoredSafePromise, StoredSafeLoginData } from 'storedsafe'
+import { MakeStoredSafeRequest } from './StoredSafe'
 
 /**
  * Login to StoredSafe.
@@ -18,39 +18,34 @@ import { MakeStoredSafeRequest } from './StoredSafe';
  * @param fields - Credentials and specification of login type.
  * @returns Session created from response if successful.
  * */
-function login(
+async function login (
   request: MakeStoredSafeRequest,
   fields: LoginFields
 ): Promise<Session> {
-  return request((handler) => {
-    let promise: StoredSafePromise;
+  return await request(async handler => {
+    let promise: StoredSafePromise<StoredSafeLoginData>
     if (fields.loginType === 'yubikey') {
-      const { username, keys } = fields as YubiKeyFields;
-      const passphrase = keys.slice(0, -44);
-      const otp = keys.slice(-44);
-      promise = handler.loginYubikey(username, passphrase, otp);
+      const { username, keys } = fields as YubiKeyFields
+      const passphrase = keys.slice(0, -44)
+      const otp = keys.slice(-44)
+      promise = handler.loginYubikey(username, passphrase, otp)
     } else if (fields.loginType === 'totp') {
-      const {
-        username,
-        passphrase,
-        otp,
-      } = fields as TOTPFields;
-      promise = handler.loginTotp(username, passphrase, otp);
+      const { username, passphrase, otp } = fields as TOTPFields
+      promise = handler.loginTotp(username, passphrase, otp)
     }
-    return promise;
-  }).then((data) => {
-    const { token, audit, timeout } = data.CALLINFO;
-    const violations = (Array.isArray(audit.violations) ? {} : audit.violations);
-    const warnings = (Array.isArray(audit.warnings) ? {} : audit.warnings);
-
+    return await promise
+  }).then((data: StoredSafeLoginData) => {
+    const { token, audit, timeout } = data.CALLINFO
+    const violations = Array.isArray(audit.violations) ? {} : audit.violations
+    const warnings = Array.isArray(audit.warnings) ? {} : audit.warnings
     return {
       token,
       createdAt: Date.now(),
       violations,
       warnings,
-      timeout,
-    };
-  });
+      timeout
+    }
+  })
 }
 
 /**
@@ -58,8 +53,8 @@ function login(
  * @param request - Request callback function.
  * @param host - Host related to the session to invalidate.
  * */
-function logout(request: MakeStoredSafeRequest): Promise<void> {
-  return request((handler) => handler.logout()).then();
+async function logout (request: MakeStoredSafeRequest): Promise<void> {
+  return await request(async handler => await handler.logout()).then()
 }
 
 /**
@@ -67,16 +62,18 @@ function logout(request: MakeStoredSafeRequest): Promise<void> {
  * @param request - Request callback function.
  * @returns True if token is still valid, otherwise false.
  * */
-function check(request: MakeStoredSafeRequest): Promise<boolean> {
-  return request((handler) => handler.check()).then(() => {
-    return true;
-  }).catch(() => {
-    return false;
-  });
+async function check (request: MakeStoredSafeRequest): Promise<boolean> {
+  return await request(async handler => await handler.check())
+    .then(() => {
+      return true
+    })
+    .catch(() => {
+      return false
+    })
 }
 
 export const actions = {
   login,
   logout,
-  check,
-};
+  check
+}

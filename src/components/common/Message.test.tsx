@@ -1,30 +1,50 @@
-import * as React from 'react';
-import { shallow } from 'enzyme';
-import { Message } from './Message';
+import * as React from 'react'
+import { render, unmountComponentAtNode } from 'react-dom'
+import { act } from 'react-dom/test-utils'
+import { Message } from './Message'
+import pretty from 'pretty'
+
+/**
+ * Set up and tear down container to mount tested component in.
+ * */
+let container: Element = null
+beforeEach(() => {
+  // setup a DOM element as a render target
+  container = document.createElement('div')
+  document.body.appendChild(container)
+})
+afterEach(() => {
+  // cleanup on exiting
+  unmountComponentAtNode(container)
+  container.remove()
+  container = null
+})
 
 test('<Message />', () => {
-  const wrapper = shallow(<Message />);
-  expect(wrapper).toMatchSnapshot();
-});
+  act(() => {
+    render(<Message />, container)
+  })
+  expect(pretty(container.innerHTML)).toMatchSnapshot()
 
-test('<Message type=info />', () => {
-  const wrapper = shallow(<Message type="info" />);
-  expect(wrapper).toMatchSnapshot();
-});
+  act(() => {
+    render(<Message type="info" />, container)
+  })
+  expect(pretty(container.innerHTML)).toMatchSnapshot()
 
-test('<Message type=warning />', () => {
-  const wrapper = shallow(<Message type="warning" />);
-  expect(wrapper).toMatchSnapshot();
-});
+  act(() => {
+    render(<Message type="warning" />, container)
+  })
+  expect(pretty(container.innerHTML)).toMatchSnapshot()
 
-test('<Message type=error />', () => {
-  const wrapper = shallow(<Message type="error" />);
-  expect(wrapper).toMatchSnapshot();
-});
+  act(() => {
+    render(<Message type="error" />, container)
+  })
+  expect(pretty(container.innerHTML)).toMatchSnapshot()
 
-test('<Message />, with children', () => {
-  const wrapper = shallow(<Message>children</Message>);
-  expect(wrapper.text()).toBe('children');
-  expect(wrapper).toMatchSnapshot();
-});
-
+  act(() => {
+    render(<Message>children</Message>, container)
+  })
+  const message = container.querySelector('.message')
+  expect(message.innerHTML).toBe('children')
+  expect(pretty(container.innerHTML)).toMatchSnapshot()
+})

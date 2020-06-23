@@ -1,7 +1,19 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`<MenuButton /> 1`] = `ShallowWrapper {}`;
+exports[`<MenuButton /> 1`] = `
+"<div class=\\"menu-button\\"><button class=\\"menu-button-icon\\" aria-label=\\"Button\\"><svg></svg></button>
+  <div class=\\"menu-button-title\\">Button</div>
+</div>"
+`;
 
-exports[`<MenuButton selected=false /> 1`] = `ShallowWrapper {}`;
+exports[`<MenuButton selected=false /> 1`] = `
+"<div class=\\"menu-button\\"><button class=\\"menu-button-icon\\" aria-label=\\"Button\\"><svg></svg></button>
+  <div class=\\"menu-button-title\\">Button</div>
+</div>"
+`;
 
-exports[`<MenuButton selected=true /> 1`] = `ShallowWrapper {}`;
+exports[`<MenuButton selected=true /> 1`] = `
+"<div class=\\"menu-button\\"><button class=\\"menu-button-icon selected\\" aria-label=\\"Button\\"><svg></svg></button>
+  <div class=\\"menu-button-title\\">Button</div>
+</div>"
+`;

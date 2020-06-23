@@ -1,7 +1,7 @@
-import * as React from 'react';
-import './Radio.scss';
+import * as React from 'react'
+import './Radio.scss'
 
-type RadioProps = React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>;
+type RadioProps = React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>
 
 export const Radio: React.SFC<RadioProps> = (props: RadioProps) => (
   <React.Fragment>
@@ -10,4 +10,4 @@ export const Radio: React.SFC<RadioProps> = (props: RadioProps) => (
       <div className="custom-radio" />
     </div>
   </React.Fragment>
-);
+)

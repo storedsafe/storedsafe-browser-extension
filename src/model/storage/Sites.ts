@@ -9,14 +9,14 @@
  * - actions object provides the public interface for the model.
  * */
 
-const systemStorage = browser.storage.managed;
-const userStorage = browser.storage.sync;
+const systemStorage = browser.storage.managed
+const userStorage = browser.storage.sync
 
 /**
  * Helper interface to shorten promise type definitions.
  * */
 interface StorageSites {
-  sites: Site[];
+  sites: Site[]
 }
 
 /**
@@ -26,8 +26,8 @@ interface StorageSites {
  * */
 const sitesFromCollections = (siteCollections: SiteCollections): Sites => ({
   list: siteCollections.system.concat(siteCollections.user),
-  collections: siteCollections,
-});
+  collections: siteCollections
+})
 
 /**
  * Get sites from system and user storage.
@@ -36,20 +36,20 @@ const sitesFromCollections = (siteCollections: SiteCollections): Sites => ({
 const get = (): Promise<SiteCollections> => {
   return Promise.all<StorageSites, StorageSites>([
     systemStorage.get('sites').catch(() => ({ settings: {} })) as Promise<StorageSites>,
-    userStorage.get('sites') as Promise<StorageSites>,
+    userStorage.get('sites') as Promise<StorageSites>
   ]).then(([{ sites: systemSites }, { sites: userSites }]) => {
-    const system = systemSites || [];
-    const user = userSites || [];
-    return { system, user };
-  });
-};
+    const system = systemSites || []
+    const user = userSites || []
+    return { system, user }
+  })
+}
 
 /**
  * Commit Sites object to user storage (managed sites are ignored).
  * @param siteCollections - New user sites.
  * */
 const set = (siteCollections: SiteCollections): Promise<void> => {
-  return userStorage.set({ sites: siteCollections.user });
+  return userStorage.set({ sites: siteCollections.user })
 }
 
 export const actions = {
@@ -64,13 +64,13 @@ export const actions = {
         system: sites.system,
         user: [
           ...sites.user,
-          site,
-        ],
-      };
+          site
+        ]
+      }
       return set(newSites).then(() => (
         get().then(() => sitesFromCollections(newSites))
-      ));
-    });
+      ))
+    })
   },
 
   /**
@@ -83,11 +83,11 @@ export const actions = {
       const newSites = {
         system: sites.system,
         user: sites.user.filter((site, siteId) => siteId !== id)
-      };
+      }
       return set(newSites).then(() => (
         get().then((sites) => sitesFromCollections(sites))
-      ));
-    });
+      ))
+    })
   },
 
   /**
@@ -95,6 +95,6 @@ export const actions = {
    * @returns User and system sites.
    * */
   fetch: (): Promise<Sites> => {
-    return get().then((sites) => sitesFromCollections(sites));
-  },
-};
+    return get().then((sites) => sitesFromCollections(sites))
+  }
+}

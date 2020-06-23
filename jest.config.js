@@ -1,11 +1,10 @@
 module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'jsdom',
-  rootDir: 'src',
-  setupFilesAfterEnv: ['<rootDir>setupTests.ts'],
+  rootDir: '.',
   moduleNameMapper: {
-    '\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$': "<rootDir>__mocks__/fileMock.js",
-    '\\.(css|scss)$': "<rootDir>__mocks__/styleMock.js",
+    '\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$': '<rootDir>/src/__mocks__/fileMock.js',
+    '\\.(css|scss)$': '<rootDir>/src/__mocks__/styleMock.js'
   },
   collectCoverageFrom: [
     '**/*.{js,jsx,ts,tsx}',
@@ -15,5 +14,5 @@ module.exports = {
     '!**/node_modules/**',
     '!**/vendor/**'
   ],
-  coverageDirectory: '<rootDir>../coverage',
-};
+  coverageDirectory: '<rootDir>/coverage'
+}

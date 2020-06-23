@@ -1,40 +1,58 @@
-import * as React from 'react';
-import { shallow } from 'enzyme';
-import { Button } from './Button';
+import React from 'react'
+import { render, unmountComponentAtNode } from 'react-dom'
+import { act } from 'react-dom/test-utils'
+import { Button } from './Button'
+import pretty from 'pretty'
+
+/**
+ * Set up and tear down container to mount tested component in.
+ * */
+let container: Element = null
+beforeEach(() => {
+  // setup a DOM element as a render target
+  container = document.createElement('div')
+  document.body.appendChild(container)
+})
+afterEach(() => {
+  // cleanup on exiting
+  unmountComponentAtNode(container)
+  container.remove()
+  container = null
+})
 
 test('<Button />', () => {
-  const wrapper = shallow(<Button />);
-  expect(wrapper).toMatchSnapshot();
-});
+  act(() => {
+    render(<Button />, container)
+  })
+  expect(pretty(container.innerHTML)).toMatchSnapshot()
 
-test('<Button color=primary />', () => {
-  const wrapper = shallow(<Button color="primary" />);
-  expect(wrapper).toMatchSnapshot();
-});
+  act(() => {
+    render(<Button color='primary' />, container)
+  })
+  expect(pretty(container.innerHTML)).toMatchSnapshot()
 
-test('<Button color=accent />', () => {
-  const wrapper = shallow(<Button color="accent" />);
-  expect(wrapper).toMatchSnapshot();
-});
+  act(() => {
+    render(<Button color='accent' />, container)
+  })
+  expect(pretty(container.innerHTML)).toMatchSnapshot()
 
-test('<Button color=warning />', () => {
-  const wrapper = shallow(<Button color="warning" />);
-  expect(wrapper).toMatchSnapshot();
-});
+  act(() => {
+    render(<Button color='warning' />, container)
+  })
+  expect(pretty(container.innerHTML)).toMatchSnapshot()
 
-test('<Button color=danger />', () => {
-  const wrapper = shallow(<Button color="danger" />);
-  expect(wrapper).toMatchSnapshot();
-});
+  act(() => {
+    render(<Button color='danger' />, container)
+  })
+  expect(pretty(container.innerHTML)).toMatchSnapshot()
 
-test('<Button isLoading />', () => {
-  const wrapper = shallow(<Button isLoading={true} />);
-  expect(wrapper).toMatchSnapshot();
-});
+  act(() => {
+    render(<Button isLoading={true} />, container)
+  })
+  expect(pretty(container.innerHTML)).toMatchSnapshot()
 
-test('<Button />, with children', () => {
-  const wrapper = shallow(<Button>children</Button>);
-  expect(wrapper.text()).toBe('children');
-  expect(wrapper).toMatchSnapshot();
-});
-
+  act(() => {
+    render(<Button>children</Button>, container)
+  })
+  expect(pretty(container.innerHTML)).toMatchSnapshot()
+})

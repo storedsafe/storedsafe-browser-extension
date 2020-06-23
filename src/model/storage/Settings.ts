@@ -20,15 +20,15 @@
  * fields will simply be ignored in favor of higher priority settings.
  * */
 
-const systemStorage = browser.storage.managed;
-const userStorage = browser.storage.sync;
+const systemStorage = browser.storage.managed
+const userStorage = browser.storage.sync
 
 /**
  * Helper type to facility transition between pure values and SettingsField.
  * */
-export type SettingsValues = {
-  [key: string]: SettingsFieldValue;
-};
+export interface SettingsValues {
+  [key: string]: SettingsFieldValue
+}
 
 /**
  * Default values for settings.
@@ -39,8 +39,8 @@ export type SettingsValues = {
 export const defaults: SettingsValues = {
   idleMax: 15,
   autoFill: false,
-  maxTokenLife: 8,
-};
+  maxTokenLife: 8
+}
 
 /**
  * Properties for fields to be passed to the React component that renders the
@@ -48,13 +48,13 @@ export const defaults: SettingsValues = {
  * */
 export interface FieldsProps {
   [name: string]: {
-    label: string;
-    unit?: string;
+    label: string
+    unit?: string
     attributes: {
-      type: string;
-      [attr: string]: string | number | boolean;
-    };
-  };
+      type: string
+      [attr: string]: string | number | boolean
+    }
+  }
 }
 
 /**
@@ -65,8 +65,8 @@ export const fields: FieldsProps = {
   autoFill: {
     label: 'Auto Fill',
     attributes: {
-      type: 'checkbox',
-    },
+      type: 'checkbox'
+    }
   },
   idleMax: {
     label: 'Logout after being idle for',
@@ -75,8 +75,8 @@ export const fields: FieldsProps = {
       type: 'number',
       required: true,
       min: 1,
-      max: 120,
-    },
+      max: 120
+    }
   },
   maxTokenLife: {
     label: 'Always log out after being online for',
@@ -85,9 +85,9 @@ export const fields: FieldsProps = {
       type: 'number',
       required: true,
       min: 1,
-      max: 24,
-    },
-  },
+      max: 24
+    }
+  }
 }
 
 /**
@@ -103,10 +103,10 @@ const populate = (
 ): void => {
   Object.keys(values).forEach((key) => {
     if (!settings.has(key)) {
-      settings.set(key, { managed, value: values[key] });
+      settings.set(key, { managed, value: values[key] })
     }
-  });
-};
+  })
+}
 
 /**
  * Get settings from managed and sync storage and convert
@@ -115,24 +115,24 @@ const populate = (
  * @returns Merged user and system settings.
  * */
 const get = (): Promise<Settings> => {
-  const settings: Settings = new Map();
+  const settings: Settings = new Map()
   return systemStorage.get('settings').catch(
     () => ({ settings: new Map([]) })
   ).then(({ settings: system }) => {
     if (system && system.enforced) {
-      populate(settings, system.enforced, true);
+      populate(settings, system.enforced, true)
     }
     return userStorage.get('settings').then(({ settings: user }) => {
       if (user) {
-        populate(settings, user);
+        populate(settings, user)
       }
       if (system && system.defaults) {
-        populate(settings, system.defaults);
+        populate(settings, system.defaults)
       }
-      populate(settings, defaults);
-      return settings;
-    });
-  });
+      populate(settings, defaults)
+      return settings
+    })
+  })
 }
 
 /**
@@ -140,13 +140,13 @@ const get = (): Promise<Settings> => {
  * @param settings - New user settings.
  * */
 const set = (settings: Settings): Promise<void> => {
-  const userSettings: SettingsValues = {};
+  const userSettings: SettingsValues = {}
   for (const [key, field] of settings) {
-    if (field.managed === false) {
-      userSettings[key] = field.value;
+    if (!field.managed) {
+      userSettings[key] = field.value
     }
   }
-  return userStorage.set({ settings: userSettings });
+  return userStorage.set({ settings: userSettings })
 }
 
 export const actions = {
@@ -157,8 +157,8 @@ export const actions = {
    * */
   update: (updatedSettings: Settings): Promise<Settings> => {
     return get().then((settings) => {
-      const newSettings = new Map([...settings, ...updatedSettings]);
-      return set(newSettings).then(get);
+      const newSettings = new Map([...settings, ...updatedSettings])
+      return set(newSettings).then(get)
     })
   },
 
@@ -166,5 +166,5 @@ export const actions = {
    * Fetch settings from storage.
    * @returns Merged user and system settings.
    * */
-  fetch: get,
-};
+  fetch: get
+}

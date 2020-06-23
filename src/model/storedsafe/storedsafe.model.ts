@@ -9,89 +9,88 @@
  * Representation of field inside StoredSafe Object.
  * */
 interface SSField {
-  name: string;
-  title: string;
-  value?: string;
-  isEncrypted: boolean;
-  isShowing?: boolean;
-  isPassword: boolean;
+  name: string
+  title: string
+  value?: string
+  isEncrypted: boolean
+  isShowing?: boolean
+  isPassword: boolean
 }
 
 /**
  * Representation of StoredSafe Object.
  * */
 interface SSObject {
-  id: string;
-  templateId: string;
-  vaultId: string;
-  name: string;
-  type: string;
-  icon: string;
-  isDecrypted: boolean;
-  fields: SSField[];
+  id: string
+  templateId: string
+  vaultId: string
+  name: string
+  type: string
+  icon: string
+  isDecrypted: boolean
+  fields: SSField[]
 }
 
 /**
  * Representation of StoredSafe Vault.
  * */
 interface SSVault {
-  id: string;
-  name: string;
-  canWrite: boolean;
+  id: string
+  name: string
+  canWrite: boolean
 }
 
 /**
  * Representation of field in StoredSafe Template.
  * */
 interface SSTemplateField {
-  title: string;
-  name: string;
-  type: string;
-  isEncrypted: boolean;
+  title: string
+  name: string
+  type: string
+  isEncrypted: boolean
 }
 
 /**
  * Representation of StoredSafe Template.
  * */
 interface SSTemplate {
-  id: string;
-  name: string;
-  icon: string;
-  structure: SSTemplateField[];
+  id: string
+  name: string
+  icon: string
+  structure: SSTemplateField[]
 }
 
 /**
  * Representation of structure and capabilities of a StoredSafe site.
  * */
 interface SSSiteInfo {
-  vaults: SSVault[];
-  templates: SSTemplate[];
+  vaults: SSVault[]
+  templates: SSTemplate[]
 }
 
 /**
  * Available login types.
  * */
-type LoginType = 'yubikey' | 'totp';
+type LoginType = 'yubikey' | 'totp'
 
 /**
  * Form fields for logging in via TOTP.
  * */
 interface TOTPFields {
-  username: string;
-  passphrase: string;
-  otp: string;
+  username: string
+  passphrase: string
+  otp: string
 }
 
 /**
  * Form fields for logging in via Yubico OTP.
  * */
 interface YubiKeyFields {
-  username: string;
-  keys: string;
+  username: string
+  keys: string
 }
 
 /**
  * All form fields submitted when logging in.
  * */
-type LoginFields = { loginType: LoginType } & TOTPFields & YubiKeyFields;
-
+type LoginFields = { loginType: LoginType } & TOTPFields & YubiKeyFields

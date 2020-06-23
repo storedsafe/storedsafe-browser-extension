@@ -1,11 +1,11 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`<Message /> 1`] = `ShallowWrapper {}`;
+exports[`<Message /> 1`] = `"<div class=\\"message info\\"></div>"`;
 
-exports[`<Message />, with children 1`] = `ShallowWrapper {}`;
+exports[`<Message /> 2`] = `"<div class=\\"message info\\"></div>"`;
 
-exports[`<Message type=error /> 1`] = `ShallowWrapper {}`;
+exports[`<Message /> 3`] = `"<div class=\\"message warning\\"></div>"`;
 
-exports[`<Message type=info /> 1`] = `ShallowWrapper {}`;
+exports[`<Message /> 4`] = `"<div class=\\"message error\\"></div>"`;
 
-exports[`<Message type=warning /> 1`] = `ShallowWrapper {}`;
+exports[`<Message /> 5`] = `"<div class=\\"message info\\">children</div>"`;

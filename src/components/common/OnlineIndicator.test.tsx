@@ -1,13 +1,33 @@
-import * as React from 'react';
-import { shallow } from 'enzyme';
-import { OnlineIndicator } from './OnlineIndicator';
+import * as React from 'react'
+import { render, unmountComponentAtNode } from 'react-dom'
+import { act } from 'react-dom/test-utils'
+import { OnlineIndicator } from './OnlineIndicator'
+import pretty from 'pretty'
 
-test('<OnlineIndicator online />', () => {
-  const wrapper = shallow(<OnlineIndicator online={true} />);
-  expect(wrapper).toMatchSnapshot();
-});
+/**
+ * Set up and tear down container to mount tested component in.
+ * */
+let container: Element = null
+beforeEach(() => {
+  // setup a DOM element as a render target
+  container = document.createElement('div')
+  document.body.appendChild(container)
+})
+afterEach(() => {
+  // cleanup on exiting
+  unmountComponentAtNode(container)
+  container.remove()
+  container = null
+})
 
-test('<OnlineIndicator offline />', () => {
-  const wrapper = shallow(<OnlineIndicator online={false} />);
-  expect(wrapper).toMatchSnapshot();
-});
+test('<OnlineIndicator />', () => {
+  act(() => {
+    render(<OnlineIndicator online={true} />, container)
+  })
+  expect(pretty(container.innerHTML)).toMatchSnapshot()
+
+  act(() => {
+    render(<OnlineIndicator online={false} />, container)
+  })
+  expect(pretty(container.innerHTML)).toMatchSnapshot()
+})

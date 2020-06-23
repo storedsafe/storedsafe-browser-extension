@@ -1,14 +1,14 @@
-import React from 'react';
-import './OnlineIndicator.scss';
+import React from 'react'
+import './OnlineIndicator.scss'
 
 interface OnlineIndicatorProps {
-  online: boolean;
+  online: boolean
 }
 
 export const OnlineIndicator: React.FunctionComponent<OnlineIndicatorProps> = ({
-  online,
+  online
 }: OnlineIndicatorProps) => (
   <div className={`online-indicator ${online ? 'online' : 'offline'}`}>
     <div className="online-indicator-icon" />
   </div>
-);
+)

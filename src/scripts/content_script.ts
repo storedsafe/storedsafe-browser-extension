@@ -25,8 +25,8 @@ enum FormType {
  * @param name - Regular expression matching the input name or id attribute.
  * */
 interface Matcher {
-  type: RegExp;
-  name: RegExp;
+  type: RegExp
+  name: RegExp
 }
 
 /**
@@ -36,9 +36,9 @@ interface Matcher {
  * @param fields - List of matchers for the input fields inside the form.
  * */
 interface FormMatcher {
-  name: RegExp;
-  role?: RegExp;
-  fields: Matcher[];
+  name: RegExp
+  role?: RegExp
+  fields: Matcher[]
 }
 
 /**
@@ -49,25 +49,25 @@ interface FormMatcher {
 const matchers: Map<string, Matcher> = new Map([
   ['username', {
     type: /text|email/,
-    name: /user|name|mail/,
+    name: /user|name|mail/
   }],
   ['password', {
     type: /password/,
-    name: /.*/,
+    name: /.*/
   }],
   ['cardno', {
     type: /text|tel/,
-    name: /card/,
+    name: /card/
   }],
   ['expires', {
     type: /text|tel/,
-    name: /exp/,
+    name: /exp/
   }],
   ['cvc', {
     type: /text|tel/,
-    name: /sec|code|cvv|cvc/,
-  }],
-]);
+    name: /sec|code|cvv|cvc/
+  }]
+])
 
 /**
  * Matching the form name is considered a definite match and should return the form type.
@@ -83,41 +83,41 @@ const formMatchers: Map<FormType, FormMatcher> = new Map([
     role: /search/,
     fields: [{
       type: /text|search/,
-      name: /search/,
-    }],
+      name: /search/
+    }]
   }],
   [FormType.Register, {
     name: /reg|signup/,
     fields: [{
       type: /password/,
-      name: /re/,
-    }],
+      name: /re/
+    }]
   }],
   [FormType.Login, {
     name: /login/,
     fields: [
       matchers.get('username'),
-      matchers.get('password'),
-    ],
+      matchers.get('password')
+    ]
   }],
   [FormType.NewsLetter, {
     name: /news|letter/,
-    fields: [],
-  }],
-]);
+    fields: []
+  }]
+])
 
 /**
  * Checks whether an element is of a type that is fillable by the user.
  * @param element Element to be tested.
  * @returns True if the element is an input that can be filled by the user.
  * */
-function isElementFillable(element: Element): boolean {
+function isElementFillable (element: Element): boolean {
   return element instanceof HTMLInputElement && ![
     'hidden',
     'button',
     'submit',
     'reset'
-  ].includes(element.type);
+  ].includes(element.type)
 }
 
 /**
@@ -126,16 +126,16 @@ function isElementFillable(element: Element): boolean {
  * @param element - Input element to attempt a match with.
  * @returns True if the element is a match for the field.
  * */
-function isMatch(
+function isMatch (
   field: string,
   element: HTMLInputElement
 ): boolean {
-  if (matchers.get(field) === undefined) return false;
-  const types = new RegExp(matchers.get(field).type, 'i');
-  const name = new RegExp(matchers.get(field).name, 'i');
+  if (matchers.get(field) === undefined) return false
+  const types = new RegExp(matchers.get(field).type, 'i')
+  const name = new RegExp(matchers.get(field).name, 'i')
   return (
-    types.test(element.type) && ( name.test(element.name) || name.test(element.id))
-  );
+    types.test(element.type) && (name.test(element.name) || name.test(element.id))
+  )
 }
 
 /**
@@ -143,44 +143,43 @@ function isMatch(
  * @param form - The form to be matched.
  * @returns The type indicating the purpose of the form.
  * */
-function getFormType(form: HTMLFormElement): FormType {
-  for(const [formType, formTypeMatchers] of formMatchers) {
-
+function getFormType (form: HTMLFormElement): FormType {
+  for (const [formType, formTypeMatchers] of formMatchers) {
     // Check for form name or id match
-    const name = new RegExp(formTypeMatchers.name, 'i');
+    const name = new RegExp(formTypeMatchers.name, 'i')
     if (name.test(form.id) || name.test(form.name)) {
-      return formType;
+      return formType
     }
 
     // Check for form role
-    const formRole = form.attributes.getNamedItem('role');
-    if (formTypeMatchers.role && formRole) {
-      const role = new RegExp(formTypeMatchers.role, 'i');
+    const formRole = form.attributes.getNamedItem('role')
+    if (formTypeMatchers.role !== undefined && formRole !== undefined) {
+      const role = new RegExp(formTypeMatchers.role, 'i')
       if (role.test(formRole.value)) {
-        return formType;
+        return formType
       }
     }
 
     // Check for fields match
-    let match = formTypeMatchers.fields.length === 0 ? false : true;
-    for(let i = 0; i < formTypeMatchers.fields.length; i++) {
-      const fieldName = new RegExp(formTypeMatchers.fields[i].name, 'i');
-      const fieldType = new RegExp(formTypeMatchers.fields[i].type, 'i');
-      let fieldMatch = false;
-      for(let j = 0; j < form.length; j++) {
-        const element = form[j];
+    let match = formTypeMatchers.fields.length !== 0
+    for (let i = 0; i < formTypeMatchers.fields.length; i++) {
+      const fieldName = new RegExp(formTypeMatchers.fields[i].name, 'i')
+      const fieldType = new RegExp(formTypeMatchers.fields[i].type, 'i')
+      let fieldMatch = false
+      for (let j = 0; j < form.length; j++) {
+        const element = form[j]
         if (element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement || element instanceof HTMLSelectElement) {
           if (fieldType.test(element.type) && (fieldName.test(element.id) || fieldName.test(element.name))) {
-            fieldMatch = true;
+            fieldMatch = true
           }
         }
       }
       // Overall match only if all fields find a matching element.
-      match = match && fieldMatch;
+      match = match && fieldMatch
     }
-    if (match) return formType;
+    if (match) return formType
   }
-  return FormType.Unknown;
+  return FormType.Unknown
 }
 
 /**
@@ -188,18 +187,18 @@ function getFormType(form: HTMLFormElement): FormType {
  * */
 const fillFormTypes: FormType[] = [
   FormType.Login,
-  FormType.Card,
-];
+  FormType.Card
+]
 
 /**
  * Form types that should be saved by the extension when the form is submitted.
  * */
 const saveFormTypes: FormType[] = [
   FormType.Login,
-  FormType.Register,
-];
+  FormType.Register
+]
 
-let fillForms: HTMLFormElement[] = [];
+let fillForms: HTMLFormElement[] = []
 /**
  * Scan the webpage for forms and identify the types of those forms.
  * If any fillable forms are found, send a message to the background script to
@@ -207,77 +206,82 @@ let fillForms: HTMLFormElement[] = [];
  * If any forms are of a type where we want to save the data they submit, set
  * up an event handler to send the data to the background script when submitted.
  * */
-function scanPage(): void {
-  const { forms } = document;
-  fillForms = [];
-  for(let i = 0; i < forms.length; i++) {
-    const formType = getFormType(forms[i]);
+function scanPage (): void {
+  const { forms } = document
+  fillForms = []
+  for (let i = 0; i < forms.length; i++) {
+    const formType = getFormType(forms[i])
     if (fillFormTypes.includes(formType)) {
-      fillForms.push(forms[i]);
+      fillForms.push(forms[i])
     }
     if (saveFormTypes.includes(formType)) {
       forms[i].addEventListener('submit', (event) => {
-        const values: Record<string, string> = {};
-        const target = event.target as HTMLFormElement;
+        const values: Record<string, string> = {}
+        const target = event.target as HTMLFormElement
         for (const [field] of matchers) {
           for (let i = 0; i < target.length; i++) {
-            const element = target[i];
+            const element = target[i]
             if (element instanceof HTMLInputElement && isMatch(field, element)) {
-              values[field] = element.value;
+              values[field] = element.value
             }
           }
         }
-        browser.runtime.sendMessage({ type: 'submit', data: values })
-      });
+        browser.runtime.sendMessage({
+          type: 'submit',
+          data: values
+        }).catch(error => console.error(error))
+      })
     }
   }
 
   if (fillForms.length > 0) {
     browser.runtime.sendMessage({
-      type: 'tabSearch',
-    });
+      type: 'tabSearch'
+    }).catch(error => console.error(error))
   }
 }
 
 // Scan page when the content script is loaded.
-scanPage();
+scanPage()
 
 // Observe changes in the webpage in case there are forms that are not rendered
 // when the DOM is first loaded.
 // TODO: Fix looping when other extensions change the form
-// const observer = new MutationObserver((mutation) => {
-  // for (const { addedNodes } of mutation) {
-  // }
-  // //scanPage()
-// });
-// observer.observe(document.body, { childList: true });
+/*
+ * const observer = new MutationObserver((mutation) => {
+ *   for (const { addedNodes } of mutation) {
+ *   }
+ *   //scanPage()
+ * });
+ * observer.observe(document.body, { childList: true });
+ */
 
 /**
  * Mapping of StoredSafe field names to StoredSafe values.
  * */
-type Data = [string, string][];
+type Data = Array<[string, string]>
 
 /**
  * Fill input fields with StoredSafe data in the appropriate forms/fields.
  * @param data - StoredSafe data.
  * @param submit - Whether or not to submit the form after filling it.
  * */
-function fillForm(data: Data, submit=false): void {
+function fillForm (data: Data, submit = false): void {
   for (const form of fillForms) {
-    let filled = false;
+    let filled = false
     for (const element of form) {
       if (element instanceof HTMLInputElement && isElementFillable(element)) {
-        let elementFilled = false;
+        let elementFilled = false
         for (const [field, value] of new Map(data)) {
           if (isMatch(field, element)) {
-            elementFilled = true;
-            filled = true;
-            element.value = value;
-            break;
+            elementFilled = true
+            filled = true
+            element.value = value
+            break
           }
         }
         if (!elementFilled) { // If no field matched this element
-          element.focus(); // Focus element for easier access (example otp field)
+          element.focus() // Focus element for easier access (example otp field)
         }
       }
     }
@@ -293,21 +297,21 @@ function fillForm(data: Data, submit=false): void {
  * @param data - StoredSafe data.
  * */
 interface Message {
-  type: string;
-  data: Data;
+  type: string
+  data: Data
 }
 
 /**
  * Handle messages sent to the tab by other scripts.
  * @param message - Message sent by other script.
  * */
-function onMessage(
-  message: Message,
+function onMessage (
+  message: Message
 ): void {
   if (message.type === 'fill') {
-    fillForm(message.data);
+    fillForm(message.data)
   }
 }
 
 // Set up listener for messages from other scripts within the extension.
-browser.runtime.onMessage.addListener(onMessage);
+browser.runtime.onMessage.addListener(onMessage)

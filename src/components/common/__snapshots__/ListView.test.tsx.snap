@@ -1,3 +1,24 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`<Button /> 1`] = `ShallowWrapper {}`;
+exports[`<ListView /> 1`] = `"<section class=\\"list-view\\"></section>"`;
+
+exports[`<ListView children /> 1`] = `
+"<section class=\\"list-view\\">
+  <article class=\\"list-view-item\\">
+    <article class=\\"list-view-item-title\\">
+      <h1>Title 1</h1>
+    </article>
+    <article class=\\"list-view-item-content\\">
+      <section>Item 1</section>
+    </article>
+  </article>
+  <article class=\\"list-view-item\\">
+    <article class=\\"list-view-item-title\\">
+      <h1>Title 2</h1>
+    </article>
+    <article class=\\"list-view-item-content\\">
+      <section>Item 2</section>
+    </article>
+  </article>
+</section>"
+`;

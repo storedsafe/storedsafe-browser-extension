@@ -1,11 +1,11 @@
-import React from 'react';
-import './MenuButton.scss';
+import React from 'react'
+import './MenuButton.scss'
 
 interface MenuButtonProps {
-  title: string;
-  icon: React.ReactNode;
-  onClick: () => void;
-  selected?: boolean;
+  title: string
+  icon: React.ReactNode
+  onClick: () => void
+  selected?: boolean
 }
 
 export const MenuButton: React.FunctionComponent<MenuButtonProps> = ({
@@ -18,9 +18,8 @@ export const MenuButton: React.FunctionComponent<MenuButtonProps> = ({
     <button className={`menu-button-icon${selected ? ' selected' : ''}`} aria-label={title}>{icon}</button>
     <div className="menu-button-title">{title}</div>
   </div>
-);
+)
 
 MenuButton.defaultProps = {
-  selected: false,
-};
-
+  selected: false
+}

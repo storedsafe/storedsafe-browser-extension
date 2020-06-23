@@ -1,7 +1,7 @@
-import * as React from 'react';
-import './Checkbox.scss';
+import * as React from 'react'
+import './Checkbox.scss'
 
-type CheckboxProps = React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>;
+type CheckboxProps = React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>
 export const Checkbox: React.SFC<CheckboxProps> = (props: CheckboxProps) => (
   <React.Fragment>
     <div style={{ display: 'inline-block' }} className="checkbox">
@@ -9,4 +9,4 @@ export const Checkbox: React.SFC<CheckboxProps> = (props: CheckboxProps) => (
       <div className="custom-checkbox" />
     </div>
   </React.Fragment>
-);
+)

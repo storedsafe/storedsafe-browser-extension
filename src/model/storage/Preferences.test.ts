@@ -1,47 +1,47 @@
-////////////////////////////////////////////////////////////
+/// /////////////////////////////////////////////////////////
 // Set up mocks for browser storage API.
 
-import '../../__mocks__/browser';
-const localSetMock = jest.fn(() => Promise.resolve());
-//eslint-disable-next-line
+import '../../__mocks__/browser'
+
+/// /////////////////////////////////////////////////////////
+// Start tests
+
+import { actions } from './Preferences'
+const localSetMock = jest.fn(() => Promise.resolve())
+// eslint-disable-next-line
 const localGetMock = jest.fn((key: string) => Promise.resolve({}));
 const mockGet = (
   preferences: Preferences
 ): (key: string) => Promise<object> => (key: string): Promise<object> => {
   if (key === 'preferences') {
-    return Promise.resolve({ [key]: preferences });
+    return Promise.resolve({ [key]: preferences })
   }
-  throw new Error('Invalid key');
-};
+  throw new Error('Invalid key')
+}
 
-global.browser.storage.local.get = localGetMock;
-global.browser.storage.local.set = localSetMock;
-
-////////////////////////////////////////////////////////////
-// Start tests
-
-import { actions } from './Preferences';
+global.browser.storage.local.get = localGetMock
+global.browser.storage.local.set = localSetMock
 
 describe('uses mocked browser.storage', () => {
   beforeEach(() => {
-    localSetMock.mockClear();
-    localGetMock.mockClear();
-  });
+    localSetMock.mockClear()
+    localGetMock.mockClear()
+  })
 
   test('fetch(), empty', () => (
     actions.fetch().then((preferences) => {
-      expect(Object.keys(preferences).length).toBe(1);
-      expect(Object.keys(preferences.sites).length).toBe(0);
+      expect(Object.keys(preferences).length).toBe(1)
+      expect(Object.keys(preferences.sites).length).toBe(0)
     })
-  ));
+  ))
 
   test('fetch(), no data', () => {
-    localGetMock.mockImplementationOnce(mockGet({ sites: {} }));
+    localGetMock.mockImplementationOnce(mockGet({ sites: {} }))
     return actions.fetch().then((preferences) => {
-      expect(Object.keys(preferences).length).toBe(1);
-      expect(Object.keys(preferences.sites).length).toBe(0);
-    });
-  });
+      expect(Object.keys(preferences).length).toBe(1)
+      expect(Object.keys(preferences.sites).length).toBe(0)
+    })
+  })
 
   test('fetch(), with data', () => {
     const mockPreferences: Preferences = {
@@ -49,21 +49,21 @@ describe('uses mocked browser.storage', () => {
       sites: {
         'foo.example.com': {
           username: 'bob',
-          loginType: 'yubikey',
+          loginType: 'yubikey'
         },
         'bar.example.com': {
-          username: 'alice',
+          username: 'alice'
         },
         'zot.example.com': {
-          loginType: 'totp',
-        },
-      },
+          loginType: 'totp'
+        }
+      }
     }
-    localGetMock.mockImplementationOnce(mockGet(mockPreferences));
+    localGetMock.mockImplementationOnce(mockGet(mockPreferences))
     return actions.fetch().then((preferences) => {
-      expect(preferences).toEqual(mockPreferences);
-    });
-  });
+      expect(preferences).toEqual(mockPreferences)
+    })
+  })
 
   test('updateSitePreferences()', () => {
     const mockPreferences: Preferences = {
@@ -71,38 +71,38 @@ describe('uses mocked browser.storage', () => {
       sites: {
         'foo.example.com': {
           username: 'bob',
-          loginType: 'yubikey',
+          loginType: 'yubikey'
         },
         'bar.example.com': {
           username: 'alice',
-          loginType: 'totp',
-        },
-      },
+          loginType: 'totp'
+        }
+      }
     }
-    const host = 'foo.example.com';
-    const username = 'eve';
-    const loginType = 'totp';
+    const host = 'foo.example.com'
+    const username = 'eve'
+    const loginType = 'totp'
     const newPreferences: Preferences = {
       ...mockPreferences,
       sites: {
         ...mockPreferences.sites,
         [host]: {
           username,
-          loginType,
-        },
-      },
+          loginType
+        }
+      }
     }
-    localGetMock.mockImplementationOnce(mockGet(mockPreferences));
-    localGetMock.mockImplementationOnce(mockGet(newPreferences));
+    localGetMock.mockImplementationOnce(mockGet(mockPreferences))
+    localGetMock.mockImplementationOnce(mockGet(newPreferences))
     return actions.updateSitePreferences(
       host, { username, loginType }
     ).then((preferences) => {
       expect(localSetMock).toHaveBeenCalledWith({
-        preferences: newPreferences,
-      });
-      expect(preferences).toEqual(newPreferences);
-    });
-  });
+        preferences: newPreferences
+      })
+      expect(preferences).toEqual(newPreferences)
+    })
+  })
 
   test('setLastUsedSite()', () => {
     const mockPreferences: Preferences = {
@@ -110,26 +110,26 @@ describe('uses mocked browser.storage', () => {
       sites: {
         'foo.example.com': {
           username: 'bob',
-          loginType: 'yubikey',
+          loginType: 'yubikey'
         },
         'bar.example.com': {
           username: 'alice',
-          loginType: 'totp',
-        },
-      },
+          loginType: 'totp'
+        }
+      }
     }
-    const host = 'foo.example.com';
+    const host = 'foo.example.com'
     const newPreferences: Preferences = {
       ...mockPreferences,
-      lastUsedSite: host,
+      lastUsedSite: host
     }
-    localGetMock.mockImplementationOnce(mockGet(mockPreferences));
-    localGetMock.mockImplementationOnce(mockGet(newPreferences));
+    localGetMock.mockImplementationOnce(mockGet(mockPreferences))
+    localGetMock.mockImplementationOnce(mockGet(newPreferences))
     return actions.setLastUsedSite(host).then((preferences) => {
       expect(localSetMock).toHaveBeenCalledWith({
-        preferences: newPreferences,
-      });
-      expect(preferences).toEqual(newPreferences);
-    });
-  });
-});
+        preferences: newPreferences
+      })
+      expect(preferences).toEqual(newPreferences)
+    })
+  })
+})

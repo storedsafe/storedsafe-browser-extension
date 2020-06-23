@@ -13,9 +13,9 @@
  * */
 const get = (): Promise<Sessions> => (
   browser.storage.local.get('sessions')
-  .then(({ sessions }) => {
-    return new Map(sessions || []);
-  })
+    .then(({ sessions }) => {
+      return new Map(sessions || [])
+    })
 )
 
 /**
@@ -25,7 +25,7 @@ const get = (): Promise<Sessions> => (
  * */
 const set = (sessions: Sessions): Promise<void> => (
   browser.storage.local.set({
-    sessions: Array.from(sessions),
+    sessions: Array.from(sessions)
   })
 )
 
@@ -38,8 +38,8 @@ export const actions = {
    * */
   add: (host: string, session: Session): Promise<Sessions> => (
     get().then((sessions) => {
-      const newSessions = new Map([...sessions, [host, session]]);
-      return set(newSessions).then(get);
+      const newSessions = new Map([...sessions, [host, session]])
+      return set(newSessions).then(get)
     })
   ),
 
@@ -50,11 +50,11 @@ export const actions = {
    * */
   remove: (...hosts: string[]): Promise<Sessions> => (
     get().then((sessions) => {
-      const newSessions = new Map(sessions);
+      const newSessions = new Map(sessions)
       for (const host of hosts) {
-        newSessions.delete(host);
+        newSessions.delete(host)
       }
-      return set(newSessions).then(get);
+      return set(newSessions).then(get)
     })
   ),
 
@@ -70,5 +70,5 @@ export const actions = {
    * Fetch sessions from storage.
    * @returns All active sessions.
    * */
-  fetch: get,
-};
+  fetch: get
+}

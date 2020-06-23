@@ -1,5 +1,13 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`<OnlineIndicator offline /> 1`] = `ShallowWrapper {}`;
+exports[`<OnlineIndicator /> 1`] = `
+"<div class=\\"online-indicator online\\">
+  <div class=\\"online-indicator-icon\\"></div>
+</div>"
+`;
 
-exports[`<OnlineIndicator online /> 1`] = `ShallowWrapper {}`;
+exports[`<OnlineIndicator /> 2`] = `
+"<div class=\\"online-indicator offline\\">
+  <div class=\\"online-indicator-icon\\"></div>
+</div>"
+`;

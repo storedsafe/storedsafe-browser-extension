@@ -1,11 +1,15 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`<LoadingSpinner /> 1`] = `ShallowWrapper {}`;
+exports[`<LoadingSpinner /> 1`] = `
+"<div class=\\"loading-spinner\\">
+  <div class=\\"spinner loading\\"></div>
+</div>"
+`;
 
-exports[`<LoadingSpinner error /> 1`] = `ShallowWrapper {}`;
+exports[`<LoadingSpinner error /> 1`] = `"<div class=\\"loading-spinner\\"><div class=\\"spinner error\\"></div></div>"`;
 
-exports[`<LoadingSpinner loading /> 1`] = `ShallowWrapper {}`;
+exports[`<LoadingSpinner loading /> 1`] = `"<div class=\\"loading-spinner\\"><div class=\\"spinner loading\\"></div></div>"`;
 
-exports[`<LoadingSpinner success /> 1`] = `ShallowWrapper {}`;
+exports[`<LoadingSpinner success /> 1`] = `"<div class=\\"loading-spinner\\"><div class=\\"spinner success\\"></div></div>"`;
 
-exports[`<LoadingSpinner warning /> 1`] = `ShallowWrapper {}`;
+exports[`<LoadingSpinner warning /> 1`] = `"<div class=\\"loading-spinner\\"><div class=\\"spinner warning\\"></div></div>"`;

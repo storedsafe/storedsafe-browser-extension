@@ -12,9 +12,9 @@
  * */
 const get = (): Promise<Preferences> => (
   browser.storage.local.get('preferences').then(({ preferences }) => {
-    return preferences || { sites: {} };
+    return preferences || { sites: {} }
   })
-);
+)
 
 /**
  * Commit user preferences to local storage.
@@ -22,7 +22,7 @@ const get = (): Promise<Preferences> => (
  * */
 const set = (preferences: Preferences): Promise<void> => (
   browser.storage.local.set({ preferences })
-);
+)
 
 export const actions = {
   /**
@@ -34,7 +34,7 @@ export const actions = {
     get().then((preferences) => (
       set({
         ...preferences,
-        lastUsedSite: host,
+        lastUsedSite: host
       }).then(get)
     ))
   ),
@@ -48,18 +48,18 @@ export const actions = {
    * */
   updateSitePreferences: (
     host: string,
-    sitePreferences: SitePreferences,
+    sitePreferences: SitePreferences
   ): Promise<Preferences> => {
     return get().then((preferences) => {
       const newSitePreferences = {
         ...preferences,
         sites: {
           ...preferences.sites,
-          [host]: sitePreferences,
-        },
-      };
-      return set(newSitePreferences).then(() => get());
-    });
+          [host]: sitePreferences
+        }
+      }
+      return set(newSitePreferences).then(() => get())
+    })
   },
 
   /**
@@ -74,5 +74,5 @@ export const actions = {
    * Fetch state from storage.
    * @returns User preferences.
    * */
-  fetch: get,
-};
+  fetch: get
+}

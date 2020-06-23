@@ -1,9 +1,9 @@
-import React from 'react';
-import { Logo } from './Logo';
-import './Banner.scss';
+import React from 'react'
+import { Logo } from './Logo'
+import './Banner.scss'
 
 interface BannerProps {
-  children?: React.ReactNode;
+  children?: React.ReactNode
 }
 
 export const Banner: React.FunctionComponent<BannerProps> = ({
@@ -13,4 +13,4 @@ export const Banner: React.FunctionComponent<BannerProps> = ({
     <Logo />
     {children}
   </div>
-);
+)

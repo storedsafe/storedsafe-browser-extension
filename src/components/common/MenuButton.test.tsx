@@ -1,52 +1,83 @@
-import * as React from 'react';
-import { shallow, mount } from 'enzyme';
-import { MenuButton } from './MenuButton';
+import * as React from 'react'
+import { render, unmountComponentAtNode } from 'react-dom'
+import { act } from 'react-dom/test-utils'
+import { MenuButton } from './MenuButton'
+import pretty from 'pretty'
 
-const onClick = jest.fn();
+/**
+ * Set up and tear down container to mount tested component in.
+ * */
+let container: Element = null
+beforeEach(() => {
+  // setup a DOM element as a render target
+  container = document.createElement('div')
+  document.body.appendChild(container)
+})
+afterEach(() => {
+  // cleanup on exiting
+  unmountComponentAtNode(container)
+  container.remove()
+  container = null
+})
+
+const onClick = jest.fn()
 
 test('<MenuButton />', () => {
-  const wrapper = shallow(
-    <MenuButton
-      title="Button"
-      icon={<svg />}
-      onClick={onClick}
-    />
-  );
-  expect(wrapper).toMatchSnapshot();
-});
+  act(() => {
+    render(
+      <MenuButton title='Button' icon={<svg />} onClick={onClick} />,
+      container
+    )
+  })
+  expect(pretty(container.innerHTML)).toMatchSnapshot()
+})
 
 test('<MenuButton selected=true />', () => {
-  const wrapper = shallow(
-    <MenuButton
-      title="Button"
-      icon={<svg />}
-      onClick={onClick}
-      selected={true}
-    />
-  );
-  expect(wrapper).toMatchSnapshot();
-});
+  act(() => {
+    render(
+      <MenuButton
+        title='Button'
+        icon={<svg />}
+        onClick={onClick}
+        selected={true}
+      />,
+      container
+    )
+  })
+  expect(pretty(container.innerHTML)).toMatchSnapshot()
+})
 
 test('<MenuButton selected=false />', () => {
-  const wrapper = shallow(
-    <MenuButton
-      title="Button"
-      icon={<svg />}
-      onClick={onClick}
-      selected={false}
-    />
-  );
-  expect(wrapper).toMatchSnapshot();
-});
+  act(() => {
+    render(
+      <MenuButton
+        title='Button'
+        icon={<svg />}
+        onClick={onClick}
+        selected={false}
+      />,
+      container
+    )
+  })
+  expect(pretty(container.innerHTML)).toMatchSnapshot()
+})
 
 test('<MenuButton click />', () => {
-  const wrapper = mount(
-    <MenuButton
-      title="Button"
-      icon={<svg />}
-      onClick={onClick}
-    />
-  );
-  wrapper.simulate('click');
-  expect(onClick).toHaveBeenCalled();
-});
+  act(() => {
+    render(
+      <MenuButton
+        title='Button'
+        icon={<svg />}
+        onClick={onClick}
+        selected={false}
+      />,
+      container
+    )
+  })
+
+  const button = container.querySelector('button')
+  act(() => {
+    button.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+  })
+  expect(onClick).toHaveBeenCalled()
+})

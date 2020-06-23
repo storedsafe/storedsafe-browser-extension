@@ -1,30 +1,28 @@
-/* eslint-disable @typescript-eslint/explicit-function-return-type */
-/* eslint-disable @typescript-eslint/no-var-requires */
-const path = require('path');
-const ExtensionDistributionWebpackPlugin = require('./ExtensionDistributionWebpackPlugin');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const path = require('path')
+const ExtensionDistributionWebpackPlugin = require('./plugins/ExtensionDistributionWebpackPlugin')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+// const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 
-const SRC_DIR = path.join(__dirname, 'src');
+const SRC_DIR = path.join(__dirname, 'src')
 
 module.exports = (env, args) => ({
   entry: {
-    'main': SRC_DIR + '/index.tsx',
-    'background': SRC_DIR + '/scripts/background.ts',
-    'content_script': SRC_DIR + '/scripts/content_script.ts',
+    main: SRC_DIR + '/index.tsx',
+    background: SRC_DIR + '/scripts/background.ts',
+    content_script: SRC_DIR + '/scripts/content_script.ts'
   },
 
   output: {
-    path: path.resolve(__dirname, 'build'),
-    filename: '[name].js',
+    path: path.resolve(__dirname, 'build/bundle'),
+    filename: '[name].js'
   },
 
   resolve: {
     extensions: [
       '.ts',
       '.tsx',
-      '.js',
-    ],
+      '.js'
+    ]
   },
 
   module: {
@@ -35,8 +33,8 @@ module.exports = (env, args) => ({
         use: [
           {
             loader: 'ts-loader'
-          },
-        ],
+          }
+        ]
       },
       {
         enforce: 'pre',
@@ -45,13 +43,13 @@ module.exports = (env, args) => ({
       },
       {
         test: /\.s[ac]ss$/,
-        use: [ 'style-loader', 'css-loader', 'postcss-loader', 'sass-loader' ],
+        use: ['style-loader', 'css-loader', 'postcss-loader', 'sass-loader']
       },
       {
         test: /\.(png|jpe?g|gif|svg)$/,
-        use: ['file-loader'],
-      },
-    ],
+        use: ['file-loader']
+      }
+    ]
   },
 
   devtool: 'source-map',
@@ -64,35 +62,35 @@ module.exports = (env, args) => ({
         externals: args.mode === 'production' ? [
           'react.production.min.js',
           'react-dom.production.min.js',
-          'browser-polyfill.min.js',
+          'browser-polyfill.min.js'
         ] : [
           'react.development.js',
           'react-dom.development.js',
-          'browser-polyfill.min.js',
-        ],
-      },
+          'browser-polyfill.min.js'
+        ]
+      }
     }),
     new ExtensionDistributionWebpackPlugin({
-      assetsPath: path.resolve(__dirname, 'assets'),
-      distPath: path.resolve(__dirname, 'dist'),
-      manifestPath: path.resolve(__dirname, 'manifests'),
+      assetsPath: path.resolve(__dirname, 'src/public'),
+      distPath: path.resolve(__dirname, 'build/dist'),
+      manifestPath: path.resolve(__dirname, 'src/manifests'),
       targets: ['firefox', 'chrome'],
       externals: args.mode === 'production' ? [
         path.resolve(__dirname, 'node_modules/react/umd/react.production.min.js'),
         path.resolve(__dirname, 'node_modules/react-dom/umd/react-dom.production.min.js'),
         path.resolve(__dirname, 'node_modules/webextension-polyfill/dist/browser-polyfill.min.js'),
-        path.resolve(__dirname, 'node_modules/webextension-polyfill/dist/browser-polyfill.min.js.map'),
+        path.resolve(__dirname, 'node_modules/webextension-polyfill/dist/browser-polyfill.min.js.map')
       ] : [
         path.resolve(__dirname, 'node_modules/react/umd/react.development.js'),
         path.resolve(__dirname, 'node_modules/react-dom/umd/react-dom.development.js'),
         path.resolve(__dirname, 'node_modules/webextension-polyfill/dist/browser-polyfill.min.js'),
-        path.resolve(__dirname, 'node_modules/webextension-polyfill/dist/browser-polyfill.min.js.map'),
-      ],
-    }),
+        path.resolve(__dirname, 'node_modules/webextension-polyfill/dist/browser-polyfill.min.js.map')
+      ]
+    })
   ],
 
   externals: {
-    'react': 'React',
-    'react-dom': 'ReactDOM',
-  },
-});
+    react: 'React',
+    'react-dom': 'ReactDOM'
+  }
+})

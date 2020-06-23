@@ -1,15 +1,50 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`<Button /> 1`] = `ShallowWrapper {}`;
+exports[`<Button /> 1`] = `
+"<button class=\\"button button-primary\\">
+  <div class=\\"button-children\\"></div>
+  <div class=\\"button-spinner\\"></div>
+</button>"
+`;
 
-exports[`<Button />, with children 1`] = `ShallowWrapper {}`;
+exports[`<Button /> 2`] = `
+"<button class=\\"button button-primary\\">
+  <div class=\\"button-children\\"></div>
+  <div class=\\"button-spinner\\"></div>
+</button>"
+`;
 
-exports[`<Button color=accent /> 1`] = `ShallowWrapper {}`;
+exports[`<Button /> 3`] = `
+"<button class=\\"button button-accent\\">
+  <div class=\\"button-children\\"></div>
+  <div class=\\"button-spinner\\"></div>
+</button>"
+`;
 
-exports[`<Button color=danger /> 1`] = `ShallowWrapper {}`;
+exports[`<Button /> 4`] = `
+"<button class=\\"button button-warning\\">
+  <div class=\\"button-children\\"></div>
+  <div class=\\"button-spinner\\"></div>
+</button>"
+`;
 
-exports[`<Button color=primary /> 1`] = `ShallowWrapper {}`;
+exports[`<Button /> 5`] = `
+"<button class=\\"button button-danger\\">
+  <div class=\\"button-children\\"></div>
+  <div class=\\"button-spinner\\"></div>
+</button>"
+`;
 
-exports[`<Button color=warning /> 1`] = `ShallowWrapper {}`;
+exports[`<Button /> 6`] = `
+"<button class=\\"button button-primary button-loading\\">
+  <div class=\\"button-children\\"></div>
+  <div class=\\"button-spinner\\"></div>
+</button>"
+`;
 
-exports[`<Button isLoading /> 1`] = `ShallowWrapper {}`;
+exports[`<Button /> 7`] = `
+"<button class=\\"button button-primary\\">
+  <div class=\\"button-children\\">children</div>
+  <div class=\\"button-spinner\\"></div>
+</button>"
+`;

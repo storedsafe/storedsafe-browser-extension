@@ -1,36 +1,36 @@
-import React, { useState, useEffect } from 'react';
-import './ListView.scss';
+import React, { useState, useEffect } from 'react'
+import './ListView.scss'
 
 export interface ListItem {
-  key: string;
-  title: React.ReactNode;
-  content: React.ReactNode;
+  key: string
+  title: React.ReactNode
+  content: React.ReactNode
 }
 
 interface ListViewProps {
-  items: ListItem[];
-  defaultSelected?: string;
+  items: ListItem[]
+  defaultSelected?: string
 }
 
 export const ListView: React.FunctionComponent<ListViewProps> = ({
   items,
-  defaultSelected,
+  defaultSelected
 }: ListViewProps) => {
-  const [selected, setSelected] = useState<string>(defaultSelected);
+  const [selected, setSelected] = useState<string>(defaultSelected)
 
   useEffect(() => {
-    setSelected(defaultSelected);
-  }, [defaultSelected]);
+    setSelected(defaultSelected)
+  }, [defaultSelected])
 
   const list = items.map((item) => {
-    const isSelected = selected === item.key;
+    const isSelected = selected === item.key
     const onSelect = (): void => {
       if (isSelected) {
-        setSelected(undefined);
+        setSelected(undefined)
       } else {
-        setSelected(item.key);
+        setSelected(item.key)
       }
-    };
+    }
     return (
       <article
         className={`list-view-item${isSelected ? ' selected' : ''}${selected && !isSelected ? ' hidden' : ''}`}
@@ -44,12 +44,12 @@ export const ListView: React.FunctionComponent<ListViewProps> = ({
           {item.content}
         </article>
       </article>
-    );
-  });
+    )
+  })
 
   return (
     <section className={`list-view${selected !== undefined ? ' has-selected' : ''}`}>
       {list}
     </section>
-  );
-};
+  )
+}

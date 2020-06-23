@@ -1,16 +1,37 @@
-import * as React from 'react';
-import { Select } from './Select';
-import { shallow } from 'enzyme';
+import * as React from 'react'
+import { render, unmountComponentAtNode } from 'react-dom'
+import { act } from 'react-dom/test-utils'
+import { Select } from './Select'
+import pretty from 'pretty'
+
+/**
+ * Set up and tear down container to mount tested component in.
+ * */
+let container: Element = null
+beforeEach(() => {
+  // setup a DOM element as a render target
+  container = document.createElement('div')
+  document.body.appendChild(container)
+})
+afterEach(() => {
+  // cleanup on exiting
+  unmountComponentAtNode(container)
+  container.remove()
+  container = null
+})
 
 test('<Select />', () => {
-  const wrapper = shallow(
-    <Select name="test-name" id="test-id">
-      <option value="foo">Foo</option>
-      <option value="bar">Bar</option>
-    </Select>
-    );
-  const select = wrapper.find('select#test-id');
-  expect(select.find('option').length).toBe(2);
-  expect(wrapper.find('div.custom-select').length).toBe(1);
-  expect(wrapper).toMatchSnapshot();
-});
+  act(() => {
+    render(
+      <Select name='test-name' id='test-id'>
+        <option value='foo'>Foo</option>
+        <option value='bar'>Bar</option>
+      </Select>,
+      container
+    )
+  })
+  const select = container.querySelector('select#test-id')
+  expect(select.querySelectorAll('option').length).toBe(2)
+  expect(container.querySelector('div.custom-select')).not.toBeNull()
+  expect(pretty(container.innerHTML)).toMatchSnapshot()
+})
