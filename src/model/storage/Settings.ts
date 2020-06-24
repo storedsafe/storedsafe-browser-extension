@@ -101,7 +101,7 @@ const populate = (
   values: SettingsValues,
   managed = false
 ): void => {
-  Object.keys(values).forEach((key) => {
+  Object.keys(values).forEach(key => {
     if (!settings.has(key)) {
       settings.set(key, { managed, value: values[key] })
     }
@@ -114,57 +114,57 @@ const populate = (
  * storage are set as managed.
  * @returns Merged user and system settings.
  * */
-const get = (): Promise<Settings> => {
+async function get (): Promise<Settings> {
   const settings: Settings = new Map()
-  return systemStorage.get('settings').catch(
-    () => ({ settings: new Map([]) })
-  ).then(({ settings: system }) => {
-    if (system && system.enforced) {
-      populate(settings, system.enforced, true)
+  try {
+    const { settings: systemSettings } = await systemStorage.get('settings')
+    if (systemSettings?.enforced !== undefined) {
+      populate(settings, systemSettings.enforced, true)
     }
-    return userStorage.get('settings').then(({ settings: user }) => {
-      if (user) {
-        populate(settings, user)
-      }
-      if (system && system.defaults) {
-        populate(settings, system.defaults)
-      }
-      populate(settings, defaults)
-      return settings
-    })
-  })
+    const { settings: userSettings } = await userStorage.get('settings')
+    if (userSettings !== undefined) {
+      populate(settings, userSettings)
+    }
+    if (systemSettings?.defaults !== undefined) {
+      populate(settings, systemSettings.defaults)
+    }
+    populate(settings, defaults)
+  } catch (error) {
+    console.error('Error gettings settings from storage.', error)
+  }
+  return settings
 }
 
 /**
  * Commit user settings to sync storage.
  * @param settings - New user settings.
  * */
-const set = (settings: Settings): Promise<void> => {
+async function set (settings: Settings): Promise<void> {
   const userSettings: SettingsValues = {}
   for (const [key, field] of settings) {
     if (!field.managed) {
       userSettings[key] = field.value
     }
   }
-  return userStorage.set({ settings: userSettings })
+  try {
+    return await userStorage.set({ settings: userSettings })
+  } catch (error) {
+    console.error('Error updating settings in storage.', error)
+  }
+}
+
+/**
+ * Update user settings. Managed fields will be ignored.
+ * @param settings - Updated settings.
+ * @returns New merged user and system settings.
+ * */
+async function update (updatedSettings: Settings): Promise<Settings> {
+  const settings = await get()
+  const newSettings = new Map([...settings, ...updatedSettings])
+  return await set(newSettings).then(get)
 }
 
 export const actions = {
-  /**
-   * Update user settings. Managed fields will be ignored.
-   * @param settings - Updated settings.
-   * @returns New merged user and system settings.
-   * */
-  update: (updatedSettings: Settings): Promise<Settings> => {
-    return get().then((settings) => {
-      const newSettings = new Map([...settings, ...updatedSettings])
-      return set(newSettings).then(get)
-    })
-  },
-
-  /**
-   * Fetch settings from storage.
-   * @returns Merged user and system settings.
-   * */
+  update,
   fetch: get
 }

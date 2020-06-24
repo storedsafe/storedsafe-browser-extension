@@ -1,8 +1,4 @@
 import '../../__mocks__/browser'
-
-/// /////////////////////////////////////////////////////////
-// Start tests
-
 import * as StoredSafe from './StoredSafe'
 
 /// /////////////////////////////////////////////////////////
@@ -46,7 +42,8 @@ const results: Results = new Map<string, SSObject[]>([
       }
     ]
   ],
-  ['other', []]
+  ['host1', []],
+  ['host2', []]
 ])
 const serializableResults: SerializableResults = Array.from(results)
 
@@ -83,25 +80,36 @@ const decryptedResult: SSObject = {
   ]
 }
 
-const tabResults: TabResults = new Map([[1, results]])
+// const tabResults: TabResults = new Map([[1, results]])
 const serializableTabResults = [[1, serializableResults]]
 
 const sessions: Sessions = new Map([
   [
-    'other',
+    'host1',
     {
       apikey: 'abc123',
       token: 'token',
       createdAt: 1,
-      warnings: {},
+      warnings: { key: 'warning' },
       violations: {},
       timeout: 14400000
+    }
+  ],
+  [
+    'host2',
+    {
+      apikey: 'abc123',
+      token: 'token',
+      createdAt: 1,
+      warnings: { key: 'warning' },
+      violations: {},
+      timeout: 36000
     }
   ]
 ])
 const serializableSessions: SerializableSessions = Array.from(sessions)
 
-const mockSessions: Sessions = new Map([
+const hostSessions: Sessions = new Map([
   ...sessions,
   [
     'host',
@@ -109,12 +117,29 @@ const mockSessions: Sessions = new Map([
       token: 'token',
       createdAt: 0,
       warnings: {},
+      violations: {},
+      timeout: 14400000
+    }
+  ]
+])
+const serializableHostSessions: SerializableSessions = Array.from(hostSessions)
+
+const warningSessions: Sessions = new Map([
+  ...sessions,
+  [
+    'warning',
+    {
+      token: 'token',
+      createdAt: 0,
+      warnings: { key: 'warning' },
       violations: { key: 'violation' },
       timeout: 14400000
     }
   ]
 ])
-const serializableMockSessions: SerializableSessions = Array.from(mockSessions)
+const serializableWarningSessions: SerializableSessions = Array.from(
+  warningSessions
+)
 
 const local = {
   sessions: serializableSessions,
@@ -140,53 +165,77 @@ const loginFields: TOTPFields & YubiKeyFields = {
   otp: 'otp'
 }
 
+/// /////////////////////////////////////////////////////////
+// Start tests
+
 describe('Sessions', () => {
   beforeEach(() => {
     localSetMock.mockClear()
     localGetMock.mockClear()
   })
 
-  test('.login(), totp', async () =>
-    await StoredSafe.actions
-      .login(
-        { host: 'host', apikey: 'apikey' },
-        { ...loginFields, loginType: 'totp' }
-      )
-      .then(newSessions => {
-        expect(newSessions).toEqual(sessions)
-        expect(localSetMock).toHaveBeenCalledWith({
-          sessions: serializableMockSessions
-        })
-      }))
+  test('.login(), totp', async () => {
+    const newSessions = await StoredSafe.actions.login(
+      { host: 'host', apikey: 'apikey' },
+      { ...loginFields, loginType: 'totp' }
+    )
+    expect(newSessions).toEqual(sessions)
+    expect(localSetMock).toHaveBeenCalledWith({
+      sessions: serializableHostSessions
+    })
+  })
 
-  test('.login(), yubikey', async () =>
-    await StoredSafe.actions
-      .login(
-        { host: 'host', apikey: 'apikey' },
-        {
-          ...loginFields,
-          loginType: 'yubikey'
-        }
-      )
-      .then(newSessions => {
-        expect(newSessions).toEqual(sessions)
-        expect(localSetMock).toHaveBeenCalledWith({
-          sessions: serializableMockSessions
-        })
-      }))
+  test('.login(), totp with warnings', async () => {
+    const newSessions = await StoredSafe.actions.login(
+      { host: 'warning', apikey: 'apikey' },
+      { ...loginFields, loginType: 'totp' }
+    )
+    expect(newSessions).toEqual(sessions)
+    expect(localSetMock).toHaveBeenCalledWith({
+      sessions: serializableWarningSessions
+    })
+  })
+
+  test('.login(), yubikey', async () => {
+    const newSessions = await StoredSafe.actions.login(
+      { host: 'host', apikey: 'apikey' },
+      {
+        ...loginFields,
+        loginType: 'yubikey'
+      }
+    )
+    expect(newSessions).toEqual(sessions)
+    expect(localSetMock).toHaveBeenCalledWith({
+      sessions: serializableHostSessions
+    })
+  })
 
   test('.logout()', async () => {
     localGetMock.mockImplementationOnce(
       async (key: string) =>
         await Promise.resolve({
-          [key]: serializableMockSessions
+          [key]: serializableHostSessions
         })
     )
-    return await StoredSafe.actions.logout('host').then(newSessions => {
-      expect(newSessions).toEqual(sessions)
-      expect(localSetMock).toHaveBeenCalledWith({
-        sessions: serializableSessions
-      })
+    const newSessions = await StoredSafe.actions.logout('host')
+    expect(newSessions).toEqual(sessions)
+    expect(localSetMock).toHaveBeenCalledWith({
+      sessions: serializableSessions
+    })
+  })
+
+  test('.check()', async () => {
+    await StoredSafe.actions.check('host1')
+    expect(localSetMock).not.toHaveBeenCalled()
+  })
+
+  test('.check(), invalid', async () => {
+    const newSerializableSessions: SerializableSessions = [
+      serializableSessions[0]
+    ]
+    await StoredSafe.actions.check('host2')
+    expect(localSetMock).toHaveBeenCalledWith({
+      sessions: newSerializableSessions
     })
   })
 })
@@ -202,39 +251,39 @@ describe('Search', () => {
     localGetMock.mockImplementation(
       async (key: string) =>
         await Promise.resolve({
-          [key]: serializableMockSessions
+          [key]: serializableHostSessions
         })
     )
 
-    return await StoredSafe.actions.find('host', 'host').then(findResults => {
-      expect(findResults).toEqual(results.get('host'))
-    })
+    const findResults = await StoredSafe.actions.find('host', 'host')
+    expect(findResults).toEqual(results.get('host'))
   })
 
   test('.find(), error', async () => {
     localGetMock.mockImplementationOnce(
       async (key: string) =>
         await Promise.resolve({
-          [key]: serializableMockSessions
+          [key]: serializableHostSessions
         })
     )
 
-    return await StoredSafe.actions.find('other', 'host').catch(error => {
+    try {
+      await StoredSafe.actions.find('host1', 'host')
+    } catch (error) {
       expect(error.message).toMatch('StoredSafe Error')
-    })
+    }
   })
 
   test('.decrypt()', async () => {
     localGetMock.mockImplementationOnce(
       async (key: string) =>
         await Promise.resolve({
-          [key]: serializableMockSessions
+          [key]: serializableHostSessions
         })
     )
 
-    return await StoredSafe.actions.decrypt('host', '1').then(result => {
-      expect(result).toEqual(decryptedResult)
-    })
+    const result = await StoredSafe.actions.decrypt('host', '1')
+    expect(result).toEqual(decryptedResult)
   })
 
   test('.tabFind()', async () => {
@@ -242,13 +291,12 @@ describe('Search', () => {
       async () =>
         await Promise.resolve({
           ...local,
-          sessions: serializableMockSessions
+          sessions: serializableHostSessions
         })
     )
 
-    return await StoredSafe.actions.tabFind(1, 'host').then(tabResults => {
-      expect(tabResults.get(1)).toEqual(results)
-      expect(errorMock).toHaveBeenCalledWith(expect.any(Error))
-    })
+    const tabResults = await StoredSafe.actions.tabFind(1, 'host')
+    expect(tabResults.get(1)).toEqual(results)
+    expect(errorMock).toHaveBeenCalledWith(expect.any(Error))
   })
 })

@@ -2,25 +2,27 @@
 // Set up mocks for browser storage API.
 
 import '../../__mocks__/browser'
-
-/// /////////////////////////////////////////////////////////
-// Start tests
-
 import { actions } from './Sessions'
-const localSetMock = jest.fn(() => Promise.resolve())
-// eslint-disable-next-line
-const localGetMock = jest.fn((key: string) => Promise.resolve({}));
+
+const localSetMock = jest.fn(async () => await Promise.resolve())
+const localGetMock = jest.fn(async (key: string) => await Promise.resolve({}))
 const mockGet = (
   serializableSessions: SerializableSessions
-): (key: string) => Promise<object> => (key: string): Promise<object> => {
+): ((key: string) => Promise<object>) => async (
+  key: string
+): Promise<object> => {
   if (key === 'sessions') {
-    return Promise.resolve({ [key]: serializableSessions })
+    return await Promise.resolve({ [key]: serializableSessions })
   }
   throw new Error('Invalid key')
 }
 
 global.browser.storage.local.get = localGetMock
 global.browser.storage.local.set = localSetMock
+const consoleError = global.console.error
+
+/// /////////////////////////////////////////////////////////
+// Start tests
 
 describe('uses mocked browser.storage', () => {
   beforeEach(() => {
@@ -28,36 +30,36 @@ describe('uses mocked browser.storage', () => {
     localGetMock.mockClear()
   })
 
-  test('fetch(), empty', () => (
-    actions.fetch().then((sessions) => {
-      expect(sessions.size).toBe(0)
-    })
-  ))
-
-  test('fetch(), incomplete sessions object', () => {
-    localGetMock.mockImplementationOnce(mockGet([]))
-    return actions.fetch().then((sessions) => {
-      expect(Object.keys(sessions).length).toBe(0)
-    })
+  test('fetch(), empty', async () => {
+    const sessions = await actions.fetch()
+    expect(sessions.size).toBe(0)
   })
 
-  test('fetch(), values exist', () => {
+  test('fetch(), incomplete sessions object', async () => {
+    localGetMock.mockImplementationOnce(mockGet([]))
+    const sessions = await actions.fetch()
+    expect(Object.keys(sessions).length).toBe(0)
+  })
+
+  test('fetch(), values exist', async () => {
     const mockSessions: SerializableSessions = [
-      ['foo.example.com', {
-        token: 'mocktoken',
-        createdAt: 0,
-        warnings: { key: 'warning' },
-        violations: { key: 'error' },
-        timeout: 0
-      }]
+      [
+        'foo.example.com',
+        {
+          token: 'mocktoken',
+          createdAt: 0,
+          warnings: { key: 'warning' },
+          violations: { key: 'error' },
+          timeout: 0
+        }
+      ]
     ]
     localGetMock.mockImplementationOnce(mockGet(mockSessions))
-    return actions.fetch().then((sessions) => {
-      expect(sessions).toEqual(new Map(mockSessions))
-    })
+    const sessions = await actions.fetch()
+    expect(sessions).toEqual(new Map(mockSessions))
   })
 
-  test('add()', () => {
+  test('add()', async () => {
     const host = 'add.example.com'
     const session: Session = {
       token: 'addtoken',
@@ -69,15 +71,12 @@ describe('uses mocked browser.storage', () => {
     const newSessions: SerializableSessions = [[host, session]]
     localGetMock.mockImplementationOnce(mockGet([]))
     localGetMock.mockImplementationOnce(mockGet(newSessions))
-    return actions.add(host, session).then((sessions) => {
-      expect(localSetMock).toHaveBeenCalledWith({
-        sessions: newSessions
-      })
-      expect(sessions).toEqual(new Map(newSessions))
-    })
+    const sessions = await actions.add(host, session)
+    expect(localSetMock).toHaveBeenCalledWith({ sessions: newSessions })
+    expect(sessions).toEqual(new Map(newSessions))
   })
 
-  test('remove()', () => {
+  test('remove()', async () => {
     const host = 'remove.example.com'
     const session: Session = {
       token: 'removetoken',
@@ -88,20 +87,47 @@ describe('uses mocked browser.storage', () => {
     }
     const mockSessions: SerializableSessions = [[host, session]]
     localGetMock.mockImplementationOnce(mockGet(mockSessions))
-    return actions.remove(host).then((sessions) => {
-      expect(localSetMock).toHaveBeenCalledWith({
-        sessions: []
-      })
-      expect(sessions).toEqual(new Map([]))
-    })
+    const sessions = await actions.remove(host)
+    expect(localSetMock).toHaveBeenCalledWith({ sessions: [] })
+    expect(sessions).toEqual(new Map())
   })
 
-  test('clear()', () => {
-    return actions.clear().then((sessions) => {
-      expect(localSetMock).toHaveBeenCalledWith({
-        sessions: []
-      })
-      expect(sessions).toEqual(new Map([]))
+  test('clear()', async () => {
+    const sessions = await actions.clear()
+    expect(localSetMock).toHaveBeenCalledWith({
+      sessions: []
     })
+    expect(sessions).toEqual(new Map())
+  })
+
+  test('fetch(), storage unavailable', async () => {
+    localGetMock.mockImplementationOnce(() => {
+      throw new Error()
+    })
+    global.console.error = jest.fn()
+    const preferences = await actions.fetch()
+    expect(global.console.error).toHaveBeenCalledTimes(1)
+    expect(preferences).toEqual(new Map())
+    global.console.error = consoleError
+  })
+
+  test('add(), storage unavailable', async () => {
+    const session: Session = {
+      token: 'token',
+      createdAt: 0,
+      warnings: {},
+      violations: {},
+      timeout: 0
+    }
+    localGetMock.mockImplementationOnce(() => {
+      throw new Error()
+    })
+    localSetMock.mockImplementationOnce(() => {
+      throw new Error()
+    })
+    global.console.error = jest.fn()
+    await actions.add('host', session)
+    expect(global.console.error).toHaveBeenCalledTimes(2)
+    global.console.error = consoleError
   })
 })

@@ -5,11 +5,7 @@
  * - actions object provides the public interface for the model.
  * */
 
-import StoredSafe, {
-  StoredSafePromise,
-  StoredSafeData,
-  StoredSafeError
-} from 'storedsafe'
+import StoredSafe, { StoredSafePromise, StoredSafeData } from 'storedsafe'
 import { actions as SessionsActions } from '../storage/Sessions'
 import { actions as TabResultsActions } from '../storage/TabResults'
 import { actions as objectHandler } from './ObjectHandler'
@@ -44,28 +40,25 @@ export type MakeStoredSafeRequest = (
 async function handleErrors (
   promise: StoredSafePromise<StoredSafeData>
 ): Promise<StoredSafeData> {
-  return await promise
-    .then(response => {
-      if (response.status === 200) {
-        return response.data
+  try {
+    const response = await promise
+    if (response.status === 200) {
+      return response.data
+    }
+  } catch (error) {
+    if (error.response !== undefined) {
+      const errors = error.response.data.ERRORS.join(' | ') as string
+      throw new Error(`StoredSafe Error: ${errors}`)
+    } else if (error.request !== undefined) {
+      const { status, statusText } = error.request as {
+        status: string
+        statusText: string
       }
-      throw new Error(
-        `StoredSafe Error: (${response.status}) ${response.statusText}`
-      )
-    })
-    .catch((error: StoredSafeError) => {
-      if (error.response !== undefined) {
-        const errors = error.response.data.ERRORS.join(' | ') as string
-        throw new Error(`StoredSafe Error: ${errors}`)
-      } else if (error.request !== undefined) {
-        const { status, statusText } = error.request as {
-          status: string
-          statusText: string
-        }
-        throw new Error(`Network Error: (${status}) ${statusText}`)
-      }
-      throw new Error(`Unexpected Error: ${error.message}`)
-    })
+      throw new Error(`Network Error: (${status}) ${statusText}`)
+    }
+    const message = error.message as string
+    throw new Error(`Unexpected Error: ${message}`)
+  }
 }
 
 /**
@@ -74,13 +67,12 @@ async function handleErrors (
  * @returns StoredSafe handler or promise with error if no session was found.
  * */
 async function getHandler (host: string): Promise<StoredSafe> {
-  return await SessionsActions.fetch().then(sessions => {
-    if (sessions.get(host) === undefined) {
-      throw new Error(`No active session for ${host}`)
-    }
-    const { token } = sessions.get(host)
-    return new StoredSafe({ host, token })
-  })
+  const sessions = await SessionsActions.fetch()
+  if (sessions.get(host) === undefined) {
+    throw new Error(`No active session for ${host}`)
+  }
+  const { token } = sessions.get(host)
+  return new StoredSafe({ host, token })
 }
 
 /**
@@ -89,11 +81,10 @@ async function getHandler (host: string): Promise<StoredSafe> {
  * @returns Request function to be passed to sub-handlers.
  * */
 function makeRequest (host: string): MakeStoredSafeRequest {
-  const request: MakeStoredSafeRequest = async cb =>
+  return async cb =>
     await handleErrors(
       getHandler(host).then(async handler => await cb(handler))
     )
-  return request
 }
 
 /// /////////////////////////////////////////////////////////

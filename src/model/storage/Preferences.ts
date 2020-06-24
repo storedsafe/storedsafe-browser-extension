@@ -10,69 +10,74 @@
 /**
  * @returns Promise containing the user preferences.
  * */
-const get = (): Promise<Preferences> => (
-  browser.storage.local.get('preferences').then(({ preferences }) => {
-    return preferences || { sites: {} }
-  })
-)
+async function get (): Promise<Preferences> {
+  try {
+    const { preferences } = await browser.storage.local.get('preferences')
+    return preferences === undefined ? { sites: {} } : preferences
+  } catch (error) {
+    console.error('Error getting preferences from storage.', error)
+    return await Promise.resolve({ sites: {} })
+  }
+}
 
 /**
  * Commit user preferences to local storage.
  * @param preferences - New user preferences.
  * */
-const set = (preferences: Preferences): Promise<void> => (
-  browser.storage.local.set({ preferences })
-)
+async function set (preferences: Preferences): Promise<void> {
+  try {
+    return await browser.storage.local.set({ preferences })
+  } catch (error) {
+    console.error('Error setting preferences in storage.', error)
+  }
+}
+
+/// /////////////////////////////////////////////////////////
+// Actions
+
+/**
+ * Set the last used site.
+ * @param host - The last used site host.
+ * @returns New user preferences.
+ * */
+async function setLastUsedSite (host: string): Promise<Preferences> {
+  const preferences = await get()
+  return await set({ ...preferences, lastUsedSite: host }).then(get)
+}
+
+/**
+ * Update user preferences for the given host.
+ * Will create an entry for the host if one doesn't exist.
+ * @param host - The host associated with the preferences.
+ * @param sitePreferences - New user preferences for the specified host.
+ * @returns New user preferences.
+ * */
+async function updateSitePreferences (
+  host: string,
+  sitePreferences: SitePreferences
+): Promise<Preferences> {
+  const preferences = await get()
+  const newSitePreferences = {
+    ...preferences,
+    sites: {
+      ...preferences.sites,
+      [host]: sitePreferences
+    }
+  }
+  return await set(newSitePreferences).then(get)
+}
+
+/**
+ * Clear user preferences.
+ * @returns New user preferences.
+ * */
+async function clear (): Promise<Preferences> {
+  return await set({ sites: {} }).then(get)
+}
 
 export const actions = {
-  /**
-   * Set the last used site.
-   * @param host - The last used site host.
-   * @returns New user preferences.
-   * */
-  setLastUsedSite: (host: string): Promise<Preferences> => (
-    get().then((preferences) => (
-      set({
-        ...preferences,
-        lastUsedSite: host
-      }).then(get)
-    ))
-  ),
-
-  /**
-   * Update user preferences for the given host.
-   * Will create an entry for the host if one doesn't exist.
-   * @param host - The host associated with the preferences.
-   * @param sitePreferences - New user preferences for the specified host.
-   * @returns New user preferences.
-   * */
-  updateSitePreferences: (
-    host: string,
-    sitePreferences: SitePreferences
-  ): Promise<Preferences> => {
-    return get().then((preferences) => {
-      const newSitePreferences = {
-        ...preferences,
-        sites: {
-          ...preferences.sites,
-          [host]: sitePreferences
-        }
-      }
-      return set(newSitePreferences).then(() => get())
-    })
-  },
-
-  /**
-   * Clear user preferences.
-   * @returns New user preferences.
-   * */
-  clear: (): Promise<Preferences> => (
-    set({ sites: {} }).then(get)
-  ),
-
-  /**
-   * Fetch state from storage.
-   * @returns User preferences.
-   * */
+  setLastUsedSite,
+  updateSitePreferences,
+  clear,
   fetch: get
 }

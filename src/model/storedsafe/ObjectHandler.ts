@@ -13,7 +13,7 @@ import { MakeStoredSafeRequest } from './StoredSafe'
 import {
   StoredSafeObject,
   StoredSafeTemplate,
-  StoredSafeOtherData
+  StoredSafeObjectData
 } from 'storedsafe'
 
 /**
@@ -45,12 +45,11 @@ const parseSearchResult = (
     } = field
 
     // Value may be undefined if the field is encrypted
-    const value =
-      isEncrypted === true
-        ? isDecrypted
-          ? ssObject.crypted[field.fieldname]
-          : undefined
-        : ssObject.public[field.fieldname]
+    const value = isEncrypted
+      ? isDecrypted
+        ? ssObject.crypted[field.fieldname]
+        : undefined
+      : ssObject.public[field.fieldname]
 
     // Add field to object fields
     fields.push({
@@ -76,21 +75,20 @@ async function find (
   request: MakeStoredSafeRequest,
   needle: string
 ): Promise<SSObject[]> {
-  return await request(async handler => await handler.find(needle)).then(
-    (data: StoredSafeOtherData) => {
-      const results: SSObject[] = []
-      for (let i = 0; i < data.OBJECT.length; i++) {
-        const ssObject = data.OBJECT[i]
-        const ssTemplate = data.TEMPLATES.find(
-          template => template.id === ssObject.templateid
-        )
-        const isFile = ssTemplate.info.file !== undefined
-        if (isFile) continue // Skip files
-        results.push(parseSearchResult(ssObject, ssTemplate))
-      }
-      return results
-    }
-  )
+  const data = (await request(
+    async handler => await handler.find(needle)
+  )) as StoredSafeObjectData
+  const results: SSObject[] = []
+  for (let i = 0; i < data.OBJECT.length; i++) {
+    const ssObject = data.OBJECT[i]
+    const ssTemplate = data.TEMPLATES.find(
+      template => template.id === ssObject.templateid
+    )
+    const isFile = ssTemplate.info.file !== undefined
+    if (isFile) continue // Skip files
+    results.push(parseSearchResult(ssObject, ssTemplate))
+  }
+  return results
 }
 
 /**
@@ -103,15 +101,14 @@ async function decrypt (
   request: MakeStoredSafeRequest,
   objectId: string
 ): Promise<SSObject> {
-  return await request(
+  const data = (await request(
     async handler => await handler.decryptObject(objectId)
-  ).then((data: StoredSafeOtherData) => {
-    const ssObject = data.OBJECT.find(obj => obj.id === objectId)
-    const ssTemplate = data.TEMPLATES.find(
-      template => template.id === ssObject.templateid
-    )
-    return parseSearchResult(ssObject, ssTemplate, true)
-  })
+  )) as StoredSafeObjectData
+  const ssObject = data.OBJECT.find(obj => obj.id === objectId)
+  const ssTemplate = data.TEMPLATES.find(
+    template => template.id === ssObject.templateid
+  )
+  return parseSearchResult(ssObject, ssTemplate, true)
 }
 
 /**
@@ -123,9 +120,7 @@ async function add (
   request: MakeStoredSafeRequest,
   params: object
 ): Promise<void> {
-  return await request(
-    async handler => await handler.createObject(params)
-  ).then()
+  await request(async handler => await handler.createObject(params))
 }
 
 export const actions = {

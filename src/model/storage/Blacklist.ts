@@ -12,9 +12,13 @@ const userStorage = browser.storage.sync
  * @returns List of blacklisted sites.
  * */
 async function get (): Promise<Blacklist> {
-  return await userStorage
-    .get('blacklist')
-    .then(({ blacklist }) => (blacklist === undefined ? [] : blacklist))
+  try {
+    const { blacklist } = await userStorage.get('blacklist')
+    return blacklist === undefined ? [] : blacklist
+  } catch (error) {
+    console.error('Error getting blacklist from storage.', error)
+    return await Promise.resolve([])
+  }
 }
 
 /**
@@ -22,8 +26,15 @@ async function get (): Promise<Blacklist> {
  * @param blacklist - New blacklist.
  * */
 async function set (blacklist: Blacklist): Promise<void> {
-  return await userStorage.set({ blacklist })
+  try {
+    return await userStorage.set({ blacklist })
+  } catch (error) {
+    console.error('Error setting blacklist in storage.', error)
+  }
 }
+
+/// /////////////////////////////////////////////////////////
+// Actions
 
 /**
  * Add new host to blacklist.
@@ -31,29 +42,37 @@ async function set (blacklist: Blacklist): Promise<void> {
  * @returns New blacklist.
  * */
 async function add (host: string): Promise<Blacklist> {
-  return await get().then(blacklist => {
-    if (blacklist.includes(host)) {
-      return blacklist
-    }
-    const newBlacklist = [...blacklist]
-    newBlacklist.push(host)
-    return set(newBlacklist).then(get)
-  })
+  const blacklist = await get()
+  if (blacklist.includes(host)) {
+    return blacklist
+  }
+  const newBlacklist = [...blacklist]
+  newBlacklist.push(host)
+  return await set(newBlacklist).then(get)
 }
+
 /**
  * Remove host from blacklist.
  * @param host - Host to remove.
  * @returns New blacklist.
  * */
 async function remove (host: string): Promise<Blacklist> {
-  return await get().then(async blacklist => {
-    const newBlacklist = blacklist.filter(listedHost => listedHost !== host)
-    return await set(newBlacklist).then(get)
-  })
+  const blacklist = await get()
+  const newBlacklist = blacklist.filter(listedHost => listedHost !== host)
+  return await set(newBlacklist).then(get)
+}
+
+/**
+ * Clear blacklist.
+ * @returns Updated blacklist (empty).
+ * */
+async function clear (): Promise<Blacklist> {
+  return await set([]).then(get)
 }
 
 export const actions = {
   add,
   remove,
+  clear,
   fetch: get
 }

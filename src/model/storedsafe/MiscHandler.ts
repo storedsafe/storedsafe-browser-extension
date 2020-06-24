@@ -11,7 +11,11 @@
  * data. Error handling and storage modifications should be handled in `StoredSafe.ts`.
  * */
 import { MakeStoredSafeRequest } from './StoredSafe'
-import { StoredSafeOtherData } from 'storedsafe'
+import {
+  StoredSafePasswordData,
+  StoredSafeVaultsData,
+  StoredSafeTemplateData
+} from 'storedsafe'
 
 /**
  * Get the available vaults from the given site.
@@ -19,14 +23,21 @@ import { StoredSafeOtherData } from 'storedsafe'
  * @returns All available StoredSafe vaults on the host.
  * */
 async function getVaults (request: MakeStoredSafeRequest): Promise<SSVault[]> {
-  return await request(async handler => await handler.listVaults()).then(
-    (data: StoredSafeOtherData) =>
-      data.VAULTS.map(vault => ({
-        id: vault.id,
-        name: vault.groupname,
-        canWrite: ['2', '4'].includes(vault.status) // Write or Admin
-      }))
-  )
+  let data: StoredSafeVaultsData
+  try {
+    data = (await request(
+      async handler => await handler.listVaults()
+    )) as StoredSafeVaultsData
+  } catch (error) {
+    // NOTE: If vault list is empty, StoredSafe sends 404
+    data = error.response?.data as StoredSafeVaultsData
+    if (data === undefined) throw error
+  }
+  return data.VAULTS.map(vault => ({
+    id: vault.id,
+    name: vault.groupname,
+    canWrite: ['2', '4'].includes(vault.status) // Write or Admin
+  }))
 }
 
 /**
@@ -37,23 +48,23 @@ async function getVaults (request: MakeStoredSafeRequest): Promise<SSVault[]> {
 async function getTemplates (
   request: MakeStoredSafeRequest
 ): Promise<SSTemplate[]> {
-  return await request(async handler => await handler.listTemplates()).then(
-    (data: StoredSafeOtherData) =>
-      data.TEMPLATE.map(template => ({
-        id: template.INFO.id,
-        name: template.INFO.name,
-        icon: template.INFO.ico,
-        structure: Object.keys(template.STRUCTURE).map(fieldName => {
-          const field = template.STRUCTURE[fieldName]
-          return {
-            title: field.translation,
-            name: fieldName,
-            type: field.type,
-            isEncrypted: field.encrypted
-          }
-        })
-      }))
-  )
+  const data = (await request(
+    async handler => await handler.listTemplates()
+  )) as StoredSafeTemplateData
+  return data.TEMPLATE.map(template => ({
+    id: template.INFO.id,
+    name: template.INFO.name,
+    icon: template.INFO.ico,
+    structure: Object.keys(template.STRUCTURE).map(fieldName => {
+      const field = template.STRUCTURE[fieldName]
+      return {
+        title: field.translation,
+        name: fieldName,
+        type: field.type,
+        isEncrypted: field.encrypted
+      }
+    })
+  }))
 }
 
 /**
@@ -75,9 +86,10 @@ async function generatePassword (
     policyid?: string
   }
 ): Promise<string> {
-  return await request(
+  const data = (await request(
     async handler => await handler.generatePassword(params)
-  ).then((data: StoredSafeOtherData) => data.CALLINFO.passphrase)
+  )) as StoredSafePasswordData
+  return data.CALLINFO.passphrase
 }
 
 export const actions = {

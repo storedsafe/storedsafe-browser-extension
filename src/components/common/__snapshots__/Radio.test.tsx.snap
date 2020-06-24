@@ -6,12 +6,6 @@ exports[`<Radio /> 1`] = `
 </div>"
 `;
 
-exports[`<Radio /> 2`] = `
-"<div style=\\"display: inline-block;\\" class=\\"radio\\"><input type=\\"radio\\">
-  <div class=\\"custom-radio\\"></div>
-</div>"
-`;
-
 exports[`<Radio checked /> 1`] = `
 "<div style=\\"display: inline-block;\\" class=\\"radio\\"><input type=\\"radio\\" checked=\\"\\">
   <div class=\\"custom-radio\\"></div>

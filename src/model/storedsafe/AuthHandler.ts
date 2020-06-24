@@ -22,30 +22,29 @@ async function login (
   request: MakeStoredSafeRequest,
   fields: LoginFields
 ): Promise<Session> {
-  return await request(async handler => {
+  const data = (await request(async handler => {
     let promise: StoredSafePromise<StoredSafeLoginData>
     if (fields.loginType === 'yubikey') {
       const { username, keys } = fields as YubiKeyFields
       const passphrase = keys.slice(0, -44)
       const otp = keys.slice(-44)
       promise = handler.loginYubikey(username, passphrase, otp)
-    } else if (fields.loginType === 'totp') {
+    } else { // if (fields.loginType === 'totp') {
       const { username, passphrase, otp } = fields as TOTPFields
       promise = handler.loginTotp(username, passphrase, otp)
     }
     return await promise
-  }).then((data: StoredSafeLoginData) => {
-    const { token, audit, timeout } = data.CALLINFO
-    const violations = Array.isArray(audit.violations) ? {} : audit.violations
-    const warnings = Array.isArray(audit.warnings) ? {} : audit.warnings
-    return {
-      token,
-      createdAt: Date.now(),
-      violations,
-      warnings,
-      timeout
-    }
-  })
+  })) as StoredSafeLoginData
+  const { token, audit, timeout } = data.CALLINFO
+  const violations = Array.isArray(audit.violations) ? {} : audit.violations
+  const warnings = Array.isArray(audit.warnings) ? {} : audit.warnings
+  return {
+    token,
+    createdAt: Date.now(),
+    violations,
+    warnings,
+    timeout
+  }
 }
 
 /**
@@ -54,7 +53,7 @@ async function login (
  * @param host - Host related to the session to invalidate.
  * */
 async function logout (request: MakeStoredSafeRequest): Promise<void> {
-  return await request(async handler => await handler.logout()).then()
+  await request(async handler => await handler.logout())
 }
 
 /**
@@ -63,13 +62,12 @@ async function logout (request: MakeStoredSafeRequest): Promise<void> {
  * @returns True if token is still valid, otherwise false.
  * */
 async function check (request: MakeStoredSafeRequest): Promise<boolean> {
-  return await request(async handler => await handler.check())
-    .then(() => {
-      return true
-    })
-    .catch(() => {
-      return false
-    })
+  try {
+    await request(async handler => await handler.check())
+    return true
+  } catch {
+    return false
+  }
 }
 
 export const actions = {

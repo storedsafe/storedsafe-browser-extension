@@ -2,19 +2,16 @@
 // Set up mocks for browser storage API.
 
 import '../../__mocks__/browser'
-
-/// /////////////////////////////////////////////////////////
-// Start tests
-
 import { actions } from './Sites'
-const syncSetMock = jest.fn(() => Promise.resolve())
-const syncGetMock = jest.fn((key: string) => Promise.resolve({})); //eslint-disable-line
-const managedGetMock = jest.fn((key: string) => Promise.resolve({})); //eslint-disable-line
-const mockGet = (
-  sites: Site[]
-): (key: string) => Promise<object> => (key: string): Promise<object> => {
+
+const syncSetMock = jest.fn(async () => await Promise.resolve())
+const syncGetMock = jest.fn(async (key: string) => await Promise.resolve({}))
+const managedGetMock = jest.fn(async (key: string) => await Promise.resolve({}))
+const mockGet = (sites: Site[]): ((key: string) => Promise<object>) => async (
+  key: string
+): Promise<object> => {
   if (key === 'sites') {
-    return Promise.resolve({ [key]: sites })
+    return await Promise.resolve({ [key]: sites })
   }
   throw new Error('Invalid key')
 }
@@ -22,6 +19,10 @@ const mockGet = (
 global.browser.storage.sync.get = syncGetMock
 global.browser.storage.sync.set = syncSetMock
 global.browser.storage.managed.get = managedGetMock
+const consoleError = global.console.error
+
+/// /////////////////////////////////////////////////////////
+// Start tests
 
 describe('uses mocked browser.storage', () => {
   beforeEach(() => {
@@ -30,14 +31,13 @@ describe('uses mocked browser.storage', () => {
     syncSetMock.mockClear()
   })
 
-  test('fetch(), empty', () => (
-    actions.fetch().then((sites) => {
-      expect(sites.collections.system.length).toBe(0)
-      expect(sites.collections.user.length).toBe(0)
-    })
-  ))
+  test('fetch(), empty', async () => {
+    const sites = await actions.fetch()
+    expect(sites.collections.system.length).toBe(0)
+    expect(sites.collections.user.length).toBe(0)
+  })
 
-  test('fetch(), system sites', () => {
+  test('fetch(), system sites', async () => {
     const mockSites = [
       {
         host: 'foo.example.com',
@@ -45,22 +45,20 @@ describe('uses mocked browser.storage', () => {
       }
     ]
     managedGetMock.mockImplementationOnce(mockGet(mockSites))
-    return actions.fetch().then((sites) => {
-      expect(sites.collections.system).toBe(mockSites)
-      expect(sites.collections.user.length).toBe(0)
-    })
+    const sites = await actions.fetch()
+    expect(sites.collections.system).toBe(mockSites)
+    expect(sites.collections.user.length).toBe(0)
   })
 
-  test('fetch(), user sites', () => {
+  test('fetch(), user sites', async () => {
     const mockSites = [{ host: 'foo.example.com', apikey: 'mockapikey' }]
     syncGetMock.mockImplementationOnce(mockGet(mockSites))
-    return actions.fetch().then((sites) => {
-      expect(sites.collections.system.length).toBe(0)
-      expect(sites.collections.user).toBe(mockSites)
-    })
+    const sites = await actions.fetch()
+    expect(sites.collections.system.length).toBe(0)
+    expect(sites.collections.user).toBe(mockSites)
   })
 
-  test('fetch(), both', () => {
+  test('fetch(), both', async () => {
     const managedSites = [
       {
         host: 'managed.example.com',
@@ -75,13 +73,12 @@ describe('uses mocked browser.storage', () => {
     ]
     managedGetMock.mockImplementationOnce(mockGet(managedSites))
     syncGetMock.mockImplementationOnce(mockGet(syncSites))
-    return actions.fetch().then((sites) => {
-      expect(sites.collections.system).toBe(managedSites)
-      expect(sites.collections.user).toBe(syncSites)
-    })
+    const sites = await actions.fetch()
+    expect(sites.collections.system).toBe(managedSites)
+    expect(sites.collections.user).toBe(syncSites)
   })
 
-  test('add()', () => {
+  test('add()', async () => {
     const syncSites = [
       {
         host: 'sync.example.com',
@@ -92,27 +89,23 @@ describe('uses mocked browser.storage', () => {
       host: 'foo.example.com',
       apikey: 'fooapikey'
     }
-    const newSites = [
-      ...syncSites,
-      site
-    ]
+    const newSites = [...syncSites, site]
     syncGetMock.mockImplementationOnce(mockGet(syncSites))
     syncGetMock.mockImplementationOnce(mockGet(newSites))
-    return actions.add(site).then((sites) => {
-      expect(syncSetMock).toHaveBeenCalledWith({
-        sites: newSites
-      })
-      expect(sites).toEqual({
-        list: newSites,
-        collections: {
-          system: [],
-          user: newSites
-        }
-      })
+    const sites = await actions.add(site)
+    expect(syncSetMock).toHaveBeenCalledWith({
+      sites: newSites
+    })
+    expect(sites).toEqual({
+      list: newSites,
+      collections: {
+        system: [],
+        user: newSites
+      }
     })
   })
 
-  test('remove()', () => {
+  test('remove()', async () => {
     const syncSites = [
       {
         host: 'foo.example.com',
@@ -130,17 +123,44 @@ describe('uses mocked browser.storage', () => {
     const updatedSites = [syncSites[0], syncSites[2]]
     syncGetMock.mockImplementationOnce(mockGet(syncSites))
     syncGetMock.mockImplementationOnce(mockGet(updatedSites))
-    return actions.remove(1).then((sites) => {
-      expect(syncSetMock).toHaveBeenCalledWith({
-        sites: updatedSites
-      })
-      expect(sites).toEqual({
-        list: updatedSites,
-        collections: {
-          system: [],
-          user: updatedSites
-        }
-      })
+    const sites = await actions.remove(1)
+    expect(syncSetMock).toHaveBeenCalledWith({
+      sites: updatedSites
     })
+    expect(sites).toEqual({
+      list: updatedSites,
+      collections: {
+        system: [],
+        user: updatedSites
+      }
+    })
+  })
+
+  test('fetch(), storage unavailable', async () => {
+    syncGetMock.mockImplementationOnce(() => {
+      throw new Error()
+    })
+    global.console.error = jest.fn()
+    const preferences = await actions.fetch()
+    expect(global.console.error).toHaveBeenCalledTimes(1)
+    expect(preferences).toEqual({ collections: { system: [], user: [] }, list: [] })
+    global.console.error = consoleError
+  })
+
+  test('add(), storage unavailable', async () => {
+    const site: Site = {
+      host: 'host',
+      apikey: 'apikey'
+    }
+    syncGetMock.mockImplementationOnce(() => {
+      throw new Error()
+    })
+    syncSetMock.mockImplementationOnce(() => {
+      throw new Error()
+    })
+    global.console.error = jest.fn()
+    await actions.add(site)
+    expect(global.console.error).toHaveBeenCalledTimes(2)
+    global.console.error = consoleError
   })
 })

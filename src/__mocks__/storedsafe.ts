@@ -2,13 +2,11 @@
  * Mock server imitating StoredSafe for testing.
  * */
 import {
-  StoredSafeResponse,
-  StoredSafeCheckData,
   StoredSafeErrorData,
   StoredSafeLoginData,
   StoredSafeLogoutData,
-  StoredSafeOtherData,
-  StoredSafeData
+  StoredSafeData,
+  StoredSafeObjectData
 } from 'storedsafe'
 
 export const error: StoredSafeErrorData = {
@@ -30,7 +28,7 @@ export const error: StoredSafeErrorData = {
   }
 }
 
-export const check: StoredSafeCheckData = {
+export const check: StoredSafeData = {
   DATA: {
     token: 'token'
   },
@@ -72,8 +70,43 @@ const loginTotp: StoredSafeLoginData = {
     filesupport: 3,
     version: '2.1.0',
     audit: {
-      violations: { key: 'violation' },
+      violations: [],
       warnings: []
+    },
+    general: ['general'],
+    handler: 'AuthHandler',
+    status: 'SUCCESS',
+    errors: 0,
+    errorcodes: 0
+  }
+}
+
+const loginTotpWarning: StoredSafeLoginData = {
+  DATA: {
+    username: 'username',
+    passphrase: 'passphrase',
+    otp: '515939',
+    apikey: 'apikey',
+    logintype: 'totp'
+  },
+  HEADERS: {
+    Host: 'warning'
+  },
+  PARAMS: [],
+  CALLINFO: {
+    token: 'token',
+    fingerprint: 'fingerprint',
+    userid: '1',
+    password: 'passphrase',
+    userstatus: '396',
+    username: 'username',
+    fullname: 'First Last',
+    timeout: 14400000,
+    filesupport: 3,
+    version: '2.1.0',
+    audit: {
+      violations: { key: 'violation' },
+      warnings: { key: 'warning' }
     },
     general: ['general'],
     handler: 'AuthHandler',
@@ -104,7 +137,7 @@ const loginYubikey: StoredSafeLoginData = {
     filesupport: 3,
     version: '2.1.0',
     audit: {
-      violations: { key: 'violation' },
+      violations: [],
       warnings: []
     },
     general: ['general'],
@@ -134,7 +167,7 @@ const logout: StoredSafeLogoutData = {
   }
 }
 
-const find: StoredSafeOtherData = {
+const find: StoredSafeObjectData = {
   OBJECT: [
     {
       id: '1',
@@ -223,7 +256,7 @@ const find: StoredSafeOtherData = {
   }
 }
 
-const decrypt: StoredSafeOtherData = {
+const decrypt: StoredSafeObjectData = {
   OBJECT: [
     {
       id: '1',
@@ -329,6 +362,7 @@ export const data = {
   error,
   find,
   loginTotp,
+  loginTotpWarning,
   loginYubikey,
   logout
 }
@@ -372,16 +406,18 @@ export default class StoredSafe {
     otp: string
   ): Promise<MockResponse> {
     if (
-      this.host === 'host' &&
+      (this.host === 'host' || this.host === 'warning') &&
       this.apikey === 'apikey' &&
       username === 'username' &&
       passphrase === 'passphrase' &&
       otp === 'otp'
     ) {
+      const loginData =
+        this.host === 'host' ? data.loginTotp : data.loginTotpWarning
       return await Promise.resolve({
         status: 200,
         statusText: 'success',
-        data: data.loginTotp
+        data: loginData
       })
     } else {
       const error: MockError = {
@@ -451,7 +487,7 @@ export default class StoredSafe {
 
   async check (): Promise<MockResponse> {
     if (
-      (this.host === 'host' || this.host === 'other') &&
+      (this.host === 'host' || this.host === 'host1') &&
       this.token === 'token'
     ) {
       return await Promise.resolve({

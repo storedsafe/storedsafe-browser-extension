@@ -24,77 +24,87 @@ interface StorageSites {
  * @param siteCollections - Collection of system and user sites.
  * @returns List of all sites available to the user.
  * */
-const sitesFromCollections = (siteCollections: SiteCollections): Sites => ({
-  list: siteCollections.system.concat(siteCollections.user),
-  collections: siteCollections
-})
+function sitesFromCollections (siteCollections: SiteCollections): Sites {
+  return {
+    list: siteCollections.system.concat(siteCollections.user),
+    collections: siteCollections
+  }
+}
 
 /**
  * Get sites from system and user storage.
  * @returns Collection of system and user sites.
  * */
-const get = (): Promise<SiteCollections> => {
-  return Promise.all<StorageSites, StorageSites>([
-    systemStorage.get('sites').catch(() => ({ settings: {} })) as Promise<StorageSites>,
-    userStorage.get('sites') as Promise<StorageSites>
-  ]).then(([{ sites: systemSites }, { sites: userSites }]) => {
-    const system = systemSites || []
-    const user = userSites || []
+async function get (): Promise<SiteCollections> {
+  try {
+    const { sites: systemSites } = await systemStorage.get('sites')
+    const { sites: userSites } = await userStorage.get('sites')
+    const system = systemSites === undefined ? [] : systemSites
+    const user = userSites === undefined ? [] : userSites
     return { system, user }
-  })
+  } catch (error) {
+    console.error('Error getting sites from storage.', error)
+    return await Promise.resolve({ system: [], user: [] })
+  }
 }
 
 /**
  * Commit Sites object to user storage (managed sites are ignored).
  * @param siteCollections - New user sites.
  * */
-const set = (siteCollections: SiteCollections): Promise<void> => {
-  return userStorage.set({ sites: siteCollections.user })
+async function set (siteCollections: SiteCollections): Promise<void> {
+  try {
+    return await userStorage.set({ sites: siteCollections.user })
+  } catch (error) {
+    console.error('Error setting sites in storage.', error)
+  }
+}
+
+/// /////////////////////////////////////////////////////////
+// Actions
+
+/**
+ * Add site to storage.
+ * @param site - New site.
+ * @returns New user and system sites.
+ * */
+async function add (site: Site): Promise<Sites> {
+  const sites = await get()
+  const newSites: SiteCollections = {
+    system: sites.system,
+    user: [...sites.user, site]
+  }
+  return await set(newSites).then(
+    async () => await get().then(() => sitesFromCollections(newSites))
+  )
+}
+
+/**
+ * Remove site from storage.
+ * @param id - Index in user sites array.
+ * @returns New user and system sites.
+ * */
+async function remove (id: number): Promise<Sites> {
+  const sites = await get()
+  const newSites = {
+    system: sites.system,
+    user: sites.user.filter((site, siteId) => siteId !== id)
+  }
+  return await set(newSites).then(
+    async () => await get().then(sites => sitesFromCollections(sites))
+  )
+}
+
+/**
+ * Fetch sites from storage.
+ * @returns User and system sites.
+ * */
+async function fetch (): Promise<Sites> {
+  return await get().then(sites => sitesFromCollections(sites))
 }
 
 export const actions = {
-  /**
-   * Add site to storage.
-   * @param site - New site.
-   * @returns New user and system sites.
-   * */
-  add: (site: Site): Promise<Sites> => {
-    return get().then((sites) => {
-      const newSites: SiteCollections = {
-        system: sites.system,
-        user: [
-          ...sites.user,
-          site
-        ]
-      }
-      return set(newSites).then(() => (
-        get().then(() => sitesFromCollections(newSites))
-      ))
-    })
-  },
-
-  /**
-   * Remove site from storage.
-   * @param id - Index in user sites array.
-   * @returns New user and system sites.
-   * */
-  remove: (id: number): Promise<Sites> => {
-    return get().then((sites) => {
-      const newSites = {
-        system: sites.system,
-        user: sites.user.filter((site, siteId) => siteId !== id)
-      }
-      return set(newSites).then(() => (
-        get().then((sites) => sitesFromCollections(sites))
-      ))
-    })
-  },
-
-  /**
-   * Fetch sites from storage.
-   * @returns User and system sites.
-   * */
-  fetch: (): Promise<Sites> => {
-    return get().then((sites) => sitesFromCollections(sites))
-  }
+  add,
+  remove,
+  fetch
 }
