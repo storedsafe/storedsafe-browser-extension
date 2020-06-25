@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 
 function debugStorage (storage: unknown): React.ReactNode {
   function isMap (storage: any[]): boolean {
-    return storage.reduce((acc, element) => (
+    return storage.reduce((acc: boolean, element) => (
       acc && element instanceof Array && element.length === 2
     ), true)
   }
@@ -55,7 +55,8 @@ function debugStorage (storage: unknown): React.ReactNode {
   } else if (storage instanceof Object) {
     return Object.keys(storage).length > 0 ? <ul>{drawObject(storage)}</ul> : null
   } else {
-    return <span>{storage.toString()}</span>
+    const value = storage as string | number | boolean
+    return <span>{value.toString()}</span>
   }
 }
 
@@ -68,15 +69,15 @@ const DebugStorage: React.FC = () => {
     let mounted = true
     browser.storage.local.get().then((storage) => {
       if (mounted) setLocal(storage)
-    })
+    }).catch((error) => { console.error('Local storage unavailable', error) })
 
     browser.storage.sync.get().then((storage) => {
       if (mounted) setSync(storage)
-    })
+    }).catch((error) => { console.error('Sync storage unavailable', error) })
 
     browser.storage.managed.get().then((storage) => {
       if (mounted) setManaged(storage)
-    })
+    }).catch((error) => { console.error('Managed storage unavailable', error) })
 
     return (): void => { mounted = false }
   }, [])
@@ -86,15 +87,15 @@ const DebugStorage: React.FC = () => {
       <h1>Debug Storage</h1>
       <article className="storage-area storage-area-local">
         <h2>Local</h2>
-        {local && debugStorage(local)}
+        {local !== undefined && debugStorage(local)}
       </article>
       <article className="storage-area storage-area-sync">
         <h2>Sync</h2>
-        {sync && debugStorage(sync)}
+        {sync !== undefined && debugStorage(sync)}
       </article>
       <article className="storage-area storage-area-managed">
         <h2>Managed</h2>
-        {managed && debugStorage(managed)}
+        {managed !== undefined && debugStorage(managed)}
       </article>
     </section>
   )

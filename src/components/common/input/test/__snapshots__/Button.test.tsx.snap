@@ -1,0 +1,57 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Button /> 1`] = `
+"<button class=\\"button button-primary  \\">
+  <div class=\\"button-children\\"></div>
+  <div class=\\"button-spinner\\"></div>
+</button>"
+`;
+
+exports[`<Button /> 2`] = `
+"<button class=\\"button button-primary  \\">
+  <div class=\\"button-children\\"></div>
+  <div class=\\"button-spinner\\"></div>
+</button>"
+`;
+
+exports[`<Button /> 3`] = `
+"<button class=\\"button button-accent  \\">
+  <div class=\\"button-children\\"></div>
+  <div class=\\"button-spinner\\"></div>
+</button>"
+`;
+
+exports[`<Button /> 4`] = `
+"<button class=\\"button button-warning  \\">
+  <div class=\\"button-children\\"></div>
+  <div class=\\"button-spinner\\"></div>
+</button>"
+`;
+
+exports[`<Button /> 5`] = `
+"<button class=\\"button button-danger  \\">
+  <div class=\\"button-children\\"></div>
+  <div class=\\"button-spinner\\"></div>
+</button>"
+`;
+
+exports[`<Button /> 6`] = `
+"<button class=\\"button button-primary button-loading \\">
+  <div class=\\"button-children\\"></div>
+  <div class=\\"button-spinner\\"></div>
+</button>"
+`;
+
+exports[`<Button /> 7`] = `
+"<button class=\\"button button-primary  \\">
+  <div class=\\"button-children\\">children</div>
+  <div class=\\"button-spinner\\"></div>
+</button>"
+`;
+
+exports[`<Button classname /> 1`] = `
+"<button class=\\"button button-primary  test\\">
+  <div class=\\"button-children\\"></div>
+  <div class=\\"button-spinner\\"></div>
+</button>"
+`;

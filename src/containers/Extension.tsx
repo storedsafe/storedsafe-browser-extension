@@ -4,8 +4,8 @@
  * */
 import React, { useState } from 'react'
 import DebugStorage from './DebugStorage'
-// import Options from './containers/Options'
-// import Popup from './containers/Popup'
+// import Options from './Options'
+import Popup from './Popup'
 
 enum Page {
   Options = 'options',
@@ -58,11 +58,11 @@ const Extension: React.FunctionComponent = () => {
   }, [])
 
   return (
-    <section className="extension">
+    <section className='extension'>
       {page === Page.Debug && <DebugStorage />}
+      {page === Page.Popup && <Popup />}
       {/* <StorageProvider>
         {page === Page.Options && <Options />}
-        {page === Page.Popup && <Popup />}
         <StorageListener />
       </StorageProvider> */}
     </section>

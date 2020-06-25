@@ -1,0 +1,89 @@
+@import '../../../styles/variables.scss';
+
+.search-bar {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: $spacing;
+  height: 100%;
+
+  &.disabled {
+    display: none;
+  }
+
+  .search-bar-input {
+    flex-grow: 1;
+    height: $menu-size;
+    background: $color-primary-3;
+    color: $color-fg-alt;
+    border-bottom-color: $color-primary-4;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+
+    &:focus {
+      border-bottom-color: $color-accent-0;
+    }
+  }
+
+  .search-bar-button {
+    border: 0;
+    outline: 0;
+    background-color: $color-accent-0;
+    cursor: pointer;
+    height: $menu-size;
+    width: $menu-size;
+    border-radius: 0 $border-radius $border-radius 0;
+    padding: $spacing;
+    transition: $transition-duration;
+    transition-property: background-color;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+
+    &:hover,
+    &:focus,
+    &.selected {
+      background-color: $color-bg;
+    }
+
+    > svg {
+      height: 100%;
+      width: 100%;
+      fill: $color-fg-alt;
+      transition: $transition-duration;
+      stroke-dasharray: 0;
+      stroke-width: 0;
+      stroke: transparent;
+      transition-property: fill, stroke, stroke-width, stroke-dasharray;
+    }
+
+    &:hover > svg,
+    &:focus > svg,
+    &.selected > svg {
+      fill: $color-accent-0;
+    }
+
+    &.loading > svg {
+      fill: transparent;
+      stroke: $color-fg-alt;
+      stroke-width: 1;
+      stroke-dasharray: 32;
+      animation: loading 2.5s ease-in-out alternate infinite;
+    }
+
+    &:hover.loading > svg,
+    &:focus.loading > svg,
+    &.selected.loading > svg {
+      fill: transparent;
+      stroke: $color-accent-0;
+    }
+  }
+}
+
+@keyframes loading {
+  0% {
+    stroke-dashoffset: 0;
+  }
+
+  100% {
+    stroke-dashoffset: 64;
+  }
+}
