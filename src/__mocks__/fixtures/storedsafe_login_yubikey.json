@@ -1,0 +1,31 @@
+{
+  "DATA": {
+    "username": "user",
+    "keys": "passphraseapikeytoken"
+  },
+  "HEADERS": {
+    "Host": "login"
+  },
+  "PARAMS": [],
+  "CALLINFO": {
+    "token": "token",
+    "fingerprint": "fingerprint",
+    "userid": "1",
+    "password": "passphrase",
+    "userstatus": "396",
+    "username": "username",
+    "fullname": "First Last",
+    "timeout": 14400000,
+    "filesupport": 3,
+    "version": "2.1.0",
+    "audit": {
+      "violations": [],
+      "warnings": []
+    },
+    "general": ["general"],
+    "handler": "AuthHandler",
+    "status": "SUCCESS",
+    "errors": 0,
+    "errorcodes": 0
+  }
+}

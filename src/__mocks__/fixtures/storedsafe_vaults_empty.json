@@ -1,0 +1,19 @@
+{
+  "VAULTS": [],
+  "DATA": {
+    "token": "token"
+  },
+  "HEADERS": {
+    "X-Http-Token": "token",
+    "Host": "host"
+  },
+  "PARAMS": [],
+  "CALLINFO": {
+    "token": "token",
+    "general": [],
+    "handler": "VaultHandler",
+    "status": "SUCCESS",
+    "errors": 0,
+    "errorcodes": 0
+  }
+}

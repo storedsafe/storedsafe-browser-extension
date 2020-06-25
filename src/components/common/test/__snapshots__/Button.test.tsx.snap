@@ -48,3 +48,10 @@ exports[`<Button /> 7`] = `
   <div class=\\"button-spinner\\"></div>
 </button>"
 `;
+
+exports[`<Button classname /> 1`] = `
+"<button class=\\"button button-primary test \\">
+  <div class=\\"button-children\\"></div>
+  <div class=\\"button-spinner\\"></div>
+</button>"
+`;

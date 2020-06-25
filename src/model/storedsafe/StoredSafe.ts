@@ -42,13 +42,15 @@ async function handleErrors (
 ): Promise<StoredSafeData> {
   try {
     const response = await promise
-    if (response.status === 200) {
-      return response.data
-    }
+    return response.data
   } catch (error) {
     if (error.response !== undefined) {
-      const errors = error.response.data.ERRORS.join(' | ') as string
-      throw new Error(`StoredSafe Error: ${errors}`)
+      if (error.response.data.ERRORS !== undefined) {
+        const errors = error.response.data.ERRORS.join(' | ') as string
+        throw new Error(`StoredSafe Error: ${errors}`)
+      }
+      // Server sent error code but no error response (see 404 for empty vaults)
+      throw error
     } else if (error.request !== undefined) {
       const { status, statusText } = error.request as {
         status: string
@@ -103,9 +105,8 @@ async function login (
   const handler = new StoredSafe({ host, apikey })
   const request: MakeStoredSafeRequest = async cb =>
     await handleErrors(cb(handler))
-  return await authHandler
-    .login(request, fields)
-    .then(async session => await SessionsActions.add(host, session))
+  const session = await authHandler.login(request, fields)
+  return await SessionsActions.add(host, session)
 }
 
 /**
@@ -115,12 +116,12 @@ async function login (
  * @returns Updated list of active sessions.
  * */
 async function logout (host: string): Promise<Sessions> {
-  return await authHandler
-    .logout(makeRequest(host))
-    .catch(error => {
-      console.error('StoredSafe Logout Error', error)
-    })
-    .then(async () => await SessionsActions.remove(host))
+  try {
+    await authHandler.logout(makeRequest(host))
+  } catch (error) {
+    console.error('StoredSafe Logout Error', error)
+  }
+  return await SessionsActions.remove(host)
 }
 
 /**
@@ -129,14 +130,13 @@ async function logout (host: string): Promise<Sessions> {
  * @returns Updated list of active sessions (empty).
  * */
 async function logoutAll (): Promise<Sessions> {
-  return await SessionsActions.fetch().then(async sessions => {
-    Array.from(sessions.keys()).forEach(host => {
-      authHandler.logout(makeRequest(host)).catch(error => {
-        console.error('StoredSafe Logout Error', error)
-      })
+  const sessions = await SessionsActions.fetch()
+  ;[...sessions.keys()].forEach(host => {
+    authHandler.logout(makeRequest(host)).catch(error => {
+      console.error('StoredSafe Logout Error', error)
     })
-    return await Promise.resolve<Sessions>(SessionsActions.clear())
   })
+  return await SessionsActions.clear()
 }
 
 /**
@@ -145,11 +145,10 @@ async function logoutAll (): Promise<Sessions> {
  * @returns Updated list of active sessions.
  * */
 async function check (host: string): Promise<Sessions> {
-  return await authHandler.check(makeRequest(host)).then(async isValid => {
-    return isValid
-      ? await SessionsActions.fetch()
-      : await SessionsActions.remove(host)
-  })
+  const isValid = await authHandler.check(makeRequest(host))
+  return isValid
+    ? await SessionsActions.fetch()
+    : await SessionsActions.remove(host)
 }
 
 /**
@@ -157,16 +156,15 @@ async function check (host: string): Promise<Sessions> {
  * @returns Updated list of active sessions.
  * */
 async function checkAll (): Promise<Sessions> {
-  return await SessionsActions.fetch().then(async sessions => {
-    const invalidHosts: string[] = []
-    for (const host of sessions.keys()) {
-      const isValid = await authHandler.check(makeRequest(host))
-      if (!isValid) {
-        invalidHosts.push(host)
-      }
+  const sessions = await SessionsActions.fetch()
+  const invalidHosts: string[] = []
+  for (const host of sessions.keys()) {
+    const isValid = await authHandler.check(makeRequest(host))
+    if (!isValid) {
+      invalidHosts.push(host)
     }
-    return await SessionsActions.remove(...invalidHosts)
-  })
+  }
+  return await SessionsActions.remove(...invalidHosts)
 }
 
 /// /////////////////////////////////////////////////////////
@@ -179,11 +177,7 @@ async function checkAll (): Promise<Sessions> {
  * @returns Matched results from host.
  * */
 async function find (host: string, needle: string): Promise<SSObject[]> {
-  return await check(host).then(async () => {
-    return await objectHandler.find(makeRequest(host), needle).then(results => {
-      return results
-    })
-  })
+  return await objectHandler.find(makeRequest(host), needle)
 }
 
 /**
@@ -213,24 +207,24 @@ async function addObject (host: string, params: object): Promise<void> {
  * @returns Updated list of all cached tab search results.
  * */
 async function tabFind (tabId: number, needle: string): Promise<TabResults> {
-  return await SessionsActions.fetch().then(async sessions => {
-    const hosts = Array.from(sessions.keys())
-    const promises: Array<Promise<SSObject[]>> = hosts.map(async host => {
+  const sessions = await SessionsActions.fetch()
+  const hosts = [...sessions.keys()]
+  const promises: Array<Promise<SSObject[]>> = hosts.map(async host => {
+    try {
       return await find(host, needle)
-        .catch(error => {
-          // Log error rather than failing all results in Promise.all
-          console.error(error)
-        })
-        .then((data: SSObject[]) => (data === undefined ? [] : data)) // Ensure array
-    })
-    return await Promise.all(promises).then(async siteResults => {
-      const results: Results = new Map()
-      for (let i = 0; i < siteResults.length; i++) {
-        results.set(hosts[i], siteResults[i])
-      }
-      return await TabResultsActions.setTabResults(tabId, results)
-    })
+    } catch (error) {
+      // Log error rather than failing all results in Promise.all
+      console.error(error)
+      // Ensure a valid response is returned
+      return []
+    }
   })
+  const siteResults = await Promise.all(promises)
+  const results: Results = new Map()
+  for (let i = 0; i < siteResults.length; i++) {
+    results.set(hosts[i], siteResults[i])
+  }
+  return await TabResultsActions.setTabResults(tabId, results)
 }
 
 /// /////////////////////////////////////////////////////////
@@ -242,13 +236,12 @@ async function tabFind (tabId: number, needle: string): Promise<TabResults> {
  * @returns - Info regarding the structure of the site.
  * */
 async function getSiteInfo (host: string): Promise<SSSiteInfo> {
-  return await getHandler(host).then(async handler => {
-    const request: MakeStoredSafeRequest = async cb =>
-      await handleErrors(cb(handler))
-    const vaults = await miscHandler.getVaults(request)
-    const templates = await miscHandler.getTemplates(request)
-    return { vaults, templates }
-  })
+  const handler = await getHandler(host)
+  const request: MakeStoredSafeRequest = async cb =>
+    await handleErrors(cb(handler))
+  const vaults = await miscHandler.getVaults(request)
+  const templates = await miscHandler.getTemplates(request)
+  return { vaults, templates }
 }
 
 /**
@@ -259,7 +252,7 @@ async function getSiteInfo (host: string): Promise<SSSiteInfo> {
  * */
 async function generatePassword (
   host: string,
-  params: {
+  params?: {
     type?: 'pronouncable' | 'diceword' | 'opie' | 'secure' | 'pin'
     length?: number
     language?: 'en_US' | 'sv_SE'

@@ -1,7 +1,7 @@
 import React from 'react'
 import { render, unmountComponentAtNode } from 'react-dom'
 import { act } from 'react-dom/test-utils'
-import { Button } from './Button'
+import { Button } from '../Button'
 import pretty from 'pretty'
 
 /**
@@ -54,5 +54,14 @@ test('<Button />', () => {
   act(() => {
     render(<Button>children</Button>, container)
   })
+  expect(pretty(container.innerHTML)).toMatchSnapshot()
+})
+
+test('<Button classname />', () => {
+  act(() => {
+    render(<Button className="test" />, container)
+  })
+  const button = container.querySelector('button.test')
+  expect(button).not.toBeNull()
   expect(pretty(container.innerHTML)).toMatchSnapshot()
 })

@@ -122,10 +122,10 @@ interface Preferences {
 // All values in storage.
 
 interface Storage {
-  blacklist: Blacklist
-  preferences: Preferences
-  sessions: Sessions
-  settings: Settings
-  sites: Sites
-  tabResults: TabResults
+  blacklist: Blacklist // Local
+  preferences: Preferences // Local
+  sessions: Sessions // Local
+  settings: Settings // Sync and Managed
+  sites: Sites // Sync and Managed
+  tabResults: TabResults // Local
 }

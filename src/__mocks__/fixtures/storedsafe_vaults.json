@@ -1,0 +1,28 @@
+{
+  "VAULTS": [
+    {
+      "id": "1",
+      "groupname": "vault1",
+      "policy": "7",
+      "description": "Vault 1",
+      "status": "4",
+      "statustext": "Admin"
+    }
+  ],
+  "DATA": {
+    "token": "token"
+  },
+  "HEADERS": {
+    "X-Http-Token": "token",
+    "Host": "host"
+  },
+  "PARAMS": [],
+  "CALLINFO": {
+    "token": "token",
+    "general": [],
+    "handler": "VaultHandler",
+    "status": "SUCCESS",
+    "errors": 0,
+    "errorcodes": 0
+  }
+}

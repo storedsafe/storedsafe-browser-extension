@@ -29,8 +29,9 @@ const parseSearchResult = (
   isDecrypted = false
 ): SSObject => {
   // Extract general object info
-  const isFile = ssTemplate.info.file !== undefined
-  const name = isFile ? ssObject.filename : ssObject.objectname
+  // const isFile = ssTemplate.info.file !== undefined
+  // const name = isFile ? ssObject.filename : ssObject.objectname
+  const name = ssObject.objectname
   const { id, templateid: templateId, groupid: vaultId } = ssObject
   const { name: type, ico: icon } = ssTemplate.info
   const fields: SSField[] = []
@@ -85,7 +86,9 @@ async function find (
       template => template.id === ssObject.templateid
     )
     const isFile = ssTemplate.info.file !== undefined
-    if (isFile) continue // Skip files
+    if (isFile) {
+      continue // Skip files
+    }
     results.push(parseSearchResult(ssObject, ssTemplate))
   }
   return results

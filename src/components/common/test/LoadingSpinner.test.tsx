@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { render, unmountComponentAtNode } from 'react-dom'
 import { act } from 'react-dom/test-utils'
-import { LoadingSpinner } from './LoadingSpinner'
+import { LoadingSpinner } from '../LoadingSpinner'
 import pretty from 'pretty'
 
 /**

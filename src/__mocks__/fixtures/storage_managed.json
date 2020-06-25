@@ -1,0 +1,12 @@
+{
+  "settings": {
+    "enforced": {
+      "managed_enforced": "managed"
+    },
+    "defaults": {
+      "managed_defaults": "managed"
+    }
+  },
+
+  "sites": [{ "host": "host", "apikey": "apikey" }]
+}

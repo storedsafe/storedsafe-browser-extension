@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { render, unmountComponentAtNode } from 'react-dom'
 import { act } from 'react-dom/test-utils'
-import { LoadingComponent } from './LoadingComponent'
+import { LoadingComponent } from '../LoadingComponent'
 import pretty from 'pretty'
 
 /**

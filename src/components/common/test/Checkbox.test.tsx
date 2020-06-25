@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { render, unmountComponentAtNode } from 'react-dom'
 import { act } from 'react-dom/test-utils'
-import { ListView, ListItem } from './ListView'
+import { Checkbox } from '../Checkbox'
 import pretty from 'pretty'
 
 /**
@@ -20,30 +20,26 @@ afterEach(() => {
   container = null
 })
 
-test('<ListView />', () => {
+test('<Checkbox />', () => {
   act(() => {
-    render(<ListView items={[]} />, container)
+    render(<Checkbox name='test-name' id='test-id' />, container)
   })
 
+  expect(
+    container.querySelector('input[type="checkbox"]#test-id')
+  ).not.toBeNull()
   expect(pretty(container.innerHTML)).toMatchSnapshot()
 })
 
-test('<ListView children />', () => {
-  const items: ListItem[] = [
-    {
-      key: 'item1',
-      title: <h1>Title 1</h1>,
-      content: <section>Item 1</section>
-    },
-    {
-      key: 'item2',
-      title: <h1>Title 2</h1>,
-      content: <section>Item 2</section>
-    }
-  ]
+test('<Checkbox checked />', () => {
   act(() => {
-    render(<ListView items={items} />, container)
+    render(<Checkbox checked={true} onChange={jest.fn()} />, container)
   })
 
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+  const input = container.querySelector(
+    'input[type="checkbox"]'
+  ) as HTMLInputElement
+  expect(input.checked).toBe(true)
   expect(pretty(container.innerHTML)).toMatchSnapshot()
 })

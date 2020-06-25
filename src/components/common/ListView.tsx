@@ -22,7 +22,9 @@ export const ListView: React.FunctionComponent<ListViewProps> = ({
     setSelected(defaultSelected)
   }, [defaultSelected])
 
-  const list = items.map((item) => {
+  const hasSelected = selected !== undefined
+
+  const list = items.map(item => {
     const isSelected = selected === item.key
     const onSelect = (): void => {
       if (isSelected) {
@@ -33,22 +35,21 @@ export const ListView: React.FunctionComponent<ListViewProps> = ({
     }
     return (
       <article
-        className={`list-view-item${isSelected ? ' selected' : ''}${selected && !isSelected ? ' hidden' : ''}`}
-        key={item.key}>
-        <article
-          className="list-view-item-title"
-          onClick={onSelect}>
+        className={`list-view-item${isSelected ? ' selected' : ''}${
+          hasSelected && !isSelected ? ' hidden' : ''
+        }`}
+        key={item.key}
+      >
+        <article className='list-view-item-title' onClick={onSelect}>
           {item.title}
         </article>
-        <article className="list-view-item-content">
-          {item.content}
-        </article>
+        <article className='list-view-item-content'>{item.content}</article>
       </article>
     )
   })
 
   return (
-    <section className={`list-view${selected !== undefined ? ' has-selected' : ''}`}>
+    <section className={`list-view${hasSelected ? ' has-selected' : ''}`}>
       {list}
     </section>
   )

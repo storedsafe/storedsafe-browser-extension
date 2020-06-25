@@ -6,7 +6,7 @@
   "scripts": {
     "test": "jest",
     "test:watch": "jest --watch",
-    "test:coverage": "jest --watch --coverage",
+    "test:coverage": "jest --watch --collect-coverage",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx .",
     "build": "webpack --mode production",
     "dev": "webpack --mode development",
@@ -68,7 +68,6 @@
     "postcss-loader": "^3.0.0",
     "prettier": "^2.0.5",
     "pretty": "^2.0.0",
-    "react-axe": "^3.4.1",
     "react-docgen-typescript-loader": "^3.7.2",
     "react-test-renderer": "^16.13.1",
     "regenerator-runtime": "^0.13.5",

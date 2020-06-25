@@ -1,8 +1,8 @@
 /// /////////////////////////////////////////////////////////
 // Set up mocks for browser storage API.
 
-import '../../__mocks__/browser'
-import { actions } from './Blacklist'
+import '../../../__mocks__/browser'
+import { actions } from '../Blacklist'
 
 const syncSetMock = jest.fn(async () => await Promise.resolve())
 // eslint-disable-next-line

@@ -1,8 +1,8 @@
 /// /////////////////////////////////////////////////////////
 // Set up mocks for browser storage API.
 
-import '../../__mocks__/browser'
-import { actions } from './TabResults'
+import '../../../__mocks__/browser'
+import { actions } from '../TabResults'
 
 const localSetMock = jest.fn(async () => await Promise.resolve())
 const localGetMock = jest.fn(async (key: string) => await Promise.resolve({}))

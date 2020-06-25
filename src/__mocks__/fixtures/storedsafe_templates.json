@@ -1,0 +1,98 @@
+{
+  "TEMPLATE": [
+    {
+      "INFO": {
+        "id": "4",
+        "name": "Login",
+        "ico": "ico_server",
+        "active": true,
+        "wb": true
+      },
+      "STRUCTURE": {
+        "host": {
+          "translation": "Host / IP",
+          "type": "text",
+          "encrypted": false,
+          "show": true,
+          "policy": false,
+          "alarm": false,
+          "opt": false,
+          "cc": false,
+          "nc": false
+        },
+        "username": {
+          "translation": "Username",
+          "type": "text",
+          "encrypted": false,
+          "show": true,
+          "policy": false,
+          "alarm": false,
+          "opt": false,
+          "cc": false,
+          "nc": false,
+          "log": true
+        },
+        "password": {
+          "translation": "Password",
+          "type": "text-passwdgen",
+          "encrypted": true,
+          "show": true,
+          "policy": true,
+          "alarm": true,
+          "opt": false,
+          "cc": true,
+          "nc": true
+        }
+      }
+    },
+    {
+      "INFO": {
+        "id": "3",
+        "name": "File",
+        "ico": "ico_file",
+        "active": true,
+        "wb": true,
+        "jp": true,
+        "file": "*"
+      },
+      "STRUCTURE": {
+        "file1": {
+          "translation": "File",
+          "type": "file",
+          "encrypted": false,
+          "show": true,
+          "policy": false,
+          "alarm": false,
+          "opt": false,
+          "cc": false,
+          "nc": false
+        },
+        "description": {
+          "translation": "Description",
+          "type": "text",
+          "encrypted": false,
+          "show": true,
+          "policy": false,
+          "alarm": false,
+          "opt": false,
+          "cc": false,
+          "nc": false
+        }
+      }
+    }
+  ],
+  "DATA": { "token": "token" },
+  "HEADERS": {
+    "X-Http-Token": "token",
+    "Host": "host"
+  },
+  "PARAMS": [],
+  "CALLINFO": {
+    "token": "token",
+    "general": [],
+    "handler": "TemplateHandler",
+    "status": "SUCCESS",
+    "errors": 0,
+    "errorcodes": 0
+  }
+}

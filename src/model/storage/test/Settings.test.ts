@@ -1,8 +1,8 @@
 /// /////////////////////////////////////////////////////////
 // Set up mocks for browser storage API.
 
-import '../../__mocks__/browser'
-import { actions, defaults } from './Settings'
+import '../../../__mocks__/browser'
+import { actions, defaults } from '../Settings'
 
 interface Dict {
   [key: string]: string | number | boolean | Dict

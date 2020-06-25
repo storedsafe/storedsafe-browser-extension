@@ -29,7 +29,8 @@ async function login (
       const passphrase = keys.slice(0, -44)
       const otp = keys.slice(-44)
       promise = handler.loginYubikey(username, passphrase, otp)
-    } else { // if (fields.loginType === 'totp') {
+    } else {
+      // if (fields.loginType === 'totp') {
       const { username, passphrase, otp } = fields as TOTPFields
       promise = handler.loginTotp(username, passphrase, otp)
     }
@@ -65,8 +66,11 @@ async function check (request: MakeStoredSafeRequest): Promise<boolean> {
   try {
     await request(async handler => await handler.check())
     return true
-  } catch {
-    return false
+  } catch (error) {
+    if ((error as Error).message.match('StoredSafe') !== null) {
+      return false
+    }
+    throw error
   }
 }
 

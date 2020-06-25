@@ -9,29 +9,6 @@ import './index.scss'
 import Extension from './containers/Extension'
 
 /**
- * Launch axe accessibility helper in dev mode.
- * Appears in browser console.
- * */
-if (process.env.NODE_ENV !== 'production') {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const axe = require('react-axe')
-  axe(React, ReactDOM, 1000, {
-    rules: [
-      {
-        // Accept color contrast of buttons
-        id: 'color-contrast',
-        selector: '*:not(.button .button-children)'
-      },
-      {
-        // Accept that popup has no header
-        id: 'page-has-heading-one',
-        selector: '*:not(.popup)'
-      }
-    ]
-  })
-}
-
-/**
  * Render extension UI onto page.
  * */
 ReactDOM.render(

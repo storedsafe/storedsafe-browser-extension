@@ -1,0 +1,18 @@
+{
+  "DATA": {
+    "token": "token"
+  },
+  "HEADERS": {
+    "Host": "host"
+  },
+  "PARAMS": [],
+  "CALLINFO": {
+    "token": "token",
+    "objectid": "1",
+    "general": [],
+    "handler": "AuthHandler",
+    "status": "SUCCESS",
+    "errors": 0,
+    "errorcodes": 0
+  }
+}

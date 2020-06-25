@@ -30,8 +30,7 @@ async function getVaults (request: MakeStoredSafeRequest): Promise<SSVault[]> {
     )) as StoredSafeVaultsData
   } catch (error) {
     // NOTE: If vault list is empty, StoredSafe sends 404
-    data = error.response?.data as StoredSafeVaultsData
-    if (data === undefined) throw error
+    data = error.response.data as StoredSafeVaultsData
   }
   return data.VAULTS.map(vault => ({
     id: vault.id,
@@ -51,20 +50,26 @@ async function getTemplates (
   const data = (await request(
     async handler => await handler.listTemplates()
   )) as StoredSafeTemplateData
-  return data.TEMPLATE.map(template => ({
-    id: template.INFO.id,
-    name: template.INFO.name,
-    icon: template.INFO.ico,
-    structure: Object.keys(template.STRUCTURE).map(fieldName => {
-      const field = template.STRUCTURE[fieldName]
-      return {
-        title: field.translation,
-        name: fieldName,
-        type: field.type,
-        isEncrypted: field.encrypted
-      }
+  const templates: SSTemplate[] = []
+  for (const template of data.TEMPLATE) {
+    // Skip files
+    if (template.INFO.file !== undefined) continue
+    templates.push({
+      id: template.INFO.id,
+      name: template.INFO.name,
+      icon: template.INFO.ico,
+      structure: Object.keys(template.STRUCTURE).map(fieldName => {
+        const field = template.STRUCTURE[fieldName]
+        return {
+          title: field.translation,
+          name: fieldName,
+          type: field.type,
+          isEncrypted: field.encrypted
+        }
+      })
     })
-  }))
+  }
+  return templates
 }
 
 /**
@@ -75,7 +80,7 @@ async function getTemplates (
  * */
 async function generatePassword (
   request: MakeStoredSafeRequest,
-  params: {
+  params?: {
     type?: 'pronouncable' | 'diceword' | 'opie' | 'secure' | 'pin'
     length?: number
     language?: 'en_US' | 'sv_SE'

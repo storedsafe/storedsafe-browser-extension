@@ -1,0 +1,34 @@
+{
+  "DATA": {
+    "username": "username",
+    "passphrase": "passphrase",
+    "otp": "515939",
+    "apikey": "apikey",
+    "logintype": "totp"
+  },
+  "HEADERS": {
+    "Host": "audit"
+  },
+  "PARAMS": [],
+  "CALLINFO": {
+    "token": "token",
+    "fingerprint": "fingerprint",
+    "userid": "1",
+    "password": "passphrase",
+    "userstatus": "396",
+    "username": "username",
+    "fullname": "First Last",
+    "timeout": 14400000,
+    "filesupport": 3,
+    "version": "2.1.0",
+    "audit": {
+      "violations": { "key": "violation" },
+      "warnings": { "key": "warning" }
+    },
+    "general": ["general"],
+    "handler": "AuthHandler",
+    "status": "SUCCESS",
+    "errors": 0,
+    "errorcodes": 0
+  }
+}

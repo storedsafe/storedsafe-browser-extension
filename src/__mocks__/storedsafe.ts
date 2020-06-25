@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 /**
  * Mock server imitating StoredSafe for testing.
  * */
@@ -6,365 +7,28 @@ import {
   StoredSafeLoginData,
   StoredSafeLogoutData,
   StoredSafeData,
-  StoredSafeObjectData
+  StoredSafeObjectData,
+  StoredSafeCreateObjectData,
+  StoredSafeCheckData,
+  StoredSafePasswordData,
+  StoredSafeVaultData,
+  StoredSafeTemplateData
 } from 'storedsafe'
 
-export const error: StoredSafeErrorData = {
-  ERRORS: ['Error 1', 'Error 2'],
-  ERRORCODES: {
-    2000: 'Errormessages exists'
-  },
-  DATA: {},
-  HEADERS: {
-    Host: 'host'
-  },
-  PARAMS: [],
-  CALLINFO: {
-    general: [],
-    handler: 'AuthHandler',
-    status: 'FAIL',
-    errors: 2,
-    errorcodes: 1
-  }
-}
-
-export const check: StoredSafeData = {
-  DATA: {
-    token: 'token'
-  },
-  HEADERS: {
-    Host: 'host'
-  },
-  PARAMS: [],
-  CALLINFO: {
-    token: 'token',
-    general: [],
-    handler: 'AuthHandler',
-    status: 'SUCCESS',
-    errors: 0,
-    errorcodes: 0
-  }
-}
-
-const loginTotp: StoredSafeLoginData = {
-  DATA: {
-    username: 'username',
-    passphrase: 'passphrase',
-    otp: '515939',
-    apikey: 'apikey',
-    logintype: 'totp'
-  },
-  HEADERS: {
-    Host: 'host'
-  },
-  PARAMS: [],
-  CALLINFO: {
-    token: 'token',
-    fingerprint: 'fingerprint',
-    userid: '1',
-    password: 'passphrase',
-    userstatus: '396',
-    username: 'username',
-    fullname: 'First Last',
-    timeout: 14400000,
-    filesupport: 3,
-    version: '2.1.0',
-    audit: {
-      violations: [],
-      warnings: []
-    },
-    general: ['general'],
-    handler: 'AuthHandler',
-    status: 'SUCCESS',
-    errors: 0,
-    errorcodes: 0
-  }
-}
-
-const loginTotpWarning: StoredSafeLoginData = {
-  DATA: {
-    username: 'username',
-    passphrase: 'passphrase',
-    otp: '515939',
-    apikey: 'apikey',
-    logintype: 'totp'
-  },
-  HEADERS: {
-    Host: 'warning'
-  },
-  PARAMS: [],
-  CALLINFO: {
-    token: 'token',
-    fingerprint: 'fingerprint',
-    userid: '1',
-    password: 'passphrase',
-    userstatus: '396',
-    username: 'username',
-    fullname: 'First Last',
-    timeout: 14400000,
-    filesupport: 3,
-    version: '2.1.0',
-    audit: {
-      violations: { key: 'violation' },
-      warnings: { key: 'warning' }
-    },
-    general: ['general'],
-    handler: 'AuthHandler',
-    status: 'SUCCESS',
-    errors: 0,
-    errorcodes: 0
-  }
-}
-
-const loginYubikey: StoredSafeLoginData = {
-  DATA: {
-    username: 'user',
-    keys: 'passphraseapikeytoken'
-  },
-  HEADERS: {
-    Host: 'host'
-  },
-  PARAMS: [],
-  CALLINFO: {
-    token: 'token',
-    fingerprint: 'fingerprint',
-    userid: '1',
-    password: 'passphrase',
-    userstatus: '396',
-    username: 'username',
-    fullname: 'First Last',
-    timeout: 14400000,
-    filesupport: 3,
-    version: '2.1.0',
-    audit: {
-      violations: [],
-      warnings: []
-    },
-    general: ['general'],
-    handler: 'AuthHandler',
-    status: 'SUCCESS',
-    errors: 0,
-    errorcodes: 0
-  }
-}
-
-const logout: StoredSafeLogoutData = {
-  DATA: {
-    token: 'token'
-  },
-  HEADERS: {
-    Host: 'host'
-  },
-  PARAMS: [],
-  CALLINFO: {
-    token: 'token',
-    logout: 'Bye bye!',
-    general: [],
-    handler: 'AuthHandler',
-    status: 'SUCCESS',
-    errors: 0,
-    errorcodes: 0
-  }
-}
-
-const find: StoredSafeObjectData = {
-  OBJECT: [
-    {
-      id: '1',
-      parentid: '0',
-      templateid: '4',
-      groupid: '139',
-      status: '128',
-      objectname: 'Host',
-      filename: '',
-      children: '0',
-      notes: false,
-      tags: '',
-      alarmed: false,
-      public: {
-        host: 'Host',
-        username: 'Username'
-      }
-    }
-  ],
-  TEMPLATES: [
-    {
-      id: '4',
-      info: {
-        id: '4',
-        name: 'Login',
-        ico: 'ico_server',
-        active: true,
-        wb: true
-      },
-      structure: [
-        {
-          translation: 'Host / IP',
-          type: 'text',
-          encrypted: false,
-          show: true,
-          policy: false,
-          alarm: false,
-          opt: false,
-          cc: false,
-          nc: false,
-          fieldname: 'host'
-        },
-        {
-          translation: 'Username',
-          type: 'text',
-          encrypted: false,
-          show: true,
-          policy: false,
-          alarm: false,
-          opt: false,
-          cc: false,
-          nc: false,
-          log: true,
-          fieldname: 'username'
-        },
-        {
-          translation: 'Password',
-          type: 'text-passwdgen',
-          encrypted: true,
-          show: true,
-          policy: true,
-          alarm: true,
-          opt: false,
-          cc: true,
-          nc: true,
-          fieldname: 'password'
-        }
-      ]
-    }
-  ],
-  DATA: {
-    token: 'token',
-    needle: 'host'
-  },
-  HEADERS: {
-    Host: 'host'
-  },
-  PARAMS: [],
-  CALLINFO: {
-    token: 'token',
-    general: [],
-    handler: 'FindHandler',
-    status: 'SUCCESS',
-    errors: 0,
-    errorcodes: 0
-  }
-}
-
-const decrypt: StoredSafeObjectData = {
-  OBJECT: [
-    {
-      id: '1',
-      parentid: '0',
-      templateid: '4',
-      groupid: '139',
-      status: '128',
-      objectname: 'Host',
-      filename: '',
-      children: '0',
-      notes: false,
-      tags: '',
-      alarmed: false,
-      public: {
-        host: 'Host',
-        username: 'Username'
-      },
-      crypted: {
-        password: 'Password'
-      }
-    }
-  ],
-  TEMPLATES: [
-    {
-      id: '4',
-      info: {
-        id: '4',
-        name: 'Login',
-        ico: 'ico_server',
-        active: true,
-        wb: true
-      },
-      structure: [
-        {
-          translation: 'Host / IP',
-          type: 'text',
-          encrypted: false,
-          show: true,
-          policy: false,
-          alarm: false,
-          opt: false,
-          cc: false,
-          nc: false,
-          fieldname: 'host'
-        },
-        {
-          translation: 'Username',
-          type: 'text',
-          encrypted: false,
-          show: true,
-          policy: false,
-          alarm: false,
-          opt: false,
-          cc: false,
-          nc: false,
-          log: true,
-          fieldname: 'username'
-        },
-        {
-          translation: 'Password',
-          type: 'text-passwdgen',
-          encrypted: true,
-          show: true,
-          policy: true,
-          alarm: true,
-          opt: false,
-          cc: true,
-          nc: true,
-          fieldname: 'password'
-        }
-      ]
-    }
-  ],
-  BREADCRUMB: [
-    {
-      objectid: '1',
-      objectname: 'Host',
-      icon: 'ico_server'
-    }
-  ],
-  DATA: {
-    token: 'token',
-    decrypt: 'true',
-    children: 'false'
-  },
-  HEADERS: {
-    Host: 'host'
-  },
-  PARAMS: [],
-  CALLINFO: {
-    token: 'token',
-    general: [],
-    handler: 'ObjectHandler',
-    status: 'SUCCESS',
-    errors: 0,
-    errorcodes: 0
-  }
-}
-
 export const data = {
-  check,
-  decrypt,
-  error,
-  find,
-  loginTotp,
-  loginTotpWarning,
-  loginYubikey,
-  logout
+  check: require('./fixtures/storedsafe_check.json') as StoredSafeCheckData,
+  createObject: require('./fixtures/storedsafe_create_object.json') as StoredSafeCreateObjectData,
+  decrypt: require('./fixtures/storedsafe_decrypt.json') as StoredSafeObjectData,
+  error: require('./fixtures/storedsafe_error') as StoredSafeErrorData,
+  find: require('./fixtures/storedsafe_find.json') as StoredSafeObjectData,
+  loginTotp: require('./fixtures/storedsafe_login_totp.json') as StoredSafeLoginData,
+  loginTotpWarning: require('./fixtures/storedsafe_login_totp_audit.json') as StoredSafeLoginData,
+  loginYubikey: require('./fixtures/storedsafe_login_yubikey.json') as StoredSafeLoginData,
+  logout: require('./fixtures/storedsafe_logout.json') as StoredSafeLogoutData,
+  password: require('./fixtures/storedsafe_password.json') as StoredSafePasswordData,
+  vaults: require('./fixtures/storedsafe_vaults.json') as StoredSafeVaultData,
+  vaultsEmpty: require('./fixtures/storedsafe_vaults_empty.json') as StoredSafeVaultData,
+  templates: require('./fixtures/storedsafe_templates.json') as StoredSafeTemplateData
 }
 
 interface MockResponse {
@@ -400,37 +64,48 @@ export default class StoredSafe {
     this.token = token
   }
 
+  async makeOkResponse (responseData: StoredSafeData): Promise<MockResponse> {
+    return await Promise.resolve({
+      status: 200,
+      statusText: 'success',
+      data: responseData
+    })
+  }
+
+  makeErrorResponse (
+    message: string,
+    responseData = data.error,
+    status = 403,
+    statusText = 'error'
+  ): MockError {
+    return {
+      name: 'name',
+      message,
+      response: {
+        status: status,
+        statusText: statusText,
+        data: responseData
+      }
+    }
+  }
+
   async loginTotp (
     username: string,
     passphrase: string,
     otp: string
   ): Promise<MockResponse> {
     if (
-      (this.host === 'host' || this.host === 'warning') &&
+      (this.host === 'login' || this.host === 'audit') &&
       this.apikey === 'apikey' &&
       username === 'username' &&
       passphrase === 'passphrase' &&
       otp === 'otp'
     ) {
       const loginData =
-        this.host === 'host' ? data.loginTotp : data.loginTotpWarning
-      return await Promise.resolve({
-        status: 200,
-        statusText: 'success',
-        data: loginData
-      })
-    } else {
-      const error: MockError = {
-        name: 'name',
-        message: 'message',
-        response: {
-          status: 403,
-          statusText: 'login error',
-          data: data.error
-        }
-      }
-      return await Promise.reject(error)
+        this.host === 'login' ? data.loginTotp : data.loginTotpWarning
+      return await this.makeOkResponse(loginData)
     }
+    throw this.makeErrorResponse('totp error')
   }
 
   async loginYubikey (
@@ -439,115 +114,111 @@ export default class StoredSafe {
     otp: string
   ): Promise<MockResponse> {
     if (
-      this.host === 'host' &&
+      this.host === 'login' &&
       this.apikey === 'apikey' &&
       username === 'username' &&
       passphrase === 'passphrase' &&
       otp === 'oooooooooooooooooooooooooooooooooooooooooooo'
     ) {
-      return await Promise.resolve({
-        status: 200,
-        statusText: 'success',
-        data: data.loginYubikey
-      })
-    } else {
-      const error: MockError = {
-        name: 'name',
-        message: 'message',
-        response: {
-          status: 403,
-          statusText: 'login error',
-          data: data.error
-        }
-      }
-      return await Promise.reject(error)
+      return await this.makeOkResponse(data.loginYubikey)
     }
+    throw await this.makeErrorResponse('login error')
   }
 
   async logout (): Promise<MockResponse> {
-    if (this.host === 'host' && this.token === 'token') {
-      return await Promise.resolve({
-        status: 200,
-        statusText: 'success',
-        data: data.logout
-      })
-    } else {
-      const error: MockError = {
-        name: 'name',
-        message: 'message',
-        response: {
-          status: 403,
-          statusText: 'logout error',
-          data: data.error
-        }
-      }
-      return await Promise.reject(error)
-    }
-  }
-
-  async check (): Promise<MockResponse> {
     if (
-      (this.host === 'host' || this.host === 'host1') &&
+      (this.host === 'host' || this.host === 'login') &&
       this.token === 'token'
     ) {
-      return await Promise.resolve({
-        status: 200,
-        statusText: 'success',
-        data: data.check
-      })
-    } else {
-      const error: MockError = {
-        name: 'name',
-        message: 'message',
-        response: {
-          status: 403,
-          statusText: 'check error',
-          data: data.error
-        }
-      }
-      return await Promise.reject(error)
+      return await this.makeOkResponse(data.logout)
     }
+    throw this.makeErrorResponse('logout error')
+  }
+
+  // Use check endpoint to test network errors
+  async check (): Promise<MockResponse> {
+    if (this.host === 'host' || this.host === 'login') {
+      if (this.token === 'token') {
+        return await this.makeOkResponse(data.check)
+      } else if (this.token === '500') {
+        const error: MockError = {
+          name: 'name',
+          message: 'server error',
+          request: {
+            status: 500,
+            statusText: 'internal server error'
+          }
+        }
+        throw error
+      } else {
+        const error: Error = {
+          name: 'name',
+          message: 'request error'
+        }
+        throw error
+      }
+    }
+    throw this.makeErrorResponse('check error')
   }
 
   async find (needle: string): Promise<MockResponse> {
-    if (this.host === 'host' && this.token === 'token' && needle === 'host') {
-      return await Promise.resolve({
-        status: 200,
-        statusText: 'success',
-        data: data.find
-      })
-    } else {
-      const error: MockError = {
-        name: 'name',
-        message: 'message',
-        response: {
-          status: 403,
-          statusText: 'find error',
-          data: data.error
-        }
-      }
-      return await Promise.reject(error)
+    if (this.host === 'host' && this.token === 'token' && needle === 'server') {
+      return await this.makeOkResponse(data.find)
     }
+    throw this.makeErrorResponse('find error')
   }
 
   async decryptObject (id: string): Promise<MockResponse> {
     if (this.host === 'host' && this.token === 'token' && id === '1') {
-      return await Promise.resolve({
-        status: 200,
-        statusText: 'success',
-        data: data.decrypt
-      })
-    } else {
+      return await this.makeOkResponse(data.decrypt)
+    }
+    throw this.makeErrorResponse('decrypt error')
+  }
+
+  async createObject (params: object): Promise<MockResponse> {
+    if (
+      this.host === 'host' &&
+      this.token === 'token' &&
+      params !== undefined
+    ) {
+      return await this.makeOkResponse(data.createObject)
+    }
+    throw this.makeErrorResponse('create object error')
+  }
+
+  async listVaults (): Promise<MockResponse> {
+    if (this.host === 'host' && this.token === 'token') {
+      return await this.makeOkResponse(data.vaults)
+    }
+    if (this.host === 'audit' && this.token === 'token') {
       const error: MockError = {
         name: 'name',
-        message: 'message',
+        message: 'vaults empty error',
         response: {
-          status: 403,
-          statusText: 'decrypt error',
-          data: data.error
+          status: 404,
+          statusText: 'statusText',
+          data: data.vaultsEmpty
         }
       }
-      return await Promise.reject(error)
+      throw error
     }
+    throw this.makeErrorResponse('list vaults error')
+  }
+
+  async listTemplates (): Promise<MockResponse> {
+    if (
+      (this.host === 'host' || this.host === 'audit') &&
+      this.token === 'token'
+    ) {
+      return await this.makeOkResponse(data.templates)
+    }
+    throw this.makeErrorResponse('list templates error')
+  }
+
+  async generatePassword (): Promise<MockResponse> {
+    if (this.host === 'host' && this.token === 'token') {
+      return await this.makeOkResponse(data.password)
+    }
+    throw this.makeErrorResponse('generate password response')
   }
 }

@@ -1,0 +1,99 @@
+{
+  "OBJECT": [
+    {
+      "id": "1",
+      "parentid": "0",
+      "templateid": "4",
+      "groupid": "139",
+      "status": "128",
+      "objectname": "server",
+      "filename": "",
+      "children": "0",
+      "notes": false,
+      "tags": "",
+      "alarmed": false,
+      "public": {
+        "host": "server",
+        "username": "username"
+      },
+      "crypted": {
+        "password": "password"
+      }
+    }
+  ],
+  "TEMPLATES": [
+    {
+      "id": "4",
+      "info": {
+        "id": "4",
+        "name": "Login",
+        "ico": "ico_server",
+        "active": true,
+        "wb": true
+      },
+      "structure": [
+        {
+          "translation": "Host / IP",
+          "type": "text",
+          "encrypted": false,
+          "show": true,
+          "policy": false,
+          "alarm": false,
+          "opt": false,
+          "cc": false,
+          "nc": false,
+          "fieldname": "host"
+        },
+        {
+          "translation": "Username",
+          "type": "text",
+          "encrypted": false,
+          "show": true,
+          "policy": false,
+          "alarm": false,
+          "opt": false,
+          "cc": false,
+          "nc": false,
+          "log": true,
+          "fieldname": "username"
+        },
+        {
+          "translation": "Password",
+          "type": "text-passwdgen",
+          "encrypted": true,
+          "show": true,
+          "policy": true,
+          "alarm": true,
+          "opt": false,
+          "cc": true,
+          "nc": true,
+          "fieldname": "password"
+        }
+      ]
+    }
+  ],
+  "BREADCRUMB": [
+    {
+      "objectid": "1",
+      "objectname": "server",
+      "icon": "ico_server"
+    }
+  ],
+  "DATA": {
+    "token": "token",
+    "decrypt": "true",
+    "children": "false"
+  },
+  "HEADERS": {
+    "Host": "host"
+  },
+  "PARAMS": [],
+  "CALLINFO": {
+    "token": "token",
+    "general": [],
+    "handler": "ObjectHandler",
+    "status": "SUCCESS",
+    "errors": 0,
+    "errorcodes": 0
+  }
+}
