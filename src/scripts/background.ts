@@ -27,19 +27,21 @@ let idleTimer: number
  * that host.
  * @param host - Host of session to invalidate.
  * */
-function invalidateSession (host: string): void {
-  console.log('Invalidating session: ', host)
-  StoredSafeActions.logout(host)
-  TabResultsActions.purgeHost(host)
+async function invalidateSession (host: string): Promise<void> {
+  const logoutPromise = StoredSafeActions.logout(host)
+  const purgePromise = TabResultsActions.purgeHost(host)
+  await logoutPromise
+  await purgePromise
 }
 
 /**
  * Invalidate all sessions and clear search results.
  * */
-function invalidateAllSessions (): void {
-  console.log('Invalidating all sessions')
-  StoredSafeActions.logoutAll()
-  TabResultsActions.clear()
+async function invalidateAllSessions (): Promise<void> {
+  const logoutPromise = StoredSafeActions.logoutAll()
+  const clearPromise = TabResultsActions.clear()
+  await logoutPromise
+  await clearPromise
 }
 
 /**
@@ -54,16 +56,20 @@ function getTokenLife (createdAt: number): number {
  * Set up check timers to keep sessions alive.
  * */
 function setupKeepAlive (): void {
-  SessionsActions.fetch().then((sessions) => {
+  void (async () => {
+    const sessions = await SessionsActions.fetch()
     for (const [host, { timeout }] of sessions) {
       // Perform initial check in case we're picking up an old session
       // which will timeout in less than the saved timeout value.
-      StoredSafeActions.check(host)
+      await StoredSafeActions.check(host)
       const interval = timeout * 0.75 // Leave a little margin
-      console.log('Keepalive for', host, 'in', Math.floor(interval / 60000), 'minutes')
-      setInterval(StoredSafeActions.check, interval, host)
+      setInterval(() => {
+        StoredSafeActions.check(host).catch(error => {
+          console.error(error)
+        })
+      }, interval)
     }
-  }).catch((err) => console.log(err))
+  })()
 }
 
 /**
@@ -71,18 +77,20 @@ function setupKeepAlive (): void {
  * @param sessions - Currently active sessions.
  * */
 function setupTimers (sessions: Sessions): void {
-  SettingsActions.fetch().then((settings) => {
+  void (async () => {
+    const settings = await SettingsActions.fetch()
     for (const [host, session] of sessions) {
       const tokenLife = getTokenLife(session.createdAt)
       const maxTokenLife = settings.get('maxTokenLife').value as number
       const tokenTimeout = maxTokenLife * 3600 * 10e3 - tokenLife
-      console.log('Invalidate', host, 'in', Math.floor(tokenTimeout / 6e5), 'minutes')
-      sessionTimers.set(host, window.setTimeout(() => {
-        console.log('Session timed out for ', host)
-        invalidateSession(host)
-      }, tokenTimeout))
+      sessionTimers.set(
+        host,
+        window.setTimeout(() => {
+          void invalidateSession(host)
+        }, tokenTimeout)
+      )
     }
-  })
+  })()
 }
 
 /**
@@ -113,11 +121,15 @@ function selectResult (results: Results): [string /* host */, SSObject] {
 /**
  * Decrypt result if needed.
  * */
-async function decryptResult (host: string, result: SSObject): Promise<SSObject> {
+async function decryptResult (
+  host: string,
+  result: SSObject
+): Promise<SSObject> {
   if (result.isDecrypted) return result
-  const hasEncrypted = result.fields.reduce((acc, field) => (
-    acc || field.isEncrypted
-  ), false)
+  const hasEncrypted = result.fields.reduce(
+    (acc, field) => acc || field.isEncrypted,
+    false
+  )
   if (hasEncrypted) {
     return await StoredSafeActions.decrypt(host, result.id)
   }
@@ -127,7 +139,9 @@ async function decryptResult (host: string, result: SSObject): Promise<SSObject>
 /**
  * Prepare fields for fill function and decrypt if needed.
  * */
-function parseResult (result: SSObject): Map<string /* field */, string /* value */> {
+function parseResult (
+  result: SSObject
+): Map<string /* field */, string /* value */> {
   const data: Map<string, string> = new Map()
   for (const field of result.fields) {
     data.set(field.name, field.value)
@@ -138,8 +152,11 @@ function parseResult (result: SSObject): Map<string /* field */, string /* value
 /**
  * Fill form fields on tab.
  * */
-function tabFill (tabId: number, data: Map<string /* field */, string /* value */>): void {
-  browser.tabs.sendMessage(tabId, {
+async function tabFill (
+  tabId: number,
+  data: Map<string /* field */, string /* value */>
+): Promise<void> {
+  await browser.tabs.sendMessage(tabId, {
     type: 'fill',
     data: [...data]
   })
@@ -150,10 +167,10 @@ function tabFill (tabId: number, data: Map<string /* field */, string /* value *
  * */
 async function fill (tabId: number, results: Results): Promise<void> {
   const [host, result] = selectResult(results)
-  if (result) {
+  if (result !== undefined) {
     const decryptedResult = decryptResult(host, result)
     const data = parseResult(await decryptedResult)
-    tabFill(tabId, data)
+    await tabFill(tabId, data)
   }
 }
 
@@ -161,18 +178,14 @@ async function fill (tabId: number, results: Results): Promise<void> {
  * Find search results related to loaded tab.
  * @param tab - Tab to send fill message to.
  * */
-function tabFind (tab: browser.tabs.Tab): Promise<void> {
+async function tabFind (tab: browser.tabs.Tab): Promise<void> {
   const { id: tabId, url } = tab
   const needle = urlToNeedle(url)
-  console.log('Searching for results on', url)
-  return StoredSafeActions.tabFind(tabId, needle).then((tabResults) => {
-    console.log('Found ', [...tabResults.get(tabId).values()].reduce((acc, res) => acc + res.length, 0), 'results on ', url)
-    SettingsActions.fetch().then((settings) => {
-      if (settings.get('autoFill').value) {
-        fill(tabId, tabResults.get(tabId))
-      }
-    })
-  })
+  const tabResults = await StoredSafeActions.tabFind(tabId, needle)
+  const settings = await SettingsActions.fetch()
+  if (settings.get('autoFill').value === true) {
+    await fill(tabId, tabResults.get(tabId))
+  }
 }
 
 /**
@@ -181,14 +194,16 @@ function tabFind (tab: browser.tabs.Tab): Promise<void> {
  * @param clearTimer - Time to clear clipboard in ms.
  * TODO: Fix clear timer when not focused.
  * */
-function copyToClipboard (value: string, clearTimer = 10e5): Promise<void> {
-  console.log('Copy to clipboard.')
-  return navigator.clipboard.writeText(value).then(() => {
-    setTimeout(() => {
-      navigator.clipboard.writeText('')
-      console.log('Cleared clipboard.')
-    }, clearTimer)
-  })
+async function copyToClipboard (
+  value: string,
+  clearTimer = 10e5
+): Promise<void> {
+  await navigator.clipboard.writeText(value)
+  setTimeout(() => {
+    navigator.clipboard.writeText('').catch(error => {
+      console.error(error)
+    })
+  }, clearTimer)
 }
 
 /// /////////////////////////////////////////////////////////
@@ -200,11 +215,15 @@ function copyToClipboard (value: string, clearTimer = 10e5): Promise<void> {
  * */
 function updateOnlineStatus (sessions: Sessions): void {
   if (sessions.size > 0) {
-    console.log('Online')
-    browser.browserAction.setIcon({ path: 'ico/icon.png' })
+    browser.browserAction.setIcon({ path: 'ico/icon.png' }).catch(error => {
+      console.error(error)
+    })
   } else {
-    console.log('Offline')
-    browser.browserAction.setIcon({ path: 'ico/icon-inactive.png' })
+    void browser.browserAction
+      .setIcon({ path: 'ico/icon-inactive.png' })
+      .catch(error => {
+        console.error(error)
+      })
   }
 }
 
@@ -212,10 +231,11 @@ function updateOnlineStatus (sessions: Sessions): void {
  * Check validity of all sessions when browser starts up.
  * */
 function onStartup (): void {
-  StoredSafeActions.checkAll().then((sessions) => {
+  void (async () => {
+    const sessions = await StoredSafeActions.checkAll()
     setupTimers(sessions)
     updateOnlineStatus(sessions)
-  })
+  })()
 }
 
 /**
@@ -244,7 +264,7 @@ function onStorageChange (
   if (area === 'local') {
     const { sessions } = storage
     // If there are changes to sessions
-    if (sessions && sessions.newValue) {
+    if (sessions?.newValue !== undefined) {
       handleSessionsChange(new Map(sessions.newValue))
     }
   }
@@ -265,17 +285,22 @@ function createContextMenu (): void {
  * Handle on install event.
  * In chrome, context menus need to be setup on install.
  * */
-function onInstalled (
-  { reason }: { reason: browser.runtime.OnInstalledReason }
-): void {
+function onInstalled ({
+  reason
+}: {
+  reason: browser.runtime.OnInstalledReason
+}): void {
   createContextMenu()
 
   // Run online status initialization logic
-  SessionsActions.fetch().then((sessions) => updateOnlineStatus(sessions))
+  void (async () => {
+    const sessions = await SessionsActions.fetch()
+    updateOnlineStatus(sessions)
+  })()
 
   // Open options page if it's a first install or the extension has been updated
   if (reason === 'install' || reason === 'update') {
-    browser.runtime.openOptionsPage()
+    void browser.runtime.openOptionsPage()
   }
 }
 
@@ -283,26 +308,27 @@ function onInstalled (
  * Clear timeout function for idle timer.
  * */
 function clearIdleTimer (): void {
-  console.log('Idle timer cancelled.')
   window.clearTimeout(idleTimer)
+  idleTimer = undefined
 }
 
 /**
  * Set up timer to invalidate all sessions after being idle for some time.
  * */
 function setupIdleTimer (): void {
-  SettingsActions.fetch().then((settings) => {
+  void (async () => {
+    const settings = await SettingsActions.fetch()
     // Clear old timer if one exists.
-    if (idleTimer) {
+    if (idleTimer !== undefined) {
       clearIdleTimer()
     }
-    const idleTimeout = settings.get('idleMax').value as number * 6e5
-    console.log('Idle timeout in', idleTimeout, 'ms')
+    const idleTimeout = (settings.get('idleMax').value as number) * 6e5
     idleTimer = window.setTimeout(() => {
-      console.log('Idle timer expired, invalidate all sessions.')
-      invalidateAllSessions()
+      invalidateAllSessions().catch((error) => {
+        console.error(error)
+      })
     }, idleTimeout)
-  })
+  })()
 }
 
 /**
@@ -313,7 +339,7 @@ function onIdle (state: 'idle' | 'locked' | 'active'): void {
   if (state === 'idle') {
     setupIdleTimer()
   } else if (state === 'active') {
-    if (idleTimer) {
+    if (idleTimer !== undefined) {
       clearIdleTimer()
     }
   }
@@ -322,21 +348,23 @@ function onIdle (state: 'idle' | 'locked' | 'active'): void {
 /**
  * Open extension popup, silence error if popup is already open.
  * */
-function openPopup (): Promise<void> {
-  return browser.browserAction.openPopup().then().catch((error) => {
-    console.log(error)
-  })
+async function tryOpenPopup (): Promise<void> {
+  try {
+    await browser.browserAction.openPopup()
+  } catch {
+    return await Promise.resolve()
+  }
 }
 
 /**
  * Handle click events in context menu.
  * */
-function onMenuClick (
-  info: browser.contextMenus.OnClickData
-): void {
+function onMenuClick (info: browser.contextMenus.OnClickData): void {
   switch (info.menuItemId) {
     case 'open-popup': {
-      openPopup()
+      tryOpenPopup().catch(error => {
+        console.error(error)
+      })
       break
     }
     default: {
@@ -364,72 +392,63 @@ const messageHandlers: {
   submit: MessageHandler<object>
   [key: string]: MessageHandler<unknown>
 } = {
-  tabSearch: (data, sender) => (
-    tabFind(sender.tab)
-  ),
-  copyToClipboard: (value) => (
-    copyToClipboard(value)
-  ),
-  submit: (values, { tab }) => {
+  tabSearch: async (data, sender) => await tabFind(sender.tab),
+  copyToClipboard: async value => await copyToClipboard(value),
+  submit: async (values, { tab }) => {
     const { url, id } = tab
-    return BlacklistActions.fetch().then((blacklist) => {
-      if (blacklist.includes(url)) {
-        return
+
+    // If site is blacklisted, don't offer to save
+    const blacklist = await BlacklistActions.fetch()
+    if (blacklist.includes(url)) return
+
+    // If result for site exists in cache, don't offer to save
+    const tabResults = await TabResultsActions.fetch()
+    for (const results of tabResults.get(id).values()) {
+      for (const result of results) {
+        for (const { value } of result.fields) {
+          if (value.match(urlToNeedle(url)) !== null) {
+            return
+          }
+        }
       }
-      return TabResultsActions.fetch().then((tabResults) => {
-        for (const results of tabResults.get(id).values()) {
-          for (const result of results) {
-            for (const { value } of result.fields) {
-              console.log('Checking', value, 'in', result, 'against', urlToNeedle(url))
-              if (value.match(urlToNeedle(url))) {
-                console.log('Matching result already exists for', url, ', skip save')
-                return
-              }
-            }
-          }
-        }
-        const sendSaveMessage = (): Promise<void> => {
-          values = {
-            name: urlToNeedle(url),
-            url,
-            ...values
-          }
-          console.log('Sending values to popup', values)
-          return browser.runtime.sendMessage({
-            type: 'save',
-            data: values
-          })
-        }
-        try {
-          console.log('Trying to open popup')
-          return browser.browserAction.openPopup().then(sendSaveMessage)
-        } catch (error) {
-          console.log(error)
-          return sendSaveMessage()
-        }
+    }
+
+    const sendSaveMessage = async (): Promise<void> => {
+      values = { name: urlToNeedle(url), url, ...values }
+      return await browser.runtime.sendMessage({
+        type: 'save',
+        data: values
       })
-    })
+    }
+    try {
+      return await browser.browserAction.openPopup().then(sendSaveMessage)
+    } catch (error) {
+      return await sendSaveMessage()
+    }
   }
 }
 
 /**
  * Handle messages received from other scripts.
  * */
-function onMessage (
-  message: { type: string, data: unknown },
+async function onMessage (
+  message: {
+    type: string
+    data: unknown
+  },
   sender: browser.runtime.MessageSender
 ): Promise<void> {
   const handler = messageHandlers[message.type]
-  if (handler) {
-    return handler(message.data, sender)
+  if (handler !== undefined) {
+    return await handler(message.data, sender)
   }
-  Promise.reject(`Invalid message type: ${message.type}`)
+  throw new Error(`Invalid message type: ${message.type}`)
 }
 
 /// /////////////////////////////////////////////////////////
 // Subscribe to events and initialization
 
-// TODO: Remove debug pritnout
+// TODO: Remove debug printout
 console.log('Background script initialized: ', new Date(Date.now()))
 
 // Listen to changes in storage to know when sessions are updated

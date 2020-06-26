@@ -1,0 +1,11 @@
+@import '../../styles/variables.scss';
+
+.popup {
+  background-color: $color-primary-0;
+
+  .logo {
+    max-width: 100%;
+    padding: $spacing;
+    opacity: 60%;
+  }
+}

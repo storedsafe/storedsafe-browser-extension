@@ -1,12 +1,7 @@
 @import url('https://fonts.googleapis.com/css?family=Montserrat|Roboto&display=swap');
+@import './styles/reset.scss';
 @import './styles/variables';
 @import './styles/input';
-
-* {
-  padding: 0;
-  margin: 0;
-  box-sizing: border-box;
-}
 
 body {
   background-color: $color-bg-body;

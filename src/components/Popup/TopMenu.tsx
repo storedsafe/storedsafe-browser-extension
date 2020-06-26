@@ -1,5 +1,5 @@
 import React from 'react'
-import './SearchBar.scss'
+import './TopMenu.scss'
 
 const icon = (
   <svg
@@ -16,7 +16,7 @@ const icon = (
 export type OnNeedleChangeCallback = (needle: string) => void
 export type OnSearchCallback = () => void
 
-export interface SearchBarProps {
+export interface TopMenuProps {
   needle: string
   onFocus?: () => void
   onBlur?: () => void
@@ -26,7 +26,7 @@ export interface SearchBarProps {
   isLoading: boolean
 }
 
-export const SearchBar: React.FunctionComponent<SearchBarProps> = ({
+export const TopMenu: React.FunctionComponent<TopMenuProps> = ({
   needle,
   onNeedleChange,
   onSearch,
@@ -34,7 +34,7 @@ export const SearchBar: React.FunctionComponent<SearchBarProps> = ({
   onBlur,
   disabled,
   isLoading
-}: SearchBarProps) => {
+}: TopMenuProps) => {
   const onSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
     event.preventDefault()
     onSearch()
@@ -42,7 +42,7 @@ export const SearchBar: React.FunctionComponent<SearchBarProps> = ({
 
   return (
     <form
-      className={`search-bar${disabled ? ' disabled' : ''}`}
+      className={`top-menu${disabled ? ' disabled' : ''}`}
       onSubmit={onSubmit}
     >
       <input
@@ -72,6 +72,6 @@ export const SearchBar: React.FunctionComponent<SearchBarProps> = ({
   )
 }
 
-SearchBar.defaultProps = {
+TopMenu.defaultProps = {
   disabled: false
 }

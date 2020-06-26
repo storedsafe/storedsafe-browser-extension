@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
-import { SearchBar, OnSearchCallback } from './common/input/SearchBar'
+import { TopMenu, OnSearchCallback } from './TopMenu'
+import { Logo } from '../common/layout/Logo'
 import './Popup.scss'
 
 interface PopupProps {
@@ -16,12 +17,13 @@ export const Popup: React.FunctionComponent = () => {
 
   return (
     <section className='popup'>
-      <SearchBar
+      <TopMenu
         needle={needle}
         onNeedleChange={setNeedle}
         onSearch={onSearch}
         isLoading={false}
       />
+      <Logo />
     </section>
   )
 }

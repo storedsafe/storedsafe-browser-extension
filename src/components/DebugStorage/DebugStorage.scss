@@ -1,0 +1,12 @@
+@import '../../styles/variables.scss';
+
+.debug-storage {
+  ul {
+    margin-left: 40px;
+  }
+
+  ul,
+  li {
+    list-style: disc;
+  }
+}
