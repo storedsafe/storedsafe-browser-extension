@@ -1,0 +1,83 @@
+@import '../../../styles/variables.scss';
+
+.search-bar {
+  .search-form {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  &.disabled {
+    display: none;
+  }
+
+  .search-bar-input {
+    flex-grow: 1;
+    height: $menu-size;
+    background: $color-primary-3;
+    color: $color-fg-alt;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+
+    border-bottom-color: $color-primary-3;
+
+    &:focus {
+      border-bottom-color: $color-border-focus;
+    }
+
+    &:active {
+      border-bottom-color: $color-accent-3;
+    }
+  }
+
+  .search-button {
+    background-color: $color-accent-0;
+    border-bottom-left-radius: 0;
+    height: $menu-size;
+    width: $menu-size;
+    transition: $transition-duration;
+
+    &:hover,
+    &:focus {
+      background-color: $color-bg;
+    }
+
+    &:hover > svg,
+    &:focus > svg {
+      fill: $color-accent-0;
+    }
+
+    &.loading > svg {
+      fill: transparent;
+      stroke: $color-fg-alt;
+      stroke-width: 0.5;
+      stroke-dasharray: 32;
+      animation: loading 2s ease-in-out alternate infinite;
+    }
+
+    &:hover.loading > svg,
+    &:focus.loading > svg {
+      fill: transparent;
+      stroke: $color-accent-0;
+    }
+  }
+}
+
+@keyframes loading {
+  0% {
+    stroke-dashoffset: 0;
+  }
+
+  10% {
+    stroke-dashoffset: 0;
+  }
+
+  90% {
+    stroke-dashoffset: 64;
+  }
+
+  100% {
+    stroke-dashoffset: 64;
+  }
+}

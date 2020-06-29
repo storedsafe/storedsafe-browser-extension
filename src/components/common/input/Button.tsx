@@ -1,14 +1,16 @@
 import React from 'react'
 import './Button.scss'
 
+export type ButtonColor = 'primary' | 'accent' | 'warning' | 'danger'
+
 export interface CustomButtonProps {
-  color?: 'primary' | 'accent' | 'warning' | 'danger'
+  color?: ButtonColor
   isLoading?: boolean
-  children?: React.ReactNode
-  className?: string
 }
 
-export type ButtonProps = CustomButtonProps & Omit<React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>, 'className'>
+type ButtonAttrs = React.ButtonHTMLAttributes<HTMLButtonElement>
+type DetailedButtonAttrs = React.DetailedHTMLProps<ButtonAttrs, HTMLButtonElement>
+export type ButtonProps = CustomButtonProps & DetailedButtonAttrs
 
 export const Button: React.FunctionComponent<ButtonProps> = ({
   color,

@@ -45,7 +45,7 @@ $arrow-width: 8px;
 $arrow-height: $arrow-width * 0.625;
 %arrow {
   border: solid transparent;
-  border-top-color: $color-primary-0;
+  border-top-color: $color-primary-3;
   border-width: $arrow-width $arrow-height;
   box-sizing: border-box;
   content: '';
@@ -57,11 +57,4 @@ $arrow-height: $arrow-width * 0.625;
   transform-origin: $arrow-width / 2 $arrow-height / 2;
   width: $arrow-height * 2;
   pointer-events: none;
-}
-
-%card {
-  background-color: $color-bg-alt;
-  color: $color-fg;
-  border-radius: $border-radius;
-  box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.1);
 }

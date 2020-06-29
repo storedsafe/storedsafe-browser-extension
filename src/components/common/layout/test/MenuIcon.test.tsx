@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { render, unmountComponentAtNode } from 'react-dom'
 import { act } from 'react-dom/test-utils'
-import { OnlineIndicator } from '../OnlineIndicator'
+import { MenuIcon } from '../MenuIcon'
 import pretty from 'pretty'
 
 /**
@@ -20,14 +20,18 @@ afterEach(() => {
   container = null
 })
 
-test('<OnlineIndicator />', () => {
+test('<MenuIcon selected=true />', () => {
   act(() => {
-    render(<OnlineIndicator online={true} />, container)
+    render(<MenuIcon selected={true} />, container)
   })
-  expect(pretty(container.innerHTML)).toMatchSnapshot()
 
+  expect(pretty(container.innerHTML)).toMatchSnapshot()
+})
+
+test('<MenuIcon selected=false />', () => {
   act(() => {
-    render(<OnlineIndicator online={false} />, container)
+    render(<MenuIcon selected={false} />, container)
   })
+
   expect(pretty(container.innerHTML)).toMatchSnapshot()
 })

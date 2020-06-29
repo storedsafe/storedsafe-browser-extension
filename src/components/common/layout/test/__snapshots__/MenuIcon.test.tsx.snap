@@ -1,0 +1,17 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<MenuIcon selected=false /> 1`] = `
+"<div class=\\"menu-icon\\">
+  <div class=\\"menu-icon-bar menu-icon-bar-1\\"></div>
+  <div class=\\"menu-icon-bar menu-icon-bar-2\\"></div>
+  <div class=\\"menu-icon-bar menu-icon-bar-3\\"></div>
+</div>"
+`;
+
+exports[`<MenuIcon selected=true /> 1`] = `
+"<div class=\\"menu-icon selected\\">
+  <div class=\\"menu-icon-bar menu-icon-bar-1\\"></div>
+  <div class=\\"menu-icon-bar menu-icon-bar-2\\"></div>
+  <div class=\\"menu-icon-bar menu-icon-bar-3\\"></div>
+</div>"
+`;

@@ -1,0 +1,36 @@
+@import '../../../styles/variables.scss';
+
+button:hover .menu-icon .menu-icon-bar,
+button:focus .menu-icon .menu-icon-bar {
+  background-color: $color-primary-3;
+}
+
+.menu-icon {
+  $size: $menu-size - $spacing * 2;
+  $bar-height: floor($size / 7);
+
+  display: flex;
+  width: $size;
+  height: $size;
+  flex-direction: column;
+  justify-content: space-between;
+
+  .menu-icon-bar {
+    width: $size;
+    height: $bar-height;
+    background-color: $color-bg;
+    transition: $transition-duration;
+  }
+
+  &.selected .menu-icon-bar-1 {
+    transform: rotate(-45deg) translate(-$size * 0.3, $size * 0.3);
+  }
+
+  &.selected .menu-icon-bar-2 {
+    opacity: 0;
+  }
+
+  &.selected .menu-icon-bar-3 {
+    transform: rotate(45deg) translate(-$size * 0.3, -$size * 0.3);
+  }
+}

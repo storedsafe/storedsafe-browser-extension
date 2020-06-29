@@ -1,12 +1,17 @@
-@import '../src/variables';
+@import '../src/styles/variables.scss';
 
-body {
-  padding: $spacing * 4;
+.story-section {
+  margin: 4*$spacing auto;
+  width: 80vw;
 }
 
-.card {
-  max-width: 800px;
-  padding-left: $spacing * 2;
-  padding-right: $spacing * 2;
+.story-article {
+  padding: $spacing;
+  margin-bottom: $spacing;
+  background-color: $color-bg-alt;
+
+  > * {
+    margin-bottom: $spacing;
+  }
 }
 

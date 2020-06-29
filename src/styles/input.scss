@@ -50,13 +50,13 @@ label {
   color: $color-warning-3;
 }
 
-.label-checkbox {
+.label-inline {
   display: flex;
   flex-direction: row;
   align-items: center;
   cursor: pointer;
 
-  :first-child {
+  > :first-child {
     margin-right: $spacing;
   }
 }

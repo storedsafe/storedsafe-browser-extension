@@ -146,7 +146,6 @@ async function logoutAll (): Promise<Sessions> {
  * */
 async function check (host: string): Promise<Sessions> {
   const isValid = await authHandler.check(makeRequest(host))
-  console.log('Session for', host, 'is', isValid ? 'valid' : 'invalid')
   return isValid
     ? await SessionsActions.fetch()
     : await SessionsActions.remove(host)
