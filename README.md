@@ -43,53 +43,13 @@ npm run build
 
 Check package.json for all scripts or use `yarn <command>` to use the installed tools directly.
 
-### Changelog
-- **2020-06-17**
-  - Early implementation of add object feature.
-    - Able to add objects to StoredSafe through the popup.
-    - Popup opens with provided form data after a form is submitted.
-  - Finished refactor.
-    - Changed object types to map types where it was appropriate for easier interaction with data.
-    - Changed some field names for consistency and clarity.
-    - Increased comment coverage.
-    - Promise reducers now return functions of previous state when they need to depend on previous state for increased stability (avoid data race).
-    - Split StoredSafe model into handler files for better cohesion and increased readability.
-- **2020-06-11**
-  - Removed logout on screen lock (type definition for locked flag is missing in firefox repository which definitely-typed definitions for browser extension API depends on).
-- **2020-06-08**
-  - Merged slim UI into master
-- **2020-06-01**
-  - Fixed bug where searching would cause error (lingering previously selected object became undefined).
-  - Added background search on tab load. Will display results related to tab if they exist when search bar is empty.
-  - Set minimum Firefox version to 57 for access to managed storage.
-  - Added static fallback for managed storage to avoid errors in Firefox when managed storage file is not present.
-- **2020-05-29**
-  - FEATURE: Now remembers which site was last used (attempted login).
-  - Added webpack build plugin, now there are separate distributions for chrome and firefox.
-- **2020-05-28**
-  - New UI, started shift to container-component pattern.
-
 ### TODO
-- [ ] Create custom logger so that logging can be toggled.
-- [ ] Add new objects to StoredSafe.
-- [ ] Unit tests of UI and hooks.
-- [ ] Better comment coverage. (in progress)
-- [ ] Convert options to page-component pattern.
-- [ ] Check token validity of active sessions before opening popup.
-- [x] ~~Change promisereducer to return function depending on previous state rather than sending state to dispatch to fix sync issues?~~
-- [x] ~~Create build script (possibly webpack extension) to create separate dist folders for chrome and firefox and copy static resources to dist folders.~~
-- [x] ~~Search for results related to tab in content\_script.~~
-- [x] ~~Create build script (possibly webpack extension) to create separate dist folders for chrome and firefox and copy static resources to dist folders.~~
+- [ ] Finish production refactor
+- [ ] Implement network tests using msw
 
 ### Known bugs
-- [ ] Doesn't invalidate session if one exists when a site is removed
-- [x] ~~Fields occasionally change order when clicked "show" on encrypted field.~~
-- [x] ~~Decrypts on copy even when object is already decrypted.~~
-- [x] ~~Show flag on encrypted fields resets when clicking fill/copy or show on another object.~~
-- [x] ~~Errors if writing in search bar while search is ongoing (automatic currently search disabled as temporary fix).~~
 
 ### Future ideas
 - PIN code lock instead of logout after idle timer runs out.
   - Use PIN code to encrypt session-specific data (tokens, cached searches etc.)
 - Idle timer warning notification.
-- Encrypt plain text data in popup (transparent encryption update).

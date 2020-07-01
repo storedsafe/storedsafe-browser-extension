@@ -101,7 +101,7 @@ const icons = {
   )
 }
 
-interface PopupProps {
+export interface PopupProps {
   numSessions: number
   searchResults: Results
   search: (needle: string) => void

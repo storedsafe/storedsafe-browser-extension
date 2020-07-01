@@ -12,13 +12,8 @@
  * @returns Promise containing all currently active sessions.
  * */
 async function get (): Promise<Sessions> {
-  try {
-    const { sessions } = await browser.storage.local.get('sessions')
-    return new Map(sessions === undefined ? [] : sessions)
-  } catch (error) {
-    console.error('Error getting sessions from storage.', error)
-    return await Promise.resolve(new Map([]))
-  }
+  const { sessions } = await browser.storage.local.get('sessions')
+  return new Map(sessions === undefined ? [] : sessions)
 }
 
 /**
@@ -27,13 +22,9 @@ async function get (): Promise<Sessions> {
  * @returns Empty promise.
  * */
 async function set (sessions: Sessions): Promise<void> {
-  try {
-    return await browser.storage.local.set({
-      sessions: Array.from(sessions)
-    })
-  } catch (error) {
-    console.error('Error setting sessions in storage.', error)
-  }
+  return await browser.storage.local.set({
+    sessions: Array.from(sessions)
+  })
 }
 
 /// /////////////////////////////////////////////////////////

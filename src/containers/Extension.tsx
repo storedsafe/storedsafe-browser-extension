@@ -14,25 +14,6 @@ enum Page {
 }
 
 /**
- * Listen for storage updates and update application context accordingly.
- * */
-/*
- * const StorageListener: React.FunctionComponent = () => {
- *   const { dispatch } = useStorage();
- *   useEffect(() => {
- *     const onChanged = (): void => {
- *       dispatch({ type: 'init' });
- *     };
- *     browser.storage.onChanged.addListener(onChanged);
- *     return (): void => {
- *       browser.storage.onChanged.removeListener(onChanged)
- *     };
- *   }, [dispatch]);
- *   return null;
- * };
- */
-
-/**
  * @returns Extension UI.
  * */
 const Extension: React.FunctionComponent = () => {
@@ -61,10 +42,7 @@ const Extension: React.FunctionComponent = () => {
     <section className='extension'>
       {page === Page.Debug && <DebugStorage />}
       {page === Page.Popup && <Popup />}
-      {/* <StorageProvider>
-        {page === Page.Options && <Options />}
-        <StorageListener />
-      </StorageProvider> */}
+      {/* {page === Page.Options && <Options />} */}
     </section>
   )
 }

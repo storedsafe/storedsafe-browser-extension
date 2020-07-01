@@ -36,16 +36,26 @@ function sitesFromCollections (siteCollections: SiteCollections): Sites {
  * @returns Collection of system and user sites.
  * */
 async function get (): Promise<SiteCollections> {
+  // Set up promises to run parallell
+  const userPromise = userStorage.get('sites')
+  const systemPromise = systemStorage.get('sites')
+
+  const { sites: userSites } = await userPromise
+  const user = userSites === undefined ? [] : userSites
+
+  let system: Site[]
   try {
-    const { sites: systemSites } = await systemStorage.get('sites')
-    const { sites: userSites } = await userStorage.get('sites')
-    const system = systemSites === undefined ? [] : systemSites
-    const user = userSites === undefined ? [] : userSites
-    return { system, user }
+    const { sites: systemSites } = await systemPromise
+    system = systemSites === undefined ? [] : systemSites
   } catch (error) {
-    console.error('Error getting sites from storage.', error)
-    return await Promise.resolve({ system: [], user: [] })
+    if ((error as Error).message?.includes('storage manifest')) {
+      console.warn('No managed storage manifest found.')
+    } else {
+      throw error
+    }
+    system = []
   }
+  return { system, user }
 }
 
 /**
@@ -53,11 +63,7 @@ async function get (): Promise<SiteCollections> {
  * @param siteCollections - New user sites.
  * */
 async function set (siteCollections: SiteCollections): Promise<void> {
-  try {
-    return await userStorage.set({ sites: siteCollections.user })
-  } catch (error) {
-    console.error('Error setting sites in storage.', error)
-  }
+  return await userStorage.set({ sites: siteCollections.user })
 }
 
 /// /////////////////////////////////////////////////////////

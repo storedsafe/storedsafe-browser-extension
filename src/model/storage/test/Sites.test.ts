@@ -19,7 +19,6 @@ const mockGet = (sites: Site[]): ((key: string) => Promise<object>) => async (
 global.browser.storage.sync.get = syncGetMock
 global.browser.storage.sync.set = syncSetMock
 global.browser.storage.managed.get = managedGetMock
-const consoleError = global.console.error
 
 /// /////////////////////////////////////////////////////////
 // Start tests
@@ -136,31 +135,44 @@ describe('uses mocked browser.storage', () => {
     })
   })
 
-  test('fetch(), storage unavailable', async () => {
-    syncGetMock.mockImplementationOnce(() => {
-      throw new Error()
+  test('fetch(), storage manifest missing', async () => {
+    const mockSites = [
+      {
+        host: 'foo.example.com',
+        apikey: 'mockapikey'
+      }
+    ]
+    syncGetMock.mockImplementationOnce(mockGet(mockSites))
+    managedGetMock.mockImplementationOnce(
+      async () =>
+        await Promise.reject(new Error('Managed storage manifest not found'))
+    )
+    const spy = jest.spyOn(global.console, 'warn').mockImplementation(() => {})
+    const sites = await actions.fetch()
+    expect(spy).toHaveBeenCalledWith('No managed storage manifest found.')
+    expect(sites).toEqual({
+      collections: { system: [], user: mockSites },
+      list: mockSites
     })
-    global.console.error = jest.fn()
-    const preferences = await actions.fetch()
-    expect(global.console.error).toHaveBeenCalledTimes(1)
-    expect(preferences).toEqual({ collections: { system: [], user: [] }, list: [] })
-    global.console.error = consoleError
+    spy.mockRestore()
   })
 
-  test('add(), storage unavailable', async () => {
-    const site: Site = {
-      host: 'host',
-      apikey: 'apikey'
+  test('fetch(), empty error', async () => {
+    const mockSites = [
+      {
+        host: 'foo.example.com',
+        apikey: 'mockapikey'
+      }
+    ]
+    syncGetMock.mockImplementationOnce(mockGet(mockSites))
+    const mockError = new Error()
+    managedGetMock.mockImplementationOnce(
+      async () => await Promise.reject(mockError)
+    )
+    try {
+      await actions.fetch()
+    } catch (error) {
+      expect(error).toBe(mockError)
     }
-    syncGetMock.mockImplementationOnce(() => {
-      throw new Error()
-    })
-    syncSetMock.mockImplementationOnce(() => {
-      throw new Error()
-    })
-    global.console.error = jest.fn()
-    await actions.add(site)
-    expect(global.console.error).toHaveBeenCalledTimes(2)
-    global.console.error = consoleError
   })
 })

@@ -1,20 +1,30 @@
+/**
+ * Intermediary with the purpose of injecting data from external APIs into the
+ * Popup UI.
+ */
 import React from 'react'
-import { Popup } from '../components/Popup'
+import { Popup, PopupProps } from '../components/Popup'
 
-const PopupContainer: React.FunctionComponent = () => {
-  const openOptions = (): void => {
+const usePopup = (): PopupProps => {
+  function openOptions (): void {
     browser.runtime.openOptionsPage().catch(error => {
       console.error(error)
     })
   }
 
+  return {
+    numSessions: 0,
+    searchResults: new Map(),
+    search: () => {},
+    openOptions: openOptions
+  }
+}
+
+const PopupContainer: React.FunctionComponent = () => {
+  const popupProps = usePopup()
+
   return (
-    <Popup
-      numSessions={0}
-      searchResults={new Map()}
-      search={() => undefined}
-      openOptions={openOptions}
-    />
+    <Popup {...popupProps }/>
   )
 }
 

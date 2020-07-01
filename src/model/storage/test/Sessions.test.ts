@@ -99,35 +99,4 @@ describe('uses mocked browser.storage', () => {
     })
     expect(sessions).toEqual(new Map())
   })
-
-  test('fetch(), storage unavailable', async () => {
-    localGetMock.mockImplementationOnce(() => {
-      throw new Error()
-    })
-    global.console.error = jest.fn()
-    const preferences = await actions.fetch()
-    expect(global.console.error).toHaveBeenCalledTimes(1)
-    expect(preferences).toEqual(new Map())
-    global.console.error = consoleError
-  })
-
-  test('add(), storage unavailable', async () => {
-    const session: Session = {
-      token: 'token',
-      createdAt: 0,
-      warnings: {},
-      violations: {},
-      timeout: 0
-    }
-    localGetMock.mockImplementationOnce(() => {
-      throw new Error()
-    })
-    localSetMock.mockImplementationOnce(() => {
-      throw new Error()
-    })
-    global.console.error = jest.fn()
-    await actions.add('host', session)
-    expect(global.console.error).toHaveBeenCalledTimes(2)
-    global.console.error = consoleError
-  })
 })
