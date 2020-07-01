@@ -44,12 +44,12 @@ interface SitesFunctions {
 /**
  * Compiled state of the hook.
  */
-type State = SitesState & ComputedSitesState & SitesFunctions
+type SitesHook = SitesState & ComputedSitesState & SitesFunctions
 
 /**
  * Hook to access sites from storage.
  */
-export const useSites = (): State => {
+export const useSites = (): SitesHook => {
   // Keep base state in single object to avoid unnecessary
   // renders when updating multiple fields at once.
   const [state, setState] = useState<SitesState>({

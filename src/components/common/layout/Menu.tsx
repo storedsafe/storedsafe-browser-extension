@@ -10,16 +10,18 @@ export interface MenuItem {
 interface MenuProps {
   show: boolean
   items: MenuItem[]
+  onClick?: () => void
 }
 
 export const Menu: React.FunctionComponent<MenuProps> = ({
   show,
-  items
+  items,
+  onClick: closeMenu
 }: MenuProps) => {
   const onItemClick = (onClick: () => void) => {
-    return (event: React.MouseEvent): void => {
-      event.stopPropagation()
+    return (): void => {
       onClick()
+      closeMenu?.()
     }
   }
 

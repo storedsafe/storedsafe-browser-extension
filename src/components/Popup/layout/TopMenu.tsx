@@ -33,7 +33,7 @@ export const TopMenu: React.FunctionComponent<TopMenuProps> = ({
         onClick={toggleMenu}
         icon={<MenuIcon selected={showMenu} />}
       />
-      <Menu show={showMenu} items={menuItems} />
+      <Menu show={showMenu} items={menuItems} onClick={toggleMenu} />
     </section>
   )
 }

@@ -8,12 +8,20 @@
  * */
 
 /**
+ * Parse serialized sessions from storage.
+ * @param sessions - Serializable sessions from storage
+ */
+export function parse (sessions: SerializableSessions): Sessions {
+  return new Map(sessions === undefined ? [] : sessions)
+}
+
+/**
  * Get sessions from local storage.
  * @returns Promise containing all currently active sessions.
  * */
 async function get (): Promise<Sessions> {
   const { sessions } = await browser.storage.local.get('sessions')
-  return new Map(sessions === undefined ? [] : sessions)
+  return parse(sessions)
 }
 
 /**
@@ -23,7 +31,7 @@ async function get (): Promise<Sessions> {
  * */
 async function set (sessions: Sessions): Promise<void> {
   return await browser.storage.local.set({
-    sessions: Array.from(sessions)
+    sessions: [...sessions]
   })
 }
 

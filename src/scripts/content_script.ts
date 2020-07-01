@@ -155,7 +155,7 @@ function getFormType (form: HTMLFormElement): FormType {
     const formRole = form.attributes.getNamedItem('role')
     if (formTypeMatchers.role !== undefined && formRole !== undefined) {
       const role = new RegExp(formTypeMatchers.role, 'i')
-      if (role.test(formRole.value)) {
+      if (role.test(formRole?.value)) {
         return formType
       }
     }

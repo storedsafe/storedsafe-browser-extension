@@ -5,7 +5,7 @@
  * concerning themselves with external dependencies.
  */
 import { useState, useEffect } from 'react'
-import { actions as SessionsActions } from '../../model/storage/Sessions'
+import { actions as SessionsActions, parse } from '../../model/storage/Sessions'
 
 /**
  * Base state of the hook.
@@ -45,12 +45,12 @@ interface SessionsFunctions {
 /**
  * Compiled state of the hook.
  */
-type State = SessionsState & ComputedSessionsState & SessionsFunctions
+type SessionsHook = SessionsState & ComputedSessionsState & SessionsFunctions
 
 /**
  * Hook to access sessions from storage.
  */
-export const useSessions = (): State => {
+export const useSessions = (): SessionsHook => {
   // Keep base state in single object to avoid unnecessary
   // renders when updating multiple fields at once.
   const [state, setState] = useState<SessionsState>({
@@ -113,7 +113,7 @@ export const useSessions = (): State => {
       if (change?.newValue !== undefined && area === 'local') {
         setState(prevState => ({
           ...prevState,
-          sessions: change.newValue
+          sessions: parse(change.newValue)
         }))
       }
     }

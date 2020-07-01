@@ -1,0 +1,39 @@
+@import '../../styles/variables.scss';
+
+.login {
+  display: grid;
+  grid-template-rows: 1fr auto;
+  height: 100%;
+  overflow: hidden auto;
+
+  .login-form {
+    overflow: hidden auto;
+  }
+
+  .form {
+    display: flex;
+    flex-direction: column;
+  }
+
+  label {
+    display: flex;
+    flex-direction: column;
+  }
+
+  label,
+  .button,
+  .message {
+    &:not(:last-child) {
+      margin-bottom: $spacing;
+    }
+  }
+
+  .message {
+    margin-top: $spacing;
+  }
+
+  .label-checkbox {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+}

@@ -291,7 +291,7 @@ const MenuComponent: React.FunctionComponent = () => {
       <h2>Menu</h2>
       <p>Overlay menu which can be toggled.</p>
       <Button onClick={toggle}>Toggle Menu</Button>
-      <Menu items={menuItems} show={showMenu} />
+      <Menu items={menuItems} show={showMenu} onClick={toggle} />
     </article>
   )
 }

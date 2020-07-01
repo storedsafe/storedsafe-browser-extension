@@ -164,7 +164,10 @@ async function checkAll (): Promise<Sessions> {
       invalidHosts.push(host)
     }
   }
-  return await SessionsActions.remove(...invalidHosts)
+  if (invalidHosts.length > 0) {
+    return await SessionsActions.remove(...invalidHosts)
+  }
+  return sessions
 }
 
 /// /////////////////////////////////////////////////////////
