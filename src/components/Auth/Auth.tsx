@@ -2,8 +2,8 @@ import React from 'react'
 import { ListView, ListItem, LoadingComponent } from '../common/layout'
 import { SiteTitle } from './SiteTitle'
 import './Auth.scss'
-import { OnLoginCallback, Login } from './Login'
-import { OnLogoutCallback, SiteStatus } from './SiteStatus'
+import { OnLoginCallback, Login } from './login/Login'
+import { OnLogoutCallback, SessionStatus } from './sessionStatus/SessionStatus'
 
 export interface AuthProps {
   isInitialized: boolean
@@ -11,6 +11,7 @@ export interface AuthProps {
   sessions: Sessions
   login: OnLoginCallback
   logout: OnLogoutCallback
+  goto: (host: string) => void
   lastUsedSite?: string
 }
 
@@ -20,6 +21,7 @@ export const Auth: React.FunctionComponent<AuthProps> = ({
   sessions,
   login,
   logout,
+  goto,
   lastUsedSite
 }: AuthProps) => {
   if (!isInitialized) return <LoadingComponent />
@@ -36,10 +38,11 @@ export const Auth: React.FunctionComponent<AuthProps> = ({
         </article>
       ),
       content: isOnline ? (
-        <SiteStatus
+        <SessionStatus
           host={site.host}
           session={sessions.get(site.host)}
           onLogout={logout}
+          goto={goto}
         />
       ) : (
         <Login site={site} onLogin={login} />

@@ -9,7 +9,11 @@ import {
 } from '../components/Auth'
 import { actions as StoredSafeActions } from '../model/storedsafe/StoredSafe'
 
-const useAuth = (): AuthProps => {
+interface AuthHookProps {
+  goto: (host: string) => void
+}
+
+const useAuth = ({ goto }: AuthHookProps): AuthProps => {
   const sites = useSites()
   const sessions = useSessions()
 
@@ -29,12 +33,15 @@ const useAuth = (): AuthProps => {
     sites: sites.all,
     sessions: sessions.sessions,
     login,
-    logout
+    logout,
+    goto
   }
 }
 
-const AuthContainer: React.FunctionComponent = () => {
-  const authProps = useAuth()
+const AuthContainer: React.FunctionComponent<AuthHookProps> = ({
+  goto
+}: AuthHookProps) => {
+  const authProps = useAuth({ goto })
 
   return <Auth {...authProps} />
 }

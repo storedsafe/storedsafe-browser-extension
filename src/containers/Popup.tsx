@@ -43,8 +43,34 @@ const usePopup = (): PopupProps => {
     }
   ]
 
+  /**
+   * Open the provided host in a new tab or focus an existing one if one
+   * already exists. If a tab exists in the current window or in any other
+   * window, that tab and window will be focused.
+   * @param host - Host URL to go to.
+   */
+  const goto = (host: string): void => {
+    browser.tabs
+      .query({ url: `*://${host}/*` })
+      .then(async tabs => {
+        if (tabs.length === 0) {
+          return await browser.tabs.create({ url: `https://${host}/` })
+        }
+        let selectedTab = tabs[0]
+        for (const tab of tabs) {
+          console.log(selectedTab)
+          if (tab.lastAccessed > selectedTab.lastAccessed) {
+            selectedTab = tab
+          }
+        }
+        await browser.tabs.update(selectedTab.id, { active: true })
+        await browser.windows.update(selectedTab.windowId, { focused: true })
+      })
+      .catch(error => console.error(error))
+  }
+
   const pages: Map<Page, React.ReactNode> = new Map([
-    [Page.AUTH, <Auth key={'auth'} />],
+    [Page.AUTH, <Auth key={'auth'} goto={goto} />],
     [Page.OPTIONS, <Options key={'options'} />]
   ])
 
