@@ -8,6 +8,7 @@ import {
   Auth
 } from '../components/Auth'
 import { actions as StoredSafeActions } from '../model/storedsafe/StoredSafe'
+import { usePreferences } from '../hooks/storage/usePreferences'
 
 interface AuthHookProps {
   goto: (host: string) => void
@@ -16,12 +17,18 @@ interface AuthHookProps {
 const useAuth = ({ goto }: AuthHookProps): AuthProps => {
   const sites = useSites()
   const sessions = useSessions()
+  const preferences = usePreferences()
 
   const isInitialized = sites.isInitialized && sessions.isInitialized
 
   const login: OnLoginCallback = async (site, fields) => {
-    // TODO: Update preferences
     await StoredSafeActions.login(site, fields)
+    // Update preferences after successful login
+    await preferences.setLastUsedSite(site.host)
+    await preferences.updateSitePreferences(site.host, {
+      username: fields.remember ? fields.username : undefined,
+      loginType: fields.loginType
+    })
   }
 
   const logout: OnLogoutCallback = async host => {
@@ -34,7 +41,9 @@ const useAuth = ({ goto }: AuthHookProps): AuthProps => {
     sessions: sessions.sessions,
     login,
     logout,
-    goto
+    goto,
+    lastUsedSite: preferences.lastUsedSite,
+    sitePreferences: preferences.sites
   }
 }
 

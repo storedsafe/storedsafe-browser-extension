@@ -12,7 +12,8 @@ export interface AuthProps {
   login: OnLoginCallback
   logout: OnLogoutCallback
   goto: (host: string) => void
-  lastUsedSite?: string
+  lastUsedSite: string | undefined
+  sitePreferences: { [host: string]: SitePreferences }
 }
 
 export const Auth: React.FunctionComponent<AuthProps> = ({
@@ -22,7 +23,8 @@ export const Auth: React.FunctionComponent<AuthProps> = ({
   login,
   logout,
   goto,
-  lastUsedSite
+  lastUsedSite,
+  sitePreferences
 }: AuthProps) => {
   if (!isInitialized) return <LoadingComponent />
 
@@ -45,7 +47,11 @@ export const Auth: React.FunctionComponent<AuthProps> = ({
           goto={goto}
         />
       ) : (
-        <Login site={site} onLogin={login} />
+        <Login
+          site={site}
+          onLogin={login}
+          sitePreferences={sitePreferences[site.host]}
+        />
       ),
       key: site.host
     }

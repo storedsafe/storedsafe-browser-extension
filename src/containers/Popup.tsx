@@ -19,17 +19,6 @@ const usePopup = (): PopupProps => {
   const sessions = useSessions()
   const [page, setPage] = useState<Page>()
 
-  // function openOptions (): void {
-  //   browser.runtime
-  //     .openOptionsPage()
-  //     .then(() => {
-  //       window.close()
-  //     })
-  //     .catch(error => {
-  //       console.error(error)
-  //     })
-  // }
-
   const menuItems: MenuItem[] = [
     {
       title: sessions.isOnline ? 'Sesssions' : 'Login',

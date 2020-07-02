@@ -15,11 +15,6 @@
     flex-direction: column;
   }
 
-  label {
-    display: flex;
-    flex-direction: column;
-  }
-
   label,
   .button,
   .message {
@@ -32,8 +27,7 @@
     margin-top: $spacing;
   }
 
-  .label-checkbox {
-    flex-direction: row;
+  .label-inline {
     justify-content: space-between;
   }
 }

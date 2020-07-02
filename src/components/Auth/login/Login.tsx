@@ -110,7 +110,7 @@ export const Login: React.FunctionComponent<LoginProps> = ({
             YubiKey.renderFields([values, events, reset], id)}
           {values.loginType === 'totp' &&
             TOTP.renderFields([values, events, reset], id)}
-          <label htmlFor={id('remember')} className='label-checkbox'>
+          <label htmlFor={id('remember')} className='label-inline'>
             <span>Remember Username</span>
             <Checkbox
               id={id('remember')}

@@ -177,11 +177,18 @@ async function fill (tabId: number, results: Results): Promise<void> {
 /**
  * Find search results related to loaded tab.
  * @param tab - Tab to send fill message to.
+ * @param fillForm - Optionally force any matching forms to be filled.
  * */
-async function tabFind (tab: browser.tabs.Tab): Promise<void> {
+async function tabFind (
+  tab: browser.tabs.Tab,
+  fillForm = false
+): Promise<void> {
   const { id: tabId, url } = tab
   const needle = urlToNeedle(url)
   const tabResults = await StoredSafeActions.tabFind(tabId, needle)
+  if (fillForm) {
+    return await fill(tabId, tabResults.get(tabId))
+  }
   const settings = await SettingsActions.fetch()
   if (settings.get('autoFill').value === true) {
     await fill(tabId, tabResults.get(tabId))
@@ -297,11 +304,6 @@ function onInstalled ({
     const sessions = await SessionsActions.fetch()
     updateOnlineStatus(sessions)
   })()
-
-  // Open options page if it's a first install or the extension has been updated
-  if (reason === 'install' || reason === 'update') {
-    void browser.runtime.openOptionsPage()
-  }
 }
 
 /**
@@ -324,7 +326,7 @@ function setupIdleTimer (): void {
     }
     const idleTimeout = (settings.get('idleMax').value as number) * 6e5
     idleTimer = window.setTimeout(() => {
-      invalidateAllSessions().catch((error) => {
+      invalidateAllSessions().catch(error => {
         console.error(error)
       })
     }, idleTimeout)
@@ -445,6 +447,18 @@ async function onMessage (
   throw new Error(`Invalid message type: ${message.type}`)
 }
 
+function onCommand (command: string): void {
+  if (command === 'fill') {
+    ;void (async () => {
+      const [tab] = await browser.tabs.query({
+        currentWindow: true,
+        active: true
+      })
+      await tabFind(tab, true)
+    })()
+  }
+}
+
 /// /////////////////////////////////////////////////////////
 // Subscribe to events and initialization
 
@@ -468,6 +482,9 @@ browser.contextMenus.onClicked.addListener(onMenuClick)
 
 // React to messages from other parts of the extension
 browser.runtime.onMessage.addListener(onMessage)
+
+// React to keyboard commands defined in the extension manifest
+browser.commands.onCommand.addListener(onCommand)
 
 // Keep StoredSafe session alive or invalidate dead sessions.
 setupKeepAlive()

@@ -16,41 +16,25 @@
   "commands": {
     "_execute_browser_action": {
       "suggested_key": {
-        "default": "Ctrl+Shift+S"
-      }
-    }
-  },
-  "commands": {
-    "_execute_browser_action": {
+        "default": "Ctrl+Shift+V"
+      },
+      "description": "Open StoredSafe Popup"
+    },
+    "fill": {
       "suggested_key": {
-        "default": "Ctrl+Shift+S"
-      }
+        "default": "Ctrl+Shift+F"
+      },
+      "description": "Fill form on page if data is available"
     }
   },
   "background": {
-    "scripts": [
-      "browser-polyfill.min.js",
-      "background.js"
-    ]
+    "scripts": ["browser-polyfill.min.js", "background.js"]
   },
   "content_scripts": [
     {
       "matches": ["https://*/*"],
-      "js": [
-        "browser-polyfill.min.js",
-        "content_script.js"
-      ]
+      "js": ["browser-polyfill.min.js", "content_script.js"]
     }
   ],
-  "options_ui": {
-    "page": "index.html",
-    "open_in_tab": true
-  },
-  "permissions": [
-    "storage",
-    "idle",
-    "contextMenus",
-    "activeTab",
-    "tabs"
-  ]
+  "permissions": ["storage", "idle", "contextMenus", "activeTab", "tabs"]
 }
