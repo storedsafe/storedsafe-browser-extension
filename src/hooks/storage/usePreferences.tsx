@@ -5,40 +5,32 @@
  * concerning themselves with external dependencies.
  */
 import { useState, useEffect } from 'react'
-import { actions as SessionsActions, parse } from '../../model/storage/Sessions'
+import { actions as PreferencesActions } from '../../model/storage/Preferences'
 
 /**
  * Base state of the hook.
  * @param isInitialized - True if the initial fetch has been completed.
- * @param sessions - Sessions from storage.
+ * @param preferences - Preferences from storage.
  */
-interface SessionsState {
+interface PreferencesState extends Preferences {
   isInitialized: boolean
-  sessions: Sessions
-}
-
-/**
- * State computed based on the base state.
- * @param isOnline - True if there are any active sessions
- * @param numberOfSessions - Total number of active sessions
- */
-interface ComputedSessionsState {
-  isOnline: boolean
-  numberOfSessions: number
 }
 
 /**
  * Functions to mutate the state of the hook. All functions return an empty
  * promise which should be used to handle loading/error states of the
  * implementing component.
- * @param add - Add new session to storage.
- * @param remove - Remove session from storage.
- * @param clear - Clear all sessions from storage.
+ * @param setLastUsedSite - Set the last site used for login
+ * @param updateSitePreferences - Save username / 2fa preference
+ * @param clear - Clear all preferences from storage.
  * @param fetch - Fetch state from storage.
  */
-interface SessionsFunctions {
-  add: (host: string, session: Session) => Promise<void>
-  remove: (host: string) => Promise<void>
+interface PreferencesFunctions {
+  setLastUsedSite: (host: string) => Promise<void>
+  updateSitePreferences: (
+    host: string,
+    sitePreferences: SitePreferences
+  ) => Promise<void>
   clear: () => Promise<void>
   fetch: () => Promise<void>
 }
@@ -46,55 +38,58 @@ interface SessionsFunctions {
 /**
  * Compiled state of the hook.
  */
-type SessionsHook = SessionsState & ComputedSessionsState & SessionsFunctions
+type PreferencesHook = PreferencesState & PreferencesFunctions
 
 /**
- * Hook to access sessions from storage.
+ * Hook to access preferences from storage.
  */
-export const useSessions = (): SessionsHook => {
+export const usePreferences = (): PreferencesHook => {
   // Keep base state in single object to avoid unnecessary
   // renders when updating multiple fields at once.
-  const [state, setState] = useState<SessionsState>({
+  const [state, setState] = useState<PreferencesState>({
     isInitialized: false,
-    sessions: new Map()
+    sites: {}
   })
 
   /**
-   * Manually fetch sessions from storage. This should only be done in situations
+   * Manually fetch preferences from storage. This should only be done in situations
    * where you know the hook state is out of sync with the storage area, for
    * example during initialization.
    */
   async function fetch (): Promise<void> {
-    const sessions = await SessionsActions.fetch()
+    const preferences = await PreferencesActions.fetch()
     setState(prevState => ({
       ...prevState,
       isInitialized: true,
-      sessions
+      ...preferences
     }))
   }
 
   /**
-   * Add session to storage.
-   * @param host - Host related to the session
-   * @param session - Session to be added.
+   * Update last used site for login.
+   * @param host - Last used site host
    */
-  async function add (host: string, session: Session): Promise<void> {
-    await SessionsActions.add(host, session)
+  async function setLastUsedSite (host: string): Promise<void> {
+    await PreferencesActions.setLastUsedSite(host)
   }
 
   /**
-   * Remove session from storage.
-   * @param host - Host related to the session
+   * Save username / 2fa preference for user.
+   * @param host - Host related to saved preferences
+   * @param sitePreferences - New preferences to be saved.
    */
-  async function remove (host: string): Promise<void> {
-    await SessionsActions.remove(host)
+  async function updateSitePreferences (
+    host: string,
+    sitePreferences: SitePreferences
+  ): Promise<void> {
+    await PreferencesActions.updateSitePreferences(host, sitePreferences)
   }
 
   /**
-   * Clear all sessions from storage.
+   * Clear all preferences from storage.
    */
   async function clear (): Promise<void> {
-    await SessionsActions.clear()
+    await PreferencesActions.clear()
   }
 
   // Run when mounted
@@ -110,11 +105,11 @@ export const useSessions = (): SessionsHook => {
       changes: { [key: string]: browser.storage.StorageChange },
       area: string
     ): void => {
-      const change = changes.sessions
+      const change = changes.preferences
       if (change?.newValue !== undefined && area === 'local') {
         setState(prevState => ({
           ...prevState,
-          sessions: parse(change.newValue)
+          ...change.newValue
         }))
       }
     }
@@ -131,15 +126,11 @@ export const useSessions = (): SessionsHook => {
     }
   }, [])
 
-  const numberOfSessions = [...state.sessions.keys()].length
-
   return {
     ...state,
-    numberOfSessions,
-    isOnline: numberOfSessions !== 0,
+    setLastUsedSite,
+    updateSitePreferences,
     fetch,
-    add,
-    remove,
     clear
   }
 }

@@ -3,46 +3,24 @@ import '@testing-library/jest-dom/extend-expect'
 import React from 'react'
 import { act, render, fireEvent, waitFor, screen } from '@testing-library/react'
 
-import { useSessions } from '../useSessions'
+import { useBlacklist } from '../useBlacklist'
 
 /// /////////////////////////////////////////////////////////
 // Set up mocks of external dependencies
 
-const mockSessions: SerializableSessions = [
-  [
-    'host',
-    {
-      token: 'token',
-      createdAt: 0,
-      violations: {},
-      warnings: {},
-      timeout: 36e5
-    }
-  ]
-]
+const mockBlacklist: Blacklist = ['host']
 const mockGet = jest.fn(
   async (key: string) =>
     await Promise.resolve({
-      sessions: mockSessions
+      blacklist: mockBlacklist
     })
 )
-browser.storage.local.get = mockGet
+browser.storage.sync.get = mockGet
 
-const mockAddSessions: SerializableSessions = [
-  [
-    'add_host',
-    {
-      token: 'add_token',
-      createdAt: 1,
-      violations: {},
-      warnings: {},
-      timeout: 144e5
-    }
-  ]
-]
+const mockAddBlacklist: Blacklist = ['add']
 
 const mockSet = jest.fn(async () => await Promise.resolve())
-browser.storage.local.set = mockSet
+browser.storage.sync.set = mockSet
 const testError = jest.fn()
 
 function manualGetMock (): {
@@ -50,16 +28,14 @@ function manualGetMock (): {
   rej: (reason?: any) => void
 } {
   let res, rej
-  const promise = new Promise<{ sessions: SerializableSessions }>(
-    (resolve, reject) => {
-      res = () => {
-        resolve({ sessions: mockSessions })
-      }
-      rej = (reason?: any) => {
-        reject(reason)
-      }
+  const promise = new Promise<{ blacklist: Blacklist }>((resolve, reject) => {
+    res = () => {
+      resolve({ blacklist: mockBlacklist })
     }
-  )
+    rej = (reason?: any) => {
+      reject(reason)
+    }
+  })
 
   mockGet.mockImplementationOnce(async (key: string) => await promise)
   return { res, rej }
@@ -68,30 +44,30 @@ function manualGetMock (): {
 /// /////////////////////////////////////////////////////////
 // Set up React component for testing hook in.
 
-const SessionsComponent: React.FunctionComponent = () => {
-  const sessions = useSessions()
+const BlacklistComponent: React.FunctionComponent = () => {
+  const blacklist = useBlacklist()
 
   function handleAdd (): void {
-    const [host, session] = [...mockAddSessions][0]
-    sessions.add(host, session).catch(error => {
+    const host = mockAddBlacklist[0]
+    blacklist.add(host).catch(error => {
       testError(error)
     })
   }
 
   function handleRemove (): void {
-    sessions.remove('host').catch(error => {
+    blacklist.remove('host').catch(error => {
       testError(error)
     })
   }
 
   function handleFetch (): void {
-    sessions.fetch().catch(error => {
+    blacklist.fetch().catch(error => {
       testError(error)
     })
   }
 
   function handleClear (): void {
-    sessions.clear().catch(error => {
+    blacklist.clear().catch(error => {
       testError(error)
     })
   }
@@ -99,11 +75,9 @@ const SessionsComponent: React.FunctionComponent = () => {
   return (
     <section>
       <p data-testid='isInitialized'>
-        {sessions.isInitialized ? 'initialized' : 'waiting'}
+        {blacklist.isInitialized ? 'initialized' : 'waiting'}
       </p>
-      <p data-testid='sessions'>{JSON.stringify([...sessions.sessions])}</p>
-      <p data-testid='online'>{sessions.isOnline.toString()}</p>
-      <p data-testid='number'>{sessions.numberOfSessions}</p>
+      <p data-testid='blacklist'>{JSON.stringify([...blacklist.blacklist])}</p>
       <button data-testid='add' onClick={handleAdd} />
       <button data-testid='remove' onClick={handleRemove} />
       <button data-testid='fetch' onClick={handleFetch} />
@@ -123,23 +97,19 @@ beforeEach(() => {
 /**
  * Comprehensive state test
  */
-test('useSessions(), test component', async () => {
+test('useBlacklist(), test component', async () => {
   const { res } = manualGetMock()
 
   act(() => {
-    render(<SessionsComponent />)
+    render(<BlacklistComponent />)
   })
 
   const isInitialized = screen.getByTestId('isInitialized')
-  const sessions = screen.getByTestId('sessions')
-  const online = screen.getByTestId('online')
-  const num = screen.getByTestId('number')
+  const blacklist = screen.getByTestId('blacklist')
 
   // Before hook is initialized
   expect(isInitialized.innerHTML).toEqual('waiting')
-  expect(sessions.innerHTML).toEqual(JSON.stringify([...new Map()]))
-  expect(online.innerHTML).toEqual('false')
-  expect(num.innerHTML).toEqual('0')
+  expect(blacklist.innerHTML).toEqual(JSON.stringify([...new Map()]))
 
   act(() => {
     res()
@@ -149,18 +119,16 @@ test('useSessions(), test component', async () => {
   expect(mockGet).toHaveBeenCalledTimes(1)
 
   // After hook is intialized
-  expect(mockGet).toHaveBeenCalledWith('sessions')
+  expect(mockGet).toHaveBeenCalledWith('blacklist')
   expect(isInitialized.innerHTML).toEqual('initialized')
-  expect(sessions.innerHTML).toEqual(JSON.stringify(mockSessions))
-  expect(online.innerHTML).toEqual('true')
-  expect(num.innerHTML).toEqual('1')
+  expect(blacklist.innerHTML).toEqual(JSON.stringify(mockBlacklist))
 
   // Test events
   fireEvent.click(screen.getByTestId('add'))
   await waitFor(() => expect(mockSet).toHaveBeenCalled())
   expect(mockSet).toHaveBeenCalledWith(
     expect.objectContaining({
-      sessions: [...mockSessions, ...mockAddSessions]
+      blacklist: [...mockBlacklist, ...mockAddBlacklist]
     })
   )
 
@@ -168,7 +136,7 @@ test('useSessions(), test component', async () => {
   await waitFor(() => expect(mockSet).toHaveBeenCalled())
   expect(mockSet).toHaveBeenCalledWith(
     expect.objectContaining({
-      sessions: []
+      blacklist: []
     })
   )
 
@@ -176,7 +144,7 @@ test('useSessions(), test component', async () => {
   await waitFor(() => expect(mockSet).toHaveBeenCalled())
   expect(mockSet).toHaveBeenCalledWith(
     expect.objectContaining({
-      sessions: []
+      blacklist: []
     })
   )
 
@@ -185,22 +153,22 @@ test('useSessions(), test component', async () => {
   await waitFor(() => {
     expect(mockGet).toHaveBeenCalled()
   })
-  expect(mockGet).toHaveBeenNthCalledWith(1, 'sessions')
+  expect(mockGet).toHaveBeenNthCalledWith(1, 'blacklist')
 })
 
 /**
  * Test error handling
  */
-test('useSessions(), fail init', async () => {
+test('useBlacklist(), fail init', async () => {
   const { rej } = manualGetMock()
   const spy = jest.spyOn(global.console, 'error').mockImplementation(() => {})
 
   act(() => {
-    render(<SessionsComponent />)
-    rej('Local Storage Error')
+    render(<BlacklistComponent />)
+    rej('Sync Storage Error')
   })
   await waitFor(() => expect(spy).toHaveBeenCalled())
-  expect(spy).toHaveBeenCalledWith('Local Storage Error')
+  expect(spy).toHaveBeenCalledWith('Sync Storage Error')
   spy.mockRestore()
 })
 
@@ -212,13 +180,13 @@ type ChangeListener = (
   areaName: string
 ) => void
 
-test('useSessions(), local storage change', async () => {
+test('useBlacklist(), sync storage change', async () => {
   const listeners: ChangeListener[] = []
   browser.storage.onChanged.addListener = jest.fn(listener => {
     listeners.push(listener)
   })
   act(() => {
-    render(<SessionsComponent />)
+    render(<BlacklistComponent />)
   })
 
   await waitFor(() => screen.getByText('initialized'))
@@ -227,48 +195,8 @@ test('useSessions(), local storage change', async () => {
     for (const listener of listeners) {
       listener(
         {
-          sessions: {
-            newValue: [...mockSessions, ...mockAddSessions]
-          }
-        },
-        'local'
-      )
-    }
-  })
-
-  const sessions = screen.getByTestId('sessions')
-  const online = screen.getByTestId('online')
-  const num = screen.getByTestId('number')
-
-  expect(sessions.innerHTML).toEqual(
-    JSON.stringify([...mockSessions, ...mockAddSessions])
-  )
-  expect(online.innerHTML).toEqual('true')
-  expect(num.innerHTML).toEqual('2')
-})
-
-test('useSessions(), skip change', async () => {
-  const listeners: ChangeListener[] = []
-  browser.storage.onChanged.addListener = jest.fn(listener => {
-    listeners.push(listener)
-  })
-  act(() => {
-    render(<SessionsComponent />)
-  })
-
-  await waitFor(() => screen.getByText('initialized'))
-
-  const sessions = screen.getByTestId('sessions')
-  const online = screen.getByTestId('online')
-  const num = screen.getByTestId('number')
-
-  // Sync storage
-  act(() => {
-    for (const listener of listeners) {
-      listener(
-        {
-          sessions: {
-            newValue: [...mockSessions, ...mockAddSessions]
+          blacklist: {
+            newValue: [...mockBlacklist, ...mockAddBlacklist]
           }
         },
         'sync'
@@ -276,17 +204,49 @@ test('useSessions(), skip change', async () => {
     }
   })
 
-  expect(sessions.innerHTML).toEqual(JSON.stringify(mockSessions))
-  expect(online.innerHTML).toEqual('true')
-  expect(num.innerHTML).toEqual('1')
+  const blacklist = screen.getByTestId('blacklist')
+
+  expect(blacklist.innerHTML).toEqual(
+    JSON.stringify([...mockBlacklist, ...mockAddBlacklist])
+  )
+})
+
+test('useBlacklist(), skip change', async () => {
+  const listeners: ChangeListener[] = []
+  browser.storage.onChanged.addListener = jest.fn(listener => {
+    listeners.push(listener)
+  })
+  act(() => {
+    render(<BlacklistComponent />)
+  })
+
+  await waitFor(() => screen.getByText('initialized'))
+
+  const blacklist = screen.getByTestId('blacklist')
+
+  // Local storage
+  act(() => {
+    for (const listener of listeners) {
+      listener(
+        {
+          blacklist: {
+            newValue: [...mockBlacklist, ...mockAddBlacklist]
+          }
+        },
+        'local'
+      )
+    }
+  })
+
+  expect(blacklist.innerHTML).toEqual(JSON.stringify(mockBlacklist))
 
   // Managed storage
   act(() => {
     for (const listener of listeners) {
       listener(
         {
-          sessions: {
-            newValue: [...mockSessions, ...mockAddSessions]
+          blacklist: {
+            newValue: [...mockBlacklist, ...mockAddBlacklist]
           }
         },
         'managed'
@@ -294,24 +254,20 @@ test('useSessions(), skip change', async () => {
     }
   })
 
-  expect(sessions.innerHTML).toEqual(JSON.stringify(mockSessions))
-  expect(online.innerHTML).toEqual('true')
-  expect(num.innerHTML).toEqual('1')
+  expect(blacklist.innerHTML).toEqual(JSON.stringify(mockBlacklist))
 
   // Wrong key
   act(() => {
     for (const listener of listeners) {
       listener(
         {
-          notsessions: {
-            newValue: [...mockSessions, ...mockAddSessions]
+          notblacklist: {
+            newValue: [...mockBlacklist, ...mockAddBlacklist]
           }
         },
-        'local'
+        'sync'
       )
     }
   })
-  expect(sessions.innerHTML).toEqual(JSON.stringify(mockSessions))
-  expect(online.innerHTML).toEqual('true')
-  expect(num.innerHTML).toEqual('1')
+  expect(blacklist.innerHTML).toEqual(JSON.stringify(mockBlacklist))
 })

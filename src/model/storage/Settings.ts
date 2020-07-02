@@ -91,6 +91,22 @@ export const fields: FieldsProps = {
 }
 
 /**
+ * Merge one or more unparsed settings objects into a single Settings object.
+ * @param settingsObjects - Settings objects in descending order of priority.
+ */
+export function merge (
+  ...settingsObjects: Array<[Record<string, any>, boolean]>
+): Settings {
+  const settings: Settings = new Map()
+  for (const [settingsObject, managed] of settingsObjects) {
+    if (settingsObject !== undefined) {
+      populate(settings, settingsObject, managed)
+    }
+  }
+  return settings
+}
+
+/**
  * Populates given Settings object in-place.
  * @param settings - Existing settings to merge with.
  * @param values - Values to populate settings with.
@@ -115,24 +131,14 @@ const populate = (
  * @returns Merged user and system settings.
  * */
 async function get (): Promise<Settings> {
-  const settings: Settings = new Map()
-  try {
-    const { settings: systemSettings } = await systemStorage.get('settings')
-    if (systemSettings?.enforced !== undefined) {
-      populate(settings, systemSettings.enforced, true)
-    }
-    const { settings: userSettings } = await userStorage.get('settings')
-    if (userSettings !== undefined) {
-      populate(settings, userSettings)
-    }
-    if (systemSettings?.defaults !== undefined) {
-      populate(settings, systemSettings.defaults)
-    }
-    populate(settings, defaults)
-  } catch (error) {
-    console.error('Error gettings settings from storage.', error)
-  }
-  return settings
+  const { settings: systemSettings } = await systemStorage.get('settings')
+  const { settings: userSettings } = await userStorage.get('settings')
+  return merge(
+    [systemSettings?.enforced, true],
+    [userSettings, false],
+    [systemSettings?.defaults, false],
+    [defaults, false]
+  )
 }
 
 /**
@@ -146,11 +152,7 @@ async function set (settings: Settings): Promise<void> {
       userSettings[key] = field.value
     }
   }
-  try {
-    return await userStorage.set({ settings: userSettings })
-  } catch (error) {
-    console.error('Error updating settings in storage.', error)
-  }
+  return await userStorage.set({ settings: userSettings })
 }
 
 /**
@@ -164,7 +166,12 @@ async function update (updatedSettings: Settings): Promise<Settings> {
   return await set(newSettings).then(get)
 }
 
+async function clear (): Promise<Settings> {
+  return await set(new Map()).then(get)
+}
+
 export const actions = {
   update,
+  clear,
   fetch: get
 }

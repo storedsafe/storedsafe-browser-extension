@@ -12,13 +12,8 @@ const userStorage = browser.storage.sync
  * @returns List of blacklisted sites.
  * */
 async function get (): Promise<Blacklist> {
-  try {
-    const { blacklist } = await userStorage.get('blacklist')
-    return blacklist === undefined ? [] : blacklist
-  } catch (error) {
-    console.error('Error getting blacklist from storage.', error)
-    return await Promise.resolve([])
-  }
+  const { blacklist } = await userStorage.get('blacklist')
+  return blacklist === undefined ? [] : blacklist
 }
 
 /**
@@ -26,11 +21,7 @@ async function get (): Promise<Blacklist> {
  * @param blacklist - New blacklist.
  * */
 async function set (blacklist: Blacklist): Promise<void> {
-  try {
-    return await userStorage.set({ blacklist })
-  } catch (error) {
-    console.error('Error setting blacklist in storage.', error)
-  }
+  return await userStorage.set({ blacklist })
 }
 
 /// /////////////////////////////////////////////////////////

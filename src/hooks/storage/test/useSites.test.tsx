@@ -146,30 +146,30 @@ test('useSites()', async () => {
 
   // Test events
   fireEvent.click(screen.getByTestId('add'))
-  await waitFor(() =>
-    expect(mockSetSync).toHaveBeenCalledWith(
-      expect.objectContaining({
-        sites: [...userMockSites, { host: 'add_host', apikey: 'add_apikey' }]
-      })
-    )
+  await waitFor(() => expect(mockSetSync).toHaveBeenCalled())
+  expect(mockSetSync).toHaveBeenCalledWith(
+    expect.objectContaining({
+      sites: [...userMockSites, { host: 'add_host', apikey: 'add_apikey' }]
+    })
   )
 
   fireEvent.click(screen.getByTestId('remove'))
-  await waitFor(() =>
-    expect(mockSetSync).toHaveBeenCalledWith(
-      expect.objectContaining({
-        sites: []
-      })
-    )
+  await waitFor(() => expect(mockSetSync).toHaveBeenCalled())
+  expect(mockSetSync).toHaveBeenCalledWith(
+    expect.objectContaining({
+      sites: []
+    })
   )
 
   mockGetManaged.mockClear()
   mockGetSync.mockClear()
   fireEvent.click(screen.getByTestId('fetch'))
   await waitFor(() => {
-    expect(mockGetSync).toHaveBeenNthCalledWith(1, 'sites')
-    expect(mockGetManaged).toHaveBeenNthCalledWith(1, 'sites')
+    expect(mockGetSync).toHaveBeenCalled()
+    expect(mockGetManaged).toHaveBeenCalled()
   })
+  expect(mockGetSync).toHaveBeenNthCalledWith(1, 'sites')
+  expect(mockGetManaged).toHaveBeenNthCalledWith(1, 'sites')
 })
 
 /**
@@ -320,9 +320,7 @@ test('useSites(), skip change', async () => {
   const system = screen.getByTestId('system')
   const user = screen.getByTestId('user')
 
-  expect(system.innerHTML).toEqual(
-    JSON.stringify([...systemMockSites])
-  )
+  expect(system.innerHTML).toEqual(JSON.stringify([...systemMockSites]))
   expect(user.innerHTML).toEqual(JSON.stringify(userMockSites))
 
   // Sync, wrong key
@@ -341,9 +339,7 @@ test('useSites(), skip change', async () => {
       )
     }
   })
-  expect(system.innerHTML).toEqual(
-    JSON.stringify([...systemMockSites])
-  )
+  expect(system.innerHTML).toEqual(JSON.stringify([...systemMockSites]))
   expect(user.innerHTML).toEqual(JSON.stringify(userMockSites))
 
   // Managed, wrong key
@@ -362,8 +358,6 @@ test('useSites(), skip change', async () => {
       )
     }
   })
-  expect(system.innerHTML).toEqual(
-    JSON.stringify([...systemMockSites])
-  )
+  expect(system.innerHTML).toEqual(JSON.stringify([...systemMockSites]))
   expect(user.innerHTML).toEqual(JSON.stringify(userMockSites))
 })

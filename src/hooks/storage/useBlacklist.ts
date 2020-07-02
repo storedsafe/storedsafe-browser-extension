@@ -5,39 +5,29 @@
  * concerning themselves with external dependencies.
  */
 import { useState, useEffect } from 'react'
-import { actions as SessionsActions, parse } from '../../model/storage/Sessions'
+import { actions as BlacklistActions } from '../../model/storage/Blacklist'
 
 /**
  * Base state of the hook.
  * @param isInitialized - True if the initial fetch has been completed.
- * @param sessions - Sessions from storage.
+ * @param blacklist - Blacklist from storage.
  */
-interface SessionsState {
+interface BlacklistState {
   isInitialized: boolean
-  sessions: Sessions
-}
-
-/**
- * State computed based on the base state.
- * @param isOnline - True if there are any active sessions
- * @param numberOfSessions - Total number of active sessions
- */
-interface ComputedSessionsState {
-  isOnline: boolean
-  numberOfSessions: number
+  blacklist: Blacklist
 }
 
 /**
  * Functions to mutate the state of the hook. All functions return an empty
  * promise which should be used to handle loading/error states of the
  * implementing component.
- * @param add - Add new session to storage.
- * @param remove - Remove session from storage.
- * @param clear - Clear all sessions from storage.
+ * @param add - Add new host to blacklist.
+ * @param remove - Remove host from blacklist.
+ * @param clear - Clear all blacklist entries from storage.
  * @param fetch - Fetch state from storage.
  */
-interface SessionsFunctions {
-  add: (host: string, session: Session) => Promise<void>
+interface BlacklistFunctions {
+  add: (host: string) => Promise<void>
   remove: (host: string) => Promise<void>
   clear: () => Promise<void>
   fetch: () => Promise<void>
@@ -46,55 +36,55 @@ interface SessionsFunctions {
 /**
  * Compiled state of the hook.
  */
-type SessionsHook = SessionsState & ComputedSessionsState & SessionsFunctions
+type BlacklistHook = BlacklistState & BlacklistFunctions
 
 /**
- * Hook to access sessions from storage.
+ * Hook to access Blacklist from storage, listing all hosts that should be left
+ * out of automatic save suggestions.
  */
-export const useSessions = (): SessionsHook => {
+export const useBlacklist = (): BlacklistHook => {
   // Keep base state in single object to avoid unnecessary
   // renders when updating multiple fields at once.
-  const [state, setState] = useState<SessionsState>({
+  const [state, setState] = useState<BlacklistState>({
     isInitialized: false,
-    sessions: new Map()
+    blacklist: []
   })
 
   /**
-   * Manually fetch sessions from storage. This should only be done in situations
+   * Manually fetch blacklist from storage. This should only be done in situations
    * where you know the hook state is out of sync with the storage area, for
    * example during initialization.
    */
   async function fetch (): Promise<void> {
-    const sessions = await SessionsActions.fetch()
+    const blacklist = await BlacklistActions.fetch()
     setState(prevState => ({
       ...prevState,
       isInitialized: true,
-      sessions
+      blacklist
     }))
   }
 
   /**
-   * Add session to storage.
-   * @param host - Host related to the session
-   * @param session - Session to be added.
+   * Add host to storage blacklist.
+   * @param host - Host to blacklist.
    */
-  async function add (host: string, session: Session): Promise<void> {
-    await SessionsActions.add(host, session)
+  async function add (host: string): Promise<void> {
+    await BlacklistActions.add(host)
   }
 
   /**
-   * Remove session from storage.
-   * @param host - Host related to the session
+   * Remove host from storage blacklist.
+   * @param host - Host to remove from blacklist.
    */
   async function remove (host: string): Promise<void> {
-    await SessionsActions.remove(host)
+    await BlacklistActions.remove(host)
   }
 
   /**
-   * Clear all sessions from storage.
+   * Clear all blacklist entries from storage.
    */
   async function clear (): Promise<void> {
-    await SessionsActions.clear()
+    await BlacklistActions.clear()
   }
 
   // Run when mounted
@@ -110,11 +100,11 @@ export const useSessions = (): SessionsHook => {
       changes: { [key: string]: browser.storage.StorageChange },
       area: string
     ): void => {
-      const change = changes.sessions
-      if (change?.newValue !== undefined && area === 'local') {
+      const change = changes.blacklist
+      if (change?.newValue !== undefined && area === 'sync') {
         setState(prevState => ({
           ...prevState,
-          sessions: parse(change.newValue)
+          blacklist: change.newValue
         }))
       }
     }
@@ -131,12 +121,8 @@ export const useSessions = (): SessionsHook => {
     }
   }, [])
 
-  const numberOfSessions = [...state.sessions.keys()].length
-
   return {
     ...state,
-    numberOfSessions,
-    isOnline: numberOfSessions !== 0,
     fetch,
     add,
     remove,

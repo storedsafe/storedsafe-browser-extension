@@ -11,13 +11,8 @@
  * @returns Promise containing the user preferences.
  * */
 async function get (): Promise<Preferences> {
-  try {
-    const { preferences } = await browser.storage.local.get('preferences')
-    return preferences === undefined ? { sites: {} } : preferences
-  } catch (error) {
-    console.error('Error getting preferences from storage.', error)
-    return await Promise.resolve({ sites: {} })
-  }
+  const { preferences } = await browser.storage.local.get('preferences')
+  return preferences === undefined ? { sites: {} } : preferences
 }
 
 /**
@@ -25,11 +20,7 @@ async function get (): Promise<Preferences> {
  * @param preferences - New user preferences.
  * */
 async function set (preferences: Preferences): Promise<void> {
-  try {
-    return await browser.storage.local.set({ preferences })
-  } catch (error) {
-    console.error('Error setting preferences in storage.', error)
-  }
+  return await browser.storage.local.set({ preferences })
 }
 
 /// /////////////////////////////////////////////////////////

@@ -18,7 +18,6 @@ function mockGet (blacklist: Blacklist): (key: string) => Promise<object> {
 
 global.browser.storage.sync.get = syncGetMock
 global.browser.storage.sync.set = syncSetMock
-const consoleError = global.console.error
 
 /// /////////////////////////////////////////////////////////
 // Start tests
@@ -98,11 +97,7 @@ describe('uses mocked browser.storage', () => {
     syncGetMock.mockImplementationOnce(() => {
       throw new Error()
     })
-    global.console.error = jest.fn()
-    const blacklist = await actions.fetch()
-    expect(global.console.error).toHaveBeenCalledTimes(1)
-    expect(blacklist).toEqual([])
-    global.console.error = consoleError
+    await expect(actions.fetch()).rejects.toThrowError()
   })
 
   test('add(), storage unavailable', async () => {
@@ -112,9 +107,6 @@ describe('uses mocked browser.storage', () => {
     syncSetMock.mockImplementationOnce(() => {
       throw new Error()
     })
-    global.console.error = jest.fn()
-    await actions.add('host')
-    expect(global.console.error).toHaveBeenCalledTimes(2)
-    global.console.error = consoleError
+    await expect(actions.add('host')).rejects.toThrowError()
   })
 })

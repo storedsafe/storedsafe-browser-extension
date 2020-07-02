@@ -8,22 +8,25 @@
  * */
 
 /**
+ * Parse serializable tab results into mapped results.
+ * @param serializableTabResults - Unparsed tab results from storage
+ */
+export function parse (
+  serializableTabResults: SerializableTabResults
+): TabResults {
+  if (serializableTabResults === undefined) {
+    return new Map()
+  }
+  return new Map(serializableTabResults.map(([k, v]) => [k, new Map(v)]))
+}
+
+/**
  * Get tab search results from local storage.
  * @returns Promise containing tab search results.
  * */
 async function get (): Promise<TabResults> {
-  try {
-    const { tabResults } = await browser.storage.local.get('tabResults')
-    const serializedTabResults: SerializableTabResults =
-      tabResults === undefined ? [] : tabResults
-    // Convert nested serializable results to Map objects.
-    return new Map(
-      serializedTabResults.map(([k, v]) => [k, new Map(v)])
-    ) as TabResults
-  } catch (error) {
-    console.error('Error getting tabResults from storage.', error)
-    return await Promise.resolve(new Map())
-  }
+  const { tabResults } = await browser.storage.local.get('tabResults')
+  return parse(tabResults)
 }
 
 /**
@@ -34,7 +37,7 @@ async function set (tabResults: TabResults): Promise<void> {
   try {
     return await browser.storage.local.set({
       // Convert nested Map objects to serializable results.
-      tabResults: Array.from(tabResults).map(([k, v]) => [k, Array.from(v)])
+      tabResults: [...tabResults].map(([k, v]) => [k, [...v]])
     })
   } catch (error) {
     console.error('Error setting tabResults in storage.', error)

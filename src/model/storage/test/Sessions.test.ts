@@ -19,7 +19,6 @@ const mockGet = (
 
 global.browser.storage.local.get = localGetMock
 global.browser.storage.local.set = localSetMock
-const consoleError = global.console.error
 
 /// /////////////////////////////////////////////////////////
 // Start tests

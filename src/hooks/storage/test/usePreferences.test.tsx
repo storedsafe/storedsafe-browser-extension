@@ -3,43 +3,36 @@ import '@testing-library/jest-dom/extend-expect'
 import React from 'react'
 import { act, render, fireEvent, waitFor, screen } from '@testing-library/react'
 
-import { useSessions } from '../useSessions'
+import { usePreferences } from '../usePreferences'
 
 /// /////////////////////////////////////////////////////////
 // Set up mocks of external dependencies
 
-const mockSessions: SerializableSessions = [
-  [
-    'host',
-    {
-      token: 'token',
-      createdAt: 0,
-      violations: {},
-      warnings: {},
-      timeout: 36e5
-    }
-  ]
-]
+const mockPreferences: Preferences = {
+  lastUsedSite: 'host',
+  sites: {
+    host: { username: 'username', loginType: 'totp' }
+  }
+}
 const mockGet = jest.fn(
   async (key: string) =>
     await Promise.resolve({
-      sessions: mockSessions
+      preferences: mockPreferences
     })
 )
 browser.storage.local.get = mockGet
 
-const mockAddSessions: SerializableSessions = [
-  [
-    'add_host',
-    {
-      token: 'add_token',
-      createdAt: 1,
-      violations: {},
-      warnings: {},
-      timeout: 144e5
-    }
-  ]
-]
+const mockChangePreferences: Preferences = {
+  ...mockPreferences,
+  lastUsedSite: 'change_host',
+  sites: {
+    host: {
+      username: 'change_username',
+      loginType: mockPreferences.sites.host.loginType
+    },
+    change: { loginType: 'yubikey' }
+  }
+}
 
 const mockSet = jest.fn(async () => await Promise.resolve())
 browser.storage.local.set = mockSet
@@ -50,10 +43,10 @@ function manualGetMock (): {
   rej: (reason?: any) => void
 } {
   let res, rej
-  const promise = new Promise<{ sessions: SerializableSessions }>(
+  const promise = new Promise<{ preferences: Preferences }>(
     (resolve, reject) => {
       res = () => {
-        resolve({ sessions: mockSessions })
+        resolve({ preferences: mockPreferences })
       }
       rej = (reason?: any) => {
         reject(reason)
@@ -68,30 +61,34 @@ function manualGetMock (): {
 /// /////////////////////////////////////////////////////////
 // Set up React component for testing hook in.
 
-const SessionsComponent: React.FunctionComponent = () => {
-  const sessions = useSessions()
+const PreferencesComponent: React.FunctionComponent = () => {
+  const preferences = usePreferences()
 
-  function handleAdd (): void {
-    const [host, session] = [...mockAddSessions][0]
-    sessions.add(host, session).catch(error => {
+  function handleSetLastUsedSite (): void {
+    preferences.setLastUsedSite('change').catch(error => {
       testError(error)
     })
   }
 
-  function handleRemove (): void {
-    sessions.remove('host').catch(error => {
-      testError(error)
-    })
+  function handleUpdateSitePreferences (): void {
+    preferences
+      .updateSitePreferences('host', {
+        username: 'change',
+        loginType: 'yubikey'
+      })
+      .catch(error => {
+        testError(error)
+      })
   }
 
   function handleFetch (): void {
-    sessions.fetch().catch(error => {
+    preferences.fetch().catch(error => {
       testError(error)
     })
   }
 
   function handleClear (): void {
-    sessions.clear().catch(error => {
+    preferences.clear().catch(error => {
       testError(error)
     })
   }
@@ -99,13 +96,15 @@ const SessionsComponent: React.FunctionComponent = () => {
   return (
     <section>
       <p data-testid='isInitialized'>
-        {sessions.isInitialized ? 'initialized' : 'waiting'}
+        {preferences.isInitialized ? 'initialized' : 'waiting'}
       </p>
-      <p data-testid='sessions'>{JSON.stringify([...sessions.sessions])}</p>
-      <p data-testid='online'>{sessions.isOnline.toString()}</p>
-      <p data-testid='number'>{sessions.numberOfSessions}</p>
-      <button data-testid='add' onClick={handleAdd} />
-      <button data-testid='remove' onClick={handleRemove} />
+      <p data-testid='lastUsedSite'>{preferences.lastUsedSite}</p>
+      <p data-testid='sites'>{JSON.stringify(preferences.sites)}</p>
+      <button data-testid='setLastUsedSite' onClick={handleSetLastUsedSite} />
+      <button
+        data-testid='updateSitePreferences'
+        onClick={handleUpdateSitePreferences}
+      />
       <button data-testid='fetch' onClick={handleFetch} />
       <button data-testid='clear' onClick={handleClear} />
     </section>
@@ -123,23 +122,21 @@ beforeEach(() => {
 /**
  * Comprehensive state test
  */
-test('useSessions(), test component', async () => {
+test('usePreferences(), test component', async () => {
   const { res } = manualGetMock()
 
   act(() => {
-    render(<SessionsComponent />)
+    render(<PreferencesComponent />)
   })
 
   const isInitialized = screen.getByTestId('isInitialized')
-  const sessions = screen.getByTestId('sessions')
-  const online = screen.getByTestId('online')
-  const num = screen.getByTestId('number')
+  const lastUsedSite = screen.getByTestId('lastUsedSite')
+  const sites = screen.getByTestId('sites')
 
   // Before hook is initialized
   expect(isInitialized.innerHTML).toEqual('waiting')
-  expect(sessions.innerHTML).toEqual(JSON.stringify([...new Map()]))
-  expect(online.innerHTML).toEqual('false')
-  expect(num.innerHTML).toEqual('0')
+  expect(lastUsedSite.innerHTML).toEqual('')
+  expect(sites.innerHTML).toEqual(JSON.stringify({}))
 
   act(() => {
     res()
@@ -149,26 +146,28 @@ test('useSessions(), test component', async () => {
   expect(mockGet).toHaveBeenCalledTimes(1)
 
   // After hook is intialized
-  expect(mockGet).toHaveBeenCalledWith('sessions')
+  expect(mockGet).toHaveBeenCalledWith('preferences')
   expect(isInitialized.innerHTML).toEqual('initialized')
-  expect(sessions.innerHTML).toEqual(JSON.stringify(mockSessions))
-  expect(online.innerHTML).toEqual('true')
-  expect(num.innerHTML).toEqual('1')
+  expect(lastUsedSite.innerHTML).toEqual('host')
+  expect(sites.innerHTML).toEqual(JSON.stringify(mockPreferences.sites))
 
   // Test events
-  fireEvent.click(screen.getByTestId('add'))
+  fireEvent.click(screen.getByTestId('setLastUsedSite'))
   await waitFor(() => expect(mockSet).toHaveBeenCalled())
   expect(mockSet).toHaveBeenCalledWith(
     expect.objectContaining({
-      sessions: [...mockSessions, ...mockAddSessions]
+      preferences: { ...mockPreferences, lastUsedSite: 'change' }
     })
   )
 
-  fireEvent.click(screen.getByTestId('remove'))
+  fireEvent.click(screen.getByTestId('updateSitePreferences'))
   await waitFor(() => expect(mockSet).toHaveBeenCalled())
   expect(mockSet).toHaveBeenCalledWith(
     expect.objectContaining({
-      sessions: []
+      preferences: {
+        ...mockPreferences,
+        sites: { host: { username: 'change', loginType: 'yubikey' } }
+      }
     })
   )
 
@@ -176,7 +175,7 @@ test('useSessions(), test component', async () => {
   await waitFor(() => expect(mockSet).toHaveBeenCalled())
   expect(mockSet).toHaveBeenCalledWith(
     expect.objectContaining({
-      sessions: []
+      preferences: { sites: {} }
     })
   )
 
@@ -185,18 +184,18 @@ test('useSessions(), test component', async () => {
   await waitFor(() => {
     expect(mockGet).toHaveBeenCalled()
   })
-  expect(mockGet).toHaveBeenNthCalledWith(1, 'sessions')
+  expect(mockGet).toHaveBeenNthCalledWith(1, 'preferences')
 })
 
 /**
  * Test error handling
  */
-test('useSessions(), fail init', async () => {
+test('usePreferences(), fail init', async () => {
   const { rej } = manualGetMock()
   const spy = jest.spyOn(global.console, 'error').mockImplementation(() => {})
 
   act(() => {
-    render(<SessionsComponent />)
+    render(<PreferencesComponent />)
     rej('Local Storage Error')
   })
   await waitFor(() => expect(spy).toHaveBeenCalled())
@@ -212,13 +211,13 @@ type ChangeListener = (
   areaName: string
 ) => void
 
-test('useSessions(), local storage change', async () => {
+test('usePreferences(), local storage change', async () => {
   const listeners: ChangeListener[] = []
   browser.storage.onChanged.addListener = jest.fn(listener => {
     listeners.push(listener)
   })
   act(() => {
-    render(<SessionsComponent />)
+    render(<PreferencesComponent />)
   })
 
   await waitFor(() => screen.getByText('initialized'))
@@ -227,8 +226,8 @@ test('useSessions(), local storage change', async () => {
     for (const listener of listeners) {
       listener(
         {
-          sessions: {
-            newValue: [...mockSessions, ...mockAddSessions]
+          preferences: {
+            newValue: mockChangePreferences
           }
         },
         'local'
@@ -236,39 +235,34 @@ test('useSessions(), local storage change', async () => {
     }
   })
 
-  const sessions = screen.getByTestId('sessions')
-  const online = screen.getByTestId('online')
-  const num = screen.getByTestId('number')
+  const lastUsedSite = screen.getByTestId('lastUsedSite')
+  const sites = screen.getByTestId('sites')
 
-  expect(sessions.innerHTML).toEqual(
-    JSON.stringify([...mockSessions, ...mockAddSessions])
-  )
-  expect(online.innerHTML).toEqual('true')
-  expect(num.innerHTML).toEqual('2')
+  expect(lastUsedSite.innerHTML).toEqual(mockChangePreferences.lastUsedSite)
+  expect(sites.innerHTML).toEqual(JSON.stringify(mockChangePreferences.sites))
 })
 
-test('useSessions(), skip change', async () => {
+test('usePreferences(), skip change', async () => {
   const listeners: ChangeListener[] = []
   browser.storage.onChanged.addListener = jest.fn(listener => {
     listeners.push(listener)
   })
   act(() => {
-    render(<SessionsComponent />)
+    render(<PreferencesComponent />)
   })
 
   await waitFor(() => screen.getByText('initialized'))
 
-  const sessions = screen.getByTestId('sessions')
-  const online = screen.getByTestId('online')
-  const num = screen.getByTestId('number')
+  const lastUsedSite = screen.getByTestId('lastUsedSite')
+  const sites = screen.getByTestId('sites')
 
   // Sync storage
   act(() => {
     for (const listener of listeners) {
       listener(
         {
-          sessions: {
-            newValue: [...mockSessions, ...mockAddSessions]
+          preferences: {
+            newValue: mockChangePreferences
           }
         },
         'sync'
@@ -276,17 +270,16 @@ test('useSessions(), skip change', async () => {
     }
   })
 
-  expect(sessions.innerHTML).toEqual(JSON.stringify(mockSessions))
-  expect(online.innerHTML).toEqual('true')
-  expect(num.innerHTML).toEqual('1')
+  expect(lastUsedSite.innerHTML).toEqual(mockPreferences.lastUsedSite)
+  expect(sites.innerHTML).toEqual(JSON.stringify(mockPreferences.sites))
 
   // Managed storage
   act(() => {
     for (const listener of listeners) {
       listener(
         {
-          sessions: {
-            newValue: [...mockSessions, ...mockAddSessions]
+          preferences: {
+            newValue: mockChangePreferences
           }
         },
         'managed'
@@ -294,24 +287,22 @@ test('useSessions(), skip change', async () => {
     }
   })
 
-  expect(sessions.innerHTML).toEqual(JSON.stringify(mockSessions))
-  expect(online.innerHTML).toEqual('true')
-  expect(num.innerHTML).toEqual('1')
+  expect(lastUsedSite.innerHTML).toEqual(mockPreferences.lastUsedSite)
+  expect(sites.innerHTML).toEqual(JSON.stringify(mockPreferences.sites))
 
   // Wrong key
   act(() => {
     for (const listener of listeners) {
       listener(
         {
-          notsessions: {
-            newValue: [...mockSessions, ...mockAddSessions]
+          notpreferences: {
+            newValue: mockChangePreferences
           }
         },
         'local'
       )
     }
   })
-  expect(sessions.innerHTML).toEqual(JSON.stringify(mockSessions))
-  expect(online.innerHTML).toEqual('true')
-  expect(num.innerHTML).toEqual('1')
+  expect(lastUsedSite.innerHTML).toEqual(mockPreferences.lastUsedSite)
+  expect(sites.innerHTML).toEqual(JSON.stringify(mockPreferences.sites))
 })

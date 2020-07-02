@@ -20,7 +20,6 @@ const mockGet = (
 
 global.browser.storage.local.get = localGetMock
 global.browser.storage.local.set = localSetMock
-const consoleError = global.console.error
 
 /// /////////////////////////////////////////////////////////
 // Start tests
@@ -141,11 +140,7 @@ describe('uses mocked browser.storage', () => {
     localGetMock.mockImplementationOnce(() => {
       throw new Error()
     })
-    global.console.error = jest.fn()
-    const preferences = await actions.fetch()
-    expect(global.console.error).toHaveBeenCalledTimes(1)
-    expect(preferences).toEqual({ sites: {} })
-    global.console.error = consoleError
+    await expect(actions.fetch()).rejects.toThrowError()
   })
 
   test('setLastUsedSite(), storage unavailable', async () => {
@@ -155,9 +150,6 @@ describe('uses mocked browser.storage', () => {
     localSetMock.mockImplementationOnce(() => {
       throw new Error()
     })
-    global.console.error = jest.fn()
-    await actions.setLastUsedSite('host')
-    expect(global.console.error).toHaveBeenCalledTimes(2)
-    global.console.error = consoleError
+    await expect(actions.setLastUsedSite('host')).rejects.toThrowError()
   })
 })

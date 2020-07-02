@@ -23,7 +23,6 @@ const mockGet = (values: object): ((key: string) => Promise<Dict>) => async (
 global.browser.storage.sync.get = syncGetMock
 global.browser.storage.sync.set = syncSetMock
 global.browser.storage.managed.get = managedGetMock
-const consoleError = global.console.error
 
 /// /////////////////////////////////////////////////////////
 // Start tests
@@ -195,11 +194,7 @@ describe('uses mocked browser.storage', () => {
     syncGetMock.mockImplementationOnce(() => {
       throw new Error()
     })
-    global.console.error = jest.fn()
-    const preferences = await actions.fetch()
-    expect(global.console.error).toHaveBeenCalledTimes(1)
-    expect(preferences).toEqual(new Map())
-    global.console.error = consoleError
+    await expect(actions.fetch()).rejects.toThrowError()
   })
 
   test('update(), storage unavailable', async () => {
@@ -209,9 +204,6 @@ describe('uses mocked browser.storage', () => {
     syncSetMock.mockImplementationOnce(() => {
       throw new Error()
     })
-    global.console.error = jest.fn()
-    await actions.update(new Map())
-    expect(global.console.error).toHaveBeenCalledTimes(2)
-    global.console.error = consoleError
+    await expect(actions.update(new Map())).rejects.toThrowError()
   })
 })

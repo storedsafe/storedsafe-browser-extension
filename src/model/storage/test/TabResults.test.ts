@@ -177,11 +177,7 @@ describe('uses mocked browser.storage', () => {
     localGetMock.mockImplementationOnce(() => {
       throw new Error()
     })
-    global.console.error = jest.fn()
-    const preferences = await actions.fetch()
-    expect(global.console.error).toHaveBeenCalledTimes(1)
-    expect(preferences).toEqual(new Map())
-    global.console.error = consoleError
+    await expect(actions.fetch()).rejects.toThrowError()
   })
 
   test('add(), storage unavailable', async () => {
@@ -191,9 +187,6 @@ describe('uses mocked browser.storage', () => {
     localSetMock.mockImplementationOnce(() => {
       throw new Error()
     })
-    global.console.error = jest.fn()
-    await actions.setTabResults(1, new Map())
-    expect(global.console.error).toHaveBeenCalledTimes(2)
-    global.console.error = consoleError
+    await expect(actions.setTabResults(1, new Map())).rejects.toThrowError()
   })
 })

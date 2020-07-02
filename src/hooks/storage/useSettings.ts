@@ -5,40 +5,28 @@
  * concerning themselves with external dependencies.
  */
 import { useState, useEffect } from 'react'
-import { actions as SessionsActions, parse } from '../../model/storage/Sessions'
+import { actions as SettingsActions } from '../../model/storage/Settings'
 
 /**
  * Base state of the hook.
  * @param isInitialized - True if the initial fetch has been completed.
- * @param sessions - Sessions from storage.
+ * @param settings - Settings from storage.
  */
-interface SessionsState {
+interface SettingsState {
   isInitialized: boolean
-  sessions: Sessions
-}
-
-/**
- * State computed based on the base state.
- * @param isOnline - True if there are any active sessions
- * @param numberOfSessions - Total number of active sessions
- */
-interface ComputedSessionsState {
-  isOnline: boolean
-  numberOfSessions: number
+  settings: Settings
 }
 
 /**
  * Functions to mutate the state of the hook. All functions return an empty
  * promise which should be used to handle loading/error states of the
  * implementing component.
- * @param add - Add new session to storage.
- * @param remove - Remove session from storage.
- * @param clear - Clear all sessions from storage.
+ * @param update - Update state of settings.
+ * @param clear - Clear user settings, reverting to defaults/managed.
  * @param fetch - Fetch state from storage.
  */
-interface SessionsFunctions {
-  add: (host: string, session: Session) => Promise<void>
-  remove: (host: string) => Promise<void>
+interface SettingsFunctions {
+  update: (settings: Settings) => Promise<void>
   clear: () => Promise<void>
   fetch: () => Promise<void>
 }
@@ -46,30 +34,30 @@ interface SessionsFunctions {
 /**
  * Compiled state of the hook.
  */
-type SessionsHook = SessionsState & ComputedSessionsState & SessionsFunctions
+type SettingsHook = SettingsState & SettingsFunctions
 
 /**
- * Hook to access sessions from storage.
+ * Hook to access settings from storage.
  */
-export const useSessions = (): SessionsHook => {
+export const useSettings = (): SettingsHook => {
   // Keep base state in single object to avoid unnecessary
   // renders when updating multiple fields at once.
-  const [state, setState] = useState<SessionsState>({
+  const [state, setState] = useState<SettingsState>({
     isInitialized: false,
-    sessions: new Map()
+    settings: new Map()
   })
 
   /**
-   * Manually fetch sessions from storage. This should only be done in situations
-   * where you know the hook state is out of sync with the storage area, for
-   * example during initialization.
+   * Manually fetch settings from storage. This should only be done in
+   * situations where you know the hook state is out of sync with the
+   * storage area, for example during initialization.
    */
   async function fetch (): Promise<void> {
-    const sessions = await SessionsActions.fetch()
+    const settings = await SettingsActions.fetch()
     setState(prevState => ({
       ...prevState,
       isInitialized: true,
-      sessions
+      settings
     }))
   }
 
@@ -78,23 +66,15 @@ export const useSessions = (): SessionsHook => {
    * @param host - Host related to the session
    * @param session - Session to be added.
    */
-  async function add (host: string, session: Session): Promise<void> {
-    await SessionsActions.add(host, session)
+  async function update (settings: Settings): Promise<void> {
+    await SettingsActions.update(settings)
   }
 
   /**
-   * Remove session from storage.
-   * @param host - Host related to the session
-   */
-  async function remove (host: string): Promise<void> {
-    await SessionsActions.remove(host)
-  }
-
-  /**
-   * Clear all sessions from storage.
+   * Clear all user settings from storage, reverting to defaults.
    */
   async function clear (): Promise<void> {
-    await SessionsActions.clear()
+    await SettingsActions.clear()
   }
 
   // Run when mounted
@@ -110,12 +90,12 @@ export const useSessions = (): SessionsHook => {
       changes: { [key: string]: browser.storage.StorageChange },
       area: string
     ): void => {
-      const change = changes.sessions
-      if (change?.newValue !== undefined && area === 'local') {
-        setState(prevState => ({
-          ...prevState,
-          sessions: parse(change.newValue)
-        }))
+      const change = changes.settings
+      if (
+        change?.newValue !== undefined &&
+        (area === 'sync' || area === 'managed')
+      ) {
+        fetch().catch(error => console.error(error))
       }
     }
 
@@ -131,15 +111,10 @@ export const useSessions = (): SessionsHook => {
     }
   }, [])
 
-  const numberOfSessions = [...state.sessions.keys()].length
-
   return {
     ...state,
-    numberOfSessions,
-    isOnline: numberOfSessions !== 0,
     fetch,
-    add,
-    remove,
+    update,
     clear
   }
 }
