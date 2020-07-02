@@ -1,34 +1,5 @@
 @import './colors';
 
-$color-border: #d4d7d8;
-$color-border-hover: #c7cacc;
-$color-border-focus: $color-accent-0;
-$color-border-active: #028c73;
-
-$color-bg: #fff;
-$color-bg-alt: #f9f9f9;
-$color-bg-alt-2: #d4d7d9;
-$color-bg-hover: #f9fbfc;
-$color-bg-focus: #f4f7f9;
-$color-bg-active: #ebeef0;
-$color-bg-banner: $color-primary-0;
-$color-bg-body: #f2f2f2;
-
-$color-fg: #232d33;
-$color-fg-alt: #fff;
-
-$color-bg-disabled: $color-bg-alt;
-$color-border-disabled: $color-border;
-$color-fg-disabled: #ad9f9f;
-$color-bg-input-disabled: $color-bg-disabled;
-$color-fg-input-disabled: $color-fg-disabled;
-$color-border-input-disabled: $color-border-disabled;
-
-$color-number: $color-danger-0;
-$color-symbol: $color-warning-0;
-$color-uppercase: $color-accent-0;
-$color-lowercase: $color-primary-0;
-
 $font-size: 12pt;
 $font-main: 'Roboto', sans-serif;
 $font-alt: 'Montserrat', sans-serif;

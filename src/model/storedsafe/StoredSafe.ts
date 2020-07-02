@@ -5,7 +5,11 @@
  * - actions object provides the public interface for the model.
  * */
 
-import StoredSafe, { StoredSafePromise, StoredSafeData } from 'storedsafe'
+import StoredSafe, {
+  StoredSafePromise,
+  StoredSafeData,
+  StoredSafeErrorData
+} from 'storedsafe'
 import { actions as SessionsActions } from '../storage/Sessions'
 import { actions as TabResultsActions } from '../storage/TabResults'
 import { actions as objectHandler } from './ObjectHandler'
@@ -44,9 +48,14 @@ async function handleErrors (
     const response = await promise
     return response.data
   } catch (error) {
-    if (error.response !== undefined) {
-      if (error.response.data.ERRORS !== undefined) {
-        const errors = error.response.data.ERRORS.join(' | ') as string
+    if (error.response?.data !== undefined) {
+      const data = error.response?.data as StoredSafeErrorData
+      if (data.ERRORS?.length > 0) {
+        const errors = data.ERRORS.join(' | ')
+        throw new Error(`StoredSafe Error: ${errors}`)
+      }
+      if (data.ERRORCODES !== undefined && Object.keys(data.ERRORCODES).length > 0) {
+        const errors = Object.values(data.ERRORCODES).join(' | ')
         throw new Error(`StoredSafe Error: ${errors}`)
       }
       // Server sent error code but no error response (see 404 for empty vaults)

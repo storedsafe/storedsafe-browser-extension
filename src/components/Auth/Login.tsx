@@ -22,6 +22,12 @@ interface LoginProps {
   loading?: boolean
 }
 
+interface LoginState {
+  isLoading: boolean
+  promise?: Promise<void>
+  error?: Error
+}
+
 export const Login: React.FunctionComponent<LoginProps> = ({
   site,
   onLogin,
@@ -40,39 +46,35 @@ export const Login: React.FunctionComponent<LoginProps> = ({
     otp: ''
   }
   const [values, events, reset] = useForm(initialValues, formEvents)
-  const [loginPromise, setLoginPromise] = useState<Promise<void>>()
-  const [state, setState] = useState<{
-    loading: boolean
-    error?: Error
-  }>({
-    loading: false
-  })
+  const [state, setState] = useState<LoginState>({ isLoading: false })
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
     event.preventDefault()
-    setLoginPromise(onLogin(site, values))
+    setState({ isLoading: true, promise: onLogin(site, values) })
   }
 
   // Handle asynchronous state in useEffect so that state updates can be
   // cancelled if the component unmounts.
+  // Put the promise with the rest of the state so that only a single render
+  // is required when the state changes. This fixes the bug where the error
+  // state would not be reached because the component would dismount when the
+  // login promise was unset.
   useEffect(() => {
     let mounted = true
-    if (loginPromise !== undefined) {
-      if (mounted) setState({ loading: true })
-      loginPromise
+    if (state.isLoading && state.promise !== undefined) {
+      state.promise
         .then(() => {
-          if (mounted) setState({ loading: false })
+          if (mounted) setState({ isLoading: false })
         })
         .catch(error => {
-          if (mounted) setState({ loading: false, error })
+          if (mounted) setState({ isLoading: false, error })
         })
-      if (mounted) setLoginPromise(undefined)
     }
 
     return (): void => {
       mounted = false
     }
-  }, [loginPromise])
+  }, [state])
 
   const id = (name: string): string => site.host + '-' + name
   const hasError = state.error !== undefined
@@ -117,7 +119,7 @@ export const Login: React.FunctionComponent<LoginProps> = ({
               {...events}
             />
           </label>
-          <Button type='submit' color='accent' isLoading={state.loading}>
+          <Button type='submit' color='accent' isLoading={state.isLoading}>
             Login
           </Button>
         </form>

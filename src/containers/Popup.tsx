@@ -8,6 +8,7 @@ import { useSessions } from '../hooks/storage/useSessions'
 import { MenuItem, icons } from '../components/common/layout'
 import { actions as StoredSafeActions } from '../model/storedsafe/StoredSafe'
 import Auth from './Auth'
+import Options from './Options'
 
 enum Page {
   AUTH,
@@ -35,20 +36,16 @@ const usePopup = (): PopupProps => {
       icon: sessions.isOnline ? icons.vault_unlocked : icons.vault_locked,
       onClick: () => setPage(Page.AUTH)
     },
-    { title: 'Options', icon: icons.options, onClick: () => setPage(Page.OPTIONS) }
+    {
+      title: 'Options',
+      icon: icons.options,
+      onClick: () => setPage(Page.OPTIONS)
+    }
   ]
 
   const pages: Map<Page, React.ReactNode> = new Map([
     [Page.AUTH, <Auth key={'auth'} />],
-    [
-      Page.OPTIONS,
-      <form key={'options'}>
-        <label>
-          <span>Host</span>
-          <input type='text' />
-        </label>
-      </form>
-    ]
+    [Page.OPTIONS, <Options key={'options'} />]
   ])
 
   useEffect(() => {

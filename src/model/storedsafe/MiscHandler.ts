@@ -30,7 +30,11 @@ async function getVaults (request: MakeStoredSafeRequest): Promise<SSVault[]> {
     )) as StoredSafeVaultsData
   } catch (error) {
     // NOTE: If vault list is empty, StoredSafe sends 404
-    data = error.response.data as StoredSafeVaultsData
+    if (error.response?.data !== undefined) {
+      data = error.response?.data as StoredSafeVaultsData
+    } else {
+      throw error
+    }
   }
   return data.VAULTS.map(vault => ({
     id: vault.id,
