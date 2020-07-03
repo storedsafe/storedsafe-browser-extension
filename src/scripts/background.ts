@@ -312,6 +312,7 @@ function onInstalled ({
  * Clear timeout function for idle timer.
  * */
 function clearIdleTimer (): void {
+  console.log('Clearing idle timer')
   window.clearTimeout(idleTimer)
   idleTimer = undefined
 }
@@ -326,7 +327,8 @@ function setupIdleTimer (): void {
     if (idleTimer !== undefined) {
       clearIdleTimer()
     }
-    const idleTimeout = (settings.get('idleMax').value as number) * 6e5
+    const idleTimeout = (settings.get('idleMax').value as number) * 6e4
+    console.log('Starting idle timer, logout in', idleTimeout, 'ms (', idleTimeout / 6e4, 'minutes)')
     idleTimer = window.setTimeout(() => {
       console.log('Invalidating all sessions due to inactivity.')
       invalidateAllSessions().catch(error => {
@@ -452,7 +454,7 @@ async function onMessage (
 
 function onCommand (command: string): void {
   if (command === 'fill') {
-    ;void (async () => {
+    void (async () => {
       const [tab] = await browser.tabs.query({
         currentWindow: true,
         active: true

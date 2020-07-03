@@ -1,0 +1,13 @@
+@import '../../../styles/variables.scss';
+
+.search-title {
+  background-repeat: no-repeat;
+  background-size: $menu-size - $spacing * 2;
+  background-position: left center;
+  padding-left: $menu-size;
+
+  .search-title-host {
+    color: $color-primary-0;
+    font-size: 0.9em;
+  }
+}

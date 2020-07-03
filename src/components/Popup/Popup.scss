@@ -17,6 +17,8 @@
   }
 
   .popup-page {
+    margin: $spacing;
+    margin-top: 0;
     overflow: hidden auto;
     box-sizing: border-box;
     max-height: 400px;

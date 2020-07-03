@@ -1,19 +1,12 @@
 @import '../../../styles/variables.scss';
 
-.welcome {
+.add-object {
+  box-sizing: border-box;
   display: grid;
   grid-template-rows: auto;
   row-gap: $spacing;
-  box-sizing: border-box;
-  width: 100%;
 
-  .welcome-article {
-    padding: $spacing;
-    background-color: $color-bg;
-    box-sizing: border-box;
-  }
-
-  .welcome-message {
+  .add-object-form {
     display: grid;
     grid-template-rows: auto;
     row-gap: $spacing;

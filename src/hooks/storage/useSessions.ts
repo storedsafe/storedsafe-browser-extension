@@ -99,6 +99,7 @@ export const useSessions = (): SessionsHook => {
 
   // Run when mounted
   useEffect(() => {
+    let mounted = true
     /**
      * Listen for changes in storage rather than updating state manually so
      * that external updates can be caught without having double updates when
@@ -111,7 +112,7 @@ export const useSessions = (): SessionsHook => {
       area: string
     ): void => {
       const change = changes.sessions
-      if (change?.newValue !== undefined && area === 'local') {
+      if (mounted && change?.newValue !== undefined && area === 'local') {
         setState(prevState => ({
           ...prevState,
           sessions: parse(change.newValue)
@@ -127,6 +128,7 @@ export const useSessions = (): SessionsHook => {
 
     // Remove listener when the component is unmounted.
     return (): void => {
+      mounted = false
       browser.storage.onChanged.removeListener(storageListener)
     }
   }, [])

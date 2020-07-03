@@ -91,6 +91,7 @@ export const useSites = (): SitesHook => {
 
   // Run when mounted
   useEffect(() => {
+    let mounted = true
     /**
      * Listen for changes in storage rather than updating state manually so
      * that external updates can be caught without having double updates when
@@ -104,12 +105,12 @@ export const useSites = (): SitesHook => {
     ): void => {
       const change = changes.sites
       if (change?.newValue !== undefined) {
-        if (area === 'managed') {
+        if (mounted && area === 'managed') {
           setState(prevState => ({
             ...prevState,
             system: change.newValue
           }))
-        } else if (area === 'sync') {
+        } else if (mounted && area === 'sync') {
           setState(prevState => ({
             ...prevState,
             user: change.newValue
@@ -126,6 +127,7 @@ export const useSites = (): SitesHook => {
 
     // Remove listener when the component is unmounted.
     return (): void => {
+      mounted = false
       browser.storage.onChanged.removeListener(storageListener)
     }
   }, [])

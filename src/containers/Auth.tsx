@@ -51,7 +51,6 @@ const AuthContainer: React.FunctionComponent<AuthHookProps> = (
   props: AuthHookProps
 ) => {
   const authProps = useAuth(props)
-
   return <Auth {...authProps} />
 }
 

@@ -43,13 +43,13 @@ export const Auth: React.FunctionComponent<AuthProps> = ({
         <SessionStatus
           host={site.host}
           session={sessions.get(site.host)}
-          onLogout={logout}
+          logout={logout}
           goto={goto}
         />
       ) : (
         <Login
           site={site}
-          onLogin={login}
+          login={login}
           sitePreferences={sitePreferences[site.host]}
         />
       ),

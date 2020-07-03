@@ -3,43 +3,57 @@
  * Popup UI.
  */
 import React, { useState, useEffect, useMemo } from 'react'
-import { Popup, PopupProps } from '../components/Popup'
 import { useSessions } from '../hooks/storage/useSessions'
-import { MenuItem, icons } from '../components/common/layout'
+import { useSites } from '../hooks/storage/useSites'
 import { actions as StoredSafeActions } from '../model/storedsafe/StoredSafe'
+import { OnAddSiteCallback, OnRemoveSiteCallback } from '../components/Options'
+import { TabValues } from '../components/Add/Add'
 import Auth from './Auth'
 import Options from './Options'
 import Welcome from './Welcome'
-import { useSites } from '../hooks/storage/useSites'
-import { OnAddSiteCallback, OnRemoveSiteCallback } from '../components/Options'
+import Add from './Add'
+import Search from './Search'
+
+import { Popup, PopupProps } from '../components/Popup'
+import { MenuItem, icons } from '../components/common/layout'
+import { useSearch } from '../hooks/utils/useSearch'
 
 enum Page {
   AUTH,
   OPTIONS,
-  WELCOME
+  WELCOME,
+  ADD,
+  SEARCH
 }
 
 const usePopup = (): PopupProps => {
   const sites = useSites()
   const sessions = useSessions()
   const [page, setPage] = useState<Page>()
+  const [tabValues, setTabValues] = useState<TabValues>()
+  const { find, ...searchProps } = useSearch()
 
   const isConfigured = useMemo(() => sites.all.length !== 0, [sites.all])
 
-  let menuItems: MenuItem[]
+  let menuItems: MenuItem[] = []
   if (isConfigured) {
-    menuItems = [
-      {
-        title: sessions.isOnline ? 'Sesssions' : 'Login',
-        icon: sessions.isOnline ? icons.vault_unlocked : icons.vault_locked,
-        onClick: () => setPage(Page.AUTH)
-      },
-      {
-        title: 'Options',
-        icon: icons.options,
-        onClick: () => setPage(Page.OPTIONS)
-      }
-    ]
+    if (sessions.isOnline) {
+      menuItems.push({
+        title: 'Add',
+        icon: icons.add,
+        onClick: () => setPage(Page.ADD)
+      })
+    }
+    menuItems.push({
+      title: sessions.isOnline ? 'Sesssions' : 'Login',
+      icon: sessions.isOnline ? icons.vault_unlocked : icons.vault_locked,
+      onClick: () => setPage(Page.AUTH)
+    })
+    menuItems.push({
+      title: 'Options',
+      icon: icons.options,
+      onClick: () => setPage(Page.OPTIONS)
+    })
   } else {
     menuItems = [
       {
@@ -65,7 +79,6 @@ const usePopup = (): PopupProps => {
         }
         let selectedTab = tabs[0]
         for (const tab of tabs) {
-          console.log(selectedTab)
           if (tab.lastAccessed > selectedTab.lastAccessed) {
             selectedTab = tab
           }
@@ -83,20 +96,41 @@ const usePopup = (): PopupProps => {
     await sites.add(site)
   }
 
-  const removeSite: OnRemoveSiteCallback = async id => await sites.remove(id)
+  const removeSite: OnRemoveSiteCallback = async id => {
+    const host = sites.user[id].host
+    if (sessions.sessions.has(host)) {
+    }
+    await sites.remove(id)
+    await StoredSafeActions.logout(host)
+  }
+
+  function clearTabValues (): void {
+    setTabValues(undefined)
+  }
+
+  function onFocus (): void {
+    setPage(Page.SEARCH)
+  }
 
   const pages: Map<Page, React.ReactNode> = new Map([
     [Page.AUTH, <Auth key='auth' goto={goto} />],
-    [Page.OPTIONS, <Options {...{ addSite, removeSite }} key='options' />],
-    [Page.WELCOME, <Welcome {...{ addSite, removeSite }} key='welcome' />]
+    [Page.OPTIONS, <Options key='options' {...{ addSite, removeSite }} />],
+    [Page.WELCOME, <Welcome key='welcome' {...{ addSite, removeSite }} />],
+    [
+      Page.ADD,
+      <Add tabValues={tabValues} clearTabValues={clearTabValues} key='add' />
+    ],
+    [Page.SEARCH, <Search key='search' goto={goto} {...searchProps} />]
   ])
 
   useEffect(() => {
+    let mounted = true
     if (!isConfigured) {
-      setPage(Page.WELCOME)
+      if (mounted) setPage(Page.WELCOME)
     } else if (!sessions.isOnline) {
-      setPage(Page.AUTH)
+      if (mounted) setPage(Page.AUTH)
     }
+    return () => { mounted = false }
   }, [sessions.isOnline, isConfigured])
 
   useEffect(() => {
@@ -105,13 +139,21 @@ const usePopup = (): PopupProps => {
     })
   }, [])
 
+  browser.runtime.onMessage.addListener(message => {
+    if (message.type === 'save') {
+      const { data } = message
+      setTabValues(data)
+    }
+  })
+
   const isInitialized = sessions.isInitialized && sites.isInitialized
 
   return {
     isInitialized,
     isOnline: sessions.isOnline,
     menuItems,
-    find: () => {},
+    onFocus,
+    find,
     page: pages.get(page) !== undefined ? pages.get(page) : null
   }
 }

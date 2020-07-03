@@ -94,6 +94,7 @@ export const usePreferences = (): PreferencesHook => {
 
   // Run when mounted
   useEffect(() => {
+    let mounted = true
     /**
      * Listen for changes in storage rather than updating state manually so
      * that external updates can be caught without having double updates when
@@ -106,7 +107,7 @@ export const usePreferences = (): PreferencesHook => {
       area: string
     ): void => {
       const change = changes.preferences
-      if (change?.newValue !== undefined && area === 'local') {
+      if (mounted && change?.newValue !== undefined && area === 'local') {
         setState(prevState => ({
           ...prevState,
           ...change.newValue
@@ -122,6 +123,7 @@ export const usePreferences = (): PreferencesHook => {
 
     // Remove listener when the component is unmounted.
     return (): void => {
+      mounted = false
       browser.storage.onChanged.removeListener(storageListener)
     }
   }, [])

@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import { useForm, FormEventCallbacks } from '../../../hooks/utils/useForm'
 import { Select, Checkbox, Button } from '../../common/input'
 import { Message } from '../../common/layout'
 import * as YubiKey from './YubiKey'
 import * as TOTP from './TOTP'
 import './Login.scss'
+import { useLoading } from '../../../hooks/utils/useLoading'
 
 type LoginFormValues = { remember: boolean } & LoginFields
 
@@ -15,22 +16,14 @@ export type OnLoginCallback = (
 
 interface LoginProps {
   site: Site
-  onLogin: OnLoginCallback
+  login: OnLoginCallback
   sitePreferences?: SitePreferences
   formEvents?: FormEventCallbacks
-  error?: string
-  loading?: boolean
-}
-
-interface LoginState {
-  isLoading: boolean
-  promise?: Promise<void>
-  error?: Error
 }
 
 export const Login: React.FunctionComponent<LoginProps> = ({
   site,
-  onLogin,
+  login,
   sitePreferences,
   formEvents
 }: LoginProps) => {
@@ -46,35 +39,12 @@ export const Login: React.FunctionComponent<LoginProps> = ({
     otp: ''
   }
   const [values, events, reset] = useForm(initialValues, formEvents)
-  const [state, setState] = useState<LoginState>({ isLoading: false })
+  const [state, setPromise] = useLoading()
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
     event.preventDefault()
-    setState({ isLoading: true, promise: onLogin(site, values) })
+    setPromise(login(site, values))
   }
-
-  // Handle asynchronous state in useEffect so that state updates can be
-  // cancelled if the component unmounts.
-  // Put the promise with the rest of the state so that only a single render
-  // is required when the state changes. This fixes the bug where the error
-  // state would not be reached because the component would dismount when the
-  // login promise was unset.
-  useEffect(() => {
-    let mounted = true
-    if (state.isLoading && state.promise !== undefined) {
-      state.promise
-        .then(() => {
-          if (mounted) setState({ isLoading: false })
-        })
-        .catch(error => {
-          if (mounted) setState({ isLoading: false, error })
-        })
-    }
-
-    return (): void => {
-      mounted = false
-    }
-  }, [state])
 
   const id = (name: string): string => site.host + '-' + name
   const hasError = state.error !== undefined

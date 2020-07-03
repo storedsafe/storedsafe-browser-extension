@@ -2,22 +2,29 @@ import React from 'react'
 import { Button } from '../../common/input'
 import { Message } from '../../common/layout'
 import './SessionStatus.scss'
+import { useLoading } from '../../../hooks/utils/useLoading'
 
-export type OnLogoutCallback = (host: string) => void
+export type OnLogoutCallback = (host: string) => Promise<void>
 
 interface SessionStatusProps {
   host: string
   session: Session
-  onLogout: OnLogoutCallback
+  logout: OnLogoutCallback
   goto: (host: string) => void
 }
 
 export const SessionStatus: React.FunctionComponent<SessionStatusProps> = ({
   host,
   session,
-  onLogout,
+  logout,
   goto
 }: SessionStatusProps) => {
+  const [state, setPromise] = useLoading()
+
+  function onLogout (host: string): void {
+    setPromise(logout(host), host)
+  }
+
   const warningMessages = (
     <article className='session-status-warnings'>
       <h3 className='warnings-title'>Warnings</h3>
@@ -57,7 +64,12 @@ export const SessionStatus: React.FunctionComponent<SessionStatusProps> = ({
       <Button type='button' onClick={() => goto(host)}>
         Go to {host}
       </Button>
-      <Button type='submit' color='danger' onClick={(): void => onLogout(host)}>
+      <Button
+        type='button'
+        color='danger'
+        onClick={(): void => onLogout(host)}
+        isLoading={state.isLoading && state.key === host}
+      >
         Logout
       </Button>
     </section>
