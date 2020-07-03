@@ -1,5 +1,5 @@
 import React from 'react'
-import { icons } from '../common/layout'
+import { icons } from '../../common/layout'
 import './SiteTitle.scss'
 
 interface SiteTitleProps {
@@ -12,6 +12,7 @@ export const SiteTitle: React.FunctionComponent<SiteTitleProps> = ({
   session
 }: SiteTitleProps) => {
   const isOnline = session !== undefined
+
   return (
     <article className={`site-title${isOnline ? ' online' : ''}`}>
       <p className='site-title-host'>{host}</p>

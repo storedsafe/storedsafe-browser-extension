@@ -4,7 +4,7 @@
   display: grid;
   grid-template-columns: 1fr auto;
   grid-column-gap: $spacing;
-  grid-row-gap: $spacing;
+  row-gap: $spacing;
   align-items: center;
   padding: $spacing;
   height: 100%;

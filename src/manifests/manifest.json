@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "StoredSafe",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "StoredSafe browser integration",
   "icons": {
     "64": "ico/icon.png"
@@ -16,7 +16,7 @@
   "commands": {
     "_execute_browser_action": {
       "suggested_key": {
-        "default": "Ctrl+Shift+V"
+        "default": "Ctrl+Shift+S"
       },
       "description": "Open StoredSafe Popup"
     },
@@ -36,5 +36,12 @@
       "js": ["browser-polyfill.min.js", "content_script.js"]
     }
   ],
-  "permissions": ["storage", "idle", "contextMenus", "activeTab", "tabs"]
+  "permissions": [
+    "storage",
+    "idle",
+    "contextMenus",
+    "activeTab",
+    "tabs",
+    "notifications"
+  ]
 }

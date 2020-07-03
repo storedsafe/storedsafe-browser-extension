@@ -43,54 +43,6 @@ export const defaults: SettingsValues = {
 }
 
 /**
- * Properties for fields to be passed to the React component that renders the
- * form to update settings.
- * */
-export interface FieldsProps {
-  [name: string]: {
-    label: string
-    unit?: string
-    attributes: {
-      type: string
-      [attr: string]: string | number | boolean
-    }
-  }
-}
-
-/**
- * Fields to be passed to the React component that renders the form to update
- * settings.
- * */
-export const fields: FieldsProps = {
-  autoFill: {
-    label: 'Auto Fill',
-    attributes: {
-      type: 'checkbox'
-    }
-  },
-  idleMax: {
-    label: 'Logout after being idle for',
-    unit: 'minutes',
-    attributes: {
-      type: 'number',
-      required: true,
-      min: 1,
-      max: 120
-    }
-  },
-  maxTokenLife: {
-    label: 'Always log out after being online for',
-    unit: 'hours',
-    attributes: {
-      type: 'number',
-      required: true,
-      min: 1,
-      max: 24
-    }
-  }
-}
-
-/**
  * Merge one or more unparsed settings objects into a single Settings object.
  * @param settingsObjects - Settings objects in descending order of priority.
  */

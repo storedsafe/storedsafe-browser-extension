@@ -3,6 +3,7 @@
 .popup {
   background-color: $color-primary-0;
   width: 360px;
+  overflow: hidden;
 
   .banner {
     padding-bottom: 0;
@@ -13,5 +14,11 @@
     max-width: 100%;
     max-height: 32px;
     margin: 0 auto;
+  }
+
+  .popup-page {
+    overflow: hidden auto;
+    box-sizing: border-box;
+    max-height: 400px;
   }
 }

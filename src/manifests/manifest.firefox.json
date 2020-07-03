@@ -1,7 +1,4 @@
 {
-  "options_ui": {
-    "browser_style": false
-  },
   "browser_specific_settings": {
     "gecko": {
       "id": "addon@storedsafe.com",

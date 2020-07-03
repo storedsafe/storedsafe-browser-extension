@@ -6,6 +6,7 @@ import './Popup.scss'
 
 export interface PopupProps {
   isInitialized: boolean
+  isOnline: boolean
   menuItems: MenuItem[]
   find: (needle: string) => void
   page?: React.ReactNode
@@ -13,6 +14,7 @@ export interface PopupProps {
 
 export const Popup: React.FunctionComponent<PopupProps> = ({
   isInitialized,
+  isOnline,
   menuItems,
   find,
   page
@@ -31,17 +33,15 @@ export const Popup: React.FunctionComponent<PopupProps> = ({
       onNeedleChange={setNeedle}
       onSearch={onSearch}
       isLoading={false}
+      disabled={!isOnline}
     />
   )
 
   return (
     <section className='popup'>
       <Banner />
-      <TopMenu
-        searchBar={searchBar}
-        menuItems={menuItems}
-      />
-      {page}
+      <TopMenu searchBar={searchBar} menuItems={menuItems} />
+      <article className='popup-page'>{page}</article>
     </section>
   )
 }

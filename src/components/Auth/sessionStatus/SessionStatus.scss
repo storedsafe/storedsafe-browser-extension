@@ -2,7 +2,7 @@
 
 .session-status {
   display: grid;
-  grid-row-gap: $spacing;
+  row-gap: $spacing;
 
   .warnings-title {
     color: $color-warning-0;

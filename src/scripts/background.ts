@@ -64,6 +64,7 @@ function setupKeepAlive (): void {
       await StoredSafeActions.check(host)
       const interval = timeout * 0.75 // Leave a little margin
       setInterval(() => {
+        console.log('Keepalive for', host)
         StoredSafeActions.check(host).catch(error => {
           console.error(error)
         })
@@ -86,6 +87,7 @@ function setupTimers (sessions: Sessions): void {
       sessionTimers.set(
         host,
         window.setTimeout(() => {
+          console.log('Maximum token lifetime reached for', host)
           void invalidateSession(host)
         }, tokenTimeout)
       )
@@ -326,6 +328,7 @@ function setupIdleTimer (): void {
     }
     const idleTimeout = (settings.get('idleMax').value as number) * 6e5
     idleTimer = window.setTimeout(() => {
+      console.log('Invalidating all sessions due to inactivity.')
       invalidateAllSessions().catch(error => {
         console.error(error)
       })

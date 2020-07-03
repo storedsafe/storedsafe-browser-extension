@@ -9,10 +9,6 @@
     align-items: center;
   }
 
-  &.disabled {
-    display: none;
-  }
-
   .search-bar-input {
     flex-grow: 1;
     height: $menu-size;
@@ -28,6 +24,12 @@
 
     &:active {
       border-bottom-color: $color-accent-3;
+    }
+
+    &:disabled {
+      background-color: $color-bg-dark-disabled !important;
+      color: $color-fg-dark-disabled !important;
+      border-color: $color-border-dark-disabled;
     }
   }
 
@@ -60,6 +62,15 @@
     &:focus.loading > svg {
       fill: transparent;
       stroke: $color-accent-0;
+    }
+
+    &:disabled {
+      background-color: $color-bg-dark-disabled !important;
+      color: $color-fg-dark-disabled !important;
+
+      & > svg {
+        fill: $color-fg-dark-disabled !important;
+      }
     }
   }
 }

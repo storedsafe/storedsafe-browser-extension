@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react'
-import { FormHook } from '../../hooks/utils/useForm'
+import { FormHook } from '../../../hooks/utils/useForm'
 
 export const renderFields: (
   formHook: FormHook<YubiKeyFields>,

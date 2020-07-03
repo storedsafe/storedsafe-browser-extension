@@ -1,0 +1,23 @@
+@import '../../../styles/variables.scss';
+
+.welcome {
+  padding: $spacing;
+  padding-top: 0;
+  display: grid;
+  grid-template-rows: auto;
+  row-gap: $spacing;
+  box-sizing: border-box;
+  width: 100%;
+
+  .welcome-article {
+    padding: $spacing;
+    background-color: $color-bg;
+    box-sizing: border-box;
+  }
+
+  .welcome-message {
+    display: grid;
+    grid-template-rows: auto;
+    row-gap: $spacing;
+  }
+}

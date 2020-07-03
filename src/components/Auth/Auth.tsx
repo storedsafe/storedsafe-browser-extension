@@ -1,6 +1,6 @@
 import React from 'react'
 import { ListView, ListItem, LoadingComponent } from '../common/layout'
-import { SiteTitle } from './SiteTitle'
+import { SiteTitle } from './layout/SiteTitle'
 import './Auth.scss'
 import { OnLoginCallback, Login } from './login/Login'
 import { OnLogoutCallback, SessionStatus } from './sessionStatus/SessionStatus'

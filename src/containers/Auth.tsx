@@ -47,10 +47,10 @@ const useAuth = ({ goto }: AuthHookProps): AuthProps => {
   }
 }
 
-const AuthContainer: React.FunctionComponent<AuthHookProps> = ({
-  goto
-}: AuthHookProps) => {
-  const authProps = useAuth({ goto })
+const AuthContainer: React.FunctionComponent<AuthHookProps> = (
+  props: AuthHookProps
+) => {
+  const authProps = useAuth(props)
 
   return <Auth {...authProps} />
 }

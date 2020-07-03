@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react'
 import { useForm, FormEventCallbacks } from '../../../hooks/utils/useForm'
 import { Select, Checkbox, Button } from '../../common/input'
 import { Message } from '../../common/layout'
-import * as YubiKey from '../YubiKey'
-import * as TOTP from '../TOTP'
+import * as YubiKey from './YubiKey'
+import * as TOTP from './TOTP'
 import './Login.scss'
 
 type LoginFormValues = { remember: boolean } & LoginFields
