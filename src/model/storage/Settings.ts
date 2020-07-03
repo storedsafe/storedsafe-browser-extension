@@ -83,7 +83,17 @@ const populate = (
  * @returns Merged user and system settings.
  * */
 async function get (): Promise<Settings> {
-  const { settings: systemSettings } = await systemStorage.get('settings')
+  let systemSettings: any = {}
+  try {
+    const { settings } = await systemStorage.get('settings')
+    systemSettings = settings === undefined ? {} : settings
+  } catch (error) {
+    if ((error as Error).message?.includes('storage manifest')) {
+      console.warn('No managed storage manifest found.')
+    } else {
+      throw error
+    }
+  }
   const { settings: userSettings } = await userStorage.get('settings')
   return merge(
     [systemSettings?.enforced, true],
