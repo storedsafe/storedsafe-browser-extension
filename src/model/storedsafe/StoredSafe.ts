@@ -155,9 +155,6 @@ async function logoutAll (): Promise<Sessions> {
  * */
 async function check (host: string): Promise<Sessions> {
   const isValid = await authHandler.check(makeRequest(host))
-  if (!isValid) {
-    console.log('Token for', host, 'is invalid, removing session.')
-  }
   return isValid
     ? await SessionsActions.fetch()
     : await SessionsActions.remove(host)
@@ -171,9 +168,9 @@ async function checkAll (): Promise<Sessions> {
   const sessions = await SessionsActions.fetch()
   const invalidHosts: string[] = []
   for (const host of sessions.keys()) {
+    console.log('CHECK', host)
     const isValid = await authHandler.check(makeRequest(host))
     if (!isValid) {
-      console.log('Token for', host, 'is invalid, removing session.')
       invalidHosts.push(host)
     }
   }

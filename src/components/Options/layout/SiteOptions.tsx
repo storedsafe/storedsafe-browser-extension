@@ -45,6 +45,7 @@ export const SiteOptions: React.FunctionComponent<SiteOptionsProps> = ({
               id='host'
               name='host'
               value={values.host}
+              required
               {...events}
             />
           </label>
@@ -55,6 +56,7 @@ export const SiteOptions: React.FunctionComponent<SiteOptionsProps> = ({
               id='apikey'
               name='apikey'
               value={values.apikey}
+              required
               {...events}
             />
           </label>

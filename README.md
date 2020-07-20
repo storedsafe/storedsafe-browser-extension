@@ -44,10 +44,15 @@ npm run build
 Check package.json for all scripts or use `yarn <command>` to use the installed tools directly.
 
 ### TODO
-- [ ] Finish production refactor
 - [ ] Implement network tests using msw
+- [x] ~Finish production refactor~
 
 ### Known bugs
+- [x] ~Can add site with empty fields~
+
+### Roadmap
+- Generate password
+- Notifications when filling / no results found on fill
 
 ### Future ideas
 - PIN code lock instead of logout after idle timer runs out.

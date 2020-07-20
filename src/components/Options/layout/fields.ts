@@ -34,7 +34,7 @@ export const fields: FieldsProps = {
     }
   },
   maxTokenLife: {
-    label: 'Always log out after being online for',
+    label: 'Logout after being online for',
     unit: 'hours',
     attributes: {
       type: 'number',
