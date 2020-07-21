@@ -57,12 +57,7 @@ export const Auth: React.FunctionComponent<AuthProps> = ({
     }
   })
 
-  const defaultSelected =
-    lastUsedSite !== undefined
-      ? lastUsedSite
-      : sites.length === 1
-        ? sites[0].host
-        : undefined
+  const defaultSelected = sites.length === 1 ? sites[0].host : undefined
 
   return (
     <section className='auth'>

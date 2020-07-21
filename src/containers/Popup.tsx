@@ -33,7 +33,10 @@ const usePopup = (): PopupProps => {
   const [tabValues, setTabValues] = useState<TabValues>()
   const { find, ...searchProps } = useSearch()
 
-  const isConfigured = useMemo(() => sites.all.length !== 0, [sites.all])
+  const isConfigured = useMemo(() => sites.all.length !== 0, [
+    sites.isInitialized,
+    sites.all
+  ])
 
   let menuItems: MenuItem[] = []
   if (isConfigured) {
@@ -97,11 +100,7 @@ const usePopup = (): PopupProps => {
   }
 
   const removeSite: OnRemoveSiteCallback = async id => {
-    const host = sites.user[id].host
-    if (sessions.sessions.has(host)) {
-    }
     await sites.remove(id)
-    await StoredSafeActions.logout(host)
   }
 
   function clearTabValues (): void {
@@ -123,15 +122,26 @@ const usePopup = (): PopupProps => {
     [Page.SEARCH, <Search key='search' goto={goto} {...searchProps} />]
   ])
 
+  const isInitialized = useMemo(
+    () => sessions.isInitialized && sites.isInitialized,
+    [sessions.isInitialized, sites.isInitialized]
+  )
+
   useEffect(() => {
     let mounted = true
-    if (!isConfigured) {
-      if (mounted) setPage(Page.WELCOME)
-    } else if (!sessions.isOnline) {
-      if (mounted) setPage(Page.AUTH)
+    if (isInitialized) {
+      if (!isConfigured) {
+        if (mounted) setPage(Page.WELCOME)
+      } else if (!sessions.isOnline) {
+        if (mounted) setPage(Page.AUTH)
+      } else {
+        if (mounted) setPage(Page.SEARCH)
+      }
     }
-    return () => { mounted = false }
-  }, [sessions.isOnline, isConfigured])
+    return () => {
+      mounted = false
+    }
+  }, [isInitialized, sessions.isOnline, isConfigured])
 
   useEffect(() => {
     StoredSafeActions.checkAll().catch(error => {
@@ -146,8 +156,6 @@ const usePopup = (): PopupProps => {
     }
   })
 
-  const isInitialized = sessions.isInitialized && sites.isInitialized
-
   return {
     isInitialized,
     isOnline: sessions.isOnline,
@@ -160,7 +168,6 @@ const usePopup = (): PopupProps => {
 
 const PopupContainer: React.FunctionComponent = () => {
   const popupProps = usePopup()
-
   return <Popup {...popupProps} />
 }
 

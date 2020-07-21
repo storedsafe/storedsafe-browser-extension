@@ -2,4 +2,3 @@ build
 node_modules
 config.js
 coverage
-dist.zip

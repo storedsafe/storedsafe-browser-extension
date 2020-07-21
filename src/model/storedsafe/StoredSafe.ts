@@ -168,7 +168,6 @@ async function checkAll (): Promise<Sessions> {
   const sessions = await SessionsActions.fetch()
   const invalidHosts: string[] = []
   for (const host of sessions.keys()) {
-    console.log('CHECK', host)
     const isValid = await authHandler.check(makeRequest(host))
     if (!isValid) {
       invalidHosts.push(host)

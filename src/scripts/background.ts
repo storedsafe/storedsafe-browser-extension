@@ -445,6 +445,7 @@ async function onMessage (
   },
   sender: browser.runtime.MessageSender
 ): Promise<void> {
+  console.log('Message recieved', message)
   const handler = messageHandlers[message.type]
   if (handler !== undefined) {
     return await handler(message.data, sender)

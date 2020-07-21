@@ -1,5 +1,5 @@
 import { useSessions } from '../storage/useSessions'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { actions as StoredSafeActions } from '../../model/storedsafe/StoredSafe'
 import { useTabResults } from '../storage/useTabResults'
 
@@ -25,13 +25,18 @@ export const useSearch = (): SearchHook => {
 
   const isInitialized = sessions.isInitialized && tabResults.isInitialized
 
+  async function getTabResults (): Promise<Results> {
+    const [{ id }] = await browser.tabs.query({
+      currentWindow: true,
+      active: true
+    })
+    return tabResults.tabResults.get(id)
+  }
+
   async function find (needle: string): Promise<void> {
     if (needle === '') {
-      const [{ id }] = await browser.tabs.query({
-        currentWindow: true,
-        active: true
-      })
-      setState({ results: tabResults.tabResults.get(id), errors: new Map() })
+      const results = await getTabResults()
+      setState({ results, errors: new Map() })
       return
     }
     const promises: Array<Promise<void>> = []
@@ -62,7 +67,9 @@ export const useSearch = (): SearchHook => {
         currentWindow: true,
         active: true
       })
-      await browser.tabs.sendMessage(tab.id, { type: 'fill', data: result })
+      const data = result.fields.map(({ name, value }) => [name, value])
+      await browser.tabs.sendMessage(tab.id, { type: 'fill', data })
+      window.close()
     }
 
     const ssObject = state.results.get(host)[id]
@@ -114,8 +121,16 @@ export const useSearch = (): SearchHook => {
     await navigator.clipboard.writeText(result.fields[fieldId].value)
   }
 
+  useEffect(() => {
+    if (state === undefined) {
+      getTabResults().then(results => {
+        setState({ results, errors: new Map() })
+      })
+    }
+  }, [state, isInitialized])
+
   return {
-    isInitialized,
+    isInitialized: isInitialized && state !== undefined,
     results: state?.results,
     errors: state?.errors,
     find,

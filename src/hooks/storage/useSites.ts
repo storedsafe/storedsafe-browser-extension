@@ -6,6 +6,9 @@
  */
 import { useState, useEffect } from 'react'
 import { actions as SitesActions } from '../../model/storage/Sites'
+import { actions as PreferencesActions } from '../../model/storage/Preferences'
+import { actions as SessionsActions } from '../../model/storage/Sessions'
+import { actions as StoredSafeActions } from '../../model/storedsafe/StoredSafe'
 
 /**
  * Base state of the hook.
@@ -86,6 +89,15 @@ export const useSites = (): SitesHook => {
    * @param id - Id in user sites list.
    */
   async function remove (id: number): Promise<void> {
+    const host = state.user[id]?.host
+    const preferences = await PreferencesActions.fetch()
+    if (preferences.lastUsedSite === host) {
+      await PreferencesActions.setLastUsedSite(undefined)
+    }
+    const sessions = await SessionsActions.fetch()
+    if (sessions.get(host) !== undefined) {
+      await StoredSafeActions.logout(host)
+    }
     await SitesActions.remove(id)
   }
 

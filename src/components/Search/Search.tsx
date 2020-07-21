@@ -60,9 +60,11 @@ export const Search: React.FunctionComponent<SearchProps> = ({
     })
   }
 
+  const defaultSelected = items.length === 1 ? items[0].key : undefined
+
   return (
     <section className='search'>
-      <ListView items={items} />
+      <ListView items={items} defaultSelected={defaultSelected} />
     </section>
   )
 }

@@ -145,6 +145,7 @@ test('useSites()', async () => {
   expect(user.innerHTML).toEqual(JSON.stringify(userMockSites))
 
   // Test events
+  mockSetSync.mockClear()
   fireEvent.click(screen.getByTestId('add'))
   await waitFor(() => expect(mockSetSync).toHaveBeenCalled())
   expect(mockSetSync).toHaveBeenCalledWith(
@@ -153,6 +154,8 @@ test('useSites()', async () => {
     })
   )
 
+  browser.storage.local.get = jest.fn(async () => await Promise.resolve({ preferences: [], sessions: [] }))
+  mockSetSync.mockClear()
   fireEvent.click(screen.getByTestId('remove'))
   await waitFor(() => expect(mockSetSync).toHaveBeenCalled())
   expect(mockSetSync).toHaveBeenCalledWith(

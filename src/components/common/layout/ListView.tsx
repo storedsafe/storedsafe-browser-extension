@@ -16,10 +16,12 @@ export const ListView: React.FunctionComponent<ListViewProps> = ({
   items,
   defaultSelected
 }: ListViewProps) => {
-  const [selected, setSelected] = useState<string>(defaultSelected)
+  const defaultExists = items.findIndex(({ key }) => defaultSelected) !== -1
+  const [selected, setSelected] = useState<string>(defaultExists ? defaultSelected : undefined)
 
   useEffect(() => {
-    setSelected(defaultSelected)
+    const newDefaultExists = items.findIndex(({ key }) => defaultSelected) !== -1
+    setSelected(newDefaultExists ? defaultSelected : undefined)
   }, [defaultSelected])
 
   const hasSelected = selected !== undefined
