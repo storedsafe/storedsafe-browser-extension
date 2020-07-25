@@ -48,7 +48,7 @@ const usePopup = (): PopupProps => {
       })
     }
     menuItems.push({
-      title: sessions.isOnline ? 'Sesssions' : 'Login',
+      title: sessions.isOnline ? 'Sessions' : 'Login',
       icon: sessions.isOnline ? icons.vault_unlocked : icons.vault_locked,
       onClick: () => setPage(Page.AUTH)
     })
