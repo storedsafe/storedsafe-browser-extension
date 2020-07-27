@@ -29,8 +29,6 @@ const parseSearchResult = (
   isDecrypted = false
 ): SSObject => {
   // Extract general object info
-  // const isFile = ssTemplate.info.file !== undefined
-  // const name = isFile ? ssObject.filename : ssObject.objectname
   const name = ssObject.objectname
   const { id, templateid: templateId, groupid: vaultId } = ssObject
   const { name: type, ico: icon } = ssTemplate.info
@@ -66,6 +64,7 @@ const parseSearchResult = (
   return { id, templateId, vaultId, name, type, icon, isDecrypted, fields }
 }
 
+const includeFields = ['password', 'pincode']
 /**
  * Find and parse StoredSafe objects matching the provided needle.
  * @param request - Request callback function.
@@ -85,9 +84,12 @@ async function find (
     const ssTemplate = data.TEMPLATES.find(
       template => template.id === ssObject.templateid
     )
-    const isFile = ssTemplate.info.file !== undefined
-    if (isFile) {
-      continue // Skip files
+    if (
+      ssTemplate.structure.findIndex(field =>
+        includeFields.includes(field.fieldname)
+      ) === -1
+    ) {
+      continue
     }
     results.push(parseSearchResult(ssObject, ssTemplate))
   }

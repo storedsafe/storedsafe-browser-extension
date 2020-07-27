@@ -39,9 +39,7 @@
   "permissions": [
     "storage",
     "idle",
-    "contextMenus",
     "activeTab",
-    "tabs",
-    "notifications"
+    "tabs"
   ]
 }

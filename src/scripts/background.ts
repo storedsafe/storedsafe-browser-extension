@@ -280,27 +280,13 @@ function onStorageChange (
 }
 
 /**
- * Create context menu to be displayed when right-clicking inside an input element.
- * */
-function createContextMenu (): void {
-  browser.contextMenus.create({
-    id: 'open-popup',
-    title: 'Show StoredSafe',
-    contexts: ['editable']
-  })
-}
-
-/**
  * Handle on install event.
- * In chrome, context menus need to be setup on install.
  * */
 function onInstalled ({
   reason
 }: {
   reason: browser.runtime.OnInstalledReason
 }): void {
-  createContextMenu()
-
   // Run online status initialization logic
   void (async () => {
     const sessions = await SessionsActions.fetch()
@@ -360,23 +346,6 @@ async function tryOpenPopup (): Promise<void> {
     await browser.browserAction.openPopup()
   } catch {
     return await Promise.resolve()
-  }
-}
-
-/**
- * Handle click events in context menu.
- * */
-function onMenuClick (info: browser.contextMenus.OnClickData): void {
-  switch (info.menuItemId) {
-    case 'open-popup': {
-      tryOpenPopup().catch(error => {
-        console.error(error)
-      })
-      break
-    }
-    default: {
-      break
-    }
   }
 }
 
@@ -477,14 +446,11 @@ browser.storage.onChanged.addListener(onStorageChange)
 // Handle startup logic, check status of existing sessions.
 browser.runtime.onStartup.addListener(onStartup)
 
-// Open options page and set up context menus
+// On install logic, set up initial state
 browser.runtime.onInstalled.addListener(onInstalled)
 
 // Invalidate sessions after being idle for some time
 browser.idle.onStateChanged.addListener(onIdle)
-
-// React to contect menu click (menu set up during onInstall)
-browser.contextMenus.onClicked.addListener(onMenuClick)
 
 // React to messages from other parts of the extension
 browser.runtime.onMessage.addListener(onMessage)
