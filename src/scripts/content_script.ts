@@ -212,6 +212,7 @@ function scanPage (): void {
   for (let i = 0; i < forms.length; i++) {
     const formType = getFormType(forms[i])
     if (fillFormTypes.includes(formType)) {
+      console.log('STOREDSAFE: Found form', forms[i], ' Type: ', formType)
       fillForms.push(forms[i])
     }
     if (saveFormTypes.includes(formType)) {
