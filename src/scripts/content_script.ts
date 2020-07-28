@@ -49,7 +49,7 @@ interface FormMatcher {
 const matchers: Map<string, Matcher> = new Map([
   ['username', {
     type: /text|email/,
-    name: /user|name|mail/
+    name: /user|name|mail|login/
   }],
   ['password', {
     type: /password/,
@@ -211,8 +211,8 @@ function scanPage (): void {
   fillForms = []
   for (let i = 0; i < forms.length; i++) {
     const formType = getFormType(forms[i])
+    console.log('STOREDSAFE: Found form', forms[i], ' Type: ', formType)
     if (fillFormTypes.includes(formType)) {
-      console.log('STOREDSAFE: Found form', forms[i], ' Type: ', formType)
       fillForms.push(forms[i])
     }
     if (saveFormTypes.includes(formType)) {
