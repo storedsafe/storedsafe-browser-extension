@@ -4,6 +4,7 @@
  * forms and fills forms when credentials are received from another script
  * using the extension message API.
  * */
+console.log('STOREDSAFE: Content script loaded')
 
 /**
  * Describes the purpose of the form. Some forms should be filled while others
@@ -254,7 +255,7 @@ const observer = new MutationObserver((mutation) => {
   console.log('STOREDSAFE: Site changed, scanning page again.')
   scanPage()
 });
-observer.observe(document.body, { childList: true });
+observer.observe(document.body, { childList: true, subtree: true });
 
 /**
  * Mapping of StoredSafe field names to StoredSafe values.
