@@ -47,26 +47,41 @@ interface FormMatcher {
  * get a match.
  * */
 const matchers: Map<string, Matcher> = new Map([
-  ['username', {
-    type: /text|email/,
-    name: /user|name|mail/
-  }],
-  ['password', {
-    type: /password/,
-    name: /.*/
-  }],
-  ['cardno', {
-    type: /text|tel/,
-    name: /card/
-  }],
-  ['expires', {
-    type: /text|tel/,
-    name: /exp/
-  }],
-  ['cvc', {
-    type: /text|tel/,
-    name: /sec|code|cvv|cvc/
-  }]
+  [
+    'username',
+    {
+      type: /text|email/,
+      name: /user|name|mail/
+    }
+  ],
+  [
+    'password',
+    {
+      type: /password/,
+      name: /.*/
+    }
+  ],
+  [
+    'cardno',
+    {
+      type: /text|tel/,
+      name: /card/
+    }
+  ],
+  [
+    'expires',
+    {
+      type: /text|tel/,
+      name: /exp/
+    }
+  ],
+  [
+    'cvc',
+    {
+      type: /text|tel/,
+      name: /sec|code|cvv|cvc/
+    }
+  ]
 ])
 
 /**
@@ -78,32 +93,45 @@ const matchers: Map<string, Matcher> = new Map([
  * be used, meaning more generic matchers should be placed further down in the list.
  * */
 const formMatchers: Map<FormType, FormMatcher> = new Map([
-  [FormType.Search, {
-    name: /search/,
-    role: /search/,
-    fields: [{
-      type: /text|search/,
-      name: /search/
-    }]
-  }],
-  [FormType.Register, {
-    name: /reg|signup/,
-    fields: [{
-      type: /password/,
-      name: /re/
-    }]
-  }],
-  [FormType.Login, {
-    name: /login/,
-    fields: [
-      matchers.get('username'),
-      matchers.get('password')
-    ]
-  }],
-  [FormType.NewsLetter, {
-    name: /news|letter/,
-    fields: []
-  }]
+  [
+    FormType.Search,
+    {
+      name: /search/,
+      role: /search/,
+      fields: [
+        {
+          type: /text|search/,
+          name: /search/
+        }
+      ]
+    }
+  ],
+  [
+    FormType.Register,
+    {
+      name: /reg|signup/,
+      fields: [
+        {
+          type: /password/,
+          name: /re/
+        }
+      ]
+    }
+  ],
+  [
+    FormType.Login,
+    {
+      name: /login/,
+      fields: [matchers.get('username'), matchers.get('password')]
+    }
+  ],
+  [
+    FormType.NewsLetter,
+    {
+      name: /news|letter/,
+      fields: []
+    }
+  ]
 ])
 
 /**
@@ -112,12 +140,10 @@ const formMatchers: Map<FormType, FormMatcher> = new Map([
  * @returns True if the element is an input that can be filled by the user.
  * */
 function isElementFillable (element: Element): boolean {
-  return element instanceof HTMLInputElement && ![
-    'hidden',
-    'button',
-    'submit',
-    'reset'
-  ].includes(element.type)
+  return (
+    element instanceof HTMLInputElement &&
+    !['hidden', 'button', 'submit', 'reset'].includes(element.type)
+  )
 }
 
 /**
@@ -126,15 +152,13 @@ function isElementFillable (element: Element): boolean {
  * @param element - Input element to attempt a match with.
  * @returns True if the element is a match for the field.
  * */
-function isMatch (
-  field: string,
-  element: HTMLInputElement
-): boolean {
+function isMatch (field: string, element: HTMLInputElement): boolean {
   if (matchers.get(field) === undefined) return false
   const types = new RegExp(matchers.get(field).type, 'i')
   const name = new RegExp(matchers.get(field).name, 'i')
   return (
-    types.test(element.type) && (name.test(element.name) || name.test(element.id))
+    types.test(element.type) &&
+    (name.test(element.name) || name.test(element.id))
   )
 }
 
@@ -168,8 +192,15 @@ function getFormType (form: HTMLFormElement): FormType {
       let fieldMatch = false
       for (let j = 0; j < form.length; j++) {
         const element = form[j]
-        if (element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement || element instanceof HTMLSelectElement) {
-          if (fieldType.test(element.type) && (fieldName.test(element.id) || fieldName.test(element.name))) {
+        if (
+          element instanceof HTMLInputElement ||
+          element instanceof HTMLTextAreaElement ||
+          element instanceof HTMLSelectElement
+        ) {
+          if (
+            fieldType.test(element.type) &&
+            (fieldName.test(element.id) || fieldName.test(element.name))
+          ) {
             fieldMatch = true
           }
         }
@@ -185,18 +216,12 @@ function getFormType (form: HTMLFormElement): FormType {
 /**
  * Form types that should be filled by the extension.
  * */
-const fillFormTypes: FormType[] = [
-  FormType.Login,
-  FormType.Card
-]
+const fillFormTypes: FormType[] = [FormType.Login, FormType.Card]
 
 /**
  * Form types that should be saved by the extension when the form is submitted.
  * */
-const saveFormTypes: FormType[] = [
-  FormType.Login,
-  FormType.Register
-]
+const saveFormTypes: FormType[] = [FormType.Login, FormType.Register]
 
 let fillForms: HTMLFormElement[] = []
 /**
@@ -215,29 +240,36 @@ function scanPage (): void {
       fillForms.push(forms[i])
     }
     if (saveFormTypes.includes(formType)) {
-      forms[i].addEventListener('submit', (event) => {
+      forms[i].addEventListener('submit', event => {
         const values: Record<string, string> = {}
         const target = event.target as HTMLFormElement
         for (const [field] of matchers) {
           for (let i = 0; i < target.length; i++) {
             const element = target[i]
-            if (element instanceof HTMLInputElement && isMatch(field, element)) {
+            if (
+              element instanceof HTMLInputElement &&
+              isMatch(field, element)
+            ) {
               values[field] = element.value
             }
           }
         }
-        browser.runtime.sendMessage({
-          type: 'submit',
-          data: values
-        }).catch(error => console.error(error))
+        browser.runtime
+          .sendMessage({
+            type: 'submit',
+            data: values
+          })
+          .catch(error => console.error(error))
       })
     }
   }
 
   if (fillForms.length > 0) {
-    browser.runtime.sendMessage({
-      type: 'tabSearch'
-    }).catch(error => console.error(error))
+    browser.runtime
+      .sendMessage({
+        type: 'tabSearch'
+      })
+      .catch(error => console.error(error))
   }
 }
 
@@ -277,10 +309,13 @@ function fillForm (data: Data, submit = false): void {
             elementFilled = true
             filled = true
             element.value = value
+            // Manually trigger change event after value change for sites depending on this
+            element.dispatchEvent(new Event('change'))
             break
           }
         }
-        if (!elementFilled) { // If no field matched this element
+        if (!elementFilled) {
+          // If no field matched this element
           element.focus() // Focus element for easier access (example otp field)
         }
       }
@@ -305,9 +340,7 @@ interface Message {
  * Handle messages sent to the tab by other scripts.
  * @param message - Message sent by other script.
  * */
-function onMessage (
-  message: Message
-): void {
+function onMessage (message: Message): void {
   if (message.type === 'fill') {
     fillForm(message.data)
   }
