@@ -53,7 +53,7 @@ const matchers: Map<string, Matcher> = new Map([
     name: /user|name|mail|login|namn|id/
   }],
   ['password', {
-    type: /password|pw/,
+    type: /password/,
     name: /.*/
   }],
   ['cardno', {
@@ -91,7 +91,7 @@ const formMatchers: Map<FormType, FormMatcher> = new Map([
     name: /reg|signup/,
     fields: [{
       type: /password/,
-      name: /re/
+      name: /register|retype/
     }]
   }],
   [FormType.Login, {
