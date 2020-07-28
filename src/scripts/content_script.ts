@@ -4,6 +4,7 @@
  * forms and fills forms when credentials are received from another script
  * using the extension message API.
  * */
+console.log('STOREDSAFE: Content script loaded')
 
 /**
  * Describes the purpose of the form. Some forms should be filled while others
@@ -47,41 +48,26 @@ interface FormMatcher {
  * get a match.
  * */
 const matchers: Map<string, Matcher> = new Map([
-  [
-    'username',
-    {
-      type: /text|email/,
-      name: /user|name|mail/
-    }
-  ],
-  [
-    'password',
-    {
-      type: /password/,
-      name: /.*/
-    }
-  ],
-  [
-    'cardno',
-    {
-      type: /text|tel/,
-      name: /card/
-    }
-  ],
-  [
-    'expires',
-    {
-      type: /text|tel/,
-      name: /exp/
-    }
-  ],
-  [
-    'cvc',
-    {
-      type: /text|tel/,
-      name: /sec|code|cvv|cvc/
-    }
-  ]
+  ['username', {
+    type: /text|email/,
+    name: /user|name|mail|login|namn|id/
+  }],
+  ['password', {
+    type: /password/,
+    name: /.*/
+  }],
+  ['cardno', {
+    type: /text|tel/,
+    name: /card/
+  }],
+  ['expires', {
+    type: /text|tel/,
+    name: /exp/
+  }],
+  ['cvc', {
+    type: /text|tel/,
+    name: /sec|code|cvv|cvc/
+  }]
 ])
 
 /**
@@ -93,45 +79,32 @@ const matchers: Map<string, Matcher> = new Map([
  * be used, meaning more generic matchers should be placed further down in the list.
  * */
 const formMatchers: Map<FormType, FormMatcher> = new Map([
-  [
-    FormType.Search,
-    {
-      name: /search/,
-      role: /search/,
-      fields: [
-        {
-          type: /text|search/,
-          name: /search/
-        }
-      ]
-    }
-  ],
-  [
-    FormType.Register,
-    {
-      name: /reg|signup/,
-      fields: [
-        {
-          type: /password/,
-          name: /re/
-        }
-      ]
-    }
-  ],
-  [
-    FormType.Login,
-    {
-      name: /login/,
-      fields: [matchers.get('username'), matchers.get('password')]
-    }
-  ],
-  [
-    FormType.NewsLetter,
-    {
-      name: /news|letter/,
-      fields: []
-    }
-  ]
+  [FormType.Search, {
+    name: /search/,
+    role: /search/,
+    fields: [{
+      type: /text|search/,
+      name: /search/
+    }]
+  }],
+  [FormType.Register, {
+    name: /reg|signup/,
+    fields: [{
+      type: /password/,
+      name: /register|retype/
+    }]
+  }],
+  [FormType.Login, {
+    name: /login/,
+    fields: [
+      matchers.get('username'),
+      matchers.get('password')
+    ]
+  }],
+  [FormType.NewsLetter, {
+    name: /news|letter/,
+    fields: []
+  }]
 ])
 
 /**
@@ -171,7 +144,7 @@ function getFormType (form: HTMLFormElement): FormType {
   for (const [formType, formTypeMatchers] of formMatchers) {
     // Check for form name or id match
     const name = new RegExp(formTypeMatchers.name, 'i')
-    if (name.test(form.id) || name.test(form.name)) {
+    if (name.test(form.id) || name.test(form.name) || name.test(form.className)) {
       return formType
     }
 
@@ -236,6 +209,7 @@ function scanPage (): void {
   fillForms = []
   for (let i = 0; i < forms.length; i++) {
     const formType = getFormType(forms[i])
+    console.log('STOREDSAFE: Found form', forms[i], ' Type: ', formType)
     if (fillFormTypes.includes(formType)) {
       fillForms.push(forms[i])
     }
@@ -279,14 +253,13 @@ scanPage()
 // Observe changes in the webpage in case there are forms that are not rendered
 // when the DOM is first loaded.
 // TODO: Fix looping when other extensions change the form
-/*
- * const observer = new MutationObserver((mutation) => {
- *   for (const { addedNodes } of mutation) {
- *   }
- *   //scanPage()
- * });
- * observer.observe(document.body, { childList: true });
- */
+const observer = new MutationObserver((mutation) => {
+  // for (const { addedNodes } of mutation) {
+  // }
+  console.log('STOREDSAFE: Site changed, scanning page again.')
+  scanPage()
+});
+observer.observe(document.body, { childList: true, subtree: true });
 
 /**
  * Mapping of StoredSafe field names to StoredSafe values.
