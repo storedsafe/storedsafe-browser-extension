@@ -147,7 +147,7 @@ function getFormType (form: HTMLFormElement): FormType {
   for (const [formType, formTypeMatchers] of formMatchers) {
     // Check for form name or id match
     const name = new RegExp(formTypeMatchers.name, 'i')
-    if (name.test(form.id) || name.test(form.name)) {
+    if (name.test(form.id) || name.test(form.name) || name.test(form.className)) {
       return formType
     }
 
