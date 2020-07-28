@@ -48,11 +48,11 @@ interface FormMatcher {
  * */
 const matchers: Map<string, Matcher> = new Map([
   ['username', {
-    type: /text|email/,
+    type: /text|email|id/,
     name: /user|name|mail|login/
   }],
   ['password', {
-    type: /password/,
+    type: /password|pw/,
     name: /.*/
   }],
   ['cardno', {

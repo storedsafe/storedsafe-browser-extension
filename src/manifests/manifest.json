@@ -32,7 +32,7 @@
   },
   "content_scripts": [
     {
-      "matches": ["http*://*/*"],
+      "matches": ["*://*/*"],
       "js": ["browser-polyfill.min.js", "content_script.js"]
     }
   ],
