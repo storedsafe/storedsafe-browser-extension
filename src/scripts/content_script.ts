@@ -49,8 +49,8 @@ interface FormMatcher {
  * */
 const matchers: Map<string, Matcher> = new Map([
   ['username', {
-    type: /text|email|id/,
-    name: /user|name|mail|login/
+    type: /text|email/,
+    name: /user|name|mail|login|namn|id/
   }],
   ['password', {
     type: /password|pw/,
