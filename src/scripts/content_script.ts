@@ -247,14 +247,13 @@ scanPage()
 // Observe changes in the webpage in case there are forms that are not rendered
 // when the DOM is first loaded.
 // TODO: Fix looping when other extensions change the form
-/*
- * const observer = new MutationObserver((mutation) => {
- *   for (const { addedNodes } of mutation) {
- *   }
- *   //scanPage()
- * });
- * observer.observe(document.body, { childList: true });
- */
+const observer = new MutationObserver((mutation) => {
+  // for (const { addedNodes } of mutation) {
+  // }
+  console.log('STOREDSAFE: Site changed, scanning page again.')
+  scanPage()
+});
+observer.observe(document.body, { childList: true });
 
 /**
  * Mapping of StoredSafe field names to StoredSafe values.
