@@ -61,8 +61,8 @@ export const Login: React.FunctionComponent<LoginProps> = ({
               value={values.loginType}
               {...events}
             >
-              <option value='yubikey'>YubiKey</option>
               <option value='totp'>TOTP</option>
+              <option value='yubikey'>YubiKey</option>
             </Select>
           </label>
           <label htmlFor={id('username')}>
