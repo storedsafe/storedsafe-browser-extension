@@ -240,6 +240,8 @@ function scanPage (): void {
   fillForms = []
   for (let i = 0; i < forms.length; i++) {
     const formType = getFormType(forms[i])
+    // TODO: Remove log statement
+    console.log('STOREDSAFE: Found form ', forms[i], formType)
     if (fillFormTypes.includes(formType)) {
       fillForms.push(forms[i])
     }
@@ -286,6 +288,8 @@ scanPage()
 const observer = new MutationObserver(mutation => {
   // for (const { addedNodes } of mutation) {
   // }
+  // TODO: Remove log statement
+  console.log('STOREDSAFE: Site DOM updated, scan again.')
   scanPage()
 })
 observer.observe(document.body, { childList: true, subtree: true })
