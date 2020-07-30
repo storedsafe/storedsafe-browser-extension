@@ -51,7 +51,7 @@ module.exports = (env, args) => ({
   devtool: 'source-map',
 
   plugins: [
-    args.watch ? new CleanWebpackPlugin() : () => {},
+    !args.watch ? new CleanWebpackPlugin() : () => { console.log('skip clean') },
     new HtmlWebpackPlugin({
       chunks: ['main'],
       templateParameters: {
