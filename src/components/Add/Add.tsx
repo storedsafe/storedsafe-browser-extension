@@ -1,18 +1,10 @@
 import React from 'react'
 import './Add.scss'
-import { AddObject, AddObjectProps } from './layout/AddObject'
+import { AddObject, AddObjectProps, AddValues } from './layout/AddObject'
 import { Button } from '../common/input'
 import { Message, LoadingComponent } from '../common/layout'
 
-export interface AddValues {
-  [key: string]: string
-}
-
-export interface TabValues extends AddValues {
-  url: string
-  name: string
-  [key: string]: string
-}
+export * from './layout/AddObject'
 
 export type OnSelectChangeCallback = (selected: number) => void
 export interface SelectType<T> {

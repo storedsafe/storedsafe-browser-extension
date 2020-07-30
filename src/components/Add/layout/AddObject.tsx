@@ -129,7 +129,7 @@ export const AddObject: React.FunctionComponent<AddObjectProps> = ({
       <section className='add-object'>
         {selectHost}
         <Message type='warning'>
-          <p>No vaults found for this host.</p>
+          <p>No vaults with write access found for this host.</p>
           <p>
             Add a vault or ask your administrator to give you access to one.
           </p>

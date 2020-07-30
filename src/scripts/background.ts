@@ -365,12 +365,13 @@ type MessageHandler<T> = (
 const messageHandlers: {
   tabSearch: MessageHandler<void>
   copyToClipboard: MessageHandler<string>
-  submit: MessageHandler<object>
+  submit: MessageHandler<{ openFrame: () => Promise<void>, values: object}>
+  toggle: MessageHandler<void>
   [key: string]: MessageHandler<unknown>
 } = {
   tabSearch: async (data, sender) => await tabFind(sender.tab),
   copyToClipboard: async value => await copyToClipboard(value),
-  submit: async (values, { tab }) => {
+  submit: async ({ openFrame, values }, { tab }) => {
     const { url, id } = tab
 
     // If site is blacklisted, don't offer to save
@@ -396,11 +397,14 @@ const messageHandlers: {
         data: values
       })
     }
-    try {
-      return await browser.browserAction.openPopup().then(sendSaveMessage)
-    } catch (error) {
-      return await sendSaveMessage()
-    }
+
+    await openFrame()
+    return sendSaveMessage()
+  },
+  toggle: async (data, sender) => {
+    browser.tabs.sendMessage(sender.tab.id, {
+      type: 'toggle'
+    })
   }
 }
 
@@ -419,7 +423,7 @@ async function onMessage (
   if (handler !== undefined) {
     return await handler(message.data, sender)
   }
-  throw new Error(`Invalid message type: ${message.type}`)
+  // throw new Error(`Invalid message type: ${message.type}`) // other scripts can get messages
 }
 
 function onCommand (command: string): void {

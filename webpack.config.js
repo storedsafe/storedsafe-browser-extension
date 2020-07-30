@@ -116,7 +116,7 @@ module.exports = (env, args) => ({
   ],
 
   externals: {
-    // react: 'React',
-    // 'react-dom': 'ReactDOM'
+    react: 'React',
+    'react-dom': 'ReactDOM'
   }
 })

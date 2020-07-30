@@ -4,6 +4,8 @@
  * forms and fills forms when credentials are received from another script
  * using the extension message API.
  * */
+import { drawToggle, drawPopup } from './inject'
+drawToggle()
 
 /**
  * Describes the purpose of the form. Some forms should be filled while others
@@ -263,7 +265,7 @@ function scanPage (): void {
         browser.runtime
           .sendMessage({
             type: 'submit',
-            data: values
+            data: { openFrame: drawPopup, values }
           })
           .catch(error => console.error(error))
       })

@@ -56,8 +56,8 @@ async function getTemplates (
   )) as StoredSafeTemplateData
   const templates: SSTemplate[] = []
   for (const template of data.TEMPLATE) {
-    // Skip files
-    if (template.INFO.file !== undefined) continue
+    // TODO: Decide whether to allow templates other than Login Info
+    if (template.INFO.id !== '20') continue
     templates.push({
       id: template.INFO.id,
       name: template.INFO.name,

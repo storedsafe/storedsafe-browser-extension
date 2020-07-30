@@ -28,13 +28,24 @@
     }
   },
   "background": {
-    "scripts": ["browser-polyfill.min.js", "background.js"]
+    "scripts": [
+      "browser-polyfill.min.js",
+      "background.js"
+    ]
   },
   "content_scripts": [
     {
-      "matches": ["*://*/*"],
-      "js": ["browser-polyfill.min.js", "content_script.js"]
+      "matches": [
+        "*://*/*"
+      ],
+      "js": [
+        "browser-polyfill.min.js",
+        "content_script.js"
+      ]
     }
+  ],
+  "web_accessible_resources": [
+    "index.html"
   ],
   "permissions": [
     "storage",

@@ -4,13 +4,14 @@
  * */
 import React, { useState } from 'react'
 import DebugStorage from './DebugStorage'
-// import Options from './Options'
 import Popup from './Popup'
+import Inject from './Inject'
 
 enum Page {
-  Options = 'options',
   Popup = 'popup',
-  Debug = 'debug'
+  Debug = 'debug',
+  Inject = 'inject',
+  Toggle = 'toggle',
 }
 
 /**
@@ -32,17 +33,29 @@ const Extension: React.FunctionComponent = () => {
         setPage(Page.Debug)
         break
       }
+      case Page.Inject: {
+        setPage(Page.Inject)
+        break
+      }
+      case Page.Toggle: {
+        setPage(Page.Toggle)
+        break
+      }
       default: {
-        setPage(Page.Options)
+        setPage(Page.Popup)
       }
     }
   }, [])
 
+  const toggle = () => {
+    browser.runtime.sendMessage({ type: 'toggle' })
+  }
   return (
     <section className='extension'>
       {page === Page.Debug && <DebugStorage />}
       {page === Page.Popup && <Popup />}
-      {/* {page === Page.Options && <Options />} */}
+      {page === Page.Inject && <Inject />}
+      {page === Page.Toggle && <button onClick={toggle}>Toggle</button>}
     </section>
   )
 }
