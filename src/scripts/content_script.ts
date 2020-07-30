@@ -286,11 +286,15 @@ scanPage()
 // when the DOM is first loaded.
 // TODO: Fix looping when other extensions change the form
 const observer = new MutationObserver(mutation => {
-  // for (const { addedNodes } of mutation) {
-  // }
-  // TODO: Remove log statement
-  console.log('STOREDSAFE: Site DOM updated, scan again.')
-  scanPage()
+  for (const { addedNodes } of mutation) {
+    for (const node of addedNodes) {
+      if (node instanceof Element && node.querySelector('form') !== null) {
+        // TODO: Remove log statement
+        console.log('STOREDSAFE: Site DOM updated, scan again.')
+        scanPage()
+      }
+    }
+  }
 })
 observer.observe(document.body, { childList: true, subtree: true })
 
