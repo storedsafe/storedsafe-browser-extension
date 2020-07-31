@@ -121,7 +121,7 @@ const formMatchers: Map<FormType, FormMatcher> = new Map([
   [
     FormType.Login,
     {
-      name: /login/,
+      name: /login|signin|sign-in/,
       fields: [matchers.get('username'), matchers.get('password')]
     }
   ],
