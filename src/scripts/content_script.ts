@@ -40,9 +40,9 @@ interface Matcher {
  * @param fields - List of matchers for the input fields inside the form.
  * */
 interface FormMatcher {
-  name: RegExp
+  name?: RegExp
   role?: RegExp
-  fields: Matcher[]
+  fields?: Matcher[]
 }
 
 /**
@@ -55,11 +55,18 @@ const matchers: Map<string, Matcher> = new Map([
     'username',
     {
       type: /text|email/,
-      name: /user|name|mail|login|namn|id/
+      name: /user|name|mail|login|namn|id|session_key/
     }
   ],
   [
     'password',
+    {
+      type: /password/,
+      name: /.*/
+    }
+  ],
+  [
+    'pincode',
     {
       type: /password/,
       name: /.*/
@@ -125,15 +132,19 @@ const formMatchers: Map<FormType, FormMatcher> = new Map([
   [
     FormType.Login,
     {
-      name: /login|signin|sign-in/,
       fields: [matchers.get('username'), matchers.get('password')]
+    }
+  ],
+  [
+    FormType.Login,
+    {
+      fields: [matchers.get('username'), matchers.get('pincode')]
     }
   ],
   [
     FormType.NewsLetter,
     {
       name: /news|letter/,
-      fields: []
     }
   ]
 ])
@@ -174,13 +185,15 @@ function isMatch (field: string, element: HTMLInputElement): boolean {
 function getFormType (form: HTMLFormElement): FormType {
   for (const [formType, formTypeMatchers] of formMatchers) {
     // Check for form name or id match
-    const name = new RegExp(formTypeMatchers.name, 'i')
-    if (
-      name.test(form.id) ||
-      name.test(form.name) ||
+    if (formTypeMatchers.name !== undefined) {
+      const name = new RegExp(formTypeMatchers.name, 'i')
+      if (
+        name.test(form.id) ||
+        name.test(form.name) ||
       name.test(form.className)
-    ) {
-      return formType
+      ) {
+        return formType
+      }
     }
 
     // Check for form role
@@ -193,30 +206,32 @@ function getFormType (form: HTMLFormElement): FormType {
     }
 
     // Check for fields match
-    let match = formTypeMatchers.fields.length !== 0
-    for (let i = 0; i < formTypeMatchers.fields.length; i++) {
-      const fieldName = new RegExp(formTypeMatchers.fields[i].name, 'i')
-      const fieldType = new RegExp(formTypeMatchers.fields[i].type, 'i')
-      let fieldMatch = false
-      for (let j = 0; j < form.length; j++) {
-        const element = form[j]
-        if (
-          element instanceof HTMLInputElement ||
-          element instanceof HTMLTextAreaElement ||
-          element instanceof HTMLSelectElement
-        ) {
+    if (formTypeMatchers.fields !== undefined) {
+      let match = formTypeMatchers.fields.length !== 0
+      for (let i = 0; i < formTypeMatchers.fields.length; i++) {
+        const fieldName = new RegExp(formTypeMatchers.fields[i].name, 'i')
+        const fieldType = new RegExp(formTypeMatchers.fields[i].type, 'i')
+        let fieldMatch = false
+        for (let j = 0; j < form.length; j++) {
+          const element = form[j]
           if (
-            fieldType.test(element.type) &&
-            (fieldName.test(element.id) || fieldName.test(element.name))
+            element instanceof HTMLInputElement ||
+            element instanceof HTMLTextAreaElement ||
+          element instanceof HTMLSelectElement
           ) {
-            fieldMatch = true
+            if (
+              fieldType.test(element.type) &&
+              (fieldName.test(element.id) || fieldName.test(element.name))
+            ) {
+              fieldMatch = true
+            }
           }
         }
+        // Overall match only if all fields find a matching element.
+        match = match && fieldMatch
       }
-      // Overall match only if all fields find a matching element.
-      match = match && fieldMatch
+      if (match) return formType
     }
-    if (match) return formType
   }
   return FormType.Unknown
 }
