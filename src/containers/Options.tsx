@@ -8,6 +8,7 @@ import {
 } from '../components/Options'
 import { useSites } from '../hooks/storage/useSites'
 import { useSettings } from '../hooks/storage/useSettings'
+import { useBlacklist } from '../hooks/storage/useBlacklist'
 
 interface OptionsHookProps {
   addSite: OnAddSiteCallback
@@ -20,6 +21,7 @@ const useOptions = ({
 }: OptionsHookProps): OptionsProps => {
   const sites = useSites()
   const settings = useSettings()
+  const blacklist = useBlacklist()
 
   const isInitialized = sites.isInitialized && settings.isInitialized
 
@@ -38,6 +40,10 @@ const useOptions = ({
     generalOptionsProps: {
       saveSettings,
       settings: settings.settings
+    },
+    blacklistOptionsProps: {
+      removeBlacklistHost: blacklist.remove,
+      blacklist: blacklist.blacklist
     }
   }
 }

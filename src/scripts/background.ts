@@ -314,7 +314,13 @@ function setupIdleTimer (): void {
       clearIdleTimer()
     }
     const idleTimeout = (settings.get('idleMax').value as number) * 6e4
-    console.log('Starting idle timer, logout in', idleTimeout, 'ms (', idleTimeout / 6e4, 'minutes)')
+    console.log(
+      'Starting idle timer, logout in',
+      idleTimeout,
+      'ms (',
+      idleTimeout / 6e4,
+      'minutes)'
+    )
     idleTimer = window.setTimeout(() => {
       console.log('Invalidating all sessions due to inactivity.')
       invalidateAllSessions().catch(error => {
@@ -365,26 +371,36 @@ type MessageHandler<T> = (
 const messageHandlers: {
   tabSearch: MessageHandler<void>
   copyToClipboard: MessageHandler<string>
-  submit: MessageHandler<{ openFrame: () => Promise<void>, values: object}>
+  submit: MessageHandler<Record<string, string>>
   toggle: MessageHandler<void>
   [key: string]: MessageHandler<unknown>
 } = {
   tabSearch: async (data, sender) => await tabFind(sender.tab),
   copyToClipboard: async value => await copyToClipboard(value),
-  submit: async ({ openFrame, values }, { tab }) => {
+  submit: async (values, { tab }) => {
     const { url, id } = tab
+
+    // If user is not online, don't offer to save
+    const sessions = await SessionsActions.fetch()
+    if (sessions.size === 0) return
 
     // If site is blacklisted, don't offer to save
     const blacklist = await BlacklistActions.fetch()
     if (blacklist.includes(url)) return
 
-    // If result for site exists in cache, don't offer to save
+    // If result with username for site exists in cache, don't offer to save
     const tabResults = await TabResultsActions.fetch()
     for (const results of tabResults.get(id).values()) {
       for (const result of results) {
         for (const { value } of result.fields) {
+          if (value === undefined) continue
           if (value.match(urlToNeedle(url)) !== null) {
-            return
+            const username = result.fields.find(
+              ({ name }) => name === 'username'
+            ).value
+            if (username === values['username']) {
+              return
+            }
           }
         }
       }
@@ -392,14 +408,20 @@ const messageHandlers: {
 
     const sendSaveMessage = async (): Promise<void> => {
       values = { name: urlToNeedle(url), url, ...values }
-      return await browser.runtime.sendMessage({
-        type: 'save',
+      await browser.tabs.sendMessage(id, {
+        type: 'open-save',
         data: values
       })
     }
 
-    await openFrame()
-    return sendSaveMessage()
+    async function save (tabId: number, { status }: { status: string }) {
+      if (status === 'complete') {
+        await sendSaveMessage()
+        browser.tabs.onUpdated.removeListener(save)
+      }
+    }
+
+    browser.tabs.onUpdated.addListener(save)
   },
   toggle: async (data, sender) => {
     browser.tabs.sendMessage(sender.tab.id, {
@@ -418,7 +440,6 @@ async function onMessage (
   },
   sender: browser.runtime.MessageSender
 ): Promise<void> {
-  console.log('Message recieved', message)
   const handler = messageHandlers[message.type]
   if (handler !== undefined) {
     return await handler(message.data, sender)

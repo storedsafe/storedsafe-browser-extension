@@ -7,7 +7,6 @@ import { useSessions } from '../hooks/storage/useSessions'
 import { useSites } from '../hooks/storage/useSites'
 import { actions as StoredSafeActions } from '../model/storedsafe/StoredSafe'
 import { OnAddSiteCallback, OnRemoveSiteCallback } from '../components/Options'
-import { TabValues } from '../components/Add/Add'
 import Auth from './Auth'
 import Options from './Options'
 import Welcome from './Welcome'
@@ -30,7 +29,6 @@ const usePopup = (): PopupProps => {
   const sites = useSites()
   const sessions = useSessions()
   const [page, setPage] = useState<Page>()
-  const [tabValues, setTabValues] = useState<TabValues>()
   const { find, ...searchProps } = useSearch()
 
   const isConfigured = useMemo(() => sites.all.length !== 0, [
@@ -103,10 +101,6 @@ const usePopup = (): PopupProps => {
     await sites.remove(id)
   }
 
-  function clearTabValues (): void {
-    setTabValues(undefined)
-  }
-
   function onFocus (): void {
     setPage(Page.SEARCH)
   }
@@ -117,7 +111,7 @@ const usePopup = (): PopupProps => {
     [Page.WELCOME, <Welcome key='welcome' {...{ addSite, removeSite }} />],
     [
       Page.ADD,
-      <Add tabValues={tabValues} clearTabValues={clearTabValues} key='add' />
+      <Add key='add' />
     ],
     [Page.SEARCH, <Search key='search' goto={goto} {...searchProps} />]
   ])
@@ -148,13 +142,6 @@ const usePopup = (): PopupProps => {
       console.error(error)
     })
   }, [])
-
-  browser.runtime.onMessage.addListener(message => {
-    if (message.type === 'save') {
-      const { data } = message
-      setTabValues(data)
-    }
-  })
 
   return {
     isInitialized,

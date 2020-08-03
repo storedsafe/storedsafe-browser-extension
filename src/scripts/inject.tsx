@@ -18,6 +18,7 @@ function getRoot (): Element {
   let root = getFrame()
   if (root === null) {
     root = document.createElement('div')
+    root.id = STOREDSAFE_ROOT
     document.body.appendChild(root)
   }
   return root
@@ -65,7 +66,7 @@ export async function drawPopup (): Promise<void> {
       top: '20px',
       right: '20px'
     },
-    src: browser.runtime.getURL('index.html') + '#popup'
+    src: browser.runtime.getURL('index.html') + '#save'
   })
 }
 
@@ -84,20 +85,36 @@ export async function drawToggle (): Promise<void> {
 }
 
 browser.runtime.onMessage.addListener((message, sender) => {
-  if (getFrame(STOREDSAFE_ADD) === null) {
-    drawPopup().then(() => {
-      return browser.runtime.sendMessage({
-        type: 'save',
-        data: {
-          url: 'test.example.com',
-          name: 'Test Page',
-          username: 'Oscar',
-          password: 'secret',
-          info: 'testing testing 123'
-        }
+  if (message.type === 'open-save') {
+    drawPopup()
+      .then(() => {
+        return browser.runtime.sendMessage({
+          type: 'save',
+          data: message.data
+        })
       })
-    }).catch((error) => console.log('STOREDSAFE INJECT ERROR: ', error))
-  } else {
+      .catch(error => console.error('STOREDSAFE INJECT ERROR: ', error))
+  } else if (message.type === 'toggle') {
+    if (getFrame(STOREDSAFE_ADD) === null) {
+      drawPopup()
+        .then(() => {
+          return browser.runtime.sendMessage({
+            type: 'save',
+            data: {
+              url: 'test.example.com',
+              name: 'Test Page',
+              username: 'Oscar',
+              password: 'secret',
+              info: 'testing testing 123'
+            }
+          })
+        })
+        .catch(error => console.error('STOREDSAFE INJECT ERROR: ', error))
+    } else {
+      removeFrame(STOREDSAFE_ADD)
+    }
+  } else if (message.type === 'close') {
     removeFrame(STOREDSAFE_ADD)
   }
 })
+

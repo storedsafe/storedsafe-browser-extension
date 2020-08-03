@@ -25,7 +25,6 @@ export type AddObjectCallback = (
   host: string,
   values: AddValues
 ) => Promise<void>
-export type AddToBlacklistCallback = (host: string) => Promise<void>
 
 export interface AddProps {
   isInitialized: boolean

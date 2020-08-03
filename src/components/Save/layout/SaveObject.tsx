@@ -3,9 +3,15 @@ import { useLoading } from '../../../hooks/utils/useLoading'
 import { useForm } from '../../../hooks/utils/useForm'
 import { Button, Select } from '../../common/input'
 import { Message } from '../../common/layout'
-import './AddObject.scss'
+import './SaveObject.scss'
 
-export interface AddValues {
+export interface SaveValues {
+  [key: string]: string
+}
+
+export interface TabValues extends SaveValues {
+  url: string
+  name: string
   [key: string]: string
 }
 
@@ -24,30 +30,37 @@ export interface SiteState {
   template: string
 }
 
-export type AddObjectCallback = (
+export type SaveObjectCallback = (
   host: string,
-  values: AddValues
+  values: SaveValues
 ) => Promise<void>
+export type AddToBlacklistCallback = (host: string) => Promise<void>
 
-export interface AddObjectProps {
+export interface SaveObjectProps {
   error?: Error
+  tabValues?: TabValues
   hosts: SelectType<string>
   vaults: SelectType<SSVault>
   templates: SelectType<SSTemplate>
-  addObject: AddObjectCallback
+  saveObject: SaveObjectCallback
+  addToBlacklist: AddToBlacklistCallback
 }
 
-export const AddObject: React.FunctionComponent<AddObjectProps> = ({
+export const SaveObject: React.FunctionComponent<SaveObjectProps> = ({
   error,
+  tabValues,
   hosts,
   vaults,
   templates,
-  addObject
-}: AddObjectProps) => {
-  const [values, events] = useForm<Partial<AddValues>>({
+  saveObject,
+  addToBlacklist
+}: SaveObjectProps) => {
+  const [values, events] = useForm<Partial<SaveValues>>({
     parentid: '0',
+    ...(tabValues !== undefined ? tabValues : {})
   })
-  const [addState, setAddPromise] = useLoading()
+  const [saveState, setSavePromise] = useLoading()
+  const [blacklistState, setBlacklistPromise] = useLoading()
 
   /// /////////////////////////////////////////////////////////
   // Set up event handlers
@@ -104,7 +117,7 @@ export const AddObject: React.FunctionComponent<AddObjectProps> = ({
 
   if (error !== undefined) {
     return (
-      <section className='add-object'>
+      <section className='save-object'>
         {selectHost}
         <Message type='error'>Error: {error.message}</Message>
       </section>
@@ -113,7 +126,7 @@ export const AddObject: React.FunctionComponent<AddObjectProps> = ({
 
   if (vaults.values.length === 0) {
     return (
-      <section className='add-object'>
+      <section className='save-object'>
         {selectHost}
         <Message type='warning'>
           <p>No vaults with write access found for this host.</p>
@@ -127,7 +140,7 @@ export const AddObject: React.FunctionComponent<AddObjectProps> = ({
 
   if (templates.values.length === 0) {
     return (
-      <section className='add-object'>
+      <section className='save-object'>
         {selectHost}
         <Message type='error'>
           <p>No templates found for this host.</p>
@@ -183,39 +196,45 @@ export const AddObject: React.FunctionComponent<AddObjectProps> = ({
   /// /////////////////////////////////////////////////////////
   // Submit handlers
 
-  function onAdd (event: React.FormEvent<HTMLFormElement>): void {
+  function onSave (event: React.FormEvent<HTMLFormElement>): void {
     event.preventDefault()
 
     const host = hosts.values[hosts.selected]
     if (host === undefined) {
-      setAddPromise(Promise.reject(new Error('No host selected.')))
+      setSavePromise(Promise.reject(new Error('No host selected.')))
       return
     }
     const vault = vaults.values[vaults.selected]
     if (vault === undefined) {
-      setAddPromise(Promise.reject(new Error('No vault selected.')))
+      setSavePromise(Promise.reject(new Error('No vault selected.')))
       return
     }
     const template = templates.values[templates.selected]
     if (template === undefined) {
-      setAddPromise(Promise.reject(new Error('No template selected.')))
+      setSavePromise(Promise.reject(new Error('No template selected.')))
       return
     }
 
     // Filter out irrelevant fields
     const { templateid, groupid, parentid } = values
-    const properties: AddValues = { templateid, groupid, parentid }
+    const properties: SaveValues = { templateid, groupid, parentid }
     for (const { name } of template.structure) {
       if (values[name] !== undefined) {
         properties[name] = values[name]
       }
     }
 
-    // Add global properties
+    // Save global properties
     properties.groupid = vault.id
     properties.templateid = template.id
 
-    setAddPromise(addObject(host, properties))
+    setSavePromise(saveObject(host, properties))
+  }
+
+  function onAddToBlacklist (): void {
+    if (tabValues !== undefined) {
+      setBlacklistPromise(addToBlacklist(tabValues.url))
+    }
   }
 
   const template = templates.values[templates.selected]
@@ -224,10 +243,10 @@ export const AddObject: React.FunctionComponent<AddObjectProps> = ({
     fields = template.structure.map(({ title, name, isEncrypted, type }) => {
       const value = values[name] !== undefined ? values[name] : ''
       return (
-        <label key={name} htmlFor={name} className='add-object-field'>
+        <label key={name} htmlFor={name} className='save-object-field'>
           <span>{title}</span>
           <input
-            className={`add-object-field${isEncrypted ? ' encrypted' : ''}`}
+            className={`save-object-field${isEncrypted ? ' encrypted' : ''}`}
             type={type === 'text-passwdgen' ? 'password' : 'text'}
             id={name}
             name={name}
@@ -240,18 +259,30 @@ export const AddObject: React.FunctionComponent<AddObjectProps> = ({
   }
 
   return (
-    <section className='add-object'>
-      <form className='add-object-form' onSubmit={onAdd}>
-        {selectHost}
-        {selectVault}
-        {selectTemplate}
-        {fields}
-        <Button color='accent' isLoading={addState.isLoading}>
-          Add to StoredSafe
-        </Button>
-        {addState.error !== undefined && (
-          <Message type='error'>Error: {addState.error.message}</Message>
-        )}
+    <section className='save-object'>
+      <form className='save-object-form' onSubmit={onSave}>
+        <div className='save-object-fields'>
+          {selectHost}
+          {selectVault}
+          {selectTemplate}
+          {fields}
+        </div>
+        <div className='save-object-buttons'>
+          {saveState.error !== undefined && (
+            <Message type='error'>Error: {saveState.error.message}</Message>
+          )}
+          <Button color='accent' isLoading={saveState.isLoading}>
+            Add to StoredSafe
+          </Button>
+          {/* <Button
+            type='button'
+            color='danger'
+            onClick={onAddToBlacklist}
+            isLoading={blacklistState.isLoading}
+          >
+            Don&apos;t ask to save for {tabValues.url}
+          </Button> */}
+        </div>
       </form>
     </section>
   )

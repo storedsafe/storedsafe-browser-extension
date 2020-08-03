@@ -4,8 +4,10 @@
  * forms and fills forms when credentials are received from another script
  * using the extension message API.
  * */
-import { drawToggle, drawPopup } from './inject'
-drawToggle()
+console.log('STOREDSAFE: Content script loaded')
+import './inject'
+// import { drawToggle, drawPopup } from './inject'
+// drawToggle()
 
 /**
  * Describes the purpose of the form. Some forms should be filled while others
@@ -123,7 +125,7 @@ const formMatchers: Map<FormType, FormMatcher> = new Map([
   [
     FormType.Login,
     {
-      name: /login/,
+      name: /login|signin|sign-in/,
       fields: [matchers.get('username'), matchers.get('password')]
     }
   ],
@@ -265,7 +267,7 @@ function scanPage (): void {
         browser.runtime
           .sendMessage({
             type: 'submit',
-            data: { openFrame: drawPopup, values }
+            data: values
           })
           .catch(error => console.error(error))
       })

@@ -3,17 +3,20 @@ import { SiteOptions, SiteOptionsProps } from './layout/SiteOptions'
 import { LoadingComponent, ListView, ListItem } from '../common/layout'
 import './Options.scss'
 import { GeneralOptions, GeneralOptionsProps } from './layout/GeneralOptions'
+import { BlacklistOptions, BlacklistOptionsProps } from './layout/BlacklistOptions'
 
 export interface OptionsProps {
   isInitialized: boolean
-  siteOptionsProps: SiteOptionsProps
   generalOptionsProps: GeneralOptionsProps
+  siteOptionsProps: SiteOptionsProps
+  blacklistOptionsProps: BlacklistOptionsProps
 }
 
 export const Options: React.FunctionComponent<OptionsProps> = ({
   isInitialized,
+  generalOptionsProps,
   siteOptionsProps,
-  generalOptionsProps
+  blacklistOptionsProps
 }: OptionsProps) => {
   if (!isInitialized) return <LoadingComponent />
 
@@ -27,6 +30,11 @@ export const Options: React.FunctionComponent<OptionsProps> = ({
       key: 'sites',
       title: <h2>Site Options</h2>,
       content: <SiteOptions {...siteOptionsProps} />
+    },
+    {
+      key: 'blacklist',
+      title: <h2>Blacklist options</h2>,
+      content: <BlacklistOptions {...blacklistOptionsProps} />
     }
   ]
 

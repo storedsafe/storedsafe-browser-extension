@@ -1,0 +1,24 @@
+@import '../../../styles/variables.scss';
+
+.blacklist-options {
+  background-color: $color-bg-alt;
+  display: flex;
+  flex-direction: column;
+
+  .blacklist-options-article {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+
+    background-color: $color-bg;
+
+    &:nth-child(odd) {
+      background-color: $color-primary-1;
+    }
+
+    .blacklist-options-host {
+      padding: $spacing;
+    }
+  }
+}

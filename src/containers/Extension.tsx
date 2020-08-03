@@ -5,12 +5,12 @@
 import React, { useState } from 'react'
 import DebugStorage from './DebugStorage'
 import Popup from './Popup'
-import Inject from './Inject'
+import Save from './Save'
 
 enum Page {
   Popup = 'popup',
   Debug = 'debug',
-  Inject = 'inject',
+  Save = 'save',
   Toggle = 'toggle',
 }
 
@@ -33,8 +33,8 @@ const Extension: React.FunctionComponent = () => {
         setPage(Page.Debug)
         break
       }
-      case Page.Inject: {
-        setPage(Page.Inject)
+      case Page.Save: {
+        setPage(Page.Save)
         break
       }
       case Page.Toggle: {
@@ -54,7 +54,7 @@ const Extension: React.FunctionComponent = () => {
     <section className='extension'>
       {page === Page.Debug && <DebugStorage />}
       {page === Page.Popup && <Popup />}
-      {page === Page.Inject && <Inject />}
+      {page === Page.Save && <Save />}
       {page === Page.Toggle && <button onClick={toggle}>Toggle</button>}
     </section>
   )
