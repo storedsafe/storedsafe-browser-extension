@@ -43,6 +43,7 @@ export const Add: React.FunctionComponent<AddProps> = ({
 
   return (
     <section className='add'>
+      <h1>Add Object</h1>
       {success ? (
         <>
           <Message>Successfully added object to StoredSafe.</Message>

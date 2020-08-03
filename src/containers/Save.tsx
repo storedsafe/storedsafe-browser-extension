@@ -33,7 +33,8 @@ const useSave = (): SaveProps => {
     sessions.isInitialized &&
     blacklist.isInitialized &&
     siteState?.vaults !== undefined &&
-    siteState?.templates !== undefined
+    siteState?.templates !== undefined &&
+    tabValues !== undefined
 
   function close () {
     browser.tabs.sendMessage(tabId, { type: 'close' })

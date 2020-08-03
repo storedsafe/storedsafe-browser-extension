@@ -289,7 +289,7 @@ export const Save: React.FunctionComponent<SaveProps> = ({
             </Button>
             <Button
               type='button'
-              color='danger'
+              color='primary'
               onClick={onAddToBlacklist}
               isLoading={blacklistState.isLoading}
             >

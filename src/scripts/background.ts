@@ -377,8 +377,8 @@ const messageHandlers: {
 } = {
   tabSearch: async (data, sender) => await tabFind(sender.tab),
   copyToClipboard: async value => await copyToClipboard(value),
-  submit: async (values, { tab }) => {
-    const { url, id } = tab
+  submit: async (values, sender) => {
+    const { title, url, id } = sender.tab
 
     // If user is not online, don't offer to save
     const sessions = await SessionsActions.fetch()
@@ -407,7 +407,7 @@ const messageHandlers: {
     }
 
     const sendSaveMessage = async (): Promise<void> => {
-      values = { name: urlToNeedle(url), url, ...values }
+      values = { name: title, url: urlToNeedle(url), ...values }
       await browser.tabs.sendMessage(id, {
         type: 'open-save',
         data: values

@@ -23,23 +23,24 @@ export const Options: React.FunctionComponent<OptionsProps> = ({
   const items: ListItem[] = [
     {
       key: 'general',
-      title: <h2>General Options</h2>,
+      title: <h2>General Settings</h2>,
       content: <GeneralOptions {...generalOptionsProps} />
     },
     {
       key: 'sites',
-      title: <h2>Site Options</h2>,
+      title: <h2>Sites</h2>,
       content: <SiteOptions {...siteOptionsProps} />
     },
     {
       key: 'blacklist',
-      title: <h2>Blacklist options</h2>,
+      title: <h2>Blacklist</h2>,
       content: <BlacklistOptions {...blacklistOptionsProps} />
     }
   ]
 
   return (
     <section className='options'>
+      <h1>Options</h1>
       <ListView items={items} />
     </section>
   )

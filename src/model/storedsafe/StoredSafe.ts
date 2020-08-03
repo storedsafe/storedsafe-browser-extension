@@ -65,6 +65,7 @@ async function handleErrors (
         status: string
         statusText: string
       }
+      console.error('StoredSafe network error: ', error)
       throw new Error(`Network Error: (${status}) ${statusText}`)
     }
     const message = error.message as string
