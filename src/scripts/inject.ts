@@ -7,7 +7,7 @@ interface FrameProps {
 }
 
 const STOREDSAFE_ROOT = 'storedsafe-extension-root'
-const STOREDSAFE_ADD = 'storedsafe-extension-add'
+const STOREDSAFE_SAVE = 'storedsafe-extension-add'
 const STOREDSAFE_TOGGLE = 'storedsafe-extension-toggle'
 
 function getFrame (id = STOREDSAFE_ROOT): Element {
@@ -57,12 +57,13 @@ export function removeFrame (id = STOREDSAFE_ROOT): void {
  */
 export async function drawPopup (): Promise<void> {
   return await drawFrame({
-    id: STOREDSAFE_ADD,
+    id: STOREDSAFE_SAVE,
     style: {
       width: '360px',
-      maxHeight: '100vh',
-      height: '400px',
-      position: 'fixed',
+      maxHeight: '400px',
+      height: '90vh',
+      background: 'transparent',
+      position: 'absolute',
       top: '20px',
       right: '20px'
     },
@@ -84,37 +85,56 @@ export async function drawToggle (): Promise<void> {
   })
 }
 
-browser.runtime.onMessage.addListener((message, sender) => {
-  if (message.type === 'open-save') {
-    drawPopup()
-      .then(() => {
-        return browser.runtime.sendMessage({
-          type: 'save',
-          data: message.data
-        })
-      })
-      .catch(error => console.error('STOREDSAFE INJECT ERROR: ', error))
-  } else if (message.type === 'toggle') {
-    if (getFrame(STOREDSAFE_ADD) === null) {
+const port = browser.runtime.connect()
+port.onMessage.addListener(
+  ({
+    sender,
+    type,
+    data
+  }: {
+    sender: string
+    type: string
+    data?: unknown
+  }) => {
+    console.log('PORT MESSAGE', type, sender, data)
+    if (type === 'save.open') {
       drawPopup()
-        .then(() => {
-          return browser.runtime.sendMessage({
-            type: 'save',
-            data: {
-              url: 'test.example.com',
-              name: 'Test Page',
-              username: 'Oscar',
-              password: 'secret',
-              info: 'testing testing 123'
-            }
-          })
-        })
-        .catch(error => console.error('STOREDSAFE INJECT ERROR: ', error))
-    } else {
-      removeFrame(STOREDSAFE_ADD)
+    } else if (type === 'save.close') {
+      removeFrame(STOREDSAFE_SAVE)
     }
-  } else if (message.type === 'close') {
-    removeFrame(STOREDSAFE_ADD)
   }
-})
+)
 
+// browser.runtime.onMessage.addListener((message, sender) => {
+//   if (message.type === 'open-save') {
+//     drawPopup()
+//       .then(() => {
+//         browser.runtime.sendMessage({
+//           type: 'save',
+//           data: message.data
+//         })
+//       })
+//       .catch(error => console.error('STOREDSAFE INJECT ERROR: ', error))
+//   } else if (message.type === 'toggle') {
+//     if (getFrame(STOREDSAFE_SAVE) === null) {
+//       drawPopup()
+//         .then(() => {
+//           return browser.runtime.sendMessage({
+//             type: 'save',
+//             data: {
+//               url: 'test.example.com',
+//               name: 'Test Page',
+//               username: 'Oscar',
+//               password: 'secret',
+//               info: 'testing testing 123'
+//             }
+//           })
+//         })
+//         .catch(error => console.error('STOREDSAFE INJECT ERROR: ', error))
+//     } else {
+//       removeFrame(STOREDSAFE_SAVE)
+//     }
+//   } else if (message.type === 'close') {
+//     removeFrame(STOREDSAFE_SAVE)
+//   }
+// })

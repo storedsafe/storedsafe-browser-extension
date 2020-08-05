@@ -30,10 +30,7 @@ export interface SiteState {
   template: string
 }
 
-export type SaveCallback = (
-  host: string,
-  values: SaveValues
-) => Promise<void>
+export type SaveCallback = (host: string, values: SaveValues) => Promise<void>
 export type AddToBlacklistCallback = (host: string) => Promise<void>
 
 export interface SaveProps {
@@ -249,19 +246,30 @@ export const Save: React.FunctionComponent<SaveProps> = ({
   if (template?.structure !== undefined) {
     fields = template.structure.map(({ title, name, isEncrypted, type }) => {
       const value = values[name] !== undefined ? values[name] : ''
-      return (
-        <label key={name} htmlFor={name} className='save-field'>
-          <span>{title}</span>
-          <input
-            className={`save-field${isEncrypted ? ' encrypted' : ''}`}
-            type={type === 'text-passwdgen' ? 'password' : 'text'}
-            id={name}
-            name={name}
-            value={value}
-            {...events}
-          />
-        </label>
-      )
+      if (name === 'name') {
+        return (
+          <label key={name} htmlFor={name} className='save-field'>
+            <span>{title}</span>
+            <input
+              className={`save-field${isEncrypted ? ' encrypted' : ''}`}
+              type={type === 'text-passwdgen' ? 'password' : 'text'}
+              id={name}
+              name={name}
+              value={value}
+              {...events}
+            />
+          </label>
+        )
+      } else if (value !== '') {
+        return (
+          <article key={name}>
+            <span>{title}: </span>
+            <span className='save-field'>
+              {isEncrypted ? '*'.repeat(value.length) : value}
+            </span>
+          </article>
+        )
+      }
     })
   }
 
@@ -271,20 +279,32 @@ export const Save: React.FunctionComponent<SaveProps> = ({
         <Message>Successfully added object to StoredSafe.</Message>
       ) : (
         <form className='save-form' onSubmit={onSave}>
-          <div className='save-fields'>
-            {selectHost}
-            {selectVault}
-            {selectTemplate}
-            {fields}
+          <div className='save-fields-container'>
+            <div className='save-fields'>
+              {selectHost}
+              {selectVault}
+              {selectTemplate}
+              {fields}
+            </div>
           </div>
           <div className='save-buttons'>
             {saveState.error !== undefined && (
               <Message type='error'>Error: {saveState.error.message}</Message>
             )}
-            <Button color='accent' isLoading={saveState.isLoading}>
+            <Button
+              type='submit'
+              color='accent'
+              isLoading={saveState.isLoading}
+              className='save-buttons-add'
+            >
               Add to StoredSafe
             </Button>
-            <Button color='danger' onClick={close}>
+            <Button
+              type='button'
+              color='danger'
+              onClick={close}
+              className='save-buttons-close'
+            >
               Close
             </Button>
             <Button
@@ -292,6 +312,7 @@ export const Save: React.FunctionComponent<SaveProps> = ({
               color='primary'
               onClick={onAddToBlacklist}
               isLoading={blacklistState.isLoading}
+              className='save-buttons-never'
             >
               Don&apos;t ask to save for {tabValues.url}
             </Button>

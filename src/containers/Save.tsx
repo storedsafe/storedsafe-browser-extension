@@ -37,7 +37,9 @@ const useSave = (): SaveProps => {
     tabValues !== undefined
 
   function close () {
-    browser.tabs.sendMessage(tabId, { type: 'close' })
+    const port = browser.runtime.connect()
+    port.postMessage({ type: 'save.close' })
+    // browser.tabs.sendMessage(tabId, { type: 'close' })
   }
 
   const save: SaveCallback = async (host, values) => {
@@ -102,13 +104,29 @@ const useSave = (): SaveProps => {
     }
   }, [sessions.sessions, hostChange])
 
-  browser.runtime.onMessage.addListener((message, sender) => {
-    if (message.type === 'save') {
-      const { data } = message
-      setTabValues(data)
-      setTabId(sender.tab.id)
+  useEffect(() => {
+    let mounted = true
+    function onMessage ({
+      type,
+      sender,
+      data
+    }: {
+      type: string
+      sender: string
+      data?: unknown
+    }) {
+      console.log('SAVE PORT MESSAGE', type, sender, data)
+      if (type === 'save.fill') {
+        if (mounted) setTabValues(data as TabValues)
+      }
     }
-  })
+    const port = browser.runtime.connect()
+    port.onMessage.addListener(onMessage)
+    return () => {
+      port.onMessage.removeListener(onMessage)
+      port.disconnect()
+    }
+  }, [])
 
   return {
     isInitialized,

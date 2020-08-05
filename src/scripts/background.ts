@@ -289,7 +289,7 @@ function onInstalled ({
 }): void {
   // Run online status initialization logic
   void (async () => {
-    const sessions = await SessionsActions.fetch()
+    const sessions = await StoredSafeActions.checkAll()
     updateOnlineStatus(sessions)
   })()
 }
@@ -363,7 +363,7 @@ async function tryOpenPopup (): Promise<void> {
 type MessageHandler<T> = (
   data: T,
   sender: browser.runtime.MessageSender
-) => Promise<void>
+) => Promise<any>
 
 /**
  * Mapped responses to message types.
@@ -382,7 +382,10 @@ const messageHandlers: {
 
     // If user is not online, don't offer to save
     const sessions = await SessionsActions.fetch()
-    if (sessions.size === 0) return
+    if (sessions.size === 0) {
+      console.log('no sessions found, return')
+      return
+    }
 
     // If site is blacklisted, don't offer to save
     const blacklist = await BlacklistActions.fetch()
@@ -406,22 +409,57 @@ const messageHandlers: {
       }
     }
 
-    const sendSaveMessage = async (): Promise<void> => {
-      values = { name: title, url: urlToNeedle(url), ...values }
-      await browser.tabs.sendMessage(id, {
-        type: 'open-save',
-        data: values
-      })
-    }
-
-    async function save (tabId: number, { status }: { status: string }) {
-      if (status === 'complete') {
-        await sendSaveMessage()
-        browser.tabs.onUpdated.removeListener(save)
+    // Track current URL so that iframe only appears on the current tab.
+    let currentUrl = url
+    function onTabUpdate (tabId: number, changeInfo: { url: string }) {
+      if (tabId === id && changeInfo.url !== undefined) {
+        currentUrl = changeInfo.url
       }
     }
+    browser.tabs.onUpdated.addListener(onTabUpdate)
 
-    browser.tabs.onUpdated.addListener(save)
+    let savePort: browser.runtime.Port
+    let injectPort: browser.runtime.Port
+    values = { name: title, url: urlToNeedle(url), ...values }
+    function onConnect (port: browser.runtime.Port) {
+      if (port.sender?.url === browser.runtime.getURL('index.html') + '#save') {
+        if (savePort === undefined) {
+          savePort = port
+          console.log('SEND SAVE FILL')
+          port.postMessage({
+            type: 'save.fill',
+            sender: 'background',
+            data: values
+          })
+        } else if (injectPort) {
+          console.log('SEND CLOSE FILL')
+          injectPort.postMessage({
+            type: 'save.close',
+            sender: 'background'
+          })
+          console.log('disconnect port')
+          port.disconnect()
+          browser.tabs.onUpdated.removeListener(onTabUpdate)
+        }
+      } else if (port.sender?.url === url) {
+        injectPort = port
+        console.log('SEND SAVE OPEN')
+        injectPort.postMessage({
+          type: 'save.open',
+          sender: 'background'
+        })
+      }
+
+      port.onDisconnect.addListener(port => {
+        if (
+          port.sender?.url ===
+          browser.runtime.getURL('index.html') + '#save'
+        ) {
+          savePort = undefined
+        }
+      })
+    }
+    browser.runtime.onConnect.addListener(onConnect)
   },
   toggle: async (data, sender) => {
     browser.tabs.sendMessage(sender.tab.id, {
@@ -440,6 +478,7 @@ async function onMessage (
   },
   sender: browser.runtime.MessageSender
 ): Promise<void> {
+  console.log('MESSAGE', message, sender)
   const handler = messageHandlers[message.type]
   if (handler !== undefined) {
     return await handler(message.data, sender)

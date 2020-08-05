@@ -36,7 +36,8 @@
   "content_scripts": [
     {
       "matches": [
-        "*://*/*"
+        "http://*/*",
+        "https://*/*"
       ],
       "js": [
         "browser-polyfill.min.js",

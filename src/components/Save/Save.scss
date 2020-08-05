@@ -4,26 +4,34 @@
   background-color: $color-primary-0;
   padding: $spacing;
   box-sizing: border-box;
-  display: grid;
-  grid-template-rows: auto;
-  row-gap: $spacing;
-  height: 100vh;
 
   .save-form {
     height: 100%;
     display: grid;
-    grid-template-rows: auto;
+    grid-template-rows: 1fr auto;
     row-gap: $spacing;
     overflow: hidden;
   }
 
   .save-fields {
+    display: grid;
+    grid-template-rows: auto;
+    align-items: start;
     background-color: $color-bg-alt;
     padding: $spacing;
-    overflow: auto scroll;
+    row-gap: $spacing;
+    overflow: hidden auto;
   }
 
   .save-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto;
+    gap: $spacing;
+  }
 
+  .save-buttons-never {
+    grid-column-start: 1;
+    grid-column-end: 3;
   }
 }
