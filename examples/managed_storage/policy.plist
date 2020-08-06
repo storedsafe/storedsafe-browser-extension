@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+  <dict>
+    <key>com.google.Chrome.extensions.jdomodgcaefkonkoihbkaciejfkdgikd</key>
+    <dict>
+      <key>sites</key>
+      <array>
+        <dict>
+          <key>host</key>
+          <string>my-site</string>
+          <key>apikey</key>
+          <string>my-api-key</string>
+        </dict>
+      </array>
+      <key>settings</key>
+      <dict>
+        <key>enforced</key>
+        <dict>
+          <key>maxTokenLife</key>
+          <integer>8</integer>
+        </dict>
+        <key>defaults</key>
+        <dict>
+          <key>autoFill</key>
+          <integer>0</integer>
+          <key>idleMax</key>
+          <integer>24</integer>
+        </dict>
+      </dict>
+    </dict>
+  </dict>
+</plist>

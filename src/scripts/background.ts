@@ -80,9 +80,13 @@ function setupKeepAlive (): void {
 function setupTimers (sessions: Sessions): void {
   void (async () => {
     const settings = await SettingsActions.fetch()
+
+    // Exit if there maxTokenLife is 0 (no timeout)
+    const maxTokenLife = settings.get('maxTokenLife').value as number
+    if (maxTokenLife === 0) return
+
     for (const [host, session] of sessions) {
       const tokenLife = getTokenLife(session.createdAt)
-      const maxTokenLife = settings.get('maxTokenLife').value as number
       const tokenTimeout = maxTokenLife * 3600 * 10e3 - tokenLife
       sessionTimers.set(
         host,

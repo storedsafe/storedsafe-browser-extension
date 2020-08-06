@@ -1,0 +1,19 @@
+Windows Registry Editor Version 5.00
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Google]
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Google\Chrome]
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Google\Chrome\ExtensionInstallForcelist]
+"1"="jdomodgcaefkonkoihbkaciejfkdgikd;https://clients2.google.com/service/update2/crx"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Google\Chrome\3rdparty\extensions\jdomodgcaefkonkoihbkaciejfkdgikd\policy\sites\1]
+"host"="my-site"
+"apikey"="my-api-key"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Google\Chrome\3rdparty\extensions\jdomodgcaefkonkoihbkaciejfkdgikd\policy\settings\enforced]
+"maxTokenLife"="10"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Google\Chrome\3rdparty\extensions\jdomodgcaefkonkoihbkaciejfkdgikd\policy\settings\defaults]
+"autoFill"="0"
+"idleMax"="24"
