@@ -68,16 +68,6 @@ export const SiteOptions: React.FunctionComponent<SiteOptionsProps> = ({
           )}
         </form>
       </article>
-      {systemSites.length !== 0 && (
-        <article className='site-options-article site-options-system'>
-          <h3>Sites managed by organization</h3>
-          {systemSites.map(site => (
-            <article key={site.host} className='site-options-site'>
-              <p className='site-options-host'>{site.host}</p>
-            </article>
-          ))}
-        </article>
-      )}
       {userSites.length !== 0 && (
         <article className='site-options-article site-options-user'>
           <h3>User sites</h3>
@@ -91,6 +81,16 @@ export const SiteOptions: React.FunctionComponent<SiteOptionsProps> = ({
               >
                 Delete
               </Button>
+            </article>
+          ))}
+        </article>
+      )}
+      {systemSites.length !== 0 && (
+        <article className='site-options-article site-options-system'>
+          <h3>Sites managed by organization</h3>
+          {systemSites.map(site => (
+            <article key={site.host} className='site-options-site'>
+              <p className='site-options-host'>{site.host}</p>
             </article>
           ))}
         </article>

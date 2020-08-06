@@ -26,9 +26,14 @@ function getRoot (): Element {
 
 async function drawFrame ({ id, style, src }: FrameProps): Promise<void> {
   const root = getRoot()
-  const iframe = document.createElement('iframe')
+  let iframe = document.getElementById(id) as HTMLIFrameElement
+  if (iframe === null) {
+    iframe = document.createElement('iframe')
+    iframe.id = id
+  } else {
+    console.warn('STOREDSAFE: Trying to create already existing iframe', { id, src })
+  }
   iframe.src = src
-  iframe.id = id
   iframe.style.setProperty('overflow', 'hidden')
   iframe.style.setProperty('border', '0')
   iframe.style.setProperty('z-index', '99999')
@@ -48,7 +53,11 @@ async function drawFrame ({ id, style, src }: FrameProps): Promise<void> {
  */
 export function removeFrame (id = STOREDSAFE_ROOT): void {
   const frame = document.getElementById(id)
-  frame.remove()
+  if (frame !== null) {
+    frame.remove()
+  } else {
+    console.warn('STOREDSAFE: Trying to remove iframe that doesn\'t exist', { id })
+  }
 }
 
 /**
@@ -97,44 +106,15 @@ port.onMessage.addListener(
     data?: unknown
   }) => {
     console.log('PORT MESSAGE', type, sender, data)
-    if (type === 'save.open') {
-      drawPopup()
-    } else if (type === 'save.close') {
-      removeFrame(STOREDSAFE_SAVE)
+    switch (type) {
+      case 'save.open': {
+        drawPopup()
+        break
+      }
+      case 'save.close': {
+        removeFrame(STOREDSAFE_SAVE)
+        break
+      }
     }
   }
 )
-
-// browser.runtime.onMessage.addListener((message, sender) => {
-//   if (message.type === 'open-save') {
-//     drawPopup()
-//       .then(() => {
-//         browser.runtime.sendMessage({
-//           type: 'save',
-//           data: message.data
-//         })
-//       })
-//       .catch(error => console.error('STOREDSAFE INJECT ERROR: ', error))
-//   } else if (message.type === 'toggle') {
-//     if (getFrame(STOREDSAFE_SAVE) === null) {
-//       drawPopup()
-//         .then(() => {
-//           return browser.runtime.sendMessage({
-//             type: 'save',
-//             data: {
-//               url: 'test.example.com',
-//               name: 'Test Page',
-//               username: 'Oscar',
-//               password: 'secret',
-//               info: 'testing testing 123'
-//             }
-//           })
-//         })
-//         .catch(error => console.error('STOREDSAFE INJECT ERROR: ', error))
-//     } else {
-//       removeFrame(STOREDSAFE_SAVE)
-//     }
-//   } else if (message.type === 'close') {
-//     removeFrame(STOREDSAFE_SAVE)
-//   }
-// })

@@ -5,9 +5,7 @@
  * using the extension message API.
  * */
 console.log('STOREDSAFE: Content script loaded')
-import './inject'
-// import { drawToggle, drawPopup } from './inject'
-// drawToggle()
+import './content_script/inject'
 
 /**
  * Describes the purpose of the form. Some forms should be filled while others
