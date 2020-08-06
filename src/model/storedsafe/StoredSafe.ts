@@ -65,7 +65,8 @@ async function handleErrors (
         status: string
         statusText: string
       }
-      throw new Error(`Network Error: (${status}) ${statusText}`)
+      console.error('StoredSafe network error: ', error)
+      throw new Error(`Network Error, unable to connect to host.`)
     }
     const message = error.message as string
     throw new Error(`Unexpected Error: ${message}`)

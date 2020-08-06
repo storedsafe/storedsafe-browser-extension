@@ -4,6 +4,10 @@
  * forms and fills forms when credentials are received from another script
  * using the extension message API.
  * */
+console.log('STOREDSAFE: Content script loaded')
+import './inject'
+// import { drawToggle, drawPopup } from './inject'
+// drawToggle()
 
 /**
  * Describes the purpose of the form. Some forms should be filled while others

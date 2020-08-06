@@ -61,6 +61,7 @@ export const Auth: React.FunctionComponent<AuthProps> = ({
 
   return (
     <section className='auth'>
+      <h1>Sessions</h1>
       <ListView items={items} defaultSelected={defaultSelected} />
     </section>
   )

@@ -56,7 +56,6 @@ async function getTemplates (
   )) as StoredSafeTemplateData
   const templates: SSTemplate[] = []
   for (const template of data.TEMPLATE) {
-    // Skip files
     if (template.INFO.file !== undefined) continue
     templates.push({
       id: template.INFO.id,

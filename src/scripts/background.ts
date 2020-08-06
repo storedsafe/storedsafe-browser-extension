@@ -289,7 +289,7 @@ function onInstalled ({
 }): void {
   // Run online status initialization logic
   void (async () => {
-    const sessions = await SessionsActions.fetch()
+    const sessions = await StoredSafeActions.checkAll()
     updateOnlineStatus(sessions)
   })()
 }
@@ -314,7 +314,13 @@ function setupIdleTimer (): void {
       clearIdleTimer()
     }
     const idleTimeout = (settings.get('idleMax').value as number) * 6e4
-    console.log('Starting idle timer, logout in', idleTimeout, 'ms (', idleTimeout / 6e4, 'minutes)')
+    console.log(
+      'Starting idle timer, logout in',
+      idleTimeout,
+      'ms (',
+      idleTimeout / 6e4,
+      'minutes)'
+    )
     idleTimer = window.setTimeout(() => {
       console.log('Invalidating all sessions due to inactivity.')
       invalidateAllSessions().catch(error => {
@@ -357,7 +363,7 @@ async function tryOpenPopup (): Promise<void> {
 type MessageHandler<T> = (
   data: T,
   sender: browser.runtime.MessageSender
-) => Promise<void>
+) => Promise<any>
 
 /**
  * Mapped responses to message types.
@@ -365,42 +371,100 @@ type MessageHandler<T> = (
 const messageHandlers: {
   tabSearch: MessageHandler<void>
   copyToClipboard: MessageHandler<string>
-  submit: MessageHandler<object>
+  submit: MessageHandler<Record<string, string>>
+  toggle: MessageHandler<void>
   [key: string]: MessageHandler<unknown>
 } = {
   tabSearch: async (data, sender) => await tabFind(sender.tab),
   copyToClipboard: async value => await copyToClipboard(value),
-  submit: async (values, { tab }) => {
-    const { url, id } = tab
+  submit: async (values, sender) => {
+    const { title, url, id } = sender.tab
+
+    // If user is not online, don't offer to save
+    const sessions = await SessionsActions.fetch()
+    if (sessions.size === 0) {
+      console.log('no sessions found, return')
+      return
+    }
 
     // If site is blacklisted, don't offer to save
     const blacklist = await BlacklistActions.fetch()
     if (blacklist.includes(url)) return
 
-    // If result for site exists in cache, don't offer to save
+    // If result with username for site exists in cache, don't offer to save
     const tabResults = await TabResultsActions.fetch()
     for (const results of tabResults.get(id).values()) {
       for (const result of results) {
         for (const { value } of result.fields) {
+          if (value === undefined) continue
           if (value.match(urlToNeedle(url)) !== null) {
-            return
+            const username = result.fields.find(
+              ({ name }) => name === 'username'
+            ).value
+            if (username === values['username']) {
+              return
+            }
           }
         }
       }
     }
 
-    const sendSaveMessage = async (): Promise<void> => {
-      values = { name: urlToNeedle(url), url, ...values }
-      return await browser.runtime.sendMessage({
-        type: 'save',
-        data: values
+    // Track current URL so that iframe only appears on the current tab.
+    let currentUrl = url
+    function onTabUpdate (tabId: number, changeInfo: { url: string }) {
+      if (tabId === id && changeInfo.url !== undefined) {
+        currentUrl = changeInfo.url
+      }
+    }
+    browser.tabs.onUpdated.addListener(onTabUpdate)
+
+    let savePort: browser.runtime.Port
+    let injectPort: browser.runtime.Port
+    values = { name: title, url: urlToNeedle(url), ...values }
+    function onConnect (port: browser.runtime.Port) {
+      if (port.sender?.url === browser.runtime.getURL('index.html') + '#save') {
+        if (savePort === undefined) {
+          savePort = port
+          console.log('SEND SAVE FILL')
+          port.postMessage({
+            type: 'save.fill',
+            sender: 'background',
+            data: values
+          })
+        } else if (injectPort) {
+          console.log('SEND CLOSE FILL')
+          injectPort.postMessage({
+            type: 'save.close',
+            sender: 'background'
+          })
+          console.log('disconnect port')
+          port.disconnect()
+          browser.tabs.onUpdated.removeListener(onTabUpdate)
+        }
+      } else if (port.sender?.url === url) {
+        injectPort = port
+        console.log('SEND SAVE OPEN')
+        injectPort.postMessage({
+          type: 'save.open',
+          sender: 'background'
+        })
+      }
+
+      port.onDisconnect.addListener(port => {
+        if (
+          port.sender?.url ===
+          browser.runtime.getURL('index.html') + '#save'
+        ) {
+          savePort = undefined
+        }
       })
     }
-    try {
-      return await browser.browserAction.openPopup().then(sendSaveMessage)
-    } catch (error) {
-      return await sendSaveMessage()
-    }
+    browser.runtime.onConnect.addListener(onConnect)
+  },
+  toggle: async (data, sender) => {
+    browser.tabs.sendMessage(sender.tab.id, {
+      type: 'toggle'
+    })
   }
 }
 
@@ -414,12 +478,12 @@ async function onMessage (
   },
   sender: browser.runtime.MessageSender
 ): Promise<void> {
-  console.log('Message recieved', message)
+  console.log('MESSAGE', message, sender)
   const handler = messageHandlers[message.type]
   if (handler !== undefined) {
     return await handler(message.data, sender)
   }
-  throw new Error(`Invalid message type: ${message.type}`)
+  // throw new Error(`Invalid message type: ${message.type}`) // other scripts can get messages
 }
 
 function onCommand (command: string): void {

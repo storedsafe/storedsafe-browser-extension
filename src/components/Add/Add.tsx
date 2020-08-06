@@ -1,18 +1,10 @@
 import React from 'react'
 import './Add.scss'
-import { AddObject, AddObjectProps } from './layout/AddObject'
+import { AddObject, AddObjectProps, AddValues } from './layout/AddObject'
 import { Button } from '../common/input'
 import { Message, LoadingComponent } from '../common/layout'
 
-export interface AddValues {
-  [key: string]: string
-}
-
-export interface TabValues extends AddValues {
-  url: string
-  name: string
-  [key: string]: string
-}
+export * from './layout/AddObject'
 
 export type OnSelectChangeCallback = (selected: number) => void
 export interface SelectType<T> {
@@ -33,7 +25,6 @@ export type AddObjectCallback = (
   host: string,
   values: AddValues
 ) => Promise<void>
-export type AddToBlacklistCallback = (host: string) => Promise<void>
 
 export interface AddProps {
   isInitialized: boolean
@@ -52,6 +43,7 @@ export const Add: React.FunctionComponent<AddProps> = ({
 
   return (
     <section className='add'>
+      <h1>Add Object</h1>
       {success ? (
         <>
           <Message>Successfully added object to StoredSafe.</Message>

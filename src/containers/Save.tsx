@@ -1,11 +1,14 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import {
-  AddProps,
-  AddObjectCallback,
-  Add,
+  SaveProps,
+  SaveCallback,
+  TabValues,
+  AddToBlacklistCallback,
+  Save,
   OnSelectChangeCallback,
   SelectType
-} from '../components/Add/Add'
+} from '../components/Save/Save'
+import { useBlacklist } from '../hooks/storage/useBlacklist'
 import { useSessions } from '../hooks/storage/useSessions'
 import { actions as StoredSafeActions } from '../model/storedsafe/StoredSafe'
 
@@ -18,19 +21,35 @@ interface SiteState {
   error?: Error
 }
 
-const useAdd = (): AddProps => {
+const useSave = (): SaveProps => {
   const sessions = useSessions()
+  const blacklist = useBlacklist()
+  const [tabValues, setTabValues] = useState<TabValues>()
   const [success, setSuccess] = useState<boolean>(false)
   const [siteState, setSiteState] = useState<SiteState>()
+  const [tabId, setTabId] = useState<number>()
 
   const isInitialized =
     sessions.isInitialized &&
+    blacklist.isInitialized &&
     siteState?.vaults !== undefined &&
-    siteState?.templates !== undefined
+    siteState?.templates !== undefined &&
+    tabValues !== undefined
 
-  const addObject: AddObjectCallback = async (host, values) => {
+  function close () {
+    const port = browser.runtime.connect()
+    port.postMessage({ type: 'save.close' })
+    // browser.tabs.sendMessage(tabId, { type: 'close' })
+  }
+
+  const save: SaveCallback = async (host, values) => {
     await StoredSafeActions.addObject(host, values)
     setSuccess(true)
+    setTimeout(close, 1500)
+  }
+
+  const addToBlacklist: AddToBlacklistCallback = async host => {
+    await blacklist.add(host)
   }
 
   const hostChange: OnSelectChangeCallback = useCallback(
@@ -40,6 +59,8 @@ const useAdd = (): AddProps => {
       StoredSafeActions.getSiteInfo(host)
         .then(({ vaults, templates }) => {
           vaults = vaults.filter(({ canWrite }) => canWrite)
+          // TODO: Decide if other templates should be allowed.
+          templates = templates.filter(({ id }) => id === '20')
           const vault = vaults.length > 0 ? 0 : undefined
           const loginTemplateId = templates.findIndex(({ id }) => id === '20')
           const template =
@@ -56,10 +77,6 @@ const useAdd = (): AddProps => {
     },
     [sessions.sessions]
   )
-
-  function clearSuccess (): void {
-    setSuccess(false)
-  }
 
   const hosts: SelectType<string> = {
     values: [...sessions.sessions.keys()],
@@ -87,22 +104,46 @@ const useAdd = (): AddProps => {
     }
   }, [sessions.sessions, hostChange])
 
+  useEffect(() => {
+    let mounted = true
+    function onMessage ({
+      type,
+      sender,
+      data
+    }: {
+      type: string
+      sender: string
+      data?: unknown
+    }) {
+      console.log('SAVE PORT MESSAGE', type, sender, data)
+      if (type === 'save.fill') {
+        if (mounted) setTabValues(data as TabValues)
+      }
+    }
+    const port = browser.runtime.connect()
+    port.onMessage.addListener(onMessage)
+    return () => {
+      port.onMessage.removeListener(onMessage)
+      port.disconnect()
+    }
+  }, [])
+
   return {
     isInitialized,
-    addObjectProps: {
-      hosts,
-      vaults,
-      templates,
-      addObject,
-    },
+    tabValues,
+    hosts,
+    vaults,
+    templates,
+    save,
+    addToBlacklist,
     success,
-    clearSuccess
+    close
   }
 }
 
-const AddContainer: React.FunctionComponent = () => {
-  const addProps = useAdd()
-  return <Add {...addProps} />
+const SaveContainer: React.FunctionComponent = () => {
+  const SaveProps = useSave()
+  return <Save {...SaveProps} />
 }
 
-export default AddContainer
+export default SaveContainer
