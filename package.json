@@ -1,6 +1,6 @@
 {
   "name": "storedsafe-browser-extension",
-  "version": "0.0.1",
+  "version": "0.5.0",
   "description": "StoredSafe browser extension for chrome and firefox",
   "private": true,
   "scripts": {
@@ -9,6 +9,7 @@
     "coverage": "jest --coverage",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx .",
     "build": "webpack --mode production",
+    "zip": "node ./plugins/zip -i build/dist/chrome -o dist/chrome.zip && node ./plugins/zip -i build/dist/firefox -o dist/firefox.zip",
     "dev": "webpack --mode development",
     "watch": "webpack --mode development --watch",
     "storybook": "start-storybook",
@@ -59,6 +60,7 @@
     "@types/resize-observer-browser": "^0.1.3",
     "@typescript-eslint/eslint-plugin": "^3.4.0",
     "@typescript-eslint/parser": "^3.4.0",
+    "archiver": "^5.0.0",
     "babel-loader": "^8.1.0",
     "clean-webpack-plugin": "^3.0.0",
     "css-loader": "^3.5.2",
@@ -91,7 +93,8 @@
     "ts-loader": "^6.2.2",
     "typescript": "^3.9.5",
     "webpack": "^4.42.1",
-    "webpack-cli": "^3.3.11"
+    "webpack-cli": "^3.3.11",
+    "yargs": "^15.4.1"
   },
   "dependencies": {
     "react": "^16.13.1",
