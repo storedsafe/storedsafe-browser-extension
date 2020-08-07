@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+  <!-- Force the extension to be installed from chrome webstore -->
+  <key>ExtensionInstallForcelist</key>
+  <array>
+    <string>jdomodgcaefkonkoihbkaciejfkdgikd;https://clients2.google.com/service/update2/crx</string>
+  </array>
+  <!-- Allow the extension to be installed from chrome webstore if there's a wildcard blacklist -->
+  <key>ExtensionInstallWhitelist</key>
+  <array>
+    <string>jdomodgcaefkonkoihbkaciejfkdgikd;https://clients2.google.com/service/update2/crx</string>
+  </array>
+  <dict>
+    <!--
+      The value jdomodgcaefkonkoihbkaciejfkdgikd is the ID for the extension in the chrome web store.
+      If you're using an unpackaged version of the extension, replace the ID below with the temporary extension ID.
+      -->
+    <key>com.google.Chrome.extensions.jdomodgcaefkonkoihbkaciejfkdgikd</key>
+    <dict>
+      <!-- Add information about your StoredSafe server. -->
+      <key>sites</key>
+      <array>
+        <dict>
+          <!-- Replace my.first.site with the host name of your StoredSafe server. -->
+          <key>host</key>
+          <string>my.first.site</string>
+          <!-- Replace myfirstapikey with a valid API key for the StoredSafe server above. -->
+          <key>apikey</key>
+          <string>myfirstapikey</string>
+        </dict>
+        <!-- Copy <dict>...</dict> to add another site. -->
+        <dict>
+          <key>host</key>
+          <string>my.second.site</string>
+          <key>apikey</key>
+          <string>mysecondapikey</string>
+        </dict>
+      </array>
+      <key>settings</key>
+      <dict>
+        <!-- Enforce settings, overriding user settings and default values. -->
+        <key>enforced</key>
+        <dict>
+          <!-- Uncomment lines below to enforce values. -->
+          <!-- Hard logout after maxTokenLife hours. -->
+          <!-- <key>maxTokenLife</key>
+          <integer>10</integer> -->
+          <!-- Automatically fill forms on pages with matching values in StoredSafe (true/false) -->
+          <!-- <key>autoFill</key>
+          <false /> -->
+          <!-- Log out after being idle for idleMax minutes -->
+          <!-- <key>idleMax</key>
+          <integer>30</integer> -->
+        </dict>
+        <!-- Override built-in default values in extension. -->
+        <key>defaults</key>
+        <dict>
+          <!-- Uncomment lines below to override built-in default values in the extension. -->
+          <!-- Hard logout after maxTokenLife hours. -->
+          <!-- <key>maxTokenLife</key>
+          <integer>10</integer> -->
+          <!-- Automatically fill forms on pages with matching values in StoredSafe (true/false) -->
+          <!-- <key>autoFill</key>
+          <integer>0</integer> -->
+          <!-- Log out after being idle for idleMax minutes -->
+          <!-- <key>idleMax</key>
+          <integer>30</integer> -->
+        </dict>
+      </dict>
+    </dict>
+  </dict>
+</plist>

@@ -1,20 +1,52 @@
 {
+  // Force the extension to be installed from chrome webstore
+  "ExtensionInstallForcelist": [
+    "jdomodgcaefkonkoihbkaciejfkdgikd;https://clients2.google.com/service/update2/crx"
+  ],
+  // Allow the extension to be installed from chrome webstore if there's a wildcard blacklist
+  "ExtensionInstallWhitelist": [
+    "jdomodgcaefkonkoihbkaciejfkdgikd"
+  ],
   "3rdparty": {
     "extensions": {
+      /**
+       * The value jdomodgcaefkonkoihbkaciejfkdgikd is the ID for the extension in the chrome web store.
+       * If you're using an unpackaged version of the extension, replace the ID below with the temporary extension ID.
+       */
       "jdomodgcaefkonkoihbkaciejfkdgikd": {
-        "sites": [
+        // Add information about your StoredSafe server.
+        "sites": [{
+            // Replace my.first.site with the host name of your StoredSafe server.
+            "host": "my.first.site",
+            // Replace myfirstapikey with a valid API key for the StoredSafe server above.
+            "apikey": "myfirstapikey"
+          },
+          // Copy {...} to add another site if you have access to multiple StoredSafe servers (2, 3, 4...).
           {
-            "host": "my-site",
-            "apikey": "my-api-key"
+            "host": "my.second.site",
+            "apikey": "mysecondapikey"
           }
         ],
         "settings": {
+          // Enforce settings, overriding user settings and default values.
           "enforced": {
-            "maxTokenLife": 8
-          },
-          "defaults": {
+            //  Uncomment lines (remove // ) below to enforce values.
+            // Hard logout after maxTokenLife hours.
+            "maxTokenLife": 10,
+            // Automatically fill forms on pages with matching values in StoredSafe (true/false).
             "autoFill": false,
-            "idleMax": 24
+            // Log out after being idle for idleMax minutes
+            "idleMax": 30
+          },
+          // Override built-in default values in extension.
+          "defaults": {
+            //  Uncomment lines (remove // ) below to override built-in default values in the extension.
+            // // Hard logout after maxTokenLife hours.
+            // "maxTokenLife": 10,
+            // // Automatically fill forms on pages with matching values in StoredSafe (true/false).
+            // "autoFill": false,
+            // // Log out after being idle for idleMax minutes
+            // "idleMax": 30
           }
         }
       }

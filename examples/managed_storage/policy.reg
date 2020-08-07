@@ -1,0 +1,50 @@
+Windows Registry Editor Version 5.00
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Google]
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Google\Chrome]
+
+; Force the extension to be installed from chrome webstore
+[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Google\Chrome\ExtensionInstallForcelist]
+; If you have other forcelist entries, change the number to be the next available.
+"1"="jdomodgcaefkonkoihbkaciejfkdgikd;https://clients2.google.com/service/update2/crx"
+
+; Allow the extension to be installed from chrome webstore if there's a wildcard blacklist
+[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Google\Chrome\ExtensionInstallWhitelist]
+; If you have other whitelist entries, change the number to be the next available.
+"1"="jdomodgcaefkonkoihbkaciejfkdgikd"
+
+; The value jdomodgcaefkonkoihbkaciejfkdgikd is the ID for the extension in the chrome web store.
+; If you're using an unpackaged version of the extension, replace the ID below with the temporary extension ID.
+
+; Add information about your StoredSafe server.
+[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Google\Chrome\3rdparty\extensions\jdomodgcaefkonkoihbkaciejfkdgikd\policy\sites\1]
+; Replace my.first.site with the host name of your StoredSafe server.
+"host"="my.first.site"
+; Replace myfirstapikey with a valid API key for the StoredSafe server above.
+"apikey"="myfirstapikey"
+
+; Increment number in key to add another site if you have access to multiple StoredSafe servers (2, 3, 4...).
+[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Google\Chrome\3rdparty\extensions\jdomodgcaefkonkoihbkaciejfkdgikd\policy\sites\2]
+"host"="my.second.site"
+"apikey"="mysecondapikey"
+
+; Enforce settings, overriding user settings and default values.
+[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Google\Chrome\3rdparty\extensions\jdomodgcaefkonkoihbkaciejfkdgikd\policy\settings\enforced]
+; ; Uncomment lines (remove ; ) below to enforce values.
+; Hard logout after maxTokenLife hours.
+; "maxTokenLife"="10"
+; ; Automatically fill forms on pages with matching values in StoredSafe (0=false, 1=true)
+; "autoFill"="0"
+; ; Log out after being idle for idleMax minutes
+; "idleMax"="30"
+
+; Override built-in default values in extension.
+[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Google\Chrome\3rdparty\extensions\jdomodgcaefkonkoihbkaciejfkdgikd\policy\settings\defaults]
+; Uncomment lines (remove ; ) below to override built-in default values in the extension.
+; ; Hard logout after maxTokenLife hours.
+; "maxTokenLife"="10"
+; ; Automatically fill forms on pages with matching values in StoredSafe (0=false, 1=true)
+; "autoFill"="0"
+; ; Log out after being idle for idleMax minutes
+; "idleMax"="30"
