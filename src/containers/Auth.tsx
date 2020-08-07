@@ -19,7 +19,7 @@ const useAuth = ({ goto }: AuthHookProps): AuthProps => {
   const sessions = useSessions()
   const preferences = usePreferences()
 
-  const isInitialized = sites.isInitialized && sessions.isInitialized
+  const isInitialized = sites.isInitialized && sessions.isInitialized && preferences.isInitialized
 
   const login: OnLoginCallback = async (site, fields) => {
     await StoredSafeActions.login(site, fields)
