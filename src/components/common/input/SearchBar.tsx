@@ -35,8 +35,8 @@ export const SearchBar: React.FunctionComponent<SearchBarProps> = ({
         onSubmit={onSubmit}
       >
         <input
-          placeholder='Search'
-          title='Search'
+          placeholder={disabled ? '' : 'Search'}
+          title={disabled ? '' : 'Search'}
           aria-label='Search Text'
           {...props}
           className='search-bar-input'
@@ -51,7 +51,7 @@ export const SearchBar: React.FunctionComponent<SearchBarProps> = ({
           className={`search-button${isLoading ? ' loading' : ''}`}
           type='submit'
           aria-label='Search Submit'
-          title='Search'
+          title={disabled ? '' : 'Search'}
           disabled={disabled}
           icon={icons.search}
         />

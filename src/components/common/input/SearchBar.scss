@@ -27,9 +27,9 @@
     }
 
     &:disabled {
-      background-color: $color-bg-dark-disabled !important;
-      color: $color-fg-dark-disabled !important;
-      border-color: $color-border-dark-disabled;
+      background-color: $color-primary-3 !important;
+      color: $color-primary-4 !important;
+      border-color: $color-primary-4;
     }
   }
 
@@ -65,11 +65,13 @@
     }
 
     &:disabled {
-      background-color: $color-bg-dark-disabled !important;
-      color: $color-fg-dark-disabled !important;
+      cursor: unset !important;
+      background-color: $color-primary-3 !important;
+      color: $color-primary-4 !important;
 
       & > svg {
-        fill: $color-fg-dark-disabled !important;
+        fill: $color-primary-4 !important;
+        stroke-width: 0 !important;
       }
     }
   }
