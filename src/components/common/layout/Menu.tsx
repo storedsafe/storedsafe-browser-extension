@@ -30,14 +30,16 @@ export const Menu: React.FunctionComponent<MenuProps> = ({
       <div className='menu-backdrop'>
         <div className='menu-box'>
           {items.map(({ title, icon, onClick }) => (
-            <article
+            <button
+              type='button'
               key={title}
               className='menu-item'
               onClick={onItemClick(onClick)}
+              tabIndex={show ? 0 : -1}
             >
               <p>{title}</p>
               {icon}
-            </article>
+            </button>
           ))}
         </div>
       </div>

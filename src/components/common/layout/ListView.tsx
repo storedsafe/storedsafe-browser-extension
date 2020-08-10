@@ -43,9 +43,9 @@ export const ListView: React.FunctionComponent<ListViewProps> = ({
 
     return (
       <article className={classNames} key={item.key}>
-        <article className='list-view-item-title' onClick={onSelect}>
+        <button type="button" className='list-view-item-title' onClick={onSelect}>
           {item.title}
-        </article>
+        </button>
         <article className='list-view-item-content'>{item.content}</article>
       </article>
     )

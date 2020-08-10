@@ -1,1 +1,14 @@
 @import '../../styles/variables.scss';
+
+.search {
+  width: 100%;
+
+  .search-empty {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    min-height: 100px;
+    color: $color-fg-alt;
+  }
+}

@@ -9,7 +9,12 @@
   }
 
   .list-view-item-title {
+    width: 100%;
+    border: 0;
+    outline: 0;
+    border-bottom: 1px solid $color-bg;
     padding: $spacing;
+    text-align: start;
     background-color: $color-bg-alt;
     color: $color-fg;
     cursor: pointer;
@@ -18,6 +23,11 @@
 
     &:hover {
       background-color: $color-bg;
+    }
+
+    &:focus {
+      background-color: $color-bg;
+      border-bottom: 1px solid $color-accent-0;
     }
   }
 

@@ -2,6 +2,7 @@ import React from 'react'
 import { ListView, ListItem, Message } from '../common/layout'
 import { SearchTitle } from './layout/SearchTitle'
 import { ObjectView } from './layout/ObjectView'
+import './Search.scss'
 
 export interface SearchProps {
   isInitialized: boolean
@@ -31,7 +32,7 @@ export const Search: React.FunctionComponent<SearchProps> = ({
   if (numResults === 0) {
     return (
       <section className='search'>
-        <Message>No results found.</Message>
+        <article className='search-empty'>No results found</article>
       </section>
     )
   }
