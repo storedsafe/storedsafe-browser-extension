@@ -135,8 +135,6 @@ async function clear (): Promise<Settings> {
 }
 
 const onChanged = new StorageChangeListener<Settings>('settings', get, ['sync', 'managed'])
-onChanged.addListener = onChanged.addListener.bind(onChanged)
-onChanged.removeListener = onChanged.removeListener.bind(onChanged)
 
 export const actions = {
   update,

@@ -7,6 +7,8 @@
  * - actions object provides the public interface for the model.
  * */
 
+import { StorageChangeListener } from "./storageTools"
+
 /**
  * Parse serialized sessions from storage.
  * @param sessions - Serializable sessions from storage
@@ -64,6 +66,8 @@ async function remove (...hosts: string[]): Promise<Sessions> {
   return await set(newSessions).then(get)
 }
 
+const onChanged = new StorageChangeListener<Sessions>('sessions', get, ['local'])
+
 /**
  * Clear all sessions.
  * @returns Updated active sessions (empty).
@@ -76,5 +80,6 @@ export const actions = {
   add,
   remove,
   clear,
-  fetch: get
+  fetch: get,
+  onChanged
 }

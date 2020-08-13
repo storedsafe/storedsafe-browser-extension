@@ -10,17 +10,32 @@
  * popup is available.
  * */
 import { actions as StoredSafeActions } from '../model/storedsafe/StoredSafe'
-import { actions as SessionsActions } from '../model/storage/Sessions'
 import { actions as SettingsActions } from '../model/storage/Settings'
 import { actions as TabResultsActions } from '../model/storage/TabResults'
 import { actions as BlacklistActions } from '../model/storage/Blacklist'
-import { IdleHandler } from './background/sessionHandler/IdleHandler'
 import { invalidateSession } from './background/sessionHandler/sessionTools'
 
 // /////////////////////////////////////////////////////////
 // Session management functions and initialization
 
+/**
+ * START REFACTORED CODE
+ * TODO: Remove comment
+ */
+import { actions as SessionsActions } from '../model/storage/Sessions'
+import { IdleHandler } from './background/sessionHandler/IdleHandler'
+import { KeepAliveHandler } from './background/sessionHandler/KeepAliveHandler'
+import Logger from '../utils/Logger'
+
+const logger = new Logger('Background')
+
 const idleHandler = new IdleHandler()
+KeepAliveHandler.StartTracking()
+
+/**
+ * END REFACTORED CODE
+ * TODO: Remove comment
+ */
 
 // Timers for invalidating sessions.
 let sessionTimers: Map<string /* host */, number> = new Map()
@@ -31,27 +46,6 @@ let sessionTimers: Map<string /* host */, number> = new Map()
  * */
 function getTokenLife (createdAt: number): number {
   return Date.now() - createdAt
-}
-
-/**
- * Set up check timers to keep sessions alive.
- * */
-function setupKeepAlive (): void {
-  void (async () => {
-    const sessions = await SessionsActions.fetch()
-    for (const [host, { timeout }] of sessions) {
-      // Perform initial check in case we're picking up an old session
-      // which will timeout in less than the saved timeout value.
-      await StoredSafeActions.check(host)
-      const interval = timeout * 0.75 // Leave a little margin
-      setInterval(() => {
-        console.log('Keepalive for', host)
-        StoredSafeActions.check(host).catch(error => {
-          console.error(error)
-        })
-      }, interval)
-    }
-  })()
 }
 
 /**
@@ -456,6 +450,3 @@ browser.runtime.onMessage.addListener(onMessage)
 
 // React to keyboard commands defined in the extension manifest
 browser.commands.onCommand.addListener(onCommand)
-
-// Keep StoredSafe session alive or invalidate dead sessions.
-setupKeepAlive()

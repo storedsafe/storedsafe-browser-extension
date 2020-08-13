@@ -43,7 +43,7 @@ export class IdleHandler {
       const idleMax: number = settings.get('idleMax').value as number
       if (idleMax === undefined) {
         throw new StoredSafeIdleError(
-          '`idleMax` property of Settings is undefined.'
+          `'idleMax' property of Settings is undefined.`
         )
       }
       // Convert timeout duration from minutes to milliseconds
