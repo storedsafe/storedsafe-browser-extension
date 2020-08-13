@@ -20,6 +20,8 @@
  * fields will simply be ignored in favor of higher priority settings.
  * */
 
+import { StorageChangeListener } from './storageTools'
+
 const systemStorage = browser.storage.managed
 const userStorage = browser.storage.sync
 
@@ -132,8 +134,13 @@ async function clear (): Promise<Settings> {
   return await set(new Map()).then(get)
 }
 
+const onChanged = new StorageChangeListener<Settings>('settings', get, ['sync', 'managed'])
+onChanged.addListener = onChanged.addListener.bind(onChanged)
+onChanged.removeListener = onChanged.removeListener.bind(onChanged)
+
 export const actions = {
   update,
   clear,
-  fetch: get
+  fetch: get,
+  onChanged
 }

@@ -14,35 +14,16 @@ import { actions as SessionsActions } from '../model/storage/Sessions'
 import { actions as SettingsActions } from '../model/storage/Settings'
 import { actions as TabResultsActions } from '../model/storage/TabResults'
 import { actions as BlacklistActions } from '../model/storage/Blacklist'
+import { IdleHandler } from './background/sessionHandler/IdleHandler'
+import { invalidateSession } from './background/sessionHandler/sessionTools'
 
 // /////////////////////////////////////////////////////////
 // Session management functions and initialization
 
+const idleHandler = new IdleHandler()
+
 // Timers for invalidating sessions.
 let sessionTimers: Map<string /* host */, number> = new Map()
-let idleTimer: number
-
-/**
- * Invalidate a single session and destroy all cached search results for
- * that host.
- * @param host - Host of session to invalidate.
- * */
-async function invalidateSession (host: string): Promise<void> {
-  const logoutPromise = StoredSafeActions.logout(host)
-  const purgePromise = TabResultsActions.purgeHost(host)
-  await logoutPromise
-  await purgePromise
-}
-
-/**
- * Invalidate all sessions and clear search results.
- * */
-async function invalidateAllSessions (): Promise<void> {
-  const logoutPromise = StoredSafeActions.logoutAll()
-  const clearPromise = TabResultsActions.clear()
-  await logoutPromise
-  await clearPromise
-}
 
 /**
  * Helper function to get the amount of milliseconds since the token was
@@ -299,56 +280,6 @@ function onInstalled ({
 }
 
 /**
- * Clear timeout function for idle timer.
- * */
-function clearIdleTimer (): void {
-  console.log('Clearing idle timer')
-  window.clearTimeout(idleTimer)
-  idleTimer = undefined
-}
-
-/**
- * Set up timer to invalidate all sessions after being idle for some time.
- * */
-function setupIdleTimer (): void {
-  void (async () => {
-    const settings = await SettingsActions.fetch()
-    // Clear old timer if one exists.
-    if (idleTimer !== undefined) {
-      clearIdleTimer()
-    }
-    const idleTimeout = (settings.get('idleMax').value as number) * 6e4
-    console.log(
-      'Starting idle timer, logout in',
-      idleTimeout,
-      'ms (',
-      idleTimeout / 6e4,
-      'minutes)'
-    )
-    idleTimer = window.setTimeout(() => {
-      console.log('Invalidating all sessions due to inactivity.')
-      invalidateAllSessions().catch(error => {
-        console.error(error)
-      })
-    }, idleTimeout)
-  })()
-}
-
-/**
- * Handle changes in idle state to lock sessions after some time.
- * @param state - New browser state.
- * */
-function onIdle (state: 'idle' | 'locked' | 'active'): void {
-  if (state === 'idle') {
-    setupIdleTimer()
-  } else if (state === 'active') {
-    if (idleTimer !== undefined) {
-      clearIdleTimer()
-    }
-  }
-}
-
-/**
  * Open extension popup, silence error if popup is already open.
  * */
 async function tryOpenPopup (): Promise<void> {
@@ -518,7 +449,7 @@ browser.runtime.onStartup.addListener(onStartup)
 browser.runtime.onInstalled.addListener(onInstalled)
 
 // Invalidate sessions after being idle for some time
-browser.idle.onStateChanged.addListener(onIdle)
+browser.idle.onStateChanged.addListener(idleHandler.onIdleChange)
 
 // React to messages from other parts of the extension
 browser.runtime.onMessage.addListener(onMessage)
