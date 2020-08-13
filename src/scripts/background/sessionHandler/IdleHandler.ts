@@ -6,12 +6,14 @@ import { MODULE_NAME } from '.'
 import { invalidateAllSessions } from './sessionTools'
 
 const logger = new Logger(MODULE_NAME + ' - IdleHandler')
-
 class StoredSafeIdleError extends StoredSafeError {}
 
+/**
+ * Handles changes in idle state so that sessions can be invalidated
+ * after a user is set as idle. The time to trigger the idle state is
+ * based on the user settings for the extension.
+ */
 export class IdleHandler {
-  private timeoutId: number = null
-
   constructor () {
     // Make sure JS remembers what `this` is
     this.onSettingsChanged = this.onSettingsChanged.bind(this)
