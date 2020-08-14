@@ -51,7 +51,7 @@ class Logger {
     this.name = name
 
     // Generate a color based on the name to make it easy to identify
-    const hash = name.split('').reduce((a, x) => a + x.charCodeAt(0), 0)
+    const hash = name.split('').reduce((a, x) => a + x.charCodeAt(0), 0) * 123
     const color = `hsl(${hash % 360}, ${hash % 50 + 20}%, ${hash % 30 + 20}%)`
     this.nameStyle = [baseStyle, `background-color: ${color}`].join(';')
   }
