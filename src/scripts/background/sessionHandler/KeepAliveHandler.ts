@@ -25,7 +25,7 @@ export class KeepAliveHandler {
    * of active sessions changes.
    * @param sessions Updated list of active sessions.
    */
-  private static updateKeepaliveHandlers (sessions: Sessions) {
+  private static updateKeepAliveHandlers (sessions: Sessions) {
     for (const [host, keepAliveHandler] of KeepAliveHandler.handlers) {
       if (!sessions.has(host)) {
         keepAliveHandler.stop()
@@ -45,11 +45,11 @@ export class KeepAliveHandler {
 
   static StartTracking () {
     // Initialize keep alive objects
-    subscribeToSessions(KeepAliveHandler.updateKeepaliveHandlers)
+    subscribeToSessions(KeepAliveHandler.updateKeepAliveHandlers)
   }
 
   static StopTracking() {
-    unsubscribeFromSessions(KeepAliveHandler.updateKeepaliveHandlers)
+    unsubscribeFromSessions(KeepAliveHandler.updateKeepAliveHandlers)
   }
 
   private intervalId: number = null
