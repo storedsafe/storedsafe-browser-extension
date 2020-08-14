@@ -1,62 +1,40 @@
 /**
- * This script is run in the background by the browser as defined in the
- * extension manifest. In chrome it will run as an event page whereas in
- * firefox it will be persistent as firefox does not support event pages.
+ * This script is run in the background by the browser as defined in the extension
+ * manifest. In chromium-based browsers it will run as an event page whereas in
+ * firefox it will be persistent as firefox does not supportevent pages.
  *
  * All handling of browser events should be handled in this module to the
- * extent that it's possible. Message handling from the popup to the content
- * script can bypass the background script but messages from the content script
- * to the popup should be passed through the background script to ensure the
- * popup is available.
+ * extent that it's possible. Messages can be passed through the background
+ * script to enable communication between the content script and iframes or
+ * the popup and the content script.
  * */
 import { actions as StoredSafeActions } from '../model/storedsafe/StoredSafe'
 import { actions as SettingsActions } from '../model/storage/Settings'
 import { actions as TabResultsActions } from '../model/storage/TabResults'
 import { actions as BlacklistActions } from '../model/storage/Blacklist'
-
-// /////////////////////////////////////////////////////////
-// Session management functions and initialization
+import { actions as SessionsActions } from '../model/storage/Sessions'
 
 /**
  * START REFACTORED CODE
  * TODO: Remove comment
  */
-import { actions as SessionsActions } from '../model/storage/Sessions'
 import { IdleHandler } from './background/sessionHandler/IdleHandler'
 import { KeepAliveHandler } from './background/sessionHandler/KeepAliveHandler'
-import Logger from '../utils/Logger'
 import { TimeoutHandler } from './background/sessionHandler/TimeoutHandler'
+import Logger from '../utils/Logger'
 
 const logger = new Logger('Background')
 logger.log('Background script initialized: ', new Date(Date.now()))
 
+// Invalidate sessions after being idle for some time
 const idleHandler = new IdleHandler()
+browser.idle.onStateChanged.addListener(idleHandler.onIdleChange)
+
 KeepAliveHandler.StartTracking()
 TimeoutHandler.StartTracking()
 
 /**
  * END REFACTORED CODE
- * TODO: Remove comment
- */
-
-/**
- * START REFACTOR STAGING AREA
- * TODO: Remove comment
- */
-
-/**
- * TODO: Update comment after refactor is complete
- * Check validity of all sessions when browser starts up.
- * */
-function onStartup (): void {
-  void (async () => {
-    const sessions = await StoredSafeActions.checkAll()
-    updateOnlineStatus(sessions)
-  })()
-}
-
-/**
- * END REFACTOR STAGING AREA
  * TODO: Remove comment
  */
 
@@ -209,22 +187,8 @@ function onInstalled ({
 }: {
   reason: browser.runtime.OnInstalledReason
 }): void {
-  // Run online status initialization logic
-  void (async () => {
-    const sessions = await StoredSafeActions.checkAll()
-    updateOnlineStatus(sessions)
-  })()
-}
-
-/**
- * Open extension popup, silence error if popup is already open.
- * */
-async function tryOpenPopup (): Promise<void> {
-  try {
-    await browser.browserAction.openPopup()
-  } catch {
-    return await Promise.resolve()
-  }
+  // TODO: Remove log statement
+  logger.log('onInstalled triggered with %s', reason)
 }
 
 /**
@@ -370,17 +334,8 @@ function onCommand (command: string): void {
   }
 }
 
-/// /////////////////////////////////////////////////////////
-// Subscribe to events and initialization
-
-// Handle startup logic, check status of existing sessions.
-browser.runtime.onStartup.addListener(onStartup)
-
 // On install logic, set up initial state
 browser.runtime.onInstalled.addListener(onInstalled)
-
-// Invalidate sessions after being idle for some time
-browser.idle.onStateChanged.addListener(idleHandler.onIdleChange)
 
 // React to messages from other parts of the extension
 browser.runtime.onMessage.addListener(onMessage)

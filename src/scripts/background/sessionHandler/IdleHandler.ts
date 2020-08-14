@@ -1,9 +1,8 @@
-import { actions as SettingsActions } from '../../../model/storage/Settings'
 import Logger from '../../../utils/Logger'
 import StoredSafeError from '../../../utils/StoredSafeError'
 
 import { MODULE_NAME } from '.'
-import { invalidateAllSessions } from './sessionTools'
+import { invalidateAllSessions, subscribeToSettingsField } from './sessionTools'
 
 const logger = new Logger(MODULE_NAME + ' - IdleHandler')
 class StoredSafeIdleError extends StoredSafeError {}
@@ -16,42 +15,26 @@ class StoredSafeIdleError extends StoredSafeError {}
 export class IdleHandler {
   constructor () {
     // Make sure JS remembers what `this` is
-    this.onSettingsChanged = this.onSettingsChanged.bind(this)
+    this.onIdleMaxChanged = this.onIdleMaxChanged.bind(this)
     this.setDetectionInterval = this.setDetectionInterval.bind(this)
     this.onIdleChange = this.onIdleChange.bind(this)
 
-    // Perform initial setup
-    SettingsActions.fetch()
-      .then(this.onSettingsChanged)
-      .catch(error => {
-        logger.error(
-          'Error while setting up idle handler, could not fetch settings. %o',
-          error
-        )
-      })
-
-    // Subscribe to changes in settings
-    SettingsActions.onChanged.addListener(this.onSettingsChanged)
+    subscribeToSettingsField('idleMax', this.onIdleMaxChanged, error => {
+      logger.error(
+        'Error while setting up idle handler, could not fetch settings. %o',
+        error
+      )
+    })
   }
 
   /**
    * Get idle interval from the updated user settings and adjust the idle detection interval.
    * @param settings Updated settings object.
    */
-  private onSettingsChanged (settings: Settings): void {
-    try {
-      const idleMax: number = settings.get('idleMax').value as number
-      if (idleMax === undefined) {
-        throw new StoredSafeIdleError(
-          `'idleMax' property of Settings is undefined.`
-        )
-      }
-      // Convert timeout duration from minutes to milliseconds
-      const intervalInSeconds = idleMax * 60
-      this.setDetectionInterval(intervalInSeconds)
-    } catch (error) {
-      logger.error('Unable to set idle timer. %o', error)
-    }
+  private onIdleMaxChanged (idleMax: number): void {
+    // Convert timeout duration from minutes to milliseconds
+    const intervalInSeconds = idleMax * 60
+    this.setDetectionInterval(intervalInSeconds)
   }
 
   /**
@@ -62,7 +45,11 @@ export class IdleHandler {
   private setDetectionInterval (intervalInSeconds: number): void {
     intervalInSeconds = Math.floor(intervalInSeconds)
     intervalInSeconds = Math.max(15, intervalInSeconds)
-    logger.log('Setting idle detection interval to %ds (%dm).', intervalInSeconds, intervalInSeconds / 60)
+    logger.log(
+      'Setting idle detection interval to %ds (%dm).',
+      intervalInSeconds,
+      intervalInSeconds / 60
+    )
     browser.idle.setDetectionInterval(intervalInSeconds)
   }
 
