@@ -60,6 +60,7 @@ export class KeepAliveHandler {
     // Make sure JS remembers what `this` is
     this.start = this.start.bind(this)
     this.stop = this.stop.bind(this)
+    this.keepAlive = this.keepAlive.bind(this)
 
     this.host = host
     this.timeout = timeout * 0.75 // Leave a little margin
