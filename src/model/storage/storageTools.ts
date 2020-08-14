@@ -2,7 +2,7 @@ import { string } from 'yargs'
 import StoredSafeError from '../../utils/StoredSafeError'
 import Logger from '../../utils/Logger'
 
-type StorageListener<T> = (change: T) => void
+type StorageListener<T> = (value: T) => void
 type GetFunction<T> = () => Promise<T>
 type AreaName = 'local' | 'sync' | 'managed'
 

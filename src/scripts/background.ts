@@ -13,7 +13,6 @@ import { actions as StoredSafeActions } from '../model/storedsafe/StoredSafe'
 import { actions as SettingsActions } from '../model/storage/Settings'
 import { actions as TabResultsActions } from '../model/storage/TabResults'
 import { actions as BlacklistActions } from '../model/storage/Blacklist'
-import { invalidateSession } from './background/sessionHandler/sessionTools'
 
 // /////////////////////////////////////////////////////////
 // Session management functions and initialization
@@ -26,53 +25,40 @@ import { actions as SessionsActions } from '../model/storage/Sessions'
 import { IdleHandler } from './background/sessionHandler/IdleHandler'
 import { KeepAliveHandler } from './background/sessionHandler/KeepAliveHandler'
 import Logger from '../utils/Logger'
+import { TimeoutHandler } from './background/sessionHandler/TimeoutHandler'
 
 const logger = new Logger('Background')
+logger.log('Background script initialized: ', new Date(Date.now()))
 
 const idleHandler = new IdleHandler()
 KeepAliveHandler.StartTracking()
+TimeoutHandler.StartTracking()
 
 /**
  * END REFACTORED CODE
  * TODO: Remove comment
  */
 
-// Timers for invalidating sessions.
-let sessionTimers: Map<string /* host */, number> = new Map()
+/**
+ * START REFACTOR STAGING AREA
+ * TODO: Remove comment
+ */
 
 /**
- * Helper function to get the amount of milliseconds since the token was
- * created.
+ * TODO: Update comment after refactor is complete
+ * Check validity of all sessions when browser starts up.
  * */
-function getTokenLife (createdAt: number): number {
-  return Date.now() - createdAt
-}
-
-/**
- * Set up hard timers for session logout.
- * @param sessions - Currently active sessions.
- * */
-function setupTimers (sessions: Sessions): void {
+function onStartup (): void {
   void (async () => {
-    const settings = await SettingsActions.fetch()
-
-    // Exit if there maxTokenLife is 0 (no timeout)
-    const maxTokenLife = settings.get('maxTokenLife').value as number
-    if (maxTokenLife === 0) return
-
-    for (const [host, session] of sessions) {
-      const tokenLife = getTokenLife(session.createdAt)
-      const tokenTimeout = maxTokenLife * 3600 * 10e3 - tokenLife
-      sessionTimers.set(
-        host,
-        window.setTimeout(() => {
-          console.log('Maximum token lifetime reached for', host)
-          void invalidateSession(host)
-        }, tokenTimeout)
-      )
-    }
+    const sessions = await StoredSafeActions.checkAll()
+    updateOnlineStatus(sessions)
   })()
 }
+
+/**
+ * END REFACTOR STAGING AREA
+ * TODO: Remove comment
+ */
 
 /**
  * Helper function to convert a url to a search string.
@@ -212,49 +198,6 @@ function updateOnlineStatus (sessions: Sessions): void {
       .catch(error => {
         console.error(error)
       })
-  }
-}
-
-/**
- * Check validity of all sessions when browser starts up.
- * */
-function onStartup (): void {
-  void (async () => {
-    const sessions = await StoredSafeActions.checkAll()
-    setupTimers(sessions)
-    updateOnlineStatus(sessions)
-  })()
-}
-
-/**
- * Handle updates in session storage.
- * @param sessions - currently active sessions.
- * */
-function handleSessionsChange (sessions: Sessions): void {
-  updateOnlineStatus(sessions)
-  for (const timer of sessionTimers.values()) {
-    clearTimeout(timer)
-  }
-  sessionTimers = new Map()
-  setupTimers(sessions)
-}
-
-/**
- * Handle changes in storage.
- * @param storage - Storage change object.
- * @param area - Storage area where the change occured.
- * */
-function onStorageChange (
-  storage: { [key: string]: browser.storage.StorageChange },
-  area: 'local' | 'sync' | 'managed'
-): void {
-  // Local area storage
-  if (area === 'local') {
-    const { sessions } = storage
-    // If there are changes to sessions
-    if (sessions?.newValue !== undefined) {
-      handleSessionsChange(new Map(sessions.newValue))
-    }
   }
 }
 
@@ -429,12 +372,6 @@ function onCommand (command: string): void {
 
 /// /////////////////////////////////////////////////////////
 // Subscribe to events and initialization
-
-// TODO: Remove debug printout
-console.log('Background script initialized: ', new Date(Date.now()))
-
-// Listen to changes in storage to know when sessions are updated
-browser.storage.onChanged.addListener(onStorageChange)
 
 // Handle startup logic, check status of existing sessions.
 browser.runtime.onStartup.addListener(onStartup)
