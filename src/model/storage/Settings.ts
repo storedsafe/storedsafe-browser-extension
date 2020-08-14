@@ -39,7 +39,7 @@ export interface SettingsValues {
  * @param maxTokenLife - Number of hours a session is allowed to be maintained.
  * */
 export const defaults: SettingsValues = {
-  idleMax: 15,
+  idleMax: 20,
   autoFill: false,
   maxTokenLife: 8
 }
