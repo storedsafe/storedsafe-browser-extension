@@ -88,7 +88,9 @@ export async function subscribeToSettingsField<T extends SettingsFieldValue> (
 
   if (initialize) {
     // Perform initial setup
-    SettingsActions.fetch().then(onSettingsChanged).catch(onError)
+    SettingsActions.fetch()
+      .then(onSettingsChanged)
+      .catch(onError)
   }
 
   /**
@@ -126,10 +128,14 @@ export async function subscribeToSettingsField<T extends SettingsFieldValue> (
  * Unregister listener from updates to settings field.
  * @param listener Previously registered listener (see `subscribeToSettingsField`).
  */
-export function unsubscribeFromSettingsField(listener: (value: SettingsFieldValue) => void) {
+export function unsubscribeFromSettingsField (
+  listener: (value: SettingsFieldValue) => void
+) {
   const onSettingsChanged: SettingsListener = settingsListeners.get(listener)
   if (onSettingsChanged === undefined) {
-    throw new StoredSafeSessionToolsError('listener is not registered, cannot unregister.')
+    throw new StoredSafeSessionToolsError(
+      'listener is not registered, cannot unregister.'
+    )
   }
   SettingsActions.onChanged.removeListener(onSettingsChanged)
 }

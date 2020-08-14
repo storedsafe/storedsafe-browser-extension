@@ -99,7 +99,7 @@ export class TimeoutHandler {
    */
   stop () {
     unsubscribeFromSettingsField(this.onMaxTokenLifeChange)
-    clearTimeout()
+    this.clearSessionTimeout()
   }
 
   /**
@@ -123,7 +123,7 @@ export class TimeoutHandler {
       this.host,
       timeout,
       timeout / 6e4,
-      timeout / 36e5,
+      timeout / 36e5
     )
     this.timeoutId = window.setTimeout(this.onTimeout, timeout)
   }
@@ -137,7 +137,7 @@ export class TimeoutHandler {
         `can't cancel timeout for '${this.host}', no timeout exists.`
       )
     } else {
-      clearTimeout(this.timeoutId)
+      window.clearTimeout(this.timeoutId)
       this.timeoutId = null
       logger.log('Removed session timeout for %s', this.host)
     }

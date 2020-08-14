@@ -2,7 +2,11 @@ import Logger from '../../../utils/Logger'
 import StoredSafeError from '../../../utils/StoredSafeError'
 
 import { MODULE_NAME } from '.'
-import { checkSessionToken, subscribeToSessions, unsubscribeFromSessions } from './sessionTools'
+import {
+  checkSessionToken,
+  subscribeToSessions,
+  unsubscribeFromSessions
+} from './sessionTools'
 
 const logger = new Logger(MODULE_NAME + ' - KeepAliveHandler')
 class StoredSafeKeepAliveError extends StoredSafeError {}
@@ -51,7 +55,7 @@ export class KeepAliveHandler {
     subscribeToSessions(KeepAliveHandler.updateKeepAliveHandlers)
   }
 
-  static StopTracking() {
+  static StopTracking () {
     unsubscribeFromSessions(KeepAliveHandler.updateKeepAliveHandlers)
   }
 

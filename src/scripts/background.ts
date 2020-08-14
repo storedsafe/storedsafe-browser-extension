@@ -18,10 +18,13 @@ import { actions as SessionsActions } from '../model/storage/Sessions'
  * START REFACTORED CODE
  * TODO: Remove comment
  */
-import { IdleHandler } from './background/sessionHandler/IdleHandler'
-import { KeepAliveHandler } from './background/sessionHandler/KeepAliveHandler'
-import { TimeoutHandler } from './background/sessionHandler/TimeoutHandler'
 import Logger from '../utils/Logger'
+import {
+  IdleHandler,
+  KeepAliveHandler,
+  TimeoutHandler,
+  OnlineStatusHandler
+} from './background/sessionHandler'
 
 const logger = new Logger('Background')
 logger.log('Background script initialized: ', new Date(Date.now()))
@@ -32,6 +35,7 @@ browser.idle.onStateChanged.addListener(idleHandler.onIdleChange)
 
 KeepAliveHandler.StartTracking()
 TimeoutHandler.StartTracking()
+OnlineStatusHandler.StartTracking()
 
 /**
  * END REFACTORED CODE
@@ -160,36 +164,6 @@ async function copyToClipboard (
 
 /// /////////////////////////////////////////////////////////
 // Event handler functions
-
-/**
- * Update visual online indicators.
- * @param sessions - Currently active sessions.
- * */
-function updateOnlineStatus (sessions: Sessions): void {
-  if (sessions.size > 0) {
-    browser.browserAction.setIcon({ path: 'ico/icon.png' }).catch(error => {
-      console.error(error)
-    })
-  } else {
-    void browser.browserAction
-      .setIcon({ path: 'ico/icon-inactive.png' })
-      .catch(error => {
-        console.error(error)
-      })
-  }
-}
-
-/**
- * Handle on install event.
- * */
-function onInstalled ({
-  reason
-}: {
-  reason: browser.runtime.OnInstalledReason
-}): void {
-  // TODO: Remove log statement
-  logger.log('onInstalled triggered with %s', reason)
-}
 
 /**
  * Message handler for specific types of messages.
@@ -333,9 +307,6 @@ function onCommand (command: string): void {
     })()
   }
 }
-
-// On install logic, set up initial state
-browser.runtime.onInstalled.addListener(onInstalled)
 
 // React to messages from other parts of the extension
 browser.runtime.onMessage.addListener(onMessage)
