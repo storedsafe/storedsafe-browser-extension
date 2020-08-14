@@ -96,7 +96,12 @@ export class KeepAliveHandler {
         `can't start keep alive interval for '${this.host}', interval already exists.`
       )
     }
-    logger.log('Scheduled keep alive for %s', this.host)
+    logger.log(
+      'Scheduled keep alive for %s in %dms (%d minutes)',
+      this.host,
+      this.timeout,
+      this.timeout / 6e4
+    )
     this.intervalId = window.setInterval(this.keepAlive, this.timeout)
   }
 
