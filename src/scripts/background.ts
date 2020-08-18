@@ -24,9 +24,10 @@ import {
   KeepAliveHandler,
   TimeoutHandler,
   OnlineStatusHandler
-} from './background/sessionHandler'
+} from './background/sessions'
+import { PortHandler } from './background/messages'
 
-const logger = new Logger('Background')
+export const logger = new Logger('Background')
 logger.log('Background script initialized: ', new Date(Date.now()))
 
 // Invalidate sessions after being idle for some time
@@ -36,6 +37,7 @@ browser.idle.onStateChanged.addListener(idleHandler.onIdleChange)
 KeepAliveHandler.StartTracking()
 TimeoutHandler.StartTracking()
 OnlineStatusHandler.StartTracking()
+PortHandler.StartTracking()
 
 /**
  * END REFACTORED CODE

@@ -17,7 +17,7 @@
  * messages such as %o for object, %s for string and %d for number.
  */
 
- // Print this in front of all log messages
+// Print this in front of all log messages
 const PREFIX = 'StoredSafe'
 
 // Base style for colored messages
@@ -46,14 +46,27 @@ class Logger {
   groupDepth = 0
   name: string
   nameStyle: string
+  parent?: Logger = null
+  enabled: boolean
 
-  constructor (name: string) {
+  constructor (
+    name: string,
+    parent: Logger = StoredSafeLogger,
+  ) {
     this.name = name
+    this.parent = parent
+    this.enabled = this.parent === null ? true : this.parent.enabled
 
-    // Generate a color based on the name to make it easy to identify
-    const hash = name.split('').reduce((a, x) => a + x.charCodeAt(0), 0) * 123
-    const color = `hsl(${hash % 360}, ${hash % 50 + 20}%, ${hash % 30 + 20}%)`
-    this.nameStyle = [baseStyle, `background-color: ${color}`].join(';')
+    if (this.parent === null) {
+      this.nameStyle = baseStyle
+    } else {
+      // Generate a color based on the name to make it easy to identify
+      const hash =
+        this.name.split('').reduce((a, x) => a + x.charCodeAt(0), 0) * 93
+      const color = `hsl(${hash % 360}, ${(hash % 50) + 20}%, ${(hash % 30) +
+        20}%)`
+      this.nameStyle = [baseStyle, `background-color: ${color}`].join(';')
+    }
   }
 
   /**
@@ -61,6 +74,17 @@ class Logger {
    */
   private _isGrouped () {
     return this.groupDepth > 0
+  }
+
+  private _namePrefix(): [string, string[]] {
+    let parentPrefix: string = '', parentStyle: string[] = []
+    if (this.parent !== null) {
+      [parentPrefix, parentStyle] = this.parent._namePrefix()
+    }
+    return [
+      `${parentPrefix}%c${this.name}`,
+      [...parentStyle, this.nameStyle]
+    ]
   }
 
   /**
@@ -71,10 +95,11 @@ class Logger {
    * @param tagStyle Style for extra tag.
    * @param style Style of the message.
    */
-  private _prefix (tag='', tagStyle='', style='') {
+  private _prefix (tag = '', tagStyle = '', style = ''): [string, string[]] {
+    const [namePrefix, nameStyle] = this._namePrefix()
     return [
-      `%c${PREFIX}%c${this.name}%c${tag}%c: `,
-      [baseStyle, this.nameStyle, tagStyle, style]
+      `${namePrefix}%c${tag}%c: `,
+      [...nameStyle, tagStyle, style]
     ]
   }
 
@@ -84,8 +109,12 @@ class Logger {
    * @param title Title of the group for better readability.
    */
   group (title = '') {
+    if (!this.enabled) return
     this.groupDepth += 1
-    const [prefix, styles] = this._prefix(`G${this.groupDepth} - ${title}`, depthStyle)
+    const [prefix, styles] = this._prefix(
+      `G${this.groupDepth} - ${title}`,
+      depthStyle
+    )
     console.group(prefix, ...styles)
   }
 
@@ -95,8 +124,12 @@ class Logger {
    * @param title Title of the group for better readability.
    */
   groupCollapsed (title = '') {
+    if (!this.enabled) return
     this.groupDepth += 1
-    const [prefix, styles] = this._prefix(`G${this.groupDepth} - ${title}`, depthStyle)
+    const [prefix, styles] = this._prefix(
+      `G${this.groupDepth} - ${title}`,
+      depthStyle
+    )
     console.groupCollapsed(prefix, ...styles)
   }
 
@@ -104,6 +137,7 @@ class Logger {
    * End a console group, reverting indentation of Logger.group.
    */
   groupEnd () {
+    if (!this.enabled) return
     if (this._isGrouped()) {
       this.groupDepth -= 1
       console.groupEnd()
@@ -116,6 +150,7 @@ class Logger {
    * @param variables Values to be injected into message.
    */
   log (message: any, ...variables: any[]) {
+    if (!this.enabled) return
     const [prefix, styles] = this._prefix()
     console.log(prefix + message, ...styles, ...variables)
   }
@@ -126,6 +161,7 @@ class Logger {
    * @param variables Values to be injected into message.
    */
   info (message: any, ...variables: any[]) {
+    if (!this.enabled) return
     const [prefix, styles] = this._prefix()
     console.info(prefix + message, ...styles, ...variables)
   }
@@ -136,6 +172,7 @@ class Logger {
    * @param variables Values to be injected into message.
    */
   warn (message: any, ...variables: any[]) {
+    if (!this.enabled) return
     const [prefix, styles] = this._prefix()
     console.warn(prefix + message, ...styles, ...variables)
   }
@@ -146,6 +183,7 @@ class Logger {
    * @param variables Values to be injected into message.
    */
   error (message: any, ...variables: any[]) {
+    if (!this.enabled) return
     const [prefix, styles] = this._prefix()
     console.error(prefix + message, ...styles, ...variables)
   }
@@ -156,6 +194,7 @@ class Logger {
    * @param variables Values to be injected into message.
    */
   debug (message: any, ...variables: any[]) {
+    if (!this.enabled) return
     const [prefix, styles] = this._prefix()
     console.debug(prefix + message, ...styles, ...variables)
   }
@@ -165,10 +204,21 @@ class Logger {
    * @param obj Object to be presented.
    */
   table (obj: any) {
+    if (!this.enabled) return
     const [prefix, styles] = this._prefix('table', tableStyle)
     console.log(prefix, ...styles)
     console.table(obj)
   }
+
+  enable() {
+    this.enabled = true
+  }
+
+  disable() {
+    this.enabled = false
+  }
 }
+
+export const StoredSafeLogger = new Logger(PREFIX, null)
 
 export default Logger

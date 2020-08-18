@@ -6,12 +6,12 @@ import React, { useState, useEffect } from 'react'
 import DebugStorage from './DebugStorage'
 import Popup from './Popup'
 import Save from './Save'
+import { SAVE_FRAME_ID } from '../scripts/content_script/messages'
 
 enum Page {
   Popup = 'popup',
   Debug = 'debug',
-  Save = 'save',
-  Toggle = 'toggle'
+  Save = 'save'
 }
 
 const MessageCatcher: React.FunctionComponent = () => {
@@ -43,20 +43,12 @@ const Extension: React.FunctionComponent = () => {
   React.useEffect(() => {
     const path = window.location.href.split('#')[1]
     switch (path) {
-      case Page.Popup: {
-        setPage(Page.Popup)
-        break
-      }
       case Page.Debug: {
         setPage(Page.Debug)
         break
       }
-      case Page.Save: {
+      case SAVE_FRAME_ID: {
         setPage(Page.Save)
-        break
-      }
-      case Page.Toggle: {
-        setPage(Page.Toggle)
         break
       }
       default: {
@@ -75,11 +67,6 @@ const Extension: React.FunctionComponent = () => {
       {page === Page.Popup && <Popup />}
       {page === Page.Save && <Save />}
       {/* {page === Page.Save && <MessageCatcher />} */}
-      {page === Page.Toggle && (
-        <div>
-          <button onClick={toggle}>Toggle</button>
-        </div>
-      )}
     </section>
   )
 }

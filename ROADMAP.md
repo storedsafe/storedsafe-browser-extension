@@ -3,7 +3,7 @@
 ## Sessioner
 - [x] Kan logga in med de MFA som StoredSafe stödjer idag (Yubico OTP, TOTP).
 - [x] Kan logga ut manuellt.
-- [ ] Inloggningen kan hållas vid liv.
+- [x] Inloggningen kan hållas vid liv.
 - [x] Inloggningen expirerar automatiskt efter en tid av inaktivitet (default 15 min).
 - [x] Inloggningen expirerar automatiskt efter en tid oavsett inaktivitet (default 180 min).
 
@@ -21,16 +21,16 @@
   - [x] Kan visa sökningar relaterade till aktiv webbläsar-tabb i popup-rutan när ingen manuell sökning har gjorts.
 
 ## Spara
-- [ ] Lägg till nytt objekt i StoredSafe.
-- [ ] Erbjud att spara information efter inloggning.
-- [ ] Möjligt att "svartlista" specifika sajter från att erbjuda att spara inloggning.
+- [x] Lägg till nytt objekt i StoredSafe.
+- [x] Erbjud att spara information efter inloggning.
+- [x] Möjligt att "svartlista" specifika sajter från att erbjuda att spara inloggning.
 
 ## Gränssnitt
 - [x] Separat sida för inställningar.
 - [x] Popup-ruta
   - [x] Inloggning
   - [x] Sökning
-  - [ ] **Lägg till objekt i StoredSafe** (påbörjad)
+  - [x] Lägg till objekt i StoredSafe
   - [ ] Lösenordsgenerator (del av lägg till objekt eller även som separat?)
 
 
