@@ -49,10 +49,7 @@ class Logger {
   parent?: Logger = null
   enabled: boolean
 
-  constructor (
-    name: string,
-    parent: Logger = StoredSafeLogger,
-  ) {
+  constructor (name: string, parent: Logger = StoredSafeLogger) {
     this.name = name
     this.parent = parent
     this.enabled = this.parent === null ? true : this.parent.enabled
@@ -62,9 +59,11 @@ class Logger {
     } else {
       // Generate a color based on the name to make it easy to identify
       const hash =
-        this.name.split('').reduce((a, x) => a + x.charCodeAt(0), 0) * 93
-      const color = `hsl(${hash % 360}, ${(hash % 50) + 20}%, ${(hash % 30) +
-        20}%)`
+        this.name.split('').reduce((a, x) => a + x.charCodeAt(0), 0)
+      const h = `${hash % 360}`
+      const s = `${(hash % 25) + 25}%`
+      const l = `${(hash % 20) + 40}%`
+      const color = `hsl(${h}, ${s}, ${l})`
       this.nameStyle = [baseStyle, `background-color: ${color}`].join(';')
     }
   }
@@ -76,15 +75,13 @@ class Logger {
     return this.groupDepth > 0
   }
 
-  private _namePrefix(): [string, string[]] {
-    let parentPrefix: string = '', parentStyle: string[] = []
+  private _namePrefix (): [string, string[]] {
+    let parentPrefix: string = '',
+      parentStyle: string[] = []
     if (this.parent !== null) {
-      [parentPrefix, parentStyle] = this.parent._namePrefix()
+      ;[parentPrefix, parentStyle] = this.parent._namePrefix()
     }
-    return [
-      `${parentPrefix}%c${this.name}`,
-      [...parentStyle, this.nameStyle]
-    ]
+    return [`${parentPrefix}%c${this.name}`, [...parentStyle, this.nameStyle]]
   }
 
   /**
@@ -97,10 +94,7 @@ class Logger {
    */
   private _prefix (tag = '', tagStyle = '', style = ''): [string, string[]] {
     const [namePrefix, nameStyle] = this._namePrefix()
-    return [
-      `${namePrefix}%c${tag}%c: `,
-      [...nameStyle, tagStyle, style]
-    ]
+    return [`${namePrefix}%c${tag}%c: `, [...nameStyle, tagStyle, style]]
   }
 
   /**
@@ -210,11 +204,11 @@ class Logger {
     console.table(obj)
   }
 
-  enable() {
+  enable () {
     this.enabled = true
   }
 
-  disable() {
+  disable () {
     this.enabled = false
   }
 }
