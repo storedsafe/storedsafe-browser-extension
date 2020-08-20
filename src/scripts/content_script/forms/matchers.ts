@@ -1,16 +1,3 @@
-/**
- * Describes the purpose of the form. Some forms should be filled while others
- * should be ignored or handled as special cases.
- * */
-enum FormType {
-  Login = 'login',
-  Card = 'card',
-  Search = 'search',
-  ContactInfo = 'contactinfo',
-  NewsLetter = 'newsletter',
-  Register = 'register',
-  Unknown = 'unknown'
-}
 
 /**
  * Matcher for an input field.
