@@ -64,6 +64,7 @@ export class MessageHandler {
         }
         case ACTION_RESIZE: {
           FrameManager.ResizeFrame(frameId, data.width, data.height)
+          break
         }
         default: {
           throw new StoredSafeMessageHandlerError(
