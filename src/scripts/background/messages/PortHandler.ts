@@ -4,9 +4,9 @@ import StoredSafeError from '../../../utils/StoredSafeError'
 import { FLOW_SAVE, FLOW_FILL, ACTION_SUBMIT } from '../../content_script/messages'
 
 class StoredSafePortHandlerError extends StoredSafeError {}
+const logger = new Logger('Ports', messageLogger)
 
 export class PortHandler {
-  private static logger = new Logger(PortHandler.name, messageLogger)
   private static handlers: PortHandler[] = []
 
   static StartTracking () {
@@ -18,6 +18,7 @@ export class PortHandler {
   }
 
   private static onConnect(port: browser.runtime.Port) {
+    logger.log('Conected to %s', port.name)
     const handler = new PortHandler(port)
   }
 
@@ -63,12 +64,17 @@ export class PortHandler {
     const [flow, action] = type.split('.')
     switch(flow) {
       case FLOW_SAVE: {
+        logger.log('Routing message %s to save flow', type)
         this.onSaveFlow({ type: action, data })
         break
       }
       case FLOW_FILL: {
+        logger.log('Routing message %s to fill flow', type)
         this.onFillFlow({ type: action, data })
         break
+      }
+      default: {
+        logger.log('Invalid message %s', type)
       }
     }
   }
@@ -76,7 +82,6 @@ export class PortHandler {
   private onSaveFlow({ type, data }: Message) {
     switch (type) {
       case ACTION_SUBMIT: {
-
         break
       }
     }

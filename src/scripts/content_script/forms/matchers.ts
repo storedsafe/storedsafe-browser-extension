@@ -1,13 +1,20 @@
+import { FormValues } from './PageScanner'
+
 /**
  * Typed version of StoredSafe template fields.
+ * The fields at the bottom are not StoredSafe fields but are used for filtering.
  */
-export enum FieldType {
-  USERNAME = 'username',
-  PASSWORD = 'password',
-  PINCODE = 'pincode',
-  CARD_NO = 'cardno',
-  EXPIRES = 'expires',
-  CVC = 'cvc'
+export enum InputType {
+  Username = 'username',
+  Password = 'password',
+  PinCode = 'pincode',
+  CardNo = 'cardno',
+  Expires = 'expires',
+  CVC = 'cvc',
+
+  // Fields used for filtering
+  Hidden = 'hidden',
+  Unknown = 'unknown'
 }
 
 /**
@@ -21,8 +28,9 @@ export enum FormType {
   ContactInfo = 'Contactinfo',
   NewsLetter = 'Newsletter',
   Register = 'Register',
-  Unknown = 'Unknown',
-  Menu = 'Menu'
+  Menu = 'Menu',
+  Hidden = 'Hidden',
+  Unknown = 'Unknown'
 }
 
 /**
@@ -30,7 +38,7 @@ export enum FormType {
  * @param attributes - Regular expressions matching the mapped attribute.
  * @param name - Regular expression matching the input name or id attribute.
  * */
-export interface Matcher {
+interface Matcher {
   attributes: Record<string, RegExp>
   name: RegExp
 }
@@ -44,7 +52,7 @@ export interface Matcher {
 interface FormMatcher {
   name?: RegExp
   attributes?: Record<string, RegExp>
-  fields?: Map<Matcher, number>
+  fields?: Map<Matcher[], number>
 }
 
 /**
@@ -52,48 +60,60 @@ interface FormMatcher {
  * with the corresponding StoredSafe data if both type and name (name or id attribute)
  * get a match.
  * */
-export const matchers: Map<string, Matcher> = new Map([
+const matchers: Map<string, Matcher[]> = new Map([
   [
-    FieldType.USERNAME,
-    {
-      attributes: { type: /text|email/ },
-      name: /user|name|mail|login|namn|id|session_key/
-    }
+    InputType.Username,
+    [
+      {
+        attributes: { type: /text|email/ },
+        name: /user|name|mail|login|namn|id|session_key/
+      }
+    ]
   ],
   [
-    FieldType.PASSWORD,
-    {
-      attributes: { type: /password/ },
-      name: /.*/
-    }
+    InputType.Password,
+    [
+      {
+        attributes: { type: /password/ },
+        name: /.*/
+      }
+    ]
   ],
   [
-    FieldType.PINCODE,
-    {
-      attributes: { type: /password/ },
-      name: /.*/
-    }
+    InputType.PinCode,
+    [
+      {
+        attributes: { type: /password/ },
+        name: /.*/
+      }
+    ]
   ],
   [
-    FieldType.CARD_NO,
-    {
-      attributes: { type: /text|tel/ },
-      name: /card/
-    }
+    InputType.CardNo,
+    [
+      {
+        attributes: { type: /text|tel/ },
+        name: /card/
+      }
+    ]
   ],
   [
-    FieldType.EXPIRES,
-    {
-      attributes: { type: /text|tel/ },
-      name: /exp/
-    }
+    InputType.Expires,
+    [
+      {
+        attributes: { type: /text|tel/ },
+        name: /exp/
+      }
+    ]
   ],
   [
-    FieldType.CVC,
-    {
-      attributes: { type: /text|tel/ },
-      name: /sec|code|cvv|cvc/
-    }
+    InputType.CVC,
+    [
+      {
+        attributes: { type: /text|tel/ },
+        name: /sec|code|cvv|cvc/
+      }
+    ]
   ]
 ])
 
@@ -105,8 +125,10 @@ export const matchers: Map<string, Matcher> = new Map([
  *
  * The formMatchers will be checked in order of appearance and the first match if any will
  * be used, meaning more generic matchers should be placed further down in the list.
+ *
+ * NOTE: Changed from map to multi-dimensional array to allow duplicates.
  * */
-export const formMatchers: [FormType, FormMatcher][] = [
+const formMatchers: [FormType, FormMatcher][] = [
   [
     FormType.Search,
     {
@@ -114,10 +136,12 @@ export const formMatchers: [FormType, FormMatcher][] = [
       attributes: { role: /search/ },
       fields: new Map([
         [
-          {
-            attributes: { type: /text|search/ },
-            name: /search/
-          },
+          [
+            {
+              attributes: { type: /text|search/ },
+              name: /search/
+            }
+          ],
           -1
         ]
       ])
@@ -135,17 +159,21 @@ export const formMatchers: [FormType, FormMatcher][] = [
       name: /createaccount|reg|signup/,
       fields: new Map([
         [
-          {
-            attributes: { type: /password/ },
-            name: /.*/
-          },
+          [
+            {
+              attributes: { type: /password/ },
+              name: /.*/
+            }
+          ],
           2
         ],
         [
-          {
-            attributes: { type: /password/ },
-            name: /confirm|register|retype/
-          },
+          [
+            {
+              attributes: { type: /password/ },
+              name: /confirm|register|retype/
+            }
+          ],
           -1
         ]
       ])
@@ -155,8 +183,8 @@ export const formMatchers: [FormType, FormMatcher][] = [
     FormType.Login,
     {
       fields: new Map([
-        [matchers.get(FieldType.USERNAME), -1],
-        [matchers.get(FieldType.PASSWORD), 1]
+        [matchers.get(InputType.Username), -1],
+        [matchers.get(InputType.Password), 1]
       ])
     }
   ],
@@ -164,8 +192,8 @@ export const formMatchers: [FormType, FormMatcher][] = [
     FormType.Login,
     {
       fields: new Map([
-        [matchers.get(FieldType.USERNAME), -1],
-        [matchers.get(FieldType.PINCODE), 1]
+        [matchers.get(InputType.Username), -1],
+        [matchers.get(InputType.PinCode), 1]
       ])
     }
   ],
@@ -194,70 +222,144 @@ const fillFormTypes: FormType[] = [FormType.Login, FormType.Card]
  * */
 const saveFormTypes: FormType[] = [FormType.Login, FormType.Register]
 
-// TODO: Refactor old code
-function isMatch (field: string, element: HTMLInputElement) {
+////////////////////////////////////////////////////////////
+// Start matching helper functions
+
+/**
+ * Has at least one submit element.
+ */
+const hasSubmit = ({ submitElements }: FormValues) => submitElements.length > 0
+
+/**
+ * All input fields are of the hidden type.
+ */
+const isHidden = ({ inputElements }: FormValues) =>
+  [...inputElements.keys()].reduce(
+    (isHidden, inputElement) => isHidden && inputElement.type === 'hidden',
+    true
+  )
+
+/**
+ * Test a name against the opening tag of an element.
+ * @param element Element to test for presence of name.
+ * @param name Name to be matched against element.
+ */
+function matchName (element: HTMLElement, name: string | RegExp): boolean {
+  const nameRegExp = new RegExp(name, 'i')
+  return nameRegExp.test(element.outerHTML.match(/(<[^>]*>)/)?.[0]) // Only match opening tag
+}
+
+/**
+ * Test an element for the presence of attribute values.
+ * @param element Element to test for presence of attribute values.
+ * @param attributeMatchers Mapping from attribute to matcher.
+ */
+function matchAttributes (
+  element: HTMLElement,
+  attributeMatchers: Record<string, string | RegExp>
+): boolean {
+  for (const attribute in attributeMatchers) {
+    const attributeMatcher = new RegExp(attributeMatchers[attribute], 'i')
+    if (!attributeMatcher.test(element.getAttribute(attribute))) return false
+  }
   return true
 }
 
-function onSubmit () {
-  const values: Record<string, string> = {}
-  const target = event.target as HTMLFormElement
-  for (const [field] of matchers) {
-    for (let i = 0; i < target.length; i++) {
-      const element = target[i]
-      if (element instanceof HTMLInputElement && isMatch(field, element)) {
-        values[field] = element.value
-      }
+/**
+ * Test the types of a group of input elements against a list of matchers.
+ * If the amount of matches is the same as the matchCount parameter,
+ * the function should return true. Negative numbers are used for special cases
+ * where -1 will return true if there is any match and -2 will return true only
+ * if all elements match.
+ *
+ * NOTE: This is separate from regular input matching because form identification
+ * sometimes requires more specific matchers to differentiate for example a register
+ * password field from a login password field, whereas the regular input matchers are
+ * only relevant when filling StoredSafe data to know which data goes into which field.
+ * @param inputTypes List of the types of all inputs.
+ * @param matchers List of expressions considered to be a match.
+ * @param matchCount Desired number of matches (-1 = Any, -2 = All)
+ */
+function matchField (
+  inputs: HTMLInputElement[],
+  matchers: Matcher[],
+  matchCount = -1
+): boolean {
+  let count = 0
+  for (const input of inputs) {
+    let isMatch = false
+    for (const matcher of matchers) {
+      isMatch = matchName(input, matcher.name) && matchAttributes(input, matcher.attributes)
     }
+    if (isMatch) count++
   }
-  browser.runtime
-    .sendMessage({
-      type: 'submit',
-      data: values
-    })
-    .catch(error => console.error(error))
+  if (matchCount === -2) {
+    return count === inputs.length
+  } else if (matchCount === -1) {
+    return count > 0
+  } else if (matchCount >= 0) {
+    return count === matchCount
+  }
+  return false
 }
 
-/**
- * Checks whether an element is of a type that is fillable by the user.
- * @param element Element to be tested.
- * @returns True if the element is an input that can be filled by the user.
- * */
-function isElementFillable (element: Element): boolean {
-  return (
-    element instanceof HTMLInputElement &&
-    !['hidden', 'button', 'submit', 'reset'].includes(element.type)
-  )
+function matchFields(inputs: HTMLInputElement[], fieldMatchers: Map<Matcher[], number>): boolean {
+  for (const [matchers, matchCount] of fieldMatchers) {
+    if (!matchField(inputs, matchers, matchCount)) return false
+  }
+  return true
 }
-/**
- * Fill input fields with StoredSafe data in the appropriate forms/fields.
- * @param data - StoredSafe data.
- * @param submit - Whether or not to submit the form after filling it.
- * */
-function fillForm (data: [string, string][], submit = false): void {
-  for (const form of [] as HTMLFormElement[]) {
-    let filled = false
-    for (const element of form) {
-      if (element instanceof HTMLInputElement && isElementFillable(element)) {
-        let elementFilled = false
-        for (const [field, value] of new Map(data)) {
-          if (isMatch(field, element)) {
-            elementFilled = true
-            filled = true
-            element.value = value
-            // Manually trigger change event after value change for sites depending on this
-            element.dispatchEvent(new Event('change', { bubbles: true }))
-            break
-          }
-        }
-        if (!elementFilled) {
-          // If no field matched this element
-          element.focus() // Focus element for easier access (example otp field)
-        }
-      }
-    }
-    if (filled && submit) {
-      // fillForms[i].submit(); // TODO: Fix compatibility with autofill on failed login.
+
+////////////////////////////////////////////////////////////
+// FORM TYPE MATCHER
+
+export function getInputType (input: HTMLInputElement) {
+  for (const [inputType, inputMatchers] of matchers) {
+    for (const matcher of inputMatchers) {
+      if (
+        matchName(input, matcher.name) &&
+        matchAttributes(input, matcher.attributes)
+      )
+        return inputType
     }
   }
+}
+
+export function getFormType (
+  element: HTMLElement,
+  values: FormValues
+): FormType {
+  // Cull hidden forms as they're not made for user interaction.
+  if (isHidden(values)) return FormType.Hidden
+
+  // Forms without submits are regarded as unknown as they can't be
+  // submitted by a user. These forms may be caught in the second pass
+  // when the search is extended beyond button types.
+  if (!hasSubmit(values)) return FormType.Unknown
+
+  // 1. Check for form element name matches
+  for (const [formType, formMatcher] of formMatchers) {
+    if (formMatcher.name === undefined) continue
+    if (matchName(element, formMatcher.name)) {
+      return formType
+    }
+  }
+
+  // 2. Check for form attributes matches
+  for (const [formType, formMatcher] of formMatchers) {
+    if (formMatcher.attributes === undefined) continue
+    if (matchAttributes(element, formMatcher.attributes)) {
+      return formType
+    }
+  }
+
+  // 3. Check if the form fields match
+  for (const [formType, formMatcher] of formMatchers) {
+    if (formMatcher.fields === undefined) continue
+    if (matchFields([...values.inputElements.keys()], formMatcher.fields)) {
+      return formType
+    }
+  }
+
+  return FormType.Unknown
 }
