@@ -1,7 +1,7 @@
 import { logger as formsLogger } from '.'
 import StoredSafeError from '../../../utils/StoredSafeError'
 import Logger from '../../../utils/Logger'
-import { InputType, FormType } from './matchers'
+import { InputType, FormType, getFormType } from './matchers'
 
 const logger = new Logger('Page Scanner', formsLogger)
 
@@ -75,9 +75,9 @@ export class PageScanner {
   private mapParentForm<T extends HTMLElement> (
     forms: NodeListOf<HTMLFormElement>,
     elements: T[]
-  ): Map<HTMLFormElement, T[]> {
+  ): [Map<HTMLFormElement, T[]>, T[]] {
     const mappedElements = new Map<HTMLFormElement, T[]>()
-    mappedElements.set(null, [])
+    const unmatchedElements: T[] = []
     for (const element of elements) {
       let hasForm = false
       for (const form of forms) {
@@ -91,9 +91,9 @@ export class PageScanner {
           formElements.push(element)
         }
       }
-      if (!hasForm) mappedElements.get(null).push(element)
+      if (!hasForm) unmatchedElements.push(element)
     }
-    return mappedElements
+    return [mappedElements, unmatchedElements]
   }
 
   private filterSubmits (submits: HTMLElement[]): HTMLElement[] {
@@ -137,13 +137,16 @@ export class PageScanner {
     root: Document | Element,
     inputs: HTMLInputElement[],
     submits: HTMLElement[]
-  ): Forms {
+  ): [Forms, HTMLInputElement[], HTMLElement[]] {
     const formElements = root.querySelectorAll('form')
-    const formInputs = this.mapParentForm<HTMLInputElement>(
+    const [formInputs, unmatchedInputs] = this.mapParentForm<HTMLInputElement>(
       formElements,
       inputs
     )
-    const formSubmits = this.mapParentForm<HTMLElement>(formElements, submits)
+    const [formSubmits, unmatchedSubmits] = this.mapParentForm<HTMLElement>(
+      formElements,
+      submits
+    )
 
     const forms: Forms = new Map()
     // Merge inputs and submits into forms
@@ -155,14 +158,13 @@ export class PageScanner {
       const inputElements: Map<HTMLInputElement, InputType> = new Map(
         inputs.map(element => [element, InputType.Unknown])
       )
-      // TODO TOMORROW: Get form type from matcher
       forms.set(form, {
-        type: FormType.Unknown,
+        type: getFormType(form, inputs, submitElements),
         inputElements,
         submitElements
       })
     }
-    return forms
+    return [forms, unmatchedInputs, unmatchedSubmits]
   }
 
   private mapCommonElements<T extends HTMLElement> (
@@ -232,11 +234,11 @@ export class PageScanner {
       const submitElements = submitGroups.has(pseudoForm)
         ? this.filterSubmits(submitGroups.get(pseudoForm))
         : []
-      const inputElements: Map<HTMLInputElement, InputType> = new Map(inputs.map(element => ([
-        element, InputType.Unknown
-      ])))
+      const inputElements: Map<HTMLInputElement, InputType> = new Map(
+        inputs.map(element => [element, InputType.Unknown])
+      )
       forms.set(pseudoForm, {
-        type: FormType.Unknown,
+        type: getFormType(pseudoForm, inputs, submitElements),
         inputElements,
         submitElements
       })
@@ -262,12 +264,19 @@ export class PageScanner {
   private secondPass (forms: Forms): Forms {
     for (const [form, formValues] of forms) {
       if (formValues.type !== FormType.Unknown) continue
-      const selector = `*:not(${ELEMENT_SELECTORS.split(',').join('):not(')})`
+      // const selector = `*:not(${ELEMENT_SELECTORS.split(',').join('):not(')})`
+      const selector = 'a,div'
       for (const element of form.querySelectorAll<HTMLElement>(selector)) {
-        if (matchName(element, SUBMIT_MATCHER)) {
-          formValues.submitElements.push(element)
-        }
+        const isMatch = SUBMIT_MATCHER.test(
+          element.outerHTML.match(/(<[^>]*>)/)?.[0] + element.innerText
+        ) // Only match opening tag and text
+        if (isMatch) formValues.submitElements.push(element)
       }
+      formValues.type = getFormType(
+        form,
+        [...formValues.inputElements.keys()],
+        formValues.submitElements
+      )
     }
     return forms
   }
@@ -275,26 +284,28 @@ export class PageScanner {
   private scan (root: HTMLElement = document.body): Forms {
     const [inputs, submits] = this.getInputs(root)
     // Get forms contained in form elements
-    let forms = this.findForms(root, inputs, submits)
-
-    // Assemble pseudo-forms from remaining inputs
-    const unmatchedForm = forms.get(null)
-    forms.delete(null)
-    let pseudoForms = this.findPseudoForms(
+    let [forms, unmatchedInputs, unmatchedSubmits] = this.findForms(
       root,
-      [...unmatchedForm.inputElements.keys()],
-      unmatchedForm.submitElements
+      inputs,
+      submits
     )
 
-    // Parse forms to figure out their type
-    const parsedForms = parseForms(new Map([...forms, ...pseudoForms]))
-    // Perform a second pass on unknown forms with extended selectors
-    const secondPass = parseForms(this.secondPass(parsedForms))
+    // Assemble pseudo-forms from remaining inputs
+    let pseudoForms = this.findPseudoForms(
+      root,
+      unmatchedInputs,
+      unmatchedSubmits
+    )
+
+    const secondPass = this.secondPass(new Map([...forms, ...pseudoForms]))
 
     // Filter out duplicates and unknown forms
     const matchedForms: Forms = new Map()
     for (const [form, formValues] of secondPass) {
-      if (formValues.type !== FormType.Unknown) {
+      if (
+        formValues.type !== FormType.Unknown &&
+        formValues.type !== FormType.Hidden
+      ) {
         // Whether the form is a pseudo-form containing another identified form.
         let isPseudoParent = false
         for (const [matchedForm] of matchedForms) {

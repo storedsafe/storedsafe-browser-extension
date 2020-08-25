@@ -1,4 +1,6 @@
-import { FormValues } from './PageScanner'
+import { logger as formsLogger } from '.'
+import Logger from '../../../utils/Logger'
+const logger = new Logger('Matchers', formsLogger)
 
 /**
  * Typed version of StoredSafe template fields.
@@ -226,16 +228,11 @@ const saveFormTypes: FormType[] = [FormType.Login, FormType.Register]
 // Start matching helper functions
 
 /**
- * Has at least one submit element.
- */
-const hasSubmit = ({ submitElements }: FormValues) => submitElements.length > 0
-
-/**
  * All input fields are of the hidden type.
  */
-const isHidden = ({ inputElements }: FormValues) =>
-  [...inputElements.keys()].reduce(
-    (isHidden, inputElement) => isHidden && inputElement.type === 'hidden',
+const isHidden = (inputElements: HTMLInputElement[]) =>
+  inputElements.reduce(
+    (isHidden, inputElement) => isHidden && (inputElement.type === 'hidden' || inputElement.hidden === true),
     true
   )
 
@@ -244,9 +241,9 @@ const isHidden = ({ inputElements }: FormValues) =>
  * @param element Element to test for presence of name.
  * @param name Name to be matched against element.
  */
-function matchName (element: HTMLElement, name: string | RegExp): boolean {
+export function matchName (element: HTMLElement, name: string | RegExp): boolean {
   const nameRegExp = new RegExp(name, 'i')
-  return nameRegExp.test(element.outerHTML.match(/(<[^>]*>)/)?.[0]) // Only match opening tag
+  return nameRegExp.test((element.outerHTML.match(/(<[^>]*>)/)?.[0])) // Only match opening tag
 }
 
 /**
@@ -327,20 +324,22 @@ export function getInputType (input: HTMLInputElement) {
 
 export function getFormType (
   element: HTMLElement,
-  values: FormValues
+  inputElements: HTMLInputElement[],
+  submitElements: HTMLElement[]
 ): FormType {
   // Cull hidden forms as they're not made for user interaction.
-  if (isHidden(values)) return FormType.Hidden
+  if (isHidden(inputElements)) return FormType.Hidden
 
   // Forms without submits are regarded as unknown as they can't be
   // submitted by a user. These forms may be caught in the second pass
   // when the search is extended beyond button types.
-  if (!hasSubmit(values)) return FormType.Unknown
+  if (submitElements.length === 0) return FormType.Unknown
 
   // 1. Check for form element name matches
   for (const [formType, formMatcher] of formMatchers) {
     if (formMatcher.name === undefined) continue
     if (matchName(element, formMatcher.name)) {
+      logger.debug('Identified form %o as %s by name', element, formType)
       return formType
     }
   }
@@ -349,6 +348,7 @@ export function getFormType (
   for (const [formType, formMatcher] of formMatchers) {
     if (formMatcher.attributes === undefined) continue
     if (matchAttributes(element, formMatcher.attributes)) {
+      logger.debug('Identified form %o as %s by attributes', element, formType)
       return formType
     }
   }
@@ -356,7 +356,8 @@ export function getFormType (
   // 3. Check if the form fields match
   for (const [formType, formMatcher] of formMatchers) {
     if (formMatcher.fields === undefined) continue
-    if (matchFields([...values.inputElements.keys()], formMatcher.fields)) {
+    if (matchFields(inputElements, formMatcher.fields)) {
+      logger.debug('Identified form %o as %s by fields', element, formType)
       return formType
     }
   }

@@ -94,7 +94,7 @@ class Logger {
    */
   private _prefix (tag = '', tagStyle = '', style = ''): [string, string[]] {
     const [namePrefix, nameStyle] = this._namePrefix()
-    return [`${namePrefix}%c${tag}%c: `, [...nameStyle, tagStyle, style]]
+    return [`${namePrefix}%c${tag}%c `, [...nameStyle, tagStyle, style]]
   }
 
   /**
