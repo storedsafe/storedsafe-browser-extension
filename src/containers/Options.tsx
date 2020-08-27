@@ -8,7 +8,8 @@ import {
 } from '../components/Options'
 import { useSites } from '../hooks/storage/useSites'
 import { useSettings } from '../hooks/storage/useSettings'
-import { useBlacklist } from '../hooks/storage/useBlacklist'
+import { useIgnore } from '../hooks/storage/useIgnore'
+import { OnClearAll } from '../components/Options/layout/ClearDataOptions'
 
 interface OptionsHookProps {
   addSite: OnAddSiteCallback
@@ -21,12 +22,19 @@ const useOptions = ({
 }: OptionsHookProps): OptionsProps => {
   const sites = useSites()
   const settings = useSettings()
-  const blacklist = useBlacklist()
+  const ignore = useIgnore()
 
   const isInitialized = sites.isInitialized && settings.isInitialized
 
   const saveSettings: OnSaveSettingsCallback = async newSettings => {
     await settings.update(newSettings)
+  }
+
+  const clearAll: OnClearAll = async () => {
+    const localPromise = browser.storage.local.clear()
+    const syncPromise = browser.storage.sync.clear()
+    await localPromise
+    await syncPromise
   }
 
   return {
@@ -41,9 +49,12 @@ const useOptions = ({
       saveSettings,
       settings: settings.settings
     },
-    blacklistOptionsProps: {
-      removeBlacklistHost: blacklist.remove,
-      blacklist: blacklist.blacklist
+    ignoreOptionsProps: {
+      removeIgnoreHost: ignore.remove,
+      ignore: ignore.ignore
+    },
+    clearDataProps: {
+      clearAll
     }
   }
 }

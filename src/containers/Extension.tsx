@@ -6,7 +6,7 @@ import React, { useState, useEffect } from 'react'
 import DebugStorage from './DebugStorage'
 import Popup from './Popup'
 import Save from './Save'
-import { SAVE_FRAME_ID } from '../scripts/content_script/messages'
+import { SAVE_FRAME_ID } from '../scripts/content_script/messages/constants'
 
 enum Page {
   Popup = 'popup',

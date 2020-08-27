@@ -8,17 +8,19 @@
  * script to enable communication between the content script and iframes or
  * the popup and the content script.
  * */
+import Logger from '../utils/Logger'
+export const logger = new Logger('Background')
+
 import { actions as StoredSafeActions } from '../model/storedsafe/StoredSafe'
 import { actions as SettingsActions } from '../model/storage/Settings'
 import { actions as TabResultsActions } from '../model/storage/TabResults'
-import { actions as BlacklistActions } from '../model/storage/Blacklist'
+import { actions as IgnoreActions } from '../model/storage/Ignore'
 import { actions as SessionsActions } from '../model/storage/Sessions'
 
 /**
  * START REFACTORED CODE
  * TODO: Remove comment
  */
-import Logger from '../utils/Logger'
 import {
   IdleHandler,
   KeepAliveHandler,
@@ -26,8 +28,8 @@ import {
   OnlineStatusHandler
 } from './background/sessions'
 import { PortHandler } from './background/messages'
+import StoredSafeError from '../utils/StoredSafeError'
 
-export const logger = new Logger('Background')
 logger.log('Background script initialized: ', new Date(Date.now()))
 
 // Invalidate sessions after being idle for some time
@@ -51,7 +53,7 @@ PortHandler.StartTracking()
  * @returns Search string.
  * */
 function urlToNeedle (url: string): string {
-  const match = url.match(/^(?:https?:\/\/)?(?:www\.)?([^/]*)\//i)
+  const match = url.match(/^(?:https?:\/\/)?(?:www\.)?([\w\.]+)/i)
   return match !== null ? match[1] : url
 }
 
@@ -136,14 +138,18 @@ async function tabFind (
 ): Promise<void> {
   const { id: tabId, url } = tab
   const needle = urlToNeedle(url)
-  const tabResults = await StoredSafeActions.tabFind(tabId, needle)
-  if (fillForm) {
-    return await fill(tabId, tabResults.get(tabId))
+  try {
+    const tabResults = await StoredSafeActions.tabFind(tabId, needle)
+  } catch (error) {
+    throw new StoredSafeError('Could not fetch tab results')
   }
-  const settings = await SettingsActions.fetch()
-  if (settings.get('autoFill').value === true) {
-    await fill(tabId, tabResults.get(tabId))
-  }
+  // if (fillForm) {
+  //   return await fill(tabId, tabResults.get(tabId))
+  // }
+  // const settings = await SettingsActions.fetch()
+  // if (settings.get('autoFill').value === true) {
+  //   await fill(tabId, tabResults.get(tabId))
+  // }
 }
 
 /**
@@ -199,9 +205,9 @@ const messageHandlers: {
       return
     }
 
-    // If site is blacklisted, don't offer to save
-    const blacklist = await BlacklistActions.fetch()
-    if (blacklist.includes(url)) return
+    // If site is ignored, don't offer to save
+    const ignore = await IgnoreActions.fetch()
+    if (ignore.includes(url)) return
 
     // If result with username for site exists in cache, don't offer to save
     const tabResults = await TabResultsActions.fetch()
@@ -315,3 +321,14 @@ browser.runtime.onMessage.addListener(onMessage)
 
 // React to keyboard commands defined in the extension manifest
 browser.commands.onCommand.addListener(onCommand)
+
+const tabUrls = new Map<number, string>()
+browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+  if (changeInfo.url === undefined && tabUrls.has(tabId)) return
+  const prevUrl = tabUrls.get(tabId)
+  const shortUrl = urlToNeedle(tab.url)
+  if (prevUrl !== shortUrl) {
+    tabFind(tab)
+    tabUrls.set(tabId, shortUrl)
+  }
+})

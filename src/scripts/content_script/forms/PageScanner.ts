@@ -1,7 +1,8 @@
 import { logger as formsLogger } from '.'
 import StoredSafeError from '../../../utils/StoredSafeError'
 import Logger from '../../../utils/Logger'
-import { InputType, FormType, getFormType } from './matchers'
+import { getFormType, getInputType } from './matchers'
+import { FormType, InputType } from './constants'
 
 const logger = new Logger('Page Scanner', formsLogger)
 
@@ -58,14 +59,18 @@ export class PageScanner {
     const inputs: HTMLInputElement[] = []
     const submits: HTMLElement[] = []
     for (const element of root.querySelectorAll(ELEMENT_SELECTORS)) {
-      // Filter out unwanted elements
+      // Pre-filter
       if (element instanceof HTMLButtonElement && element.type !== 'submit')
         continue
+
+      // Assign groups
       if (element instanceof HTMLInputElement) {
-        // Input type elements
-        inputs.push(element)
+        if (element.type === 'submit' || element.type === 'image') {
+          submits.push(element)
+        } else {
+          inputs.push(element)
+        }
       } else if (element instanceof HTMLButtonElement) {
-        // Submit type elements
         submits.push(element)
       }
     }
@@ -126,6 +131,43 @@ export class PageScanner {
     return bestMatches[1]
   }
 
+  private mapInputTypes (
+    inputs: HTMLInputElement[]
+  ): Map<HTMLInputElement, InputType> {
+    return new Map(
+      inputs
+        .map<[HTMLInputElement, InputType]>(element => [
+          element,
+          getInputType(element)
+        ])
+        .filter(([element, elementType]) => (
+          elementType !== InputType.Hidden && elementType !== InputType.Unknown
+        ))
+    )
+  }
+
+  private mapForms (
+    formInputs: Map<HTMLElement, HTMLInputElement[]>,
+    formSubmits: Map<HTMLElement, HTMLElement[]>
+  ): Forms {
+    const forms: Forms = new Map()
+    // Merge inputs and submits into forms
+    for (const [form, inputs] of formInputs) {
+      // Should be same forms as inputs, either way a form without inputs isn't interesting
+      const submitElements = formSubmits.has(form)
+        ? this.filterSubmits(formSubmits.get(form))
+        : []
+      const inputElements = this.mapInputTypes(inputs)
+      // if (inputElements.size === 0) continue
+      forms.set(form, {
+        type: getFormType(form, inputs, submitElements),
+        inputElements,
+        submitElements
+      })
+    }
+    return forms
+  }
+
   /**
    * Find all forms on the page relative to the root element provided.
    * Returns a map of forms to associated inputs where the null key is
@@ -147,23 +189,7 @@ export class PageScanner {
       formElements,
       submits
     )
-
-    const forms: Forms = new Map()
-    // Merge inputs and submits into forms
-    for (const [form, inputs] of formInputs) {
-      // Should be same forms as inputs, either way a form without inputs isn't interesting
-      const submitElements = formSubmits.has(form)
-        ? this.filterSubmits(formSubmits.get(form))
-        : []
-      const inputElements: Map<HTMLInputElement, InputType> = new Map(
-        inputs.map(element => [element, InputType.Unknown])
-      )
-      forms.set(form, {
-        type: getFormType(form, inputs, submitElements),
-        inputElements,
-        submitElements
-      })
-    }
+    const forms = this.mapForms(formInputs, formSubmits)
     return [forms, unmatchedInputs, unmatchedSubmits]
   }
 
@@ -228,21 +254,7 @@ export class PageScanner {
       [...inputs, ...submits],
       root
     )
-
-    const forms: Forms = new Map()
-    for (const [pseudoForm, inputs] of inputGroups) {
-      const submitElements = submitGroups.has(pseudoForm)
-        ? this.filterSubmits(submitGroups.get(pseudoForm))
-        : []
-      const inputElements: Map<HTMLInputElement, InputType> = new Map(
-        inputs.map(element => [element, InputType.Unknown])
-      )
-      forms.set(pseudoForm, {
-        type: getFormType(pseudoForm, inputs, submitElements),
-        inputElements,
-        submitElements
-      })
-    }
+    const forms = this.mapForms(inputGroups, submitGroups)
 
     // Sort by least amount of elements
     return new Map(
@@ -256,16 +268,14 @@ export class PageScanner {
   }
 
   /**
-   * Perform a second pass with extended selectors for submit buttons,
-   * including anchor tags and div tags for forms that have a password
-   * field.
+   * Perform a second pass with extended selectors for submit buttons.
    * @param forms Forms that were previously filtered out.
    */
   private secondPass (forms: Forms): Forms {
     for (const [form, formValues] of forms) {
       if (formValues.type !== FormType.Unknown) continue
       // const selector = `*:not(${ELEMENT_SELECTORS.split(',').join('):not(')})`
-      const selector = 'a,div'
+      const selector = 'a'
       for (const element of form.querySelectorAll<HTMLElement>(selector)) {
         const isMatch = SUBMIT_MATCHER.test(
           element.outerHTML.match(/(<[^>]*>)/)?.[0] + element.innerText

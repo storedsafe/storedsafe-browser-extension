@@ -7,6 +7,13 @@ import StoredSafeError from '../../../utils/StoredSafeError'
 class StoredSafeSessionToolsError extends StoredSafeError {}
 
 /**
+ * Returns true if there are any active sessions, otherwise false.
+ */
+export async function checkOnlineStatus (): Promise<boolean> {
+  return SessionsActions.fetch().then(sessions => sessions.size > 0)
+}
+
+/**
  * Invalidate a single session and destroy all cached search results for
  * that host.
  * @param host - Host of session to invalidate.

@@ -1,19 +1,9 @@
-import React from 'react'
+import React, { useRef, useEffect } from 'react'
 import { useLoading } from '../../hooks/utils/useLoading'
 import { useForm } from '../../hooks/utils/useForm'
 import { Button, Select } from '../common/input'
 import { Message, LoadingComponent } from '../common/layout'
 import './Save.scss'
-
-export interface SaveValues {
-  [key: string]: string
-}
-
-export interface TabValues extends SaveValues {
-  url: string
-  name: string
-  [key: string]: string
-}
 
 export type OnSelectChangeCallback = (selected: number) => void
 export interface SelectType<T> {
@@ -31,40 +21,43 @@ export interface SiteState {
 }
 
 export type SaveCallback = (host: string, values: SaveValues) => Promise<void>
-export type AddToBlacklistCallback = (host: string) => Promise<void>
+export type AddToIgnoreCallback = (host: string) => Promise<void>
 
 export interface SaveProps {
   isInitialized: boolean
   error?: Error
-  tabValues?: TabValues
+  saveValues?: SaveValues
   hosts: SelectType<string>
   vaults: SelectType<SSVault>
   templates: SelectType<SSTemplate>
   save: SaveCallback
-  addToBlacklist: AddToBlacklistCallback
+  addToIgnore: AddToIgnoreCallback
   success: boolean
   close: () => void
+  resize: (width: number, height: number) => void
 }
 
 export const Save: React.FunctionComponent<SaveProps> = ({
   isInitialized,
   error,
-  tabValues,
+  saveValues,
   hosts,
   vaults,
   templates,
   save,
-  addToBlacklist,
+  addToIgnore,
   success,
-  close
+  close,
+  resize
 }: SaveProps) => {
-  if (!isInitialized) return <LoadingComponent />
+  if (!isInitialized || saveValues === undefined) return <LoadingComponent />
   const [values, events] = useForm<Partial<SaveValues>>({
     parentid: '0',
-    ...(tabValues !== undefined ? tabValues : {})
+    ...(saveValues !== undefined ? saveValues : {})
   })
   const [saveState, setSavePromise] = useLoading()
-  const [blacklistState, setBlacklistPromise] = useLoading()
+  const [ignoreState] = useLoading()
+  const frameRef = useRef<HTMLElement>()
 
   /// /////////////////////////////////////////////////////////
   // Set up event handlers
@@ -221,7 +214,7 @@ export const Save: React.FunctionComponent<SaveProps> = ({
 
     // Filter out irrelevant fields
     const { templateid, groupid, parentid } = values
-    const properties: SaveValues = { templateid, groupid, parentid }
+    const properties: Partial<SaveValues> = { templateid, groupid, parentid }
     for (const { name } of template.structure) {
       if (values[name] !== undefined) {
         properties[name] = values[name]
@@ -232,12 +225,12 @@ export const Save: React.FunctionComponent<SaveProps> = ({
     properties.groupid = vault.id
     properties.templateid = template.id
 
-    setSavePromise(save(host, properties))
+    setSavePromise(save(host, properties as SaveValues))
   }
 
-  function onAddToBlacklist (): void {
-    if (tabValues !== undefined) {
-      addToBlacklist(tabValues.url).then(() => close())
+  function onAddToIgnore (): void {
+    if (saveValues !== undefined) {
+      addToIgnore(saveValues.url).then(() => close())
     }
   }
 
@@ -273,8 +266,14 @@ export const Save: React.FunctionComponent<SaveProps> = ({
     })
   }
 
+  useEffect(() => {
+    const width = document.body.scrollWidth
+    const height = document.body.scrollHeight
+    resize(width, height)
+  }, [frameRef])
+
   return (
-    <section className='save'>
+    <section ref={frameRef} className='save'>
       {success ? (
         <Message>Successfully added object to StoredSafe.</Message>
       ) : (
@@ -310,11 +309,11 @@ export const Save: React.FunctionComponent<SaveProps> = ({
             <Button
               type='button'
               color='primary'
-              onClick={onAddToBlacklist}
-              isLoading={blacklistState.isLoading}
+              onClick={onAddToIgnore}
+              isLoading={ignoreState.isLoading}
               className='save-buttons-never'
             >
-              Don&apos;t ask to save for {tabValues.url}
+              Don&apos;t ask to save for {saveValues.url}
             </Button>
           </div>
         </form>

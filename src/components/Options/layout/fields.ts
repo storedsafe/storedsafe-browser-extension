@@ -40,7 +40,7 @@ export const fields: FieldsProps = {
       type: 'number',
       required: true,
       min: 1,
-      max: 24
+      max: 30
     }
   }
 }

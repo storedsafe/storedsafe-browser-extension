@@ -1,5 +1,5 @@
 {
-  "blacklist": ["skip"],
+  "ignore": ["skip"],
 
   "sessions": [
     [

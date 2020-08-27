@@ -1,6 +1,8 @@
 import Logger from '../../../utils/Logger'
-import { MODULE_NAME } from '.'
+import { logger as injectLogger } from '.'
 import StoredSafeError from '../../../utils/StoredSafeError'
+
+const logger = new Logger('Frames', injectLogger)
 
 const ROOT_ID: string = 'com-storedsafe-root'
 const BASE_STYLE: Record<string, string> = {
@@ -19,8 +21,6 @@ const BASE_STYLE: Record<string, string> = {
 class StoredSafeFrameManagerError extends StoredSafeError {}
 
 export class FrameManager {
-  private static logger = new Logger(`${MODULE_NAME} - ${FrameManager.name}`)
-
   static OpenFrame (frameId: string, style?: Record<string, string>) {
     const root = FrameManager.getFrame(ROOT_ID, document.body, ROOT_ID, {
       'z-index': '2147483646'
@@ -32,7 +32,7 @@ export class FrameManager {
     FrameManager.removeFrame(frameId)
     const root = document.getElementById(ROOT_ID)
     if (root.childElementCount === 0) {
-      FrameManager.logger.log('Root frame is empty, removing %o.', root)
+      logger.log('Root frame is empty, removing %o.', root)
       root.remove()
     }
   }
@@ -67,7 +67,7 @@ export class FrameManager {
         frame.src = browser.runtime.getURL('index.html') + `#${frameId}`
       }
       parent.appendChild(frame)
-      FrameManager.logger.log('Creating frame %o', frame)
+      logger.log('Creating frame %o', frame)
     }
     return frame
   }
@@ -79,7 +79,7 @@ export class FrameManager {
   private static removeFrame (frameId: string = ROOT_ID): void {
     const frame = document.getElementById(frameId)
     if (frame !== null) {
-      FrameManager.logger.log('Removing frame %o', frame)
+      logger.log('Removing frame %o', frame)
       frame.remove()
     }
   }

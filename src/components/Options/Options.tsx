@@ -3,20 +3,23 @@ import { SiteOptions, SiteOptionsProps } from './layout/SiteOptions'
 import { LoadingComponent, ListView, ListItem } from '../common/layout'
 import './Options.scss'
 import { GeneralOptions, GeneralOptionsProps } from './layout/GeneralOptions'
-import { BlacklistOptions, BlacklistOptionsProps } from './layout/BlacklistOptions'
+import { IgnoreOptions, IgnoreOptionsProps } from './layout/IgnoreOptions'
+import { ClearDataOptions, ClearDataOptionsProps } from './layout/ClearDataOptions'
 
 export interface OptionsProps {
   isInitialized: boolean
   generalOptionsProps: GeneralOptionsProps
   siteOptionsProps: SiteOptionsProps
-  blacklistOptionsProps: BlacklistOptionsProps
+  ignoreOptionsProps: IgnoreOptionsProps
+  clearDataProps: ClearDataOptionsProps
 }
 
 export const Options: React.FunctionComponent<OptionsProps> = ({
   isInitialized,
   generalOptionsProps,
   siteOptionsProps,
-  blacklistOptionsProps
+  ignoreOptionsProps,
+  clearDataProps
 }: OptionsProps) => {
   if (!isInitialized) return <LoadingComponent />
 
@@ -32,9 +35,14 @@ export const Options: React.FunctionComponent<OptionsProps> = ({
       content: <SiteOptions {...siteOptionsProps} />
     },
     {
-      key: 'blacklist',
-      title: <h2>Blacklist</h2>,
-      content: <BlacklistOptions {...blacklistOptionsProps} />
+      key: 'ignore',
+      title: <h2>Ignore List</h2>,
+      content: <IgnoreOptions {...ignoreOptionsProps} />
+    },
+    {
+      key: 'clear-data',
+      title: <h2>Clear Data</h2>,
+      content: <ClearDataOptions {...clearDataProps} />
     }
   ]
 

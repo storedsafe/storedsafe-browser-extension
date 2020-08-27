@@ -1,11 +1,11 @@
 @import '../../../styles/variables.scss';
 
-.blacklist-options {
+.ignore-options {
   background-color: $color-bg-alt;
   display: flex;
   flex-direction: column;
 
-  .blacklist-options-article {
+  .ignore-options-article {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -17,7 +17,7 @@
       background-color: $color-primary-1;
     }
 
-    .blacklist-options-host {
+    .ignore-options-host {
       padding: $spacing;
       overflow: hidden;
     }

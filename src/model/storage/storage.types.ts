@@ -12,12 +12,12 @@
  * */
 
 /// /////////////////////////////////////////////////////////
-// Blacklist
+// Ignore
 
 /**
- * Blacklisted sites.
+ * Ignored sites.
  * */
-type Blacklist = string[]
+type Ignore = string[]
 
 /// /////////////////////////////////////////////////////////
 // Settings
@@ -122,7 +122,7 @@ interface Preferences {
 // All values in storage.
 
 interface Storage {
-  blacklist: Blacklist // Local
+  ignore: Ignore // Local
   preferences: Preferences // Local
   sessions: Sessions // Local
   settings: Settings // Sync and Managed

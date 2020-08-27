@@ -4,18 +4,16 @@ exports[`<ListView /> 1`] = `"<section class=\\"list-view\\"></section>"`;
 
 exports[`<ListView children /> 1`] = `
 "<section class=\\"list-view\\">
-  <article class=\\"list-view-item \\">
-    <article class=\\"list-view-item-title\\">
+  <article class=\\"list-view-item \\"><button type=\\"button\\" class=\\"list-view-item-title\\">
       <h1>Title 1</h1>
-    </article>
+    </button>
     <article class=\\"list-view-item-content\\">
       <section>Item 1</section>
     </article>
   </article>
-  <article class=\\"list-view-item \\">
-    <article class=\\"list-view-item-title\\">
+  <article class=\\"list-view-item \\"><button type=\\"button\\" class=\\"list-view-item-title\\">
       <h1>Title 2</h1>
-    </article>
+    </button>
     <article class=\\"list-view-item-content\\">
       <section>Item 2</section>
     </article>
@@ -25,18 +23,16 @@ exports[`<ListView children /> 1`] = `
 
 exports[`<ListView select /> 1`] = `
 "<section class=\\"list-view has-selected\\">
-  <article class=\\"list-view-item selected\\">
-    <article class=\\"list-view-item-title\\">
+  <article class=\\"list-view-item selected\\"><button type=\\"button\\" class=\\"list-view-item-title\\">
       <h1 class=\\"title-1\\">Title 1</h1>
-    </article>
+    </button>
     <article class=\\"list-view-item-content\\">
       <section>Item 1</section>
     </article>
   </article>
-  <article class=\\"list-view-item hidden\\">
-    <article class=\\"list-view-item-title\\">
+  <article class=\\"list-view-item hidden\\"><button type=\\"button\\" class=\\"list-view-item-title\\">
       <h1 class=\\"title-2\\">Title 2</h1>
-    </article>
+    </button>
     <article class=\\"list-view-item-content\\">
       <section>Item 2</section>
     </article>
@@ -46,18 +42,16 @@ exports[`<ListView select /> 1`] = `
 
 exports[`<ListView select /> 2`] = `
 "<section class=\\"list-view has-selected\\">
-  <article class=\\"list-view-item hidden\\">
-    <article class=\\"list-view-item-title\\">
+  <article class=\\"list-view-item hidden\\"><button type=\\"button\\" class=\\"list-view-item-title\\">
       <h1 class=\\"title-1\\">Title 1</h1>
-    </article>
+    </button>
     <article class=\\"list-view-item-content\\">
       <section>Item 1</section>
     </article>
   </article>
-  <article class=\\"list-view-item selected\\">
-    <article class=\\"list-view-item-title\\">
+  <article class=\\"list-view-item selected\\"><button type=\\"button\\" class=\\"list-view-item-title\\">
       <h1 class=\\"title-2\\">Title 2</h1>
-    </article>
+    </button>
     <article class=\\"list-view-item-content\\">
       <section>Item 2</section>
     </article>
@@ -67,18 +61,16 @@ exports[`<ListView select /> 2`] = `
 
 exports[`<ListView select /> 3`] = `
 "<section class=\\"list-view\\">
-  <article class=\\"list-view-item \\">
-    <article class=\\"list-view-item-title\\">
+  <article class=\\"list-view-item \\"><button type=\\"button\\" class=\\"list-view-item-title\\">
       <h1 class=\\"title-1\\">Title 1</h1>
-    </article>
+    </button>
     <article class=\\"list-view-item-content\\">
       <section>Item 1</section>
     </article>
   </article>
-  <article class=\\"list-view-item \\">
-    <article class=\\"list-view-item-title\\">
+  <article class=\\"list-view-item \\"><button type=\\"button\\" class=\\"list-view-item-title\\">
       <h1 class=\\"title-2\\">Title 2</h1>
-    </article>
+    </button>
     <article class=\\"list-view-item-content\\">
       <section>Item 2</section>
     </article>

@@ -3,21 +3,21 @@ import '@testing-library/jest-dom/extend-expect'
 import React from 'react'
 import { act, render, fireEvent, waitFor, screen } from '@testing-library/react'
 
-import { useBlacklist } from '../useBlacklist'
+import { useIgnore } from '../useIgnore'
 
 /// /////////////////////////////////////////////////////////
 // Set up mocks of external dependencies
 
-const mockBlacklist: Blacklist = ['host']
+const mockIgnore: Ignore = ['host']
 const mockGet = jest.fn(
   async (key: string) =>
     await Promise.resolve({
-      blacklist: mockBlacklist
+      ignore: mockIgnore
     })
 )
 browser.storage.sync.get = mockGet
 
-const mockAddBlacklist: Blacklist = ['add']
+const mockAddIgnore: Ignore = ['add']
 
 const mockSet = jest.fn(async () => await Promise.resolve())
 browser.storage.sync.set = mockSet
@@ -28,9 +28,9 @@ function manualGetMock (): {
   rej: (reason?: any) => void
 } {
   let res, rej
-  const promise = new Promise<{ blacklist: Blacklist }>((resolve, reject) => {
+  const promise = new Promise<{ ignore: Ignore }>((resolve, reject) => {
     res = () => {
-      resolve({ blacklist: mockBlacklist })
+      resolve({ ignore: mockIgnore })
     }
     rej = (reason?: any) => {
       reject(reason)
@@ -44,30 +44,30 @@ function manualGetMock (): {
 /// /////////////////////////////////////////////////////////
 // Set up React component for testing hook in.
 
-const BlacklistComponent: React.FunctionComponent = () => {
-  const blacklist = useBlacklist()
+const IgnoreComponent: React.FunctionComponent = () => {
+  const ignore = useIgnore()
 
   function handleAdd (): void {
-    const host = mockAddBlacklist[0]
-    blacklist.add(host).catch(error => {
+    const host = mockAddIgnore[0]
+    ignore.add(host).catch(error => {
       testError(error)
     })
   }
 
   function handleRemove (): void {
-    blacklist.remove('host').catch(error => {
+    ignore.remove('host').catch(error => {
       testError(error)
     })
   }
 
   function handleFetch (): void {
-    blacklist.fetch().catch(error => {
+    ignore.fetch().catch(error => {
       testError(error)
     })
   }
 
   function handleClear (): void {
-    blacklist.clear().catch(error => {
+    ignore.clear().catch(error => {
       testError(error)
     })
   }
@@ -75,9 +75,9 @@ const BlacklistComponent: React.FunctionComponent = () => {
   return (
     <section>
       <p data-testid='isInitialized'>
-        {blacklist.isInitialized ? 'initialized' : 'waiting'}
+        {ignore.isInitialized ? 'initialized' : 'waiting'}
       </p>
-      <p data-testid='blacklist'>{JSON.stringify([...blacklist.blacklist])}</p>
+      <p data-testid='ignore'>{JSON.stringify([...ignore.ignore])}</p>
       <button data-testid='add' onClick={handleAdd} />
       <button data-testid='remove' onClick={handleRemove} />
       <button data-testid='fetch' onClick={handleFetch} />
@@ -97,19 +97,19 @@ beforeEach(() => {
 /**
  * Comprehensive state test
  */
-test('useBlacklist(), test component', async () => {
+test('useIgnore(), test component', async () => {
   const { res } = manualGetMock()
 
   act(() => {
-    render(<BlacklistComponent />)
+    render(<IgnoreComponent />)
   })
 
   const isInitialized = screen.getByTestId('isInitialized')
-  const blacklist = screen.getByTestId('blacklist')
+  const ignore = screen.getByTestId('ignore')
 
   // Before hook is initialized
   expect(isInitialized.innerHTML).toEqual('waiting')
-  expect(blacklist.innerHTML).toEqual(JSON.stringify([...new Map()]))
+  expect(ignore.innerHTML).toEqual(JSON.stringify([...new Map()]))
 
   act(() => {
     res()
@@ -119,16 +119,16 @@ test('useBlacklist(), test component', async () => {
   expect(mockGet).toHaveBeenCalledTimes(1)
 
   // After hook is intialized
-  expect(mockGet).toHaveBeenCalledWith('blacklist')
+  expect(mockGet).toHaveBeenCalledWith('ignore')
   expect(isInitialized.innerHTML).toEqual('initialized')
-  expect(blacklist.innerHTML).toEqual(JSON.stringify(mockBlacklist))
+  expect(ignore.innerHTML).toEqual(JSON.stringify(mockIgnore))
 
   // Test events
   fireEvent.click(screen.getByTestId('add'))
   await waitFor(() => expect(mockSet).toHaveBeenCalled())
   expect(mockSet).toHaveBeenCalledWith(
     expect.objectContaining({
-      blacklist: [...mockBlacklist, ...mockAddBlacklist]
+      ignore: [...mockIgnore, ...mockAddIgnore]
     })
   )
 
@@ -136,7 +136,7 @@ test('useBlacklist(), test component', async () => {
   await waitFor(() => expect(mockSet).toHaveBeenCalled())
   expect(mockSet).toHaveBeenCalledWith(
     expect.objectContaining({
-      blacklist: []
+      ignore: []
     })
   )
 
@@ -144,7 +144,7 @@ test('useBlacklist(), test component', async () => {
   await waitFor(() => expect(mockSet).toHaveBeenCalled())
   expect(mockSet).toHaveBeenCalledWith(
     expect.objectContaining({
-      blacklist: []
+      ignore: []
     })
   )
 
@@ -153,18 +153,18 @@ test('useBlacklist(), test component', async () => {
   await waitFor(() => {
     expect(mockGet).toHaveBeenCalled()
   })
-  expect(mockGet).toHaveBeenNthCalledWith(1, 'blacklist')
+  expect(mockGet).toHaveBeenNthCalledWith(1, 'ignore')
 })
 
 /**
  * Test error handling
  */
-test('useBlacklist(), fail init', async () => {
+test('useIgnore(), fail init', async () => {
   const { rej } = manualGetMock()
   const spy = jest.spyOn(global.console, 'error').mockImplementation(() => {})
 
   act(() => {
-    render(<BlacklistComponent />)
+    render(<IgnoreComponent />)
     rej('Sync Storage Error')
   })
   await waitFor(() => expect(spy).toHaveBeenCalled())
@@ -180,13 +180,13 @@ type ChangeListener = (
   areaName: string
 ) => void
 
-test('useBlacklist(), sync storage change', async () => {
+test('useIgnore(), sync storage change', async () => {
   const listeners: ChangeListener[] = []
   browser.storage.onChanged.addListener = jest.fn(listener => {
     listeners.push(listener)
   })
   act(() => {
-    render(<BlacklistComponent />)
+    render(<IgnoreComponent />)
   })
 
   await waitFor(() => screen.getByText('initialized'))
@@ -195,8 +195,8 @@ test('useBlacklist(), sync storage change', async () => {
     for (const listener of listeners) {
       listener(
         {
-          blacklist: {
-            newValue: [...mockBlacklist, ...mockAddBlacklist]
+          ignore: {
+            newValue: [...mockIgnore, ...mockAddIgnore]
           }
         },
         'sync'
@@ -204,33 +204,33 @@ test('useBlacklist(), sync storage change', async () => {
     }
   })
 
-  const blacklist = screen.getByTestId('blacklist')
+  const ignore = screen.getByTestId('ignore')
 
-  expect(blacklist.innerHTML).toEqual(
-    JSON.stringify([...mockBlacklist, ...mockAddBlacklist])
+  expect(ignore.innerHTML).toEqual(
+    JSON.stringify([...mockIgnore, ...mockAddIgnore])
   )
 })
 
-test('useBlacklist(), skip change', async () => {
+test('useIgnore(), skip change', async () => {
   const listeners: ChangeListener[] = []
   browser.storage.onChanged.addListener = jest.fn(listener => {
     listeners.push(listener)
   })
   act(() => {
-    render(<BlacklistComponent />)
+    render(<IgnoreComponent />)
   })
 
   await waitFor(() => screen.getByText('initialized'))
 
-  const blacklist = screen.getByTestId('blacklist')
+  const ignore = screen.getByTestId('ignore')
 
   // Local storage
   act(() => {
     for (const listener of listeners) {
       listener(
         {
-          blacklist: {
-            newValue: [...mockBlacklist, ...mockAddBlacklist]
+          ignore: {
+            newValue: [...mockIgnore, ...mockAddIgnore]
           }
         },
         'local'
@@ -238,15 +238,15 @@ test('useBlacklist(), skip change', async () => {
     }
   })
 
-  expect(blacklist.innerHTML).toEqual(JSON.stringify(mockBlacklist))
+  expect(ignore.innerHTML).toEqual(JSON.stringify(mockIgnore))
 
   // Managed storage
   act(() => {
     for (const listener of listeners) {
       listener(
         {
-          blacklist: {
-            newValue: [...mockBlacklist, ...mockAddBlacklist]
+          ignore: {
+            newValue: [...mockIgnore, ...mockAddIgnore]
           }
         },
         'managed'
@@ -254,20 +254,20 @@ test('useBlacklist(), skip change', async () => {
     }
   })
 
-  expect(blacklist.innerHTML).toEqual(JSON.stringify(mockBlacklist))
+  expect(ignore.innerHTML).toEqual(JSON.stringify(mockIgnore))
 
   // Wrong key
   act(() => {
     for (const listener of listeners) {
       listener(
         {
-          notblacklist: {
-            newValue: [...mockBlacklist, ...mockAddBlacklist]
+          notignore: {
+            newValue: [...mockIgnore, ...mockAddIgnore]
           }
         },
         'sync'
       )
     }
   })
-  expect(blacklist.innerHTML).toEqual(JSON.stringify(mockBlacklist))
+  expect(ignore.innerHTML).toEqual(JSON.stringify(mockIgnore))
 })

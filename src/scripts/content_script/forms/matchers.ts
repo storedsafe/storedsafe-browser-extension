@@ -1,39 +1,7 @@
 import { logger as formsLogger } from '.'
 import Logger from '../../../utils/Logger'
+import { InputType, FormType } from './constants'
 const logger = new Logger('Matchers', formsLogger)
-
-/**
- * Typed version of StoredSafe template fields.
- * The fields at the bottom are not StoredSafe fields but are used for filtering.
- */
-export enum InputType {
-  Username = 'username',
-  Password = 'password',
-  PinCode = 'pincode',
-  CardNo = 'cardno',
-  Expires = 'expires',
-  CVC = 'cvc',
-
-  // Fields used for filtering
-  Hidden = 'hidden',
-  Unknown = 'unknown'
-}
-
-/**
- * Describes the purpose of the form. Some forms should be filled while others
- * should be ignored or handled as special cases.
- * */
-export enum FormType {
-  Login = 'Login',
-  Card = 'Card',
-  Search = 'Search',
-  ContactInfo = 'Contactinfo',
-  NewsLetter = 'Newsletter',
-  Register = 'Register',
-  Menu = 'Menu',
-  Hidden = 'Hidden',
-  Unknown = 'Unknown'
-}
 
 /**
  * Matcher for an input field.
@@ -62,7 +30,7 @@ interface FormMatcher {
  * with the corresponding StoredSafe data if both type and name (name or id attribute)
  * get a match.
  * */
-const matchers: Map<string, Matcher[]> = new Map([
+const matchers: Map<InputType, Matcher[]> = new Map([
   [
     InputType.Username,
     [
@@ -230,9 +198,13 @@ const saveFormTypes: FormType[] = [FormType.Login, FormType.Register]
 /**
  * All input fields are of the hidden type.
  */
-const isHidden = (inputElements: HTMLInputElement[]) =>
+const isHidden = (element: HTMLInputElement): boolean => (
+  element.type === 'hidden' || element.hidden === true
+)
+
+const isHiddenForm = (inputElements: HTMLInputElement[]) =>
   inputElements.reduce(
-    (isHidden, inputElement) => isHidden && (inputElement.type === 'hidden' || inputElement.hidden === true),
+    (hidden, inputElement) => hidden && isHidden(inputElement),
     true
   )
 
@@ -307,10 +279,8 @@ function matchFields(inputs: HTMLInputElement[], fieldMatchers: Map<Matcher[], n
   return true
 }
 
-////////////////////////////////////////////////////////////
-// FORM TYPE MATCHER
-
-export function getInputType (input: HTMLInputElement) {
+export function getInputType (input: HTMLInputElement): InputType {
+  if (isHidden(input)) return InputType.Hidden
   for (const [inputType, inputMatchers] of matchers) {
     for (const matcher of inputMatchers) {
       if (
@@ -320,6 +290,7 @@ export function getInputType (input: HTMLInputElement) {
         return inputType
     }
   }
+  return InputType.Unknown
 }
 
 export function getFormType (
@@ -328,7 +299,7 @@ export function getFormType (
   submitElements: HTMLElement[]
 ): FormType {
   // Cull hidden forms as they're not made for user interaction.
-  if (isHidden(inputElements)) return FormType.Hidden
+  if (isHiddenForm(inputElements)) return FormType.Hidden
 
   // Forms without submits are regarded as unknown as they can't be
   // submitted by a user. These forms may be caught in the second pass
@@ -364,3 +335,6 @@ export function getFormType (
 
   return FormType.Unknown
 }
+
+export const FILL_TYPES = [FormType.Login]
+export const SAVE_TYPES = [FormType.Login, FormType.Register]

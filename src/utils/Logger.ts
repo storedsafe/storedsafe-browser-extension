@@ -33,13 +33,6 @@ const depthStyle = [baseStyle, 'background-color: #f59815'].join(';')
 const tableStyle = [baseStyle, 'background-color: #D65780'].join(';')
 
 /**
- * Print a message to the console.
- * @param message - Message to be printed.
- * @param variables - Variables to be injected into message string.
- */
-type LogFunction = (message: any, ...variables: any[]) => void
-
-/**
  * Wraps logging to print more informative messages to the console.
  */
 class Logger {
@@ -58,8 +51,7 @@ class Logger {
       this.nameStyle = baseStyle
     } else {
       // Generate a color based on the name to make it easy to identify
-      const hash =
-        this.name.split('').reduce((a, x) => a + x.charCodeAt(0), 0)
+      const hash = this.name.split('').reduce((a, x) => a + x.charCodeAt(0), 0)
       const h = `${hash % 360}`
       const s = `${(hash % 25) + 25}%`
       const l = `${(hash % 20) + 40}%`
@@ -214,5 +206,9 @@ class Logger {
 }
 
 export const StoredSafeLogger = new Logger(PREFIX, null)
+
+if (process.env.NODE_ENV === 'production') {
+  StoredSafeLogger.disable()
+}
 
 export default Logger

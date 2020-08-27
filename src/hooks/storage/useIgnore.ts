@@ -5,28 +5,28 @@
  * concerning themselves with external dependencies.
  */
 import { useState, useEffect } from 'react'
-import { actions as BlacklistActions } from '../../model/storage/Blacklist'
+import { actions as IgnoreActions } from '../../model/storage/Ignore'
 
 /**
  * Base state of the hook.
  * @param isInitialized - True if the initial fetch has been completed.
- * @param blacklist - Blacklist from storage.
+ * @param ignore - Ignore from storage.
  */
-interface BlacklistState {
+interface IgnoreState {
   isInitialized: boolean
-  blacklist: Blacklist
+  ignore: Ignore
 }
 
 /**
  * Functions to mutate the state of the hook. All functions return an empty
  * promise which should be used to handle loading/error states of the
  * implementing component.
- * @param add - Add new host to blacklist.
- * @param remove - Remove host from blacklist.
- * @param clear - Clear all blacklist entries from storage.
+ * @param add - Add new host to ignore.
+ * @param remove - Remove host from ignore.
+ * @param clear - Clear all ignore entries from storage.
  * @param fetch - Fetch state from storage.
  */
-interface BlacklistFunctions {
+interface IgnoreFunctions {
   add: (host: string) => Promise<void>
   remove: (host: string) => Promise<void>
   clear: () => Promise<void>
@@ -36,55 +36,55 @@ interface BlacklistFunctions {
 /**
  * Compiled state of the hook.
  */
-type BlacklistHook = BlacklistState & BlacklistFunctions
+type IgnoreHook = IgnoreState & IgnoreFunctions
 
 /**
- * Hook to access Blacklist from storage, listing all hosts that should be left
+ * Hook to access Ignore from storage, listing all hosts that should be left
  * out of automatic save suggestions.
  */
-export const useBlacklist = (): BlacklistHook => {
+export const useIgnore = (): IgnoreHook => {
   // Keep base state in single object to avoid unnecessary
   // renders when updating multiple fields at once.
-  const [state, setState] = useState<BlacklistState>({
+  const [state, setState] = useState<IgnoreState>({
     isInitialized: false,
-    blacklist: []
+    ignore: []
   })
 
   /**
-   * Manually fetch blacklist from storage. This should only be done in situations
+   * Manually fetch ignore from storage. This should only be done in situations
    * where you know the hook state is out of sync with the storage area, for
    * example during initialization.
    */
   async function fetch (): Promise<void> {
-    const blacklist = await BlacklistActions.fetch()
+    const ignore = await IgnoreActions.fetch()
     setState(prevState => ({
       ...prevState,
       isInitialized: true,
-      blacklist
+      ignore
     }))
   }
 
   /**
-   * Add host to storage blacklist.
-   * @param host - Host to blacklist.
+   * Add host to storage ignore.
+   * @param host - Host to ignore.
    */
   async function add (host: string): Promise<void> {
-    await BlacklistActions.add(host)
+    await IgnoreActions.add(host)
   }
 
   /**
-   * Remove host from storage blacklist.
-   * @param host - Host to remove from blacklist.
+   * Remove host from storage ignore.
+   * @param host - Host to remove from ignore.
    */
   async function remove (host: string): Promise<void> {
-    await BlacklistActions.remove(host)
+    await IgnoreActions.remove(host)
   }
 
   /**
-   * Clear all blacklist entries from storage.
+   * Clear all ignore entries from storage.
    */
   async function clear (): Promise<void> {
-    await BlacklistActions.clear()
+    await IgnoreActions.clear()
   }
 
   // Run when mounted
@@ -100,11 +100,11 @@ export const useBlacklist = (): BlacklistHook => {
       changes: { [key: string]: browser.storage.StorageChange },
       area: string
     ): void => {
-      const change = changes.blacklist
+      const change = changes.ignore
       if (change?.newValue !== undefined && area === 'sync') {
         setState(prevState => ({
           ...prevState,
-          blacklist: change.newValue
+          ignore: change.newValue
         }))
       }
     }

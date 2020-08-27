@@ -2,15 +2,15 @@
 // Set up mocks for browser storage API.
 
 import '../../../__mocks__/browser'
-import { actions } from '../Blacklist'
+import { actions } from '../Ignore'
 
 const syncSetMock = jest.fn(async () => await Promise.resolve())
 // eslint-disable-next-line
 const syncGetMock = jest.fn(async (key: string) => await Promise.resolve({}))
-function mockGet (blacklist: Blacklist): (key: string) => Promise<object> {
+function mockGet (ignore: Ignore): (key: string) => Promise<object> {
   return async (key: string): Promise<object> => {
-    if (key === 'blacklist') {
-      return await Promise.resolve({ [key]: blacklist })
+    if (key === 'ignore') {
+      return await Promise.resolve({ [key]: ignore })
     }
     throw new Error('Invalid key')
   }
@@ -29,68 +29,68 @@ describe('uses mocked browser.storage', () => {
   })
 
   test('fetch(), empty', async () => {
-    const blacklist = await actions.fetch()
-    expect(blacklist.length).toBe(0)
+    const ignore = await actions.fetch()
+    expect(ignore.length).toBe(0)
   })
 
   test('fetch(), no data', async () => {
     syncGetMock.mockImplementationOnce(mockGet([]))
-    const blacklist = await actions.fetch()
-    expect(blacklist.length).toBe(0)
+    const ignore = await actions.fetch()
+    expect(ignore.length).toBe(0)
   })
 
   test('fetch(), with data', async () => {
-    const mockBlacklist: Blacklist = [
+    const mockIgnore: Ignore = [
       'foo.example.com',
       'bar.example.com',
       'zot.example.com'
     ]
-    syncGetMock.mockImplementationOnce(mockGet(mockBlacklist))
-    const blacklist = await actions.fetch()
-    expect(blacklist).toEqual(mockBlacklist)
+    syncGetMock.mockImplementationOnce(mockGet(mockIgnore))
+    const ignore = await actions.fetch()
+    expect(ignore).toEqual(mockIgnore)
   })
 
   test('add()', async () => {
-    const mockBlacklist: Blacklist = ['bar.example.com', 'zot.example.com']
+    const mockIgnore: Ignore = ['bar.example.com', 'zot.example.com']
     const host = 'foo.example.com'
-    const newBlacklist: Blacklist = [...mockBlacklist, host]
-    syncGetMock.mockImplementationOnce(mockGet(mockBlacklist))
-    syncGetMock.mockImplementationOnce(mockGet(newBlacklist))
-    const blacklist = await actions.add(host)
-    expect(syncSetMock).toHaveBeenCalledWith({ blacklist: newBlacklist })
-    expect(blacklist).toEqual(newBlacklist)
+    const newIgnore: Ignore = [...mockIgnore, host]
+    syncGetMock.mockImplementationOnce(mockGet(mockIgnore))
+    syncGetMock.mockImplementationOnce(mockGet(newIgnore))
+    const ignore = await actions.add(host)
+    expect(syncSetMock).toHaveBeenCalledWith({ ignore: newIgnore })
+    expect(ignore).toEqual(newIgnore)
   })
 
   test('add(), already contains host', async () => {
-    const mockBlacklist: Blacklist = ['bar.example.com', 'foo.example.com']
+    const mockIgnore: Ignore = ['bar.example.com', 'foo.example.com']
     const host = 'foo.example.com'
-    syncGetMock.mockImplementation(mockGet(mockBlacklist))
-    const blacklist = await actions.add(host)
+    syncGetMock.mockImplementation(mockGet(mockIgnore))
+    const ignore = await actions.add(host)
     expect(syncSetMock).not.toHaveBeenCalled()
-    expect(blacklist).toEqual(mockBlacklist)
+    expect(ignore).toEqual(mockIgnore)
   })
 
   test('remove()', async () => {
-    const mockBlacklist: Blacklist = [
+    const mockIgnore: Ignore = [
       'foo.example.com',
       'bar.example.com',
       'zot.example.com'
     ]
     const host = 'foo.example.com'
-    const newBlacklist: Blacklist = ['bar.example.com', 'zot.example.com']
-    syncGetMock.mockImplementationOnce(mockGet(mockBlacklist))
-    syncGetMock.mockImplementationOnce(mockGet(newBlacklist))
-    const blacklist = await actions.remove(host)
+    const newIgnore: Ignore = ['bar.example.com', 'zot.example.com']
+    syncGetMock.mockImplementationOnce(mockGet(mockIgnore))
+    syncGetMock.mockImplementationOnce(mockGet(newIgnore))
+    const ignore = await actions.remove(host)
     expect(syncSetMock).toHaveBeenCalledWith({
-      blacklist: newBlacklist
+      ignore: newIgnore
     })
-    expect(blacklist).toEqual(newBlacklist)
+    expect(ignore).toEqual(newIgnore)
   })
 
   test('clear()', async () => {
     syncGetMock.mockImplementationOnce(mockGet([]))
-    const blacklist = await actions.clear()
-    expect(blacklist).toEqual([])
+    const ignore = await actions.clear()
+    expect(ignore).toEqual([])
   })
 
   test('fetch(), storage unavailable', async () => {

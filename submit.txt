@@ -1,0 +1,67 @@
+// TODO: Refactor old code
+function isMatch (field: string, element: HTMLInputElement) {
+  return true
+}
+
+function onSubmit () {
+  const values: Record<string, string> = {}
+  const target = event.target as HTMLFormElement
+  for (const [field] of matchers) {
+    for (let i = 0; i < target.length; i++) {
+      const element = target[i]
+      if (element instanceof HTMLInputElement && isMatch(field, element)) {
+        values[field] = element.value
+      }
+    }
+  }
+  browser.runtime
+    .sendMessage({
+      type: 'submit',
+      data: values
+    })
+    .catch(error => console.error(error))
+}
+
+/**
+ * Checks whether an element is of a type that is fillable by the user.
+ * @param element Element to be tested.
+ * @returns True if the element is an input that can be filled by the user.
+ * */
+function isElementFillable (element: Element): boolean {
+  return (
+    element instanceof HTMLInputElement &&
+    !['hidden', 'button', 'submit', 'reset'].includes(element.type)
+  )
+}
+/**
+ * Fill input fields with StoredSafe data in the appropriate forms/fields.
+ * @param data - StoredSafe data.
+ * @param submit - Whether or not to submit the form after filling it.
+ * */
+function fillForm (data: [string, string][], submit = false): void {
+  for (const form of [] as HTMLFormElement[]) {
+    let filled = false
+    for (const element of form) {
+      if (element instanceof HTMLInputElement && isElementFillable(element)) {
+        let elementFilled = false
+        for (const [field, value] of new Map(data)) {
+          if (isMatch(field, element)) {
+            elementFilled = true
+            filled = true
+            element.value = value
+            // Manually trigger change event after value change for sites depending on this
+            element.dispatchEvent(new Event('change', { bubbles: true }))
+            break
+          }
+        }
+        if (!elementFilled) {
+          // If no field matched this element
+          element.focus() // Focus element for easier access (example otp field)
+        }
+      }
+    }
+    if (filled && submit) {
+      // fillForms[i].submit(); // TODO: Fix compatibility with autofill on failed login.
+    }
+  }
+}

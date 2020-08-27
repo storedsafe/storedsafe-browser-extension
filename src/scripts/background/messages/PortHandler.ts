@@ -1,13 +1,19 @@
 import Logger from '../../../utils/Logger'
 import { logger as messageLogger } from '.'
 import StoredSafeError from '../../../utils/StoredSafeError'
-import { FLOW_SAVE, FLOW_FILL, ACTION_SUBMIT } from '../../content_script/messages'
+import {
+  FLOW_SAVE,
+  FLOW_FILL,
+  ACTION_INIT
+} from '../../content_script/messages/constants'
+import { createSaveFlow } from './saveFlow'
+import { checkOnlineStatus } from '../sessions/sessionTools'
 
 class StoredSafePortHandlerError extends StoredSafeError {}
 const logger = new Logger('Ports', messageLogger)
 
 export class PortHandler {
-  private static handlers: PortHandler[] = []
+  private static handlers: Map<browser.runtime.Port, PortHandler> = new Map()
 
   static StartTracking () {
     browser.runtime.onConnect.addListener(PortHandler.onConnect)
@@ -17,9 +23,15 @@ export class PortHandler {
     browser.runtime.onConnect.removeListener(PortHandler.onConnect)
   }
 
-  private static onConnect(port: browser.runtime.Port) {
-    logger.log('Conected to %s', port.name)
+  private static onConnect (port: browser.runtime.Port) {
+    if (port.sender?.tab?.id === undefined) {
+      logger.debug('Connected to %s', port.name)
+    } else {
+      logger.debug('Connected to %s on tab [%d]', port.name, port.sender.tab.id)
+    }
     const handler = new PortHandler(port)
+    handler.startListening()
+    PortHandler.handlers.set(port, handler)
   }
 
   private port: browser.runtime.Port = null
@@ -35,61 +47,66 @@ export class PortHandler {
     this.port = port
   }
 
-  private startListening(): void {
+  private startListening (): void {
     if (this.port === null) {
-      throw new StoredSafePortHandlerError('Port is null, cannot start listening.')
+      throw new StoredSafePortHandlerError(
+        'Port is null, cannot start listening.'
+      )
     }
     this.port.onMessage.addListener(this.onMessage)
     this.port.onDisconnect.addListener(this.onDisconnect)
   }
 
-  private stopListening(): void {
+  private stopListening (): void {
     if (this.port === null) {
-      throw new StoredSafePortHandlerError('Port is null, cannot stop listening.')
+      throw new StoredSafePortHandlerError(
+        'Port is null, cannot stop listening.'
+      )
     }
     this.port.onMessage.removeListener(this.onMessage)
     this.port.onDisconnect.removeListener(this.onDisconnect)
+    PortHandler.handlers.delete(this.port)
     this.port = null
   }
 
-  private disconnect(): void {
+  private disconnect (): void {
     this.port.disconnect()
   }
 
-  private onDisconnect(): void {
+  private onDisconnect (): void {
+    if (this.port.sender?.tab?.id === undefined) {
+      logger.debug('Disconnected from %s', this.port.name)
+    } else {
+      logger.debug(
+        'Disconnected from %s on tab [%d]',
+        this.port.name,
+        this.port.sender.tab.id
+      )
+    }
     this.stopListening()
   }
 
-  private onMessage({ type, data }: Message) {
+  private onMessage ({ type, data }: Message) {
+    logger.debug('Incoming message %s', type)
     const [flow, action] = type.split('.')
-    switch(flow) {
+    switch (flow) {
       case FLOW_SAVE: {
-        logger.log('Routing message %s to save flow', type)
-        this.onSaveFlow({ type: action, data })
+        if (action === ACTION_INIT) {
+          createSaveFlow(this.port, data)
+        }
         break
       }
       case FLOW_FILL: {
-        logger.log('Routing message %s to fill flow', type)
-        this.onFillFlow({ type: action, data })
+        if (action === ACTION_INIT) {
+          // TODO: createFillFlow(this.port, data)
+        }
         break
       }
       default: {
-        logger.log('Invalid message %s', type)
+        throw new StoredSafePortHandlerError(
+          `Unknown message flow: ${flow}.${action}`
+        )
       }
-    }
-  }
-
-  private onSaveFlow({ type, data }: Message) {
-    switch (type) {
-      case ACTION_SUBMIT: {
-        break
-      }
-    }
-  }
-
-  private onFillFlow({ type, data }: Message) {
-    switch (type) {
-
     }
   }
 }

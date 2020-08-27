@@ -3,15 +3,12 @@
 exports[`<Menu show={false} /> 1`] = `
 "<section class=\\"menu\\">
   <div class=\\"menu-backdrop\\">
-    <div class=\\"menu-box\\">
-      <article class=\\"menu-item\\">
+    <div class=\\"menu-box\\"><button type=\\"button\\" class=\\"menu-item\\" tabindex=\\"-1\\">
         <p>foo</p><svg>icon</svg>
-      </article>
-      <article class=\\"menu-item\\">
+      </button><button type=\\"button\\" class=\\"menu-item\\" tabindex=\\"-1\\">
         <p>bar</p>
         <p>icon</p>
-      </article>
-    </div>
+      </button></div>
   </div>
 </section>"
 `;
@@ -19,15 +16,12 @@ exports[`<Menu show={false} /> 1`] = `
 exports[`<Menu show={true} /> 1`] = `
 "<section class=\\"menu show\\">
   <div class=\\"menu-backdrop\\">
-    <div class=\\"menu-box\\">
-      <article class=\\"menu-item\\">
+    <div class=\\"menu-box\\"><button type=\\"button\\" class=\\"menu-item\\" tabindex=\\"0\\">
         <p>foo</p><svg>icon</svg>
-      </article>
-      <article class=\\"menu-item\\">
+      </button><button type=\\"button\\" class=\\"menu-item\\" tabindex=\\"0\\">
         <p>bar</p>
         <p>icon</p>
-      </article>
-    </div>
+      </button></div>
   </div>
 </section>"
 `;
