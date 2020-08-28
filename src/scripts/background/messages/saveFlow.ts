@@ -8,10 +8,10 @@ import {
   PORT_SAVE,
   ACTION_CLOSE,
   ACTION_RESIZE,
-  ACTION_POPULATE
+  ACTION_POPULATE,
+  ACTION_INIT
 } from '../../content_script/messages/constants'
-import { checkOnlineStatus } from '../sessions/sessionTools'
-import { saveURLToField } from './messageTools'
+import { saveURLToField, shouldSave } from './messageTools'
 
 const flowLogger = new Logger('Save', messageLogger)
 
@@ -56,13 +56,14 @@ export function createSaveFlow (
     )
   }
 
-  // Only offer to save if the user is online
-  checkOnlineStatus()
-    .then(isOnline => {
-      if (isOnline) startFlow()
+  shouldSave(initPort.sender?.url, data)
+    .then(save => {
+      if (save) startFlow()
     })
     .catch(() => {
-      throw new StoredSafeSaveFlowError('Failed to check online status.')
+      throw new StoredSafeSaveFlowError(
+        'Failed to check whether the save flow should be started.'
+      )
     })
 
   function startFlow () {
@@ -81,6 +82,8 @@ export function createSaveFlow (
       `(${initPort.sender.tab.url}) [${initPort.sender.tab.id}]`,
       flowLogger
     )
+
+    logger.log('VALUES %o', values)
 
     // Reference to content_script port
     let contentPort: browser.runtime.Port = null
@@ -112,6 +115,15 @@ export function createSaveFlow (
       logger.debug('Connected to content port')
       port.onDisconnect.addListener(onContentDisconnect)
       contentPort = port
+
+      // Listen for new save flows on the same tab
+      contentPort.onMessage.addListener((message: Message) => {
+        if (message.type === `${FLOW_SAVE}.${ACTION_INIT}`) {
+          // Cancel this flow
+          browser.runtime.onConnect.removeListener(onConnect)
+        }
+      })
+
       if (promptCount++ <= SAVE_RETRIES && hasTimedOut === false) {
         contentPort.postMessage({
           type: `${FLOW_SAVE}.${ACTION_OPEN}`

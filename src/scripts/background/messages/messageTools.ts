@@ -14,9 +14,9 @@ export function saveURLToField(url: string) {
   return url.split('?')[0]
 }
 
-export async function shouldSave (url: string, username: string): Promise<boolean> {
+export async function shouldSave (url: string, data: [string, string][]): Promise<boolean> {
   // Don't save if the user is offline
-  const isOnline = await checkOnlineStatus
+  const isOnline = await checkOnlineStatus()
   if (!isOnline) return false
 
   // Don't save if the URL is in the ignore list
@@ -26,6 +26,8 @@ export async function shouldSave (url: string, username: string): Promise<boolea
     false
   )
   if (isIgnore) return false
+
+  const values = new Map(data)
 
   // Don't save if a matching result already exists
   // TODO: Consider an option to save next time popup is opened
@@ -42,7 +44,7 @@ export async function shouldSave (url: string, username: string): Promise<boolea
             const username = ssObject.fields.find(
               ({ name }) => name === 'username'
             ).value
-            if (username === username) {
+            if (username === values.get('username')) {
               return false
             }
           }
