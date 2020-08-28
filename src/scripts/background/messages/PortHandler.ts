@@ -6,8 +6,7 @@ import {
   FLOW_FILL,
   ACTION_INIT
 } from '../../content_script/messages/constants'
-import { createSaveFlow } from './saveFlow'
-import { checkOnlineStatus } from '../sessions/sessionTools'
+import { SaveFlow } from './saveFlow'
 
 class StoredSafePortHandlerError extends StoredSafeError {}
 const logger = new Logger('Ports', messageLogger)
@@ -92,7 +91,7 @@ export class PortHandler {
     switch (flow) {
       case FLOW_SAVE: {
         if (action === ACTION_INIT) {
-          createSaveFlow(this.port, data)
+          SaveFlow.Create(this.port, data)
         }
         break
       }

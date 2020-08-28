@@ -14,12 +14,13 @@ export function saveURLToField(url: string) {
   return url.split('?')[0]
 }
 
-export async function shouldSave (url: string, data: [string, string][]): Promise<boolean> {
+export async function shouldSave (tab: browser.tabs.Tab, data: [string, string][]): Promise<boolean> {
   // Don't save if the user is offline
   const isOnline = await checkOnlineStatus()
   if (!isOnline) return false
 
   // Don't save if the URL is in the ignore list
+  const url = tab.url
   const ignoreList = await IgnoreActions.fetch()
   const isIgnore = ignoreList.reduce(
     (isIgnore, host) => isIgnore || new RegExp(host).test(url),
