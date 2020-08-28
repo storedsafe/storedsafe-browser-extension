@@ -1,7 +1,7 @@
 import { logger as formsLogger } from '.'
 import StoredSafeError from '../../../utils/StoredSafeError'
 import Logger from '../../../utils/Logger'
-import { getFormType, getInputType } from './matchers'
+import { getFormType, getInputType, FILL_TYPES } from './matchers'
 import { FormType, InputType } from './constants'
 
 const logger = new Logger('Page Scanner', formsLogger)
@@ -46,8 +46,21 @@ export class PageScanner {
     this.shouldScan = this.shouldScan.bind(this)
     this.subscribeToMutations = this.subscribeToMutations.bind(this)
     this.unsubscribeFromMutations = this.unsubscribeFromMutations.bind(this)
+    this.fill = this.fill.bind(this)
 
     this.forms = this.scan()
+  }
+
+  fill (data: [string, string][]): void {
+    const values = new Map(data)
+    for (const [form, { inputElements, type: formType }] of this.forms) {
+      if (FILL_TYPES.includes(formType)) {
+        for (const [input, inputType] of inputElements) {
+          input.value = values.get(inputType)
+          input.dispatchEvent(new Event('change', { bubbles: true }))
+        }
+      }
+    }
   }
 
   /**
@@ -140,9 +153,11 @@ export class PageScanner {
           element,
           getInputType(element)
         ])
-        .filter(([element, elementType]) => (
-          elementType !== InputType.Hidden && elementType !== InputType.Unknown
-        ))
+        .filter(
+          ([element, elementType]) =>
+            elementType !== InputType.Hidden &&
+            elementType !== InputType.Unknown
+        )
     )
   }
 

@@ -3,7 +3,12 @@ export const PORT_SAVE_PREFIX = 'save_'
 export const PORT_SAVE_CONNECTED = `${PORT_SAVE_PREFIX}connected`
 export const PORT_SAVE_CLOSE = `${PORT_SAVE_PREFIX}close`
 export const PORT_SAVE_RESIZE = `${PORT_SAVE_PREFIX}resize`
-export const PORT_FILL = 'fill'
+
+export const PORT_FILL_PREFIX = 'fill_'
+export const PORT_FILL_CONNECTED = `${PORT_FILL_PREFIX}connected`
+export const PORT_FILL_CLOSE = `${PORT_FILL_PREFIX}close`
+export const PORT_FILL_RESIZE = `${PORT_FILL_PREFIX}resize`
+
 export const PORT_CONTENT = 'content_script'
 
 // Unique IDs used for identifying iframes
@@ -26,3 +31,6 @@ export const ACTION_POPULATE = 'populate' // Pass background data to iframe afte
 
 // content_script -> background or popup -> background
 export const ACTION_INIT = 'init' // Initiate flow with data
+
+// background -> content_script
+export const ACTION_FILL = 'fill'

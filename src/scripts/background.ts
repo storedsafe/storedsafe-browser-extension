@@ -29,6 +29,7 @@ import {
 } from './background/sessions'
 import { PortHandler } from './background/messages'
 import StoredSafeError from '../utils/StoredSafeError'
+import { FLOW_FILL, ACTION_INIT } from './content_script/messages/constants'
 
 logger.log('Background script initialized: ', new Date(Date.now()))
 
@@ -103,27 +104,14 @@ function parseResult (
 }
 
 /**
- * Fill form fields on tab.
- * */
-async function tabFill (
-  tabId: number,
-  data: Map<string /* field */, string /* value */>
-): Promise<void> {
-  await browser.tabs.sendMessage(tabId, {
-    type: 'fill',
-    data: [...data]
-  })
-}
-
-/**
  * Parse and select result and decrypt as needed before filling form fields on tab.
  * */
-async function fill (tabId: number, results: Results): Promise<void> {
+async function fill (results: Results): Promise<void> {
   const [host, result] = selectResult(results)
   if (result !== undefined) {
     const decryptedResult = decryptResult(host, result)
     const data = parseResult(await decryptedResult)
-    await tabFill(tabId, data)
+    PortHandler.SendFill([...data])
   }
 }
 
@@ -138,18 +126,14 @@ async function tabFind (
 ): Promise<void> {
   const { id: tabId, url } = tab
   const needle = urlToNeedle(url)
-  try {
-    const tabResults = await StoredSafeActions.tabFind(tabId, needle)
-  } catch (error) {
-    throw new StoredSafeError('Could not fetch tab results')
+  const tabResults = await StoredSafeActions.tabFind(tabId, needle)
+  if (fillForm) {
+    return await fill(tabResults.get(tabId))
   }
-  // if (fillForm) {
-  //   return await fill(tabId, tabResults.get(tabId))
-  // }
-  // const settings = await SettingsActions.fetch()
-  // if (settings.get('autoFill').value === true) {
-  //   await fill(tabId, tabResults.get(tabId))
-  // }
+  const settings = await SettingsActions.fetch()
+  if (settings.get('autoFill').value === true) {
+    await fill(tabResults.get(tabId))
+  }
 }
 
 /**
@@ -192,7 +176,7 @@ const messageHandlers: {
   [key: string]: MessageHandler<unknown>
 } = {
   tabSearch: async (data, sender) => await tabFind(sender.tab),
-  copyToClipboard: async value => await copyToClipboard(value),
+  copyToClipboard: async value => await copyToClipboard(value)
 }
 
 /**
@@ -242,8 +226,7 @@ browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   }
 })
 
-
-browser.tabs.onRemoved.addListener((tabId) => {
+browser.tabs.onRemoved.addListener(tabId => {
   TabResultsActions.removeTabResults(tabId).catch(() => {
     throw new StoredSafeError(`Error removing results for tab ${tabId}`)
   })

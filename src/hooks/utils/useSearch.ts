@@ -2,6 +2,7 @@ import { useSessions } from '../storage/useSessions'
 import { useState, useEffect } from 'react'
 import { actions as StoredSafeActions } from '../../model/storedsafe/StoredSafe'
 import { useTabResults } from '../storage/useTabResults'
+import { FLOW_FILL, ACTION_INIT } from '../../scripts/content_script/messages/constants'
 
 interface SearchHook {
   isInitialized: boolean
@@ -63,12 +64,12 @@ export const useSearch = (): SearchHook => {
 
   async function fill (host: string, id: number): Promise<void> {
     async function sendFill (result: SSObject): Promise<void> {
-      const [tab] = await browser.tabs.query({
-        currentWindow: true,
-        active: true
-      })
       const data = result.fields.map(({ name, value }) => [name, value])
-      await browser.tabs.sendMessage(tab.id, { type: 'fill', data })
+      const port = browser.runtime.connect()
+      port.postMessage({
+        type: `${FLOW_FILL}.${ACTION_INIT}`,
+        data
+      })
       window.close()
     }
 

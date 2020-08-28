@@ -6,87 +6,75 @@ import { PageScanner, Forms } from './content_script/forms/PageScanner'
 import { SAVE_TYPES } from './content_script/forms/matchers'
 import { InputType } from './content_script/forms/constants'
 
-import { actions as SessionsActions } from '../model/storage/Sessions'
+logger.log('Content script initialized: ', new Date(Date.now()))
 
-// SessionsActions.fetch().then(sessions => {
-//   // Only run script if user is logged in.
-//   if (sessions.size > 0) {
-//     run()
-//   }
-// })
+const pageScanner = new PageScanner()
+const messageHandler = new MessageHandler(pageScanner)
 
-run()
+// TODO: Create SubmitHandler for code below
+/**
+ * Set up submit events when the forms update.
+ * TODO: Cleanup events
+ * @param forms Newly updated forms.
+ */
+function onPageScan (forms: Forms) {
+  for (const [element, values] of forms) {
+    const inputs = values.inputElements
+    let submitted = false // lock for onSubmit
 
-function run () {
-  logger.log('Content script initialized: ', new Date(Date.now()))
+    /**
+     * Send submit message to background script to see if a save flow should
+     * be started.
+     * Locks the onSubmit for 100ms to prevent multiple submit events being
+     * pushed as a consequence of having to track click events on buttons in
+     * addition to submit events because some sites do not use actual forms
+     * and submit events.
+     *
+     * NOTE: This could be done in a way such that all submit handlers are
+     * disconnected on submit, but this would block new events from triggering
+     * in the case where a user entered the wrong password and then tries again.
+     */
+    function onSubmit () {
+      // Check lock status
+      if (submitted) return
+      submitted = true
 
-  const pageScanner = new PageScanner()
-  const messageHandler = new MessageHandler()
+      // Check if form is of a type that should be saved
+      if (!SAVE_TYPES.includes(values.type)) return
 
-  /**
-   * Set up submit events when the forms update.
-   * TODO: Cleanup events
-   * @param forms Newly updated forms.
-   */
-  function onPageScan (forms: Forms) {
-    for (const [element, values] of forms) {
-      const inputs = values.inputElements
-      let submitted = false // lock for onSubmit
+      const submitLogger = new Logger(`Submit - ${values.type}`, logger)
 
-      /**
-       * Send submit message to background script to see if a save flow should
-       * be started.
-       * Locks the onSubmit for 100ms to prevent multiple submit events being
-       * pushed as a consequence of having to track click events on buttons in
-       * addition to submit events because some sites do not use actual forms
-       * and submit events.
-       *
-       * NOTE: This could be done in a way such that all submit handlers are
-       * disconnected on submit, but this would block new events from triggering
-       * in the case where a user entered the wrong password and then tries again.
-       */
-      function onSubmit () {
-        // Check lock status
-        if (submitted) return
-        submitted = true
-
-        // Check if form is of a type that should be saved
-        if (!SAVE_TYPES.includes(values.type)) return
-
-        const submitLogger = new Logger(`Submit - ${values.type}`, logger)
-
-        // TODO: Check cases where overlapping inputs exist (ex register confirm pass)
-        let data: [InputType, string][] = []
-        for (const [input, inputType] of inputs) {
-          data.push([inputType, input.value])
-        }
-        submitLogger.debug(
-          'Submitted data from fields %o in %o:',
-          data.map(([field]) => field),
-          element
-        )
-        messageHandler.sendSubmit(data)
-        window.setTimeout(() => (submitted = false), 100)
+      // TODO: Check cases where overlapping inputs exist (ex register confirm pass)
+      let data: [InputType, string][] = []
+      for (const [input, inputType] of inputs) {
+        data.push([inputType, input.value])
       }
-
-      const formsLogger = new Logger(`Form - ${values.type}`, logger)
-
-      formsLogger.debug(
-        'Form: %o, Type: %s, Inputs: %o, Buttons: %o',
-        element,
-        values.type,
-        values.inputElements,
-        values.submitElements
+      submitLogger.debug(
+        'Submitted data from fields %o in %o:',
+        data.map(([field]) => field),
+        element
       )
-      if (element instanceof HTMLFormElement) {
-        element.addEventListener('submit', onSubmit)
-      }
-      for (const submitElement of values.submitElements) {
-        submitElement.addEventListener('click', onSubmit)
-      }
+      messageHandler.sendSubmit(data)
+      window.setTimeout(() => (submitted = false), 100)
+    }
+
+    const formsLogger = new Logger(`Form - ${values.type}`, logger)
+
+    formsLogger.debug(
+      'Form: %o, Type: %s, Inputs: %o, Buttons: %o',
+      element,
+      values.type,
+      values.inputElements,
+      values.submitElements
+    )
+    if (element instanceof HTMLFormElement) {
+      element.addEventListener('submit', onSubmit)
+    }
+    for (const submitElement of values.submitElements) {
+      submitElement.addEventListener('click', onSubmit)
     }
   }
-
-  onPageScan(pageScanner.forms)
-  pageScanner.subscribeToMutations(onPageScan)
 }
+
+onPageScan(pageScanner.forms)
+pageScanner.subscribeToMutations(onPageScan)

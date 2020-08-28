@@ -9,23 +9,28 @@ import {
   ACTION_CLOSE,
   ACTION_RESIZE,
   ACTION_INIT,
-  PORT_CONTENT
+  PORT_CONTENT,
+  ACTION_FILL
 } from './constants'
 import { FrameManager } from '../inject/FrameManager'
 import { InputType } from '../forms/constants'
+import { PageScanner } from '../forms/PageScanner'
 
 class StoredSafeMessageHandlerError extends StoredSafeError {}
 
 export class MessageHandler {
   private port: browser.runtime.Port = null
+  private pageScanner: PageScanner
 
-  constructor () {
+  constructor (pageScanner: PageScanner) {
     // Make sure JS remembers what `this` is
     this.start = this.start.bind(this)
     this.stop = this.stop.bind(this)
     this.onMessage = this.onMessage.bind(this)
     this.sendSubmit = this.sendSubmit.bind(this)
     this.onDisconnect = this.onDisconnect.bind(this)
+
+    this.pageScanner = pageScanner
 
     this.start()
   }
@@ -75,6 +80,10 @@ export class MessageHandler {
         }
         case ACTION_RESIZE: {
           FrameManager.ResizeFrame(frameId, data.width, data.height)
+          break
+        }
+        case ACTION_FILL: {
+          this.pageScanner.fill(data)
           break
         }
         default: {
