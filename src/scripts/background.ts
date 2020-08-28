@@ -332,3 +332,10 @@ browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     tabUrls.set(tabId, shortUrl)
   }
 })
+
+
+browser.tabs.onRemoved.addListener((tabId) => {
+  TabResultsActions.removeTabResults(tabId).catch(() => {
+    throw new StoredSafeError(`Error removing results for tab ${tabId}`)
+  })
+})
