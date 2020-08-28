@@ -5,12 +5,16 @@ import {
   FLOW_SAVE,
   ACTION_OPEN,
   PORT_CONTENT,
-  PORT_SAVE,
   ACTION_CLOSE,
   ACTION_RESIZE,
   ACTION_POPULATE,
+  PORT_SAVE_CONNECTED,
+  PORT_SAVE_CLOSE,
+  PORT_SAVE_RESIZE,
+  PORT_SAVE_PREFIX
 } from '../../content_script/messages/constants'
 import { saveURLToField, shouldSave } from './messageTools'
+import { logger } from '../sessions'
 
 const flowLogger = new Logger('Save', messageLogger)
 
@@ -40,15 +44,15 @@ class StoredSafeSaveFlowError extends StoredSafeError {}
  * @param data Form data to be saved.
  */
 export class SaveFlow {
-  static flows: Map<number, SaveFlow> = new Map()
+  private static flows: Map<number, SaveFlow> = new Map()
 
   private initPort: browser.runtime.Port
   private contentPort: browser.runtime.Port = null
-  private iframePort: browser.runtime.Port = null
   private data: [string, string][]
 
   private promptCount = 0
   private hasTimedOut = false
+  private timeoutId: number = null
 
   private logger: Logger
 
@@ -112,7 +116,10 @@ export class SaveFlow {
     )
 
     this.onContentConnect(this.initPort)
-    window.setTimeout(() => (this.hasTimedOut = true), SAVE_TIMEOUT)
+    this.timeoutId = window.setTimeout(() => {
+      logger.debug('Flow timed out')
+      this.hasTimedOut = true
+    }, SAVE_TIMEOUT)
     browser.runtime.onConnect.addListener(this.onConnect)
   }
 
@@ -138,8 +145,8 @@ export class SaveFlow {
   /**
    * Tear-down procedure for when iframe disconnects (reload).
    */
-  private onContentDisconnect (): void {
-    this.contentPort.onDisconnect.removeListener(this.onContentDisconnect)
+  private onContentDisconnect (port: browser.runtime.Port): void {
+    port.onDisconnect.removeListener(this.onContentDisconnect)
     this.contentPort = null
   }
 
@@ -149,30 +156,33 @@ export class SaveFlow {
   private onIframeConnect (port: browser.runtime.Port): void {
     this.logger.debug('Connected to iframe port')
 
-    const values: SaveValues = {
-      url: saveURLToField(this.initPort.sender?.url),
-      name: this.initPort.sender?.tab?.title
+    if (port.name === PORT_SAVE_CONNECTED) {
+      const values: SaveValues = {
+        url: saveURLToField(this.initPort.sender?.url),
+        name: this.initPort.sender?.tab?.title
+      }
+      for (const [key, value] of this.data) {
+        values[key] = value
+      }
+      port.postMessage({
+        type: `${FLOW_SAVE}.${ACTION_POPULATE}`,
+        data: values
+      })
+    } else if (
+      port.name === PORT_SAVE_CLOSE ||
+      port.name === PORT_SAVE_RESIZE
+    ) {
+      port.onDisconnect.addListener(this.onIframeDisconnect)
+      port.onMessage.addListener(this.onIframeMessage)
     }
-    for (const [key, value] of this.data) {
-      values[key] = value
-    }
-
-    port.onDisconnect.addListener(this.onIframeDisconnect)
-    port.onMessage.addListener(this.onIframeMessage)
-    this.iframePort = port
-    this.iframePort.postMessage({
-      type: `${FLOW_SAVE}.${ACTION_POPULATE}`,
-      data: values
-    })
   }
 
   /**
    * Tear-down procedure for when iframe disconnects (on close frame / reload).
    */
-  private onIframeDisconnect (): void {
-    this.iframePort.onDisconnect.removeListener(this.onIframeDisconnect)
-    this.iframePort.onMessage.removeListener(this.onIframeMessage)
-    this.iframePort = null
+  private onIframeDisconnect (port: browser.runtime.Port): void {
+    port.onDisconnect.removeListener(this.onIframeDisconnect)
+    port.onMessage.removeListener(this.onIframeMessage)
   }
 
   /**
@@ -185,7 +195,9 @@ export class SaveFlow {
     if (flow !== FLOW_SAVE) {
       return // Other flow from same tab
     }
-    if (action === ACTION_CLOSE || action === ACTION_RESIZE) {
+    if (action === ACTION_CLOSE) {
+      this.cancel()
+    } else if (action === ACTION_RESIZE) {
       this.contentPort.postMessage(message) // Forward message to content_script
     } else {
       throw new StoredSafeSaveFlowError(`Unknown message ${flow}.${action}`)
@@ -201,7 +213,7 @@ export class SaveFlow {
     if (port.sender?.tab?.id === this.initPort.sender?.tab?.id) {
       if (port.name === PORT_CONTENT) {
         this.onContentConnect(port)
-      } else if (port.name === PORT_SAVE) {
+      } else if (port.name.match(PORT_SAVE_PREFIX) !== null) {
         this.onIframeConnect(port)
       }
     }
@@ -212,6 +224,12 @@ export class SaveFlow {
    */
   private cancel (): void {
     browser.runtime.onConnect.removeListener(this.onConnect)
+    window.clearTimeout(this.timeoutId)
+    if (this.contentPort !== null) {
+      this.contentPort.postMessage({
+        type: `${FLOW_SAVE}.${ACTION_CLOSE}`
+      })
+    }
     SaveFlow.flows.delete(this.initPort.sender.tab.id)
   }
 }

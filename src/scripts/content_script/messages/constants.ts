@@ -1,5 +1,8 @@
 // Unique IDs for identifying message origins
-export const PORT_SAVE = 'save'
+export const PORT_SAVE_PREFIX = 'save_'
+export const PORT_SAVE_CONNECTED = `${PORT_SAVE_PREFIX}connected`
+export const PORT_SAVE_CLOSE = `${PORT_SAVE_PREFIX}close`
+export const PORT_SAVE_RESIZE = `${PORT_SAVE_PREFIX}resize`
 export const PORT_FILL = 'fill'
 export const PORT_CONTENT = 'content_script'
 

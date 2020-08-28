@@ -11,11 +11,13 @@ import { useIgnore } from '../hooks/storage/useIgnore'
 import { useSessions } from '../hooks/storage/useSessions'
 import { actions as StoredSafeActions } from '../model/storedsafe/StoredSafe'
 import {
-  PORT_SAVE,
   FLOW_SAVE,
   ACTION_POPULATE,
   ACTION_CLOSE,
-  ACTION_RESIZE
+  ACTION_RESIZE,
+  PORT_SAVE_CLOSE,
+  PORT_SAVE_CONNECTED,
+  PORT_SAVE_RESIZE
 } from '../scripts/content_script/messages/constants'
 import Logger from '../utils/Logger'
 
@@ -48,17 +50,15 @@ const useSave = (): SaveProps => {
   /**
    * Open a port to the background script.
    */
-  function getPort (): browser.runtime.Port {
-    return browser.runtime.connect(browser.runtime.id, {
-      name: PORT_SAVE
-    })
+  function getPort (name: string): browser.runtime.Port {
+    return browser.runtime.connect(browser.runtime.id, { name })
   }
 
   /**
    * Send message to close the injected frame.
    */
   function close () {
-    const port = getPort()
+    const port = getPort(PORT_SAVE_CLOSE)
     port.postMessage({ type: `${FLOW_SAVE}.${ACTION_CLOSE}` })
   }
 
@@ -159,7 +159,7 @@ const useSave = (): SaveProps => {
     }
 
     // Start listening to messages from the background script
-    const port = getPort()
+    const port = getPort(PORT_SAVE_CONNECTED)
     port.onMessage.addListener(onMessage)
 
     // Clean up connections when the component dismounts
@@ -170,7 +170,7 @@ const useSave = (): SaveProps => {
   }, [])
 
   function resize (width: number, height: number): void {
-    const port = getPort()
+    const port = getPort(PORT_SAVE_RESIZE)
     port.postMessage({
       type: `${FLOW_SAVE}.${ACTION_RESIZE}`,
       data: { width, height }
