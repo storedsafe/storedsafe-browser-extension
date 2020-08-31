@@ -1,15 +1,30 @@
+import { actions as SessionsActions } from '../../../model/storage/Sessions'
 import { actions as StoredSafeActions } from '../../../model/storedsafe/StoredSafe'
+import { logger } from '.'
+
+export function search(needle: string) {
+}
 
 /**
  * Extract a search string from the url so that relevant results can be
  * searched for in StoredSafe.
+ *
+ * Uses special hardcoded case for two two-part TLDs.
+ * For potential refactor in the future, take a look at https://github.com/lupomontero/psl
  *
  * Returns the original URL if no match was found.
  * @param url Full URL
  */
 export function urlToNeedle (url: string): string {
   const match = url.match(/(?:\w+:\/\/)?(?:www\.)?(?<needle>[\w\.]+)/)
-  return match?.groups['needle']
+  const fqdn = match?.groups['needle']
+  if (fqdn === undefined) return url
+  const parts = fqdn.split('.')
+  const tld: string[] = []
+  tld.push(parts.pop())
+  if (['org', 'co'].includes(parts[parts.length - 1])) tld.push(parts.pop())
+  const domain = [parts[parts.length - 1], ...tld].join('.')
+  return domain
 }
 
 /**
@@ -85,4 +100,17 @@ export function urlComparator (url: string): (a: string, b: string) => number {
     const scoreB = matchB.length / b.length
     return scoreA - scoreB
   }
+}
+
+export async function find(needle: string): Promise<Results> {
+  const sessions = await SessionsActions.fetch()
+  const results: Results = new Map()
+  for (const [host] of sessions) {
+    try {
+      results.set(host, await StoredSafeActions.find(host, needle))
+    } catch (error) {
+      logger.error('Unable to perform search on %s, %o', host, error)
+    }
+  }
+  return results
 }

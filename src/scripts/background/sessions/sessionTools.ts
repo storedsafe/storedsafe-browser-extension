@@ -1,8 +1,8 @@
 import { actions as SettingsActions } from '../../../model/storage/Settings'
 import { actions as StoredSafeActions } from '../../../model/storedsafe/StoredSafe'
-import { actions as TabResultsActions } from '../../../model/storage/TabResults'
 import { actions as SessionsActions } from '../../../model/storage/Sessions'
 import StoredSafeError from '../../../utils/StoredSafeError'
+import { TabHandler } from '../search'
 
 class StoredSafeSessionToolsError extends StoredSafeError {}
 
@@ -20,7 +20,7 @@ export async function checkOnlineStatus (): Promise<boolean> {
  * */
 export async function invalidateSession (host: string): Promise<void> {
   const logoutPromise = StoredSafeActions.logout(host)
-  const purgePromise = TabResultsActions.purgeHost(host)
+  const purgePromise = TabHandler.PurgeHost(host)
   await logoutPromise
   await purgePromise
 }
@@ -30,7 +30,7 @@ export async function invalidateSession (host: string): Promise<void> {
  * */
 export async function invalidateAllSessions (): Promise<void> {
   const logoutPromise = StoredSafeActions.logoutAll()
-  const clearPromise = TabResultsActions.clear()
+  const clearPromise = TabHandler.Clear()
   await logoutPromise
   await clearPromise
 }

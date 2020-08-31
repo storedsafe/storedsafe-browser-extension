@@ -11,7 +11,6 @@ import StoredSafe, {
   StoredSafeErrorData
 } from 'storedsafe'
 import { actions as SessionsActions } from '../storage/Sessions'
-import { actions as TabResultsActions } from '../storage/TabResults'
 import { actions as objectHandler } from './ObjectHandler'
 import { actions as authHandler } from './AuthHandler'
 import { actions as miscHandler } from './MiscHandler'
@@ -212,34 +211,6 @@ async function addObject (host: string, params: object): Promise<void> {
   return await objectHandler.add(makeRequest(host), params)
 }
 
-/**
- * Find search results related to tab and put in storage
- * from all logged in sites.
- * @param tabId - The ID of the tab associated with the search.
- * @param needle - The search string to match against in StoredSafe.
- * @returns Updated list of all cached tab search results.
- * */
-async function tabFind (tabId: number, needle: string): Promise<TabResults> {
-  const sessions = await SessionsActions.fetch()
-  const hosts = [...sessions.keys()]
-  const promises: Array<Promise<SSObject[]>> = hosts.map(async host => {
-    try {
-      return await find(host, needle)
-    } catch (error) {
-      // Log error rather than failing all results in Promise.all
-      console.error(error)
-      // Ensure a valid response is returned
-      return []
-    }
-  })
-  const siteResults = await Promise.all(promises)
-  const results: Results = new Map()
-  for (let i = 0; i < siteResults.length; i++) {
-    results.set(hosts[i], siteResults[i])
-  }
-  return await TabResultsActions.setTabResults(tabId, results)
-}
-
 /// /////////////////////////////////////////////////////////
 // misc
 
@@ -287,7 +258,6 @@ export const actions = {
   checkAll,
   find,
   decrypt,
-  tabFind,
   addObject,
   getSiteInfo,
   generatePassword

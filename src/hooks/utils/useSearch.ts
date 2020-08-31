@@ -1,8 +1,10 @@
 import { useSessions } from '../storage/useSessions'
 import { useState, useEffect } from 'react'
 import { actions as StoredSafeActions } from '../../model/storedsafe/StoredSafe'
-import { useTabResults } from '../storage/useTabResults'
-import { FLOW_FILL, ACTION_INIT } from '../../scripts/content_script/messages/constants'
+import {
+  FLOW_FILL,
+  ACTION_INIT
+} from '../../scripts/content_script/messages/constants'
 
 interface SearchHook {
   isInitialized: boolean
@@ -21,17 +23,15 @@ interface SearchState {
 
 export const useSearch = (): SearchHook => {
   const sessions = useSessions()
-  const tabResults = useTabResults()
   const [state, setState] = useState<SearchState>()
 
-  const isInitialized = sessions.isInitialized && tabResults.isInitialized
+  const isInitialized = sessions.isInitialized
 
   async function getTabResults (): Promise<Results> {
-    const [{ id }] = await browser.tabs.query({
-      currentWindow: true,
-      active: true
+    const results = await browser.runtime.sendMessage({
+      type: 'getTabResults'
     })
-    return tabResults.tabResults.get(id)
+    return new Map(results)
   }
 
   async function find (needle: string): Promise<void> {

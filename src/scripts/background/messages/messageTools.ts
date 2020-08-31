@@ -1,6 +1,6 @@
 import { actions as IgnoreActions } from '../../../model/storage/Ignore'
-import { actions as TabResultsActions } from '../../../model/storage/TabResults'
 import { checkOnlineStatus } from '../sessions/sessionTools'
+import { TabHandler } from '../search'
 
 /**
  * Convert the URL from the tab that initiated the save flow to a more
@@ -10,11 +10,14 @@ import { checkOnlineStatus } from '../sessions/sessionTools'
  *
  * @param url URL of tab that initiated save flow.
  */
-export function saveURLToField(url: string) {
+export function saveURLToField (url: string) {
   return url.split('?')[0]
 }
 
-export async function shouldSave (tab: browser.tabs.Tab, data: [string, string][]): Promise<boolean> {
+export async function shouldSave (
+  tab: browser.tabs.Tab,
+  data: [string, string][]
+): Promise<boolean> {
   // Don't save if the user is offline
   const isOnline = await checkOnlineStatus()
   if (!isOnline) return false
@@ -32,22 +35,19 @@ export async function shouldSave (tab: browser.tabs.Tab, data: [string, string][
 
   // Don't save if a matching result already exists
   // TODO: Consider an option to save next time popup is opened
-  // TODO: Refactor after results are refactored
-  const tabResults = await TabResultsActions.fetch()
-  for (const results of tabResults.values()) {
-    for (const ssObjects of results.values()) {
-      for (const ssObject of ssObjects) {
-        for (const { value } of ssObject.fields) {
-          if (value === undefined) continue
-          const fieldURL = saveURLToField(url)
-          // Check both ways if one is more specific than the other
-          if (value.match(fieldURL) !== null || fieldURL.match(value) !== null) {
-            const username = ssObject.fields.find(
-              ({ name }) => name === 'username'
-            ).value
-            if (username === values.get('username')) {
-              return false
-            }
+  const results = TabHandler.GetResults(tab.id)
+  for (const ssObjects of results.values()) {
+    for (const ssObject of ssObjects) {
+      for (const { value } of ssObject.fields) {
+        if (value === undefined) continue
+        const fieldURL = saveURLToField(url)
+        // Check both ways if one is more specific than the other
+        if (value.match(fieldURL) !== null || fieldURL.match(value) !== null) {
+          const username = ssObject.fields.find(
+            ({ name }) => name === 'username'
+          ).value
+          if (username === values.get('username')) {
+            return false
           }
         }
       }

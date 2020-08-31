@@ -51,19 +51,6 @@ test('.decrypt()', async () => {
   expect(result).toEqual(find.decryptedResult)
 })
 
-test('.tabFind()', async () => {
-  localGetMock.mockImplementationOnce(
-    async () =>
-      await Promise.resolve({
-        ...local,
-        sessions: sessions.sLoginSessions
-      })
-  )
-  const tabResults = await StoredSafe.actions.tabFind(1, 'server')
-  expect(tabResults.get(1)).toEqual(find.results)
-  expect(errorMock).toHaveBeenCalledWith(expect.any(Error))
-})
-
 test('.add()', async () => {
   await StoredSafe.actions.addObject('host', {})
 })

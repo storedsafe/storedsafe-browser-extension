@@ -91,12 +91,6 @@ type SerializableSessions = Array<[string /* host */, Session]>
 type Results = Map<string /* host */, SSObject[]>
 type SerializableResults = Array<[string /* host */, SSObject[]]>
 
-/**
- * StoredSafe objects mapped to a host and a tab id.
- * */
-type TabResults = Map<number /* tabId */, Results>
-type SerializableTabResults = Array<[number /* tabId */, SerializableResults]>
-
 /// /////////////////////////////////////////////////////////
 // Site Preferences
 
@@ -127,5 +121,4 @@ interface Storage {
   sessions: Sessions // Local
   settings: Settings // Sync and Managed
   sites: Sites // Sync and Managed
-  tabResults: TabResults // Local
 }

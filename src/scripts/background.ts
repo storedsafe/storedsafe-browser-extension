@@ -13,9 +13,6 @@ export const logger = new Logger('Background')
 
 import { actions as StoredSafeActions } from '../model/storedsafe/StoredSafe'
 import { actions as SettingsActions } from '../model/storage/Settings'
-import { actions as TabResultsActions } from '../model/storage/TabResults'
-import { actions as IgnoreActions } from '../model/storage/Ignore'
-import { actions as SessionsActions } from '../model/storage/Sessions'
 
 /**
  * START REFACTORED CODE
@@ -30,6 +27,7 @@ import {
 import { PortHandler } from './background/messages'
 import StoredSafeError from '../utils/StoredSafeError'
 import { FLOW_FILL, ACTION_INIT } from './content_script/messages/constants'
+import { TabHandler } from './background/search'
 
 logger.log('Background script initialized: ', new Date(Date.now()))
 
@@ -41,22 +39,12 @@ KeepAliveHandler.StartTracking()
 TimeoutHandler.StartTracking()
 OnlineStatusHandler.StartTracking()
 PortHandler.StartTracking()
+TabHandler.StartTracking()
 
 /**
  * END REFACTORED CODE
  * TODO: Remove comment
  */
-
-/**
- * Helper function to convert a url to a search string.
- * ex. https://foo.example.com/home -> foo.example.com
- * @param url URL to convert into search string.
- * @returns Search string.
- * */
-function urlToNeedle (url: string): string {
-  const match = url.match(/^(?:https?:\/\/)?(?:www\.)?([\w\.]+)/i)
-  return match !== null ? match[1] : url
-}
 
 /**
  * Helper function to select the first result of all results if a result exists.
@@ -116,27 +104,6 @@ async function fill (results: Results): Promise<void> {
 }
 
 /**
- * Find search results related to loaded tab.
- * @param tab - Tab to send fill message to.
- * @param fillForm - Optionally force any matching forms to be filled.
- * */
-async function tabFind (
-  tab: browser.tabs.Tab,
-  fillForm = false
-): Promise<void> {
-  const { id: tabId, url } = tab
-  const needle = urlToNeedle(url)
-  const tabResults = await StoredSafeActions.tabFind(tabId, needle)
-  if (fillForm) {
-    return await fill(tabResults.get(tabId))
-  }
-  const settings = await SettingsActions.fetch()
-  if (settings.get('autoFill').value === true) {
-    await fill(tabResults.get(tabId))
-  }
-}
-
-/**
  * Copy text to clipboard and clear clipboard after some amount of time.
  * @param value - Value to be copied to clipboard.
  * @param clearTimer - Time to clear clipboard in ms.
@@ -171,12 +138,19 @@ type MessageHandler<T> = (
  * Mapped responses to message types.
  * */
 const messageHandlers: {
-  tabSearch: MessageHandler<void>
+  getTabResults: MessageHandler<SerializableResults>
   copyToClipboard: MessageHandler<string>
   [key: string]: MessageHandler<unknown>
 } = {
-  tabSearch: async (data, sender) => await tabFind(sender.tab),
-  copyToClipboard: async value => await copyToClipboard(value)
+  copyToClipboard: async value => await copyToClipboard(value),
+  getTabResults: async () => {
+    const [tab] = await browser.tabs.query({
+      currentWindow: true,
+      active: true
+    })
+    const results = TabHandler.GetResults(tab.id)
+    return [...results]
+  }
 }
 
 /**
@@ -204,7 +178,7 @@ function onCommand (command: string): void {
         currentWindow: true,
         active: true
       })
-      await tabFind(tab, true)
+      await fill(TabHandler.GetResults(tab.id))
     })()
   }
 }
@@ -214,20 +188,3 @@ browser.runtime.onMessage.addListener(onMessage)
 
 // React to keyboard commands defined in the extension manifest
 browser.commands.onCommand.addListener(onCommand)
-
-const tabUrls = new Map<number, string>()
-browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-  if (changeInfo.url === undefined && tabUrls.has(tabId)) return
-  const prevUrl = tabUrls.get(tabId)
-  const shortUrl = urlToNeedle(tab.url)
-  if (prevUrl !== shortUrl) {
-    tabFind(tab)
-    tabUrls.set(tabId, shortUrl)
-  }
-})
-
-browser.tabs.onRemoved.addListener(tabId => {
-  TabResultsActions.removeTabResults(tabId).catch(() => {
-    throw new StoredSafeError(`Error removing results for tab ${tabId}`)
-  })
-})
