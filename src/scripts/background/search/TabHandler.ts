@@ -10,26 +10,30 @@ class StoredSafeTabHandlerError extends StoredSafeError {}
 export class TabHandler {
   private static handlers: Map<number, TabHandler> = new Map()
 
-  private results: Results
+  private results: SSObject[]
   private tabId: number
   private url: string
 
   static StartTracking (): void {
+    browser.tabs.onActivated.addListener(({ tabId }) => {
+      if (TabHandler.handlers.has(tabId)) return
+      browser.tabs.get(tabId).then(tab => {
+        TabHandler.OnUpdated(tabId, { url: tab.url }, tab)
+      })
+    })
     browser.tabs.onUpdated.addListener(TabHandler.OnUpdated)
     browser.tabs.onRemoved.addListener(TabHandler.OnRemoved)
   }
 
   static Clear (): void {
     for (const handler of TabHandler.handlers.values()) {
-      handler.results = new Map()
+      handler.results = []
     }
   }
 
   static PurgeHost (purgeHost: string): void {
     for (const handler of TabHandler.handlers.values()) {
-      for (const host of handler.results.keys()) {
-        if (host === purgeHost) handler.results.delete(host)
-      }
+      handler.results.filter(({ host }) => host === purgeHost)
     }
   }
 
@@ -44,12 +48,13 @@ export class TabHandler {
     if (handler === undefined) {
       handler = new TabHandler(tabId, changeInfo.url)
       TabHandler.handlers.set(tabId, handler)
-    }
-
-    const previousUrl = handler.url
-    const shortUrl = urlToNeedle(tab.url)
-    if (previousUrl !== shortUrl) {
-      handler.find()
+      handler.find(tab.url)
+    } else {
+      const previousNeedle = urlToNeedle(handler.url)
+      const newNeedle = urlToNeedle(tab.url)
+      if (previousNeedle !== newNeedle) {
+        handler.find(tab.url)
+      }
     }
   }
 
@@ -60,7 +65,8 @@ export class TabHandler {
     }
   }
 
-  static GetResults (tabId: number): Results {
+  static GetResults (tabId: number): SSObject[] {
+    logger.log('Handlers %o', TabHandler.handlers)
     return TabHandler.handlers.get(tabId)?.results
   }
 
@@ -71,13 +77,15 @@ export class TabHandler {
     this.url = url
   }
 
-  private find () {
-    find(urlToNeedle(this.url))
+  private find (url: string) {
+    this.url = url
+    find(url)
       .then(results => {
         this.results = results
+        const text = results.length === 0 ? '' : results.length.toString()
         browser.browserAction
           .setBadgeText({
-            text: this.results.size.toString(),
+            text,
             tabId: this.tabId
           })
           .catch(error => {

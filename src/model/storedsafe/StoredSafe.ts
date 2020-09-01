@@ -189,7 +189,7 @@ async function checkAll (): Promise<Sessions> {
  * @returns Matched results from host.
  * */
 async function find (host: string, needle: string): Promise<SSObject[]> {
-  return await objectHandler.find(makeRequest(host), needle)
+  return await objectHandler.find(makeRequest(host), needle, host)
 }
 
 /**
@@ -199,7 +199,7 @@ async function find (host: string, needle: string): Promise<SSObject[]> {
  * @returns The decrypted object.
  * */
 async function decrypt (host: string, objectId: string): Promise<SSObject> {
-  return await objectHandler.decrypt(makeRequest(host), objectId)
+  return await objectHandler.decrypt(makeRequest(host), objectId, host)
 }
 
 /**

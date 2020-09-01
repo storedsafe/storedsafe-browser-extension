@@ -36,19 +36,17 @@ export async function shouldSave (
   // Don't save if a matching result already exists
   // TODO: Consider an option to save next time popup is opened
   const results = TabHandler.GetResults(tab.id)
-  for (const ssObjects of results.values()) {
-    for (const ssObject of ssObjects) {
-      for (const { value } of ssObject.fields) {
-        if (value === undefined) continue
-        const fieldURL = saveURLToField(url)
-        // Check both ways if one is more specific than the other
-        if (value.match(fieldURL) !== null || fieldURL.match(value) !== null) {
-          const username = ssObject.fields.find(
-            ({ name }) => name === 'username'
-          ).value
-          if (username === values.get('username')) {
-            return false
-          }
+  console.log('RESULTS', results)
+  for (const result of results) {
+    for (const { value } of result.fields) {
+      if (value === undefined) continue
+      const fieldURL = saveURLToField(url)
+      // Check both ways if one is more specific than the other
+      if (value.match(fieldURL) !== null || fieldURL.match(value) !== null) {
+        const username = result.fields.find(({ name }) => name === 'username')
+          .value
+        if (username === values.get('username')) {
+          return false
         }
       }
     }

@@ -83,15 +83,6 @@ type Sessions = Map<string /* host */, Session>
 type SerializableSessions = Array<[string /* host */, Session]>
 
 /// /////////////////////////////////////////////////////////
-// Search Results
-
-/**
- * StoredSafe objects mapped to a host.
- * */
-type Results = Map<string /* host */, SSObject[]>
-type SerializableResults = Array<[string /* host */, SSObject[]]>
-
-/// /////////////////////////////////////////////////////////
 // Site Preferences
 
 /**

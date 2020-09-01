@@ -8,12 +8,11 @@ import * as find from './data/find'
 import * as sessions from './data/sessions'
 
 const local = {
-  sessions: sessions.sSessions,
-  tabResults: find.sTabResults
+  sessions: sessions.sSessions
 }
 
 const localSetMock = jest.fn(async () => await Promise.resolve())
-const localGetMock = jest.fn(async (key: 'sessions' | 'tabResults') => {
+const localGetMock = jest.fn(async (key: 'sessions') => {
   return await Promise.resolve({ [key]: local[key] })
 })
 const errorMock = jest.fn()
@@ -35,7 +34,7 @@ beforeEach(() => {
 
 test('.find()', async () => {
   const findResults = await StoredSafe.actions.find('host', 'server')
-  expect(findResults).toEqual(find.results.get('host'))
+  expect(findResults).toEqual(find.results)
 })
 
 test('.find(), error', async () => {

@@ -6,11 +6,11 @@ import './Search.scss'
 
 export interface SearchProps {
   isInitialized: boolean
-  results: Results
+  results: SSObject[]
   errors: Map<string, Error>
-  fill: (host: string, id: number) => Promise<void>
-  copy: (host: string, id: number, fieldId: number) => Promise<void>
-  show: (host: string, id: number, fieldId: number) => Promise<void>
+  fill: (id: number) => Promise<void>
+  copy: (id: number, fieldId: number) => Promise<void>
+  show: (id: number, fieldId: number) => Promise<void>
   goto: (host: string) => void
 }
 
@@ -27,7 +27,7 @@ export const Search: React.FunctionComponent<SearchProps> = ({
 
   let numResults = 0
   if (results !== undefined) {
-    numResults = [...results.values()].reduce((acc, ssObjects) => acc + ssObjects.length, 0)
+    numResults = results.length
   }
   if (numResults === 0) {
     return (
@@ -37,27 +37,32 @@ export const Search: React.FunctionComponent<SearchProps> = ({
     )
   }
 
+  const hasMultiple =
+    results.reduce((acc, res) => acc.add(res.host), new Set()).size > 1
   const items: ListItem[] = []
-  for (const [host, ssObjects] of results) {
-    if (errors.has(host)) {
+  for (let i = 0; i < results.length; i++) {
+    const result = results[i]
+    if (errors.has(result.host)) {
       continue
     }
 
-    ssObjects.forEach((ssObject, id) => {
-      items.push({
-        key: `${host}-${ssObject.id}`,
-        title: <SearchTitle result={ssObject} host={results.size > 1 ? host : undefined} />,
-        content: (
-          <ObjectView
-            host={host}
-            result={ssObject}
-            resultId={id}
-            onCopy={copy}
-            onFill={fill}
-            onShow={show}
-          />
-        )
-      })
+    items.push({
+      key: `${result.host}-${result.id}`,
+      title: (
+        <SearchTitle
+          result={result}
+          host={hasMultiple ? result.host : undefined}
+        />
+      ),
+      content: (
+        <ObjectView
+          result={result}
+          resultId={i}
+          onCopy={copy}
+          onFill={fill}
+          onShow={show}
+        />
+      )
     })
   }
 

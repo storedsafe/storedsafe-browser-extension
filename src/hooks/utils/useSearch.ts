@@ -8,16 +8,16 @@ import {
 
 interface SearchHook {
   isInitialized: boolean
-  results: Results
+  results: SSObject[]
   errors: Map<string, Error>
   find: (needle: string) => Promise<void>
-  fill: (host: string, id: number) => Promise<void>
-  copy: (host: string, id: number, fieldId: number) => Promise<void>
-  show: (host: string, id: number, fieldId: number) => Promise<void>
+  fill: (id: number) => Promise<void>
+  copy: (id: number, fieldId: number) => Promise<void>
+  show: (id: number, fieldId: number) => Promise<void>
 }
 
 interface SearchState {
-  results: Results
+  results: SSObject[]
   errors: Map<string, Error>
 }
 
@@ -27,11 +27,10 @@ export const useSearch = (): SearchHook => {
 
   const isInitialized = sessions.isInitialized
 
-  async function getTabResults (): Promise<Results> {
-    const results = await browser.runtime.sendMessage({
+  async function getTabResults (): Promise<SSObject[]> {
+    return await browser.runtime.sendMessage({
       type: 'getTabResults'
     })
-    return new Map(results)
   }
 
   async function find (needle: string): Promise<void> {
@@ -41,13 +40,13 @@ export const useSearch = (): SearchHook => {
       return
     }
     const promises: Array<Promise<void>> = []
-    const results: Results = new Map()
+    let results: SSObject[] = []
     const errors: Map<string, Error> = new Map()
     for (const host of sessions.sessions.keys()) {
       promises.push(
         StoredSafeActions.find(host, needle)
           .then(ssObjects => {
-            results.set(host, ssObjects)
+            results = [...results, ...ssObjects]
           })
           .catch(error => {
             errors.set(host, error)
@@ -62,7 +61,7 @@ export const useSearch = (): SearchHook => {
     return await StoredSafeActions.decrypt(host, objectId)
   }
 
-  async function fill (host: string, id: number): Promise<void> {
+  async function fill (id: number): Promise<void> {
     async function sendFill (result: SSObject): Promise<void> {
       const data = result.fields.map(({ name, value }) => [name, value])
       const port = browser.runtime.connect()
@@ -73,26 +72,25 @@ export const useSearch = (): SearchHook => {
       window.close()
     }
 
-    const ssObject = state.results.get(host)[id]
-    if (ssObject.isDecrypted) {
-      await sendFill(ssObject)
+    const result = state.results[id]
+    if (result.isDecrypted) {
+      await sendFill(result)
     } else {
-      await sendFill(await decrypt(host, ssObject.id))
+      await sendFill(await decrypt(result.host, result.id))
     }
   }
 
   async function show (
-    host: string,
     id: number,
     fieldId: number,
     show = true
   ): Promise<void> {
-    let result = state.results.get(host)[id]
+    let result = state.results[id]
     if (!result.isDecrypted && result.fields[fieldId].isEncrypted) {
-      result = await decrypt(host, result.id)
+      result = await decrypt(result.host, result.id)
     }
     setState(prevState => {
-      const prevResults = prevState.results.get(host)
+      const prevResults = prevState.results
       for (let i = 0; i < prevResults[id].fields.length; i++) {
         if (i === fieldId) {
           result.fields[i].isShowing = show
@@ -105,19 +103,18 @@ export const useSearch = (): SearchHook => {
 
       return {
         ...prevState,
-        results: new Map([...prevState.results, [host, newResults]])
+        results: newResults
       }
     })
   }
 
   async function copy (
-    host: string,
     id: number,
     fieldId: number
   ): Promise<void> {
-    let result = state.results.get(host)[id]
+    let result = state.results[id]
     if (!result.isDecrypted && result.fields[fieldId].isEncrypted) {
-      result = await decrypt(host, result.id)
+      result = await decrypt(result.host, result.id)
     }
     await navigator.clipboard.writeText(result.fields[fieldId].value)
   }

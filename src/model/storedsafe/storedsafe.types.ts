@@ -19,8 +19,10 @@ interface SSField {
 
 /**
  * Representation of StoredSafe Object.
+ * @param host - StoredSafe host where the object is stored.
  * */
 interface SSObject {
+  host: string
   id: string
   templateId: string
   vaultId: string

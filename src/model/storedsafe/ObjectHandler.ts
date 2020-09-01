@@ -24,6 +24,7 @@ import {
  * @returns Parsed representation of object and template info.
  * */
 const parseSearchResult = (
+  host: string,
   ssObject: StoredSafeObject,
   ssTemplate: StoredSafeTemplate,
   isDecrypted = false
@@ -61,7 +62,17 @@ const parseSearchResult = (
   })
 
   // Compile all parsed information
-  return { id, templateId, vaultId, name, type, icon, isDecrypted, fields }
+  return {
+    host,
+    id,
+    templateId,
+    vaultId,
+    name,
+    type,
+    icon,
+    isDecrypted,
+    fields
+  }
 }
 
 const includeFields = ['password', 'pincode']
@@ -73,7 +84,8 @@ const includeFields = ['password', 'pincode']
  * */
 async function find (
   request: MakeStoredSafeRequest,
-  needle: string
+  needle: string,
+  host: string
 ): Promise<SSObject[]> {
   const data = (await request(
     async handler => await handler.find(needle)
@@ -91,7 +103,7 @@ async function find (
     ) {
       continue
     }
-    results.push(parseSearchResult(ssObject, ssTemplate))
+    results.push(parseSearchResult(host, ssObject, ssTemplate))
   }
   return results
 }
@@ -104,7 +116,8 @@ async function find (
  * */
 async function decrypt (
   request: MakeStoredSafeRequest,
-  objectId: string
+  objectId: string,
+  host: string
 ): Promise<SSObject> {
   const data = (await request(
     async handler => await handler.decryptObject(objectId)
@@ -113,7 +126,7 @@ async function decrypt (
   const ssTemplate = data.TEMPLATES.find(
     template => template.id === ssObject.templateid
   )
-  return parseSearchResult(ssObject, ssTemplate, true)
+  return parseSearchResult(host, ssObject, ssTemplate, true)
 }
 
 /**

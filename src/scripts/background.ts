@@ -51,13 +51,8 @@ TabHandler.StartTracking()
  * @param results - All search results related to tab.
  * TODO: Sort results on best match?
  * */
-function selectResult (results: Results): [string /* host */, SSObject] {
-  for (const [host, ssObjects] of results) {
-    if (ssObjects.length > 0) {
-      return [host, ssObjects[0]]
-    }
-  }
-  return [undefined, undefined]
+function selectResult (results: SSObject[]): SSObject {
+  return results[0]
 }
 
 /**
@@ -94,10 +89,10 @@ function parseResult (
 /**
  * Parse and select result and decrypt as needed before filling form fields on tab.
  * */
-async function fill (results: Results): Promise<void> {
-  const [host, result] = selectResult(results)
+async function fill (results: SSObject[]): Promise<void> {
+  const result = selectResult(results)
   if (result !== undefined) {
-    const decryptedResult = decryptResult(host, result)
+    const decryptedResult = decryptResult(result.host, result)
     const data = parseResult(await decryptedResult)
     PortHandler.SendFill([...data])
   }
@@ -138,7 +133,7 @@ type MessageHandler<T> = (
  * Mapped responses to message types.
  * */
 const messageHandlers: {
-  getTabResults: MessageHandler<SerializableResults>
+  getTabResults: MessageHandler<SSObject[]>
   copyToClipboard: MessageHandler<string>
   [key: string]: MessageHandler<unknown>
 } = {
@@ -149,7 +144,8 @@ const messageHandlers: {
       active: true
     })
     const results = TabHandler.GetResults(tab.id)
-    return [...results]
+    console.log('RESULTS GET', results)
+    return results
   }
 }
 

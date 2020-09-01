@@ -2,7 +2,9 @@ import { actions as SessionsActions } from '../../../model/storage/Sessions'
 import { actions as StoredSafeActions } from '../../../model/storedsafe/StoredSafe'
 import { logger } from '.'
 
-export function search(needle: string) {
+function getFQDN (url: string) {
+  const match = url.match(/(?:\w+:\/\/)?(?:www\.)?(?<fqdn>[\w\.]+)/)
+  return match?.groups['fqdn']
 }
 
 /**
@@ -16,10 +18,12 @@ export function search(needle: string) {
  * @param url Full URL
  */
 export function urlToNeedle (url: string): string {
-  const match = url.match(/(?:\w+:\/\/)?(?:www\.)?(?<needle>[\w\.]+)/)
-  const fqdn = match?.groups['needle']
+  const fqdn = getFQDN(url)
   if (fqdn === undefined) return url
   const parts = fqdn.split('.')
+
+  if (parts.length === 1) return fqdn
+
   const tld: string[] = []
   tld.push(parts.pop())
   if (['org', 'co'].includes(parts[parts.length - 1])) tld.push(parts.pop())
@@ -27,90 +31,116 @@ export function urlToNeedle (url: string): string {
   return domain
 }
 
-/**
- * Match one url against another to see if the other URl contains the first one.
- * @param url The URL to be matched.
- * @param other The URL (or partial URL) to be matched against.
- */
-export function matchUrl (url: string, other: string): boolean {
-  return new RegExp(other).test(url)
+interface URLParts extends Record<string, string> {
+  protocol: string
+  subdomain: string
+  domain: string
+  tld: string
+  port: string
+  path: string
+  params: string
+}
+
+function getParts(url: string): URLParts {
+  let parts, protocol, subdomain, domain, tld, port, path, params
+
+  // Extract URL parameters
+  ;[url, params] = url.split('?')
+
+  // Extract protocol
+  parts = url.split('://')
+  if (parts.length > 1) [protocol, url] = parts
+
+  // Extract path
+  ;[url, ...parts] = url.split('/')
+  path = parts.join('/')
+
+  ;[url, ...parts] = url.split(':')
+  port = parts[0]
+
+  // Extract tld
+  parts = url.split('.')
+  let last = parts.length - 1
+  if (parts.length > 1) {
+    ;[tld] = parts.splice(last--)
+    // Add secondary tld part if it exists
+    if (['co', 'org'].includes(parts[last])) {
+      tld = [parts.splice(last--)[0], tld].join('.')
+    }
+  }
+
+  // Split subdomain and domain
+  domain = parts.splice(last--)[0]
+  subdomain = parts.join('.')
+
+  return { protocol, subdomain, domain, tld, port, path, params }
 }
 
 /**
  * Create a comparator function to match against a given URL.
  *
- * Compatible with Array.sort, returns a positive number if the first URL is
- * a better match and a negative number if the other URL is the better match
+ * Compatible with Array.sort, returns a negative number if the first URL is
+ * a better match and a positive number if the other URL is the better match
  * or 0 if they're both equally good matches.
- *
- * // TODO: Test and improve
  *
  * @param url URL or partial URL to be matched against in the comparator.
  */
 export function urlComparator (url: string): (a: string, b: string) => number {
   return function (a: string, b: string): number {
-    // If they're the same, the URL doesn't matter
-    if (a === b) return 0
+    let [partsA, partsB, partsUrl] = [a, b, url].map(getParts)
+    let scoreA = 0, scoreB = 0
 
-    // They're not the same, go in order of appearance for exact match
-    if (a === url) return 1
-    if (b === url) return -1
-
-    // Same as above but with URL parameters removed
-    const [urlNoParams, aNoParams, bNoParams] = [url, a, b].map(
-      url => url.split('?')[0]
-    )
-    if (aNoParams !== bNoParams) {
-      if (aNoParams === urlNoParams) return 1
-      if (bNoParams === urlNoParams) return -1
+    for (const prop in partsUrl) {
+      if (partsUrl[prop] === undefined || partsUrl[prop].length === 0) continue
+      if (partsA[prop] === partsUrl[prop]) scoreA++
+      else if (partsA[prop] !== undefined && partsA[prop].length > 0) scoreA -= 0.9
+      if (partsB[prop] === partsUrl[prop]) scoreB++
+      else if (partsB[prop] !== undefined && partsB[prop].length > 0) scoreB -= 0.9
     }
 
-    // Same as above but with protocol removed
-    const [urlNoProtocol, aNoProtocol, bNoProtocol] = [
-      urlNoParams,
-      aNoParams,
-      bNoParams
-    ].map(url => {
-      const match = url.match(/(?:\w+:\/\/)?(?<noProtocol>.*)/)
-      if (match?.groups === undefined) return url
-      return match.groups.noProtocol
-    })
-    if (aNoProtocol !== bNoProtocol) {
-      if (aNoProtocol === urlNoProtocol) return 1
-      if (bNoProtocol === urlNoProtocol) return -1
-    }
-
-    // Same as above but only FQDN
-    const [fqdn, fqdnA, fqdnB] = [urlNoProtocol, aNoProtocol, bNoProtocol].map(
-      url => {
-        const match = url.match(/(?:\w+:\/\/)?(?:www\.)?(?<fqdn>[\w+\.]+)/)
-        if (match?.groups === undefined) return url
-        return match.groups.fqdn
-      }
-    )
-    if (fqdnA !== fqdnB) {
-      if (fqdnA === fqdn) return 1
-      if (fqdnB === fqdn) return -1
-    }
-
-    // Last resort, go by portion of string matched
-    const matchA = a.match(url) || ''
-    const matchB = b.match(url) || ''
-    const scoreA = matchA.length / a.length
-    const scoreB = matchB.length / b.length
-    return scoreA - scoreB
+    return scoreB - scoreA
   }
 }
 
-export async function find(needle: string): Promise<Results> {
+/**
+ * Find the field that matches the needle.
+ * @param fields Fields of the result object.
+ * @param needle The needle that was used for the search.
+ */
+function getMatchFieldValue(fields: SSField[], url: string): string {
+  const needle = urlToNeedle(url)
+  const comparator = urlComparator(url)
+  const values: string[] = []
+  for (const field of fields) {
+    if (field.value?.match(needle) !== null) values.push(field.value)
+  }
+  return values.sort(comparator)[0]
+}
+
+function resultComparator(url: string) {
+  const needle = urlToNeedle(url)
+  const comparator = urlComparator(url)
+  return function (a: SSObject, b: SSObject) {
+    const valueA = getMatchFieldValue(a.fields, url)
+    const valueB = getMatchFieldValue(b.fields, url)
+    if (valueA === valueB) return 0
+    if (valueA === undefined) return 1
+    if (valueB === undefined) return -1
+    return comparator(valueA, valueB)
+  }
+}
+
+export async function find(url: string): Promise<SSObject[]> {
+  const needle = urlToNeedle(url)
   const sessions = await SessionsActions.fetch()
-  const results: Results = new Map()
+  let results: SSObject[] = []
   for (const [host] of sessions) {
     try {
-      results.set(host, await StoredSafeActions.find(host, needle))
+      results = [...results, ...await StoredSafeActions.find(host, needle)]
     } catch (error) {
       logger.error('Unable to perform search on %s, %o', host, error)
     }
   }
-  return results
+  const comparator = resultComparator(url)
+  return results.sort(comparator)
 }

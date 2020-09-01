@@ -2,31 +2,21 @@ import React from 'react'
 import './ObjectView.scss'
 import { Button } from '../../common/input'
 
-export type OnShowCallback = (
-  host: string,
-  resultId: number,
-  fieldId: number
-) => void
-export type OnCopyCallback = (
-  host: string,
-  resultId: number,
-  fieldId: number
-) => void
-export type OnFillCallback = (host: string, resultId: number) => void
+export type OnShowCallback = (resultId: number, fieldId: number) => void
+export type OnCopyCallback = (resultId: number, fieldId: number) => void
+export type OnFillCallback = (resultId: number) => void
 
 interface ObjectViewProps {
-  host: string
-  resultId: number
   result: SSObject
+  resultId: number
   onShow: OnShowCallback
   onCopy: OnCopyCallback
   onFill: OnFillCallback
 }
 
 export const ObjectView: React.FunctionComponent<ObjectViewProps> = ({
-  host,
-  resultId,
   result,
+  resultId,
   onShow,
   onCopy,
   onFill
@@ -66,7 +56,7 @@ export const ObjectView: React.FunctionComponent<ObjectViewProps> = ({
       <article className='object-view-container'>
         <Button
           className='object-view-fill'
-          onClick={(): void => onFill(host, resultId)}
+          onClick={(): void => onFill(resultId)}
         >
           Fill
         </Button>
@@ -74,7 +64,7 @@ export const ObjectView: React.FunctionComponent<ObjectViewProps> = ({
           let value: React.ReactNode
           if (field.isEncrypted) {
             value = encryptedFieldText(field, (): void =>
-              onShow(host, resultId, fieldId)
+              onShow(resultId, fieldId)
             )
           } else {
             value = field.value
@@ -87,7 +77,7 @@ export const ObjectView: React.FunctionComponent<ObjectViewProps> = ({
               </p>
               <button
                 className='object-view-field-copy'
-                onClick={(): void => onCopy(host, resultId, fieldId)}
+                onClick={(): void => onCopy(resultId, fieldId)}
               >
                 Copy
               </button>
