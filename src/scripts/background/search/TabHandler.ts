@@ -43,7 +43,10 @@ export class TabHandler {
     changeInfo: { url: string },
     tab: browser.tabs.Tab
   ) {
+    // Skip updates that don't change url
     if (changeInfo.url === undefined) return
+    // Skip updates when there is no url
+    if (tab.url === undefined || tab.url.length === 0) return
 
     let handler = TabHandler.handlers.get(tabId)
     if (handler === undefined) {
@@ -71,7 +74,9 @@ export class TabHandler {
   }
 
   static IsLoading (tabId: number): boolean {
-    return TabHandler.handlers.get(tabId).isLoading
+    const isLoading = TabHandler.handlers.get(tabId)?.isLoading
+    if (isLoading === undefined) return true
+    return isLoading
   }
 
   constructor (tabId: number, url: string) {

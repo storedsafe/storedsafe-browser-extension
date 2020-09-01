@@ -108,16 +108,20 @@ async function fillTab (): Promise<void> {
     active: true
   })
 
+  function onFinishedLoading() {
+    fill(TabHandler.GetResults(tab.id)).catch(console.error)
+  }
+
   // Wait for tab results to finish loading
   if (TabHandler.IsLoading(tab.id) === true) {
     let id = window.setInterval(() => {
       if (TabHandler.IsLoading(tab.id) === false) {
+        onFinishedLoading()
         window.clearInterval(id)
       }
     }, 100)
+    onFinishedLoading()
   }
-
-  await fill(TabHandler.GetResults(tab.id))
 }
 
 /**
@@ -132,9 +136,7 @@ async function copyToClipboard (
 ): Promise<void> {
   await navigator.clipboard.writeText(value)
   setTimeout(() => {
-    navigator.clipboard.writeText('').catch(error => {
-      console.error(error)
-    })
+    navigator.clipboard.writeText('').catch(console.error)
   }, clearTimer)
 }
 
@@ -198,7 +200,7 @@ async function onMessage (
 
 function onCommand (command: string): void {
   if (command === 'fill') {
-    fillTab().catch(error => console.error(error))
+    fillTab().catch(console.error)
   }
 }
 

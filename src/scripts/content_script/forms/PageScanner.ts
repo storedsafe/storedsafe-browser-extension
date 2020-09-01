@@ -55,10 +55,25 @@ export class PageScanner {
     const values = new Map(data)
     for (const [form, { inputElements, type: formType }] of this.forms) {
       if (FILL_TYPES.includes(formType)) {
+        let lastElement: HTMLInputElement
         for (const [input, inputType] of inputElements) {
+          if (values.has(inputType)) lastElement = input
           input.value = values.get(inputType)
           input.dispatchEvent(new Event('change', { bubbles: true }))
         }
+
+        // Focus the last element
+        const elements = [
+          ...form.querySelectorAll<HTMLElement>('input,button,select,textarea')
+        ].filter(input =>
+          input instanceof HTMLInputElement && input.type === 'hidden'
+            ? false
+            : true
+        )
+        const lastIndex = elements.indexOf(lastElement)
+        const index = lastIndex === -1 ? elements.length - 1 : lastIndex + 1
+        console.log('LAST INDEX %d, INDEX %d, ELEMENTS %o', lastIndex, index, elements)
+        elements[index].focus()
       }
     }
   }
