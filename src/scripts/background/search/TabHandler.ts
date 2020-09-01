@@ -13,6 +13,7 @@ export class TabHandler {
   private results: SSObject[]
   private tabId: number
   private url: string
+  private isLoading: boolean = true
 
   static StartTracking (): void {
     browser.tabs.onActivated.addListener(({ tabId }) => {
@@ -66,8 +67,11 @@ export class TabHandler {
   }
 
   static GetResults (tabId: number): SSObject[] {
-    logger.log('Handlers %o', TabHandler.handlers)
     return TabHandler.handlers.get(tabId)?.results
+  }
+
+  static IsLoading (tabId: number): boolean {
+    return TabHandler.handlers.get(tabId).isLoading
   }
 
   constructor (tabId: number, url: string) {
@@ -79,6 +83,7 @@ export class TabHandler {
 
   private find (url: string) {
     this.url = url
+    this.isLoading = true
     find(url)
       .then(results => {
         this.results = results
@@ -98,6 +103,6 @@ export class TabHandler {
         throw new StoredSafeTabHandlerError(
           'Unable to fetch search results from StoredSafe.'
         )
-      })
+      }).then(() => this.isLoading = false)
   }
 }

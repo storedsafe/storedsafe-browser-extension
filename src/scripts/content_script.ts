@@ -3,7 +3,7 @@ export const logger = new Logger('Content')
 
 import { MessageHandler } from './content_script/messages/MessageHandler'
 import { PageScanner, Forms } from './content_script/forms/PageScanner'
-import { SAVE_TYPES } from './content_script/forms/matchers'
+import { SAVE_TYPES, FILL_TYPES } from './content_script/forms/matchers'
 import { InputType } from './content_script/forms/constants'
 
 logger.log('Content script initialized: ', new Date(Date.now()))
@@ -18,7 +18,10 @@ const messageHandler = new MessageHandler(pageScanner)
  * @param forms Newly updated forms.
  */
 function onPageScan (forms: Forms) {
+  let hasFillType = false
   for (const [element, values] of forms) {
+    if (FILL_TYPES.includes(values.type)) hasFillType = true
+
     const inputs = values.inputElements
     let submitted = false // lock for onSubmit
 
@@ -67,12 +70,17 @@ function onPageScan (forms: Forms) {
       values.inputElements,
       values.submitElements
     )
+
     if (element instanceof HTMLFormElement) {
       element.addEventListener('submit', onSubmit)
     }
     for (const submitElement of values.submitElements) {
       submitElement.addEventListener('click', onSubmit)
     }
+  }
+
+  if (hasFillType) {
+    messageHandler.sendOfferAutoFill()
   }
 }
 

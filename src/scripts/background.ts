@@ -99,6 +99,28 @@ async function fill (results: SSObject[]): Promise<void> {
 }
 
 /**
+ * Perform a fill operation on the currently active tab.
+ */
+async function fillTab (): Promise<void> {
+  // Get currently active tab
+  const [tab] = await browser.tabs.query({
+    currentWindow: true,
+    active: true
+  })
+
+  // Wait for tab results to finish loading
+  if (TabHandler.IsLoading(tab.id) === true) {
+    let id = window.setInterval(() => {
+      if (TabHandler.IsLoading(tab.id) === false) {
+        window.clearInterval(id)
+      }
+    }, 100)
+  }
+
+  await fill(TabHandler.GetResults(tab.id))
+}
+
+/**
  * Copy text to clipboard and clear clipboard after some amount of time.
  * @param value - Value to be copied to clipboard.
  * @param clearTimer - Time to clear clipboard in ms.
@@ -133,8 +155,9 @@ type MessageHandler<T> = (
  * Mapped responses to message types.
  * */
 const messageHandlers: {
-  getTabResults: MessageHandler<SSObject[]>
+  getTabResults: MessageHandler<void>
   copyToClipboard: MessageHandler<string>
+  autoFill: MessageHandler<void>
   [key: string]: MessageHandler<unknown>
 } = {
   copyToClipboard: async value => await copyToClipboard(value),
@@ -146,6 +169,12 @@ const messageHandlers: {
     const results = TabHandler.GetResults(tab.id)
     console.log('RESULTS GET', results)
     return results
+  },
+  autoFill: async () => {
+    const settings = await SettingsActions.fetch()
+    if (settings.get('autoFill').value === true) {
+      await fillTab()
+    }
   }
 }
 
@@ -169,13 +198,7 @@ async function onMessage (
 
 function onCommand (command: string): void {
   if (command === 'fill') {
-    void (async () => {
-      const [tab] = await browser.tabs.query({
-        currentWindow: true,
-        active: true
-      })
-      await fill(TabHandler.GetResults(tab.id))
-    })()
+    fillTab().catch(error => console.error(error))
   }
 }
 

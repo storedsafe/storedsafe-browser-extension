@@ -13,7 +13,7 @@ import {
   ACTION_FILL
 } from './constants'
 import { FrameManager } from '../inject/FrameManager'
-import { InputType } from '../forms/constants'
+import { InputType, FormType } from '../forms/constants'
 import { PageScanner } from '../forms/PageScanner'
 
 class StoredSafeMessageHandlerError extends StoredSafeError {}
@@ -112,6 +112,16 @@ export class MessageHandler {
     this.postMessage({
       type: `${FLOW_SAVE}.${ACTION_INIT}`,
       data: values
+    })
+  }
+
+  /**
+   * Send an offer to automatically fill a form on the page when such a form exists.
+   * The user settings will define whether the offer is accepted or not.
+   */
+  sendOfferAutoFill () {
+    browser.runtime.sendMessage({
+      type: 'autoFill'
     })
   }
 }
