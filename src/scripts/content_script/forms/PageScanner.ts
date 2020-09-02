@@ -72,7 +72,6 @@ export class PageScanner {
         )
         const lastIndex = elements.indexOf(lastElement)
         const index = lastIndex === -1 ? elements.length - 1 : lastIndex + 1
-        console.log('LAST INDEX %d, INDEX %d, ELEMENTS %o', lastIndex, index, elements)
         elements[index].focus()
       }
     }
