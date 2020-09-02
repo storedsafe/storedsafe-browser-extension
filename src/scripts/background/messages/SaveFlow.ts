@@ -22,6 +22,8 @@ const flowLogger = new Logger('Save', messageLogger)
 const SAVE_RETRIES = 3
 // Stop trying to open save prompt after `SAVE_TIMEOUT` ms
 const SAVE_TIMEOUT = 3e4
+// Don't count retry if it has been less than `SAVE_RETRY_TIME` ms has passed since the last attempt.
+const SAVE_RETRY_TIME = 1e3
 
 class StoredSafeSaveFlowError extends StoredSafeError {}
 
@@ -53,6 +55,7 @@ export class SaveFlow {
   private promptCount = 0
   private hasTimedOut = false
   private timeoutId: number = null
+  private lastTry: number = 0
 
   private logger: Logger
 
@@ -133,7 +136,9 @@ export class SaveFlow {
     port.onDisconnect.addListener(this.onContentDisconnect)
     this.contentPort = port
 
-    if (this.promptCount++ < SAVE_RETRIES && this.hasTimedOut === false) {
+    if (this.promptCount < SAVE_RETRIES && this.hasTimedOut === false) {
+      if (Date.now() - this.lastTry > SAVE_RETRY_TIME) this.promptCount++
+      this.lastTry = Date.now()
       this.contentPort.postMessage({
         type: `${FLOW_SAVE}.${ACTION_OPEN}`
       })
