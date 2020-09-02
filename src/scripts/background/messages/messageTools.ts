@@ -18,6 +18,13 @@ export async function shouldSave (
   tab: browser.tabs.Tab,
   data: [string, string][]
 ): Promise<boolean> {
+  if (
+    data.findIndex(
+      ([key, value]) =>
+        (key === 'password' || key === 'pincode') && value?.length > 0
+    ) === -1
+  )
+    return
   // Don't save if the user is offline
   const isOnline = await checkOnlineStatus()
   if (!isOnline) return false
