@@ -120,6 +120,7 @@ async function fillTab (): Promise<void> {
         window.clearInterval(id)
       }
     }, 100)
+  } else {
     onFinishedLoading()
   }
 }
@@ -169,7 +170,6 @@ const messageHandlers: {
       active: true
     })
     const results = TabHandler.GetResults(tab.id)
-    console.log('RESULTS GET', results)
     return results
   },
   autoFill: async () => {
@@ -190,7 +190,6 @@ async function onMessage (
   },
   sender: browser.runtime.MessageSender
 ): Promise<void> {
-  console.log('MESSAGE', message, sender)
   const handler = messageHandlers[message.type]
   if (handler !== undefined) {
     return await handler(message.data, sender)

@@ -85,7 +85,7 @@ function getParts(url: string): URLParts {
  *
  * @param url URL or partial URL to be matched against in the comparator.
  */
-export function urlComparator (url: string): (a: string, b: string) => number {
+function urlComparator (url: string): (a: string, b: string) => number {
   return function (a: string, b: string): number {
     let [partsA, partsB, partsUrl] = [a, b, url].map(getParts)
     let scoreA = 0, scoreB = 0
