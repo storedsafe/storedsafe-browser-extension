@@ -156,7 +156,7 @@ const messageHandlers: {
       currentWindow: true,
       active: true
     })
-    const results = TabHandler.GetResults(tab.id)
+    const results = await TabHandler.GetResults(tab.id)
     return results
   },
   autoFill: async () => {
