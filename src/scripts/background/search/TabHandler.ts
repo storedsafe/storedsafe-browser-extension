@@ -43,10 +43,10 @@ export class TabHandler {
     changeInfo: { url: string },
     tab: browser.tabs.Tab
   ) {
-    // Skip updates that don't change url
-    if (changeInfo.url === undefined) return
     // Skip updates when there is no url
     if (tab.url === undefined || tab.url.length === 0) return
+    // Skip updates that don't change url of existing handler
+    if (TabHandler.handlers.has(tabId) && changeInfo.url === undefined) return
 
     let handler = TabHandler.handlers.get(tabId)
     if (handler === undefined) {
@@ -69,18 +69,26 @@ export class TabHandler {
     }
   }
 
-  static GetResults (tabId: number): Promise<SSObject[]> {
-    return new Promise((resolve) => {
+  static GetResults (tabId: number, timeout = 5000): Promise<SSObject[]> {
+    return new Promise((resolve, reject) => {
+      // Set timeout for failure
+      const timeoutId = window.setTimeout(() => {
+        reject(new StoredSafeTabHandlerError('Timeout getting results from tab.'))
+      }, timeout)
+
       let handler = TabHandler.handlers.get(tabId)
       if (handler === undefined || handler.isLoading) {
-        const id = window.setInterval(() => {
+        // If handler doesn't exist yet or is loading, start polling
+        const intervalId = window.setInterval(() => {
           handler = TabHandler.handlers.get(tabId)
           if (handler !== undefined && !handler.isLoading) {
             resolve(handler.results)
-            window.clearTimeout(id)
+            window.clearInterval(intervalId)
+            window.clearTimeout(timeoutId)
           }
         })
       } else {
+        // Return results if handler is done
         resolve(handler.results)
       }
     })
@@ -115,6 +123,7 @@ export class TabHandler {
         throw new StoredSafeTabHandlerError(
           'Unable to fetch search results from StoredSafe.'
         )
-      }).then(() => this.isLoading = false)
+      })
+      .then(() => (this.isLoading = false))
   }
 }

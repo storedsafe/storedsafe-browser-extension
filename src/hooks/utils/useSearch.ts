@@ -28,9 +28,14 @@ export const useSearch = (): SearchHook => {
   const isInitialized = sessions.isInitialized
 
   async function getTabResults (): Promise<SSObject[]> {
-    return await browser.runtime.sendMessage({
-      type: 'getTabResults'
-    })
+    try {
+      const results = await browser.runtime.sendMessage({
+        type: 'getTabResults'
+      })
+      return results
+    } catch {
+      return []
+    }
   }
 
   async function find (needle: string): Promise<void> {
@@ -108,10 +113,7 @@ export const useSearch = (): SearchHook => {
     })
   }
 
-  async function copy (
-    id: number,
-    fieldId: number
-  ): Promise<void> {
+  async function copy (id: number, fieldId: number): Promise<void> {
     let result = state.results[id]
     if (!result.isDecrypted && result.fields[fieldId].isEncrypted) {
       result = await decrypt(result.host, result.id)

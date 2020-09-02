@@ -156,8 +156,7 @@ const messageHandlers: {
       currentWindow: true,
       active: true
     })
-    const results = await TabHandler.GetResults(tab.id)
-    return results
+    return await TabHandler.GetResults(tab.id)
   },
   autoFill: async () => {
     const settings = await SettingsActions.fetch()
@@ -181,7 +180,6 @@ async function onMessage (
   if (handler !== undefined) {
     return await handler(message.data, sender)
   }
-  // throw new Error(`Invalid message type: ${message.type}`) // other scripts can get messages
 }
 
 function onCommand (command: string): void {
