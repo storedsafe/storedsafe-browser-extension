@@ -69,14 +69,21 @@ export class TabHandler {
     }
   }
 
-  static GetResults (tabId: number): SSObject[] {
-    return TabHandler.handlers.get(tabId)?.results
-  }
-
-  static IsLoading (tabId: number): boolean {
-    const isLoading = TabHandler.handlers.get(tabId)?.isLoading
-    if (isLoading === undefined) return true
-    return isLoading
+  static GetResults (tabId: number): Promise<SSObject[]> {
+    return new Promise((resolve) => {
+      let handler = TabHandler.handlers.get(tabId)
+      if (handler === undefined || handler.isLoading) {
+        const id = window.setInterval(() => {
+          handler = TabHandler.handlers.get(tabId)
+          if (handler !== undefined && !handler.isLoading) {
+            resolve(handler.results)
+            window.clearTimeout(id)
+          }
+        })
+      } else {
+        resolve(handler.results)
+      }
+    })
   }
 
   constructor (tabId: number, url: string) {

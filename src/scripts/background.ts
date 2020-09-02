@@ -108,21 +108,8 @@ async function fillTab (): Promise<void> {
     active: true
   })
 
-  function onFinishedLoading() {
-    fill(TabHandler.GetResults(tab.id)).catch(console.error)
-  }
-
-  // Wait for tab results to finish loading
-  if (TabHandler.IsLoading(tab.id) === true) {
-    let id = window.setInterval(() => {
-      if (TabHandler.IsLoading(tab.id) === false) {
-        onFinishedLoading()
-        window.clearInterval(id)
-      }
-    }, 100)
-  } else {
-    onFinishedLoading()
-  }
+  const results = await TabHandler.GetResults(tab.id)
+  fill(results)
 }
 
 /**

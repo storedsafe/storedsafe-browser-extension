@@ -75,6 +75,7 @@ const parseSearchResult = (
   }
 }
 
+// Only include templates that contain these fields
 const includeFields = ['password', 'pincode']
 /**
  * Find and parse StoredSafe objects matching the provided needle.

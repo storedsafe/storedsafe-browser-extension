@@ -35,7 +35,7 @@ export async function shouldSave (
 
   // Don't save if a matching result already exists
   // TODO: Consider an option to save next time popup is opened
-  const results = TabHandler.GetResults(tab.id)
+  const results = await TabHandler.GetResults(tab.id)
   for (const result of results) {
     for (const { value } of result.fields) {
       if (value === undefined) continue
