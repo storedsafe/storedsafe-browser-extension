@@ -18,6 +18,7 @@ export async function shouldSave (
   tab: browser.tabs.Tab,
   data: [string, string][]
 ): Promise<boolean> {
+  // Don't save if there is no password/pincode
   if (
     data.findIndex(
       ([key, value]) =>
