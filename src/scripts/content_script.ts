@@ -72,10 +72,14 @@ function onPageScan (forms: Forms) {
     )
 
     if (element instanceof HTMLFormElement) {
-      element.addEventListener('submit', onSubmit)
+      element.addEventListener('submit', () => {
+        onSubmit()
+      })
     }
     for (const submitElement of values.submitElements) {
-      submitElement.addEventListener('click', onSubmit)
+      submitElement.addEventListener('click', () => {
+        onSubmit()
+      })
     }
   }
 

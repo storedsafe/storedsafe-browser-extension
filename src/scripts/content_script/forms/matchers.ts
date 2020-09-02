@@ -209,13 +209,16 @@ const isHiddenForm = (inputElements: HTMLInputElement[]) =>
   )
 
 /**
- * Test a name against the opening tag of an element.
+ * Test a name against all attributes of the element.
  * @param element Element to test for presence of name.
  * @param name Name to be matched against element.
  */
 export function matchName (element: HTMLElement, name: string | RegExp): boolean {
   const nameRegExp = new RegExp(name, 'i')
-  return nameRegExp.test((element.outerHTML.match(/(<[^>]*>)/)?.[0])) // Only match opening tag
+  for (const attr of element.attributes) {
+    if (nameRegExp.test(attr.value)) return true
+  }
+  return false
 }
 
 /**

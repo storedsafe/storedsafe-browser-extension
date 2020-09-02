@@ -22,6 +22,7 @@ class StoredSafeFrameManagerError extends StoredSafeError {}
 
 export class FrameManager {
   static OpenFrame (frameId: string, style?: Record<string, string>) {
+    // Create iframe at max z-index
     const root = FrameManager.getFrame(ROOT_ID, document.body, ROOT_ID, {
       'z-index': '2147483646'
     })
@@ -32,7 +33,7 @@ export class FrameManager {
     FrameManager.removeFrame(frameId)
     const root = document.getElementById(ROOT_ID)
     if (root.childElementCount === 0) {
-      logger.log('Root frame is empty, removing %o.', root)
+      logger.debug('Root frame is empty, removing %o.', root)
       root.remove()
     }
   }
@@ -67,7 +68,7 @@ export class FrameManager {
         frame.src = browser.runtime.getURL('index.html') + `#${frameId}`
       }
       parent.appendChild(frame)
-      logger.log('Creating frame %o', frame)
+      logger.debug('Creating frame %o', frame)
     }
     return frame
   }
@@ -79,7 +80,7 @@ export class FrameManager {
   private static removeFrame (frameId: string = ROOT_ID): void {
     const frame = document.getElementById(frameId)
     if (frame !== null) {
-      logger.log('Removing frame %o', frame)
+      logger.debug('Removing frame %o', frame)
       frame.remove()
     }
   }
