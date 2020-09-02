@@ -112,7 +112,7 @@ function getMatchFieldValue(fields: SSField[], url: string): string {
   const comparator = urlComparator(url)
   const values: string[] = []
   for (const field of fields) {
-    if (field.value?.match(needle) !== null) values.push(field.value)
+    if (field.value?.match(new RegExp(`[^@]${needle}`, 'i')) !== null) values.push(field.value)
   }
   return values.sort(comparator)[0]
 }
