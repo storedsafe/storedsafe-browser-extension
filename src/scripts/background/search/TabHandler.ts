@@ -12,14 +12,13 @@ export class TabHandler {
 
   private results: SSObject[]
   private tabId: number
-  private url: string
   private isLoading: boolean = true
 
   static StartTracking (): void {
     browser.tabs.onActivated.addListener(({ tabId }) => {
       if (TabHandler.handlers.has(tabId)) return
       browser.tabs.get(tabId).then(tab => {
-        TabHandler.OnUpdated(tabId, { url: tab.url }, tab)
+        TabHandler.OnUpdated(tabId, { status: 'complete' }, tab)
       })
     })
     browser.tabs.onUpdated.addListener(TabHandler.OnUpdated)
@@ -40,26 +39,21 @@ export class TabHandler {
 
   static OnUpdated (
     tabId: number,
-    changeInfo: { url: string },
+    changeInfo: { url?: string, status?: string },
     tab: browser.tabs.Tab
   ) {
+    console.log(changeInfo)
+    // Skip updates if status hasn't updated
+    if (changeInfo.status !== 'complete') return
     // Skip updates when there is no url
     if (tab.url === undefined || tab.url.length === 0) return
-    // Skip updates that don't change url of existing handler
-    if (TabHandler.handlers.has(tabId) && changeInfo.url === undefined) return
 
     let handler = TabHandler.handlers.get(tabId)
     if (handler === undefined) {
-      handler = new TabHandler(tabId, changeInfo.url)
+      handler = new TabHandler(tabId)
       TabHandler.handlers.set(tabId, handler)
-      handler.find(tab.url)
-    } else {
-      const previousNeedle = urlToNeedle(handler.url)
-      const newNeedle = urlToNeedle(tab.url)
-      if (previousNeedle !== newNeedle) {
-        handler.find(tab.url)
-      }
     }
+    handler.find(tab.url)
   }
 
   static OnRemoved (tabId: number) {
@@ -73,7 +67,9 @@ export class TabHandler {
     return new Promise((resolve, reject) => {
       // Set timeout for failure
       const timeoutId = window.setTimeout(() => {
-        reject(new StoredSafeTabHandlerError('Timeout getting results from tab.'))
+        reject(
+          new StoredSafeTabHandlerError('Timeout getting results from tab.')
+        )
       }, timeout)
 
       let handler = TabHandler.handlers.get(tabId)
@@ -94,30 +90,32 @@ export class TabHandler {
     })
   }
 
-  constructor (tabId: number, url: string) {
+  constructor (tabId: number) {
     this.find = this.find.bind(this)
 
     this.tabId = tabId
-    this.url = url
+  }
+
+  private updateBadge () {
+    const text = this.results.length === 0 ? '' : this.results.length.toString()
+    browser.browserAction
+      .setBadgeText({
+        text,
+        tabId: this.tabId
+      })
+      .catch(error => {
+        throw new StoredSafeTabHandlerError(
+          'Unable to update badge text with search results.'
+        )
+      })
   }
 
   private find (url: string) {
-    this.url = url
     this.isLoading = true
     find(url)
       .then(results => {
         this.results = results
-        const text = results.length === 0 ? '' : results.length.toString()
-        browser.browserAction
-          .setBadgeText({
-            text,
-            tabId: this.tabId
-          })
-          .catch(error => {
-            throw new StoredSafeTabHandlerError(
-              'Unable to update badge text with search results.'
-            )
-          })
+        this.updateBadge()
       })
       .catch(error => {
         throw new StoredSafeTabHandlerError(
