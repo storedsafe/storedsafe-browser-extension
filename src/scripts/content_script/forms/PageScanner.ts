@@ -371,7 +371,8 @@ export class PageScanner {
   private hasInput (node: Node): boolean {
     return (
       node instanceof HTMLInputElement ||
-      (node instanceof HTMLElement && node.querySelector('input') !== null)
+      node instanceof HTMLButtonElement ||
+      (node instanceof HTMLElement && node.querySelector('input,button,a') !== null)
     )
   }
 
