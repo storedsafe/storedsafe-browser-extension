@@ -112,7 +112,7 @@ function getMatchFieldValue(fields: SSField[], url: string): string {
   const comparator = urlComparator(url)
   const values: string[] = []
   for (const field of fields) {
-    if (field.value?.match(new RegExp(`[^@]${needle}`, 'i')) !== null) values.push(field.value)
+    if (field.value?.match(needle) !== null) values.push(field.value)
   }
   return values.sort(comparator)[0]
 }
@@ -130,6 +130,24 @@ function resultComparator(url: string) {
   }
 }
 
+/**
+ * Filter out results that only matched on e-mail addresses.
+ * @param results All StoredSafe results matching the needle.
+ * @param needle The needle used for the search.
+ */
+function filterEmail(results: SSObject[], needle: string) {
+  return results.filter(result => {
+    let isMatch = false
+    console.log('CHECK MATCH')
+    for (const field of result.fields) {
+      if (field.value === undefined) continue
+      isMatch = isMatch || field.value.match(new RegExp(`[^@]${needle}`, 'i')) !== null
+      console.log(field.name, field.value, isMatch)
+    }
+    return isMatch
+  })
+}
+
 export async function find(url: string): Promise<SSObject[]> {
   const needle = urlToNeedle(url)
   const sessions = await SessionsActions.fetch()
@@ -141,6 +159,7 @@ export async function find(url: string): Promise<SSObject[]> {
       logger.error('Unable to perform search on %s, %o', host, error)
     }
   }
+  results = filterEmail(results, needle)
   const comparator = resultComparator(url)
   return results.sort(comparator)
 }
