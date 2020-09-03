@@ -61,6 +61,12 @@ function onPageScan (forms: Forms) {
       window.setTimeout(() => (submitted = false), 100)
     }
 
+    element.addEventListener('keydown', (event: KeyboardEvent) => {
+      if (event.key === 'Enter') {
+        onSubmit()
+      }
+    })
+
     const formsLogger = new Logger(`Form - ${values.type}`, logger)
 
     formsLogger.debug(
