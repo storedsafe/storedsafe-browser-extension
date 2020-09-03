@@ -3,8 +3,9 @@
  * the extending class, providing more informative error messages.
  */
 export default class StoredSafeError extends Error {
-  constructor(message: string) {
+  constructor(message: string, error?: Error) {
     super(message)
     this.name = this.constructor.name
+    this.stack = error?.stack
   }
 }

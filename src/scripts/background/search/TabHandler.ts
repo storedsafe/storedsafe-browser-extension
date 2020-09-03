@@ -39,7 +39,7 @@ export class TabHandler {
 
   static OnUpdated (
     tabId: number,
-    changeInfo: { url?: string, status?: string },
+    changeInfo: { url?: string; status?: string },
     tab: browser.tabs.Tab
   ) {
     // Skip updates if status hasn't updated
@@ -104,7 +104,8 @@ export class TabHandler {
       })
       .catch(error => {
         throw new StoredSafeTabHandlerError(
-          'Unable to update badge text with search results.'
+          'Unable to update badge text with search results.',
+          error
         )
       })
   }

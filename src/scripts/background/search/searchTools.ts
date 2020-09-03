@@ -41,22 +41,30 @@ interface URLParts extends Record<string, string> {
   params: string
 }
 
-function getParts(url: string): URLParts {
-  let parts, protocol, subdomain, domain, tld, port, path, params
+function getParts (url: string): URLParts {
+  let parts,
+    protocol,
+    subdomain,
+    domain,
+    tld,
+    port,
+    path,
+    params
 
-  // Extract URL parameters
+    // Extract URL parameters
   ;[url, params] = url.split('?')
+  params = params || ''
 
   // Extract protocol
   parts = url.split('://')
   if (parts.length > 1) [protocol, url] = parts
+  protocol = protocol || ''
 
   // Extract path
   ;[url, ...parts] = url.split('/')
-  path = parts.join('/')
-
+  path = parts.join('/') || ''
   ;[url, ...parts] = url.split(':')
-  port = parts[0]
+  port = parts[0] || ''
 
   // Extract tld
   parts = url.split('.')
@@ -68,10 +76,11 @@ function getParts(url: string): URLParts {
       tld = [parts.splice(last--)[0], tld].join('.')
     }
   }
+  tld = tld || ''
 
   // Split subdomain and domain
-  domain = parts.splice(last--)[0]
-  subdomain = parts.join('.')
+  domain = parts.splice(last--)[0] || ''
+  subdomain = parts.join('.') || ''
 
   return { protocol, subdomain, domain, tld, port, path, params }
 }
@@ -88,14 +97,17 @@ function getParts(url: string): URLParts {
 function urlComparator (url: string): (a: string, b: string) => number {
   return function (a: string, b: string): number {
     let [partsA, partsB, partsUrl] = [a, b, url].map(getParts)
-    let scoreA = 0, scoreB = 0
+    let scoreA = 0,
+      scoreB = 0
 
     for (const prop in partsUrl) {
       if (partsUrl[prop] === undefined || partsUrl[prop].length === 0) continue
       if (partsA[prop] === partsUrl[prop]) scoreA++
-      else if (partsA[prop] !== undefined && partsA[prop].length > 0) scoreA -= 0.9
+      else if (partsA[prop] !== undefined && partsA[prop].length > 0)
+        scoreA -= 0.9
       if (partsB[prop] === partsUrl[prop]) scoreB++
-      else if (partsB[prop] !== undefined && partsB[prop].length > 0) scoreB -= 0.9
+      else if (partsB[prop] !== undefined && partsB[prop].length > 0)
+        scoreB -= 0.9
     }
 
     return scoreB - scoreA
@@ -103,26 +115,47 @@ function urlComparator (url: string): (a: string, b: string) => number {
 }
 
 /**
- * Find the field that matches the needle.
+ * Find matching URLs in the provided fields.
  * @param fields Fields of the result object.
  * @param needle The needle that was used for the search.
  */
-function getMatchFieldValue(fields: SSField[], url: string): string {
+function getURL (fields: SSField[], url: string): string {
   const needle = urlToNeedle(url)
   const comparator = urlComparator(url)
   const values: string[] = []
   for (const field of fields) {
-    if (field.value?.match(needle) !== null) values.push(field.value)
+    if (field.value === undefined) continue
+    // Get matched value with surrounding non-whitespace
+    const matches = field.value.match(new RegExp(`\\S*${needle}\\S*`, 'ig'))
+    // If there is no match in the field, continue
+    if (matches === null) continue
+    // Filter out values that contain only matches with e-mails
+    if (
+      matches.reduce(
+        (isEmail, match) => isEmail && match.match('@') !== null,
+        true
+      )
+    )
+      continue
+    // Extract URL-like elements
+    const urlMatcher = /(?:\w+:\/\/)?(?:www\w*\.)?(?:[\w\-\.]+)+(?:\/[\w\-]+)*/gi
+    const urls: string[] = []
+    for (const match of matches) {
+      const urlMatch = match.match(urlMatcher)
+      if (urlMatch !== null) urls.push(urlMatch[0])
+    }
+    // Push the URL-like elements that match the needle
+    values.push(...urls.filter(url => url.match(needle) !== null))
   }
-  return values.sort(comparator)[0]
+  return values.sort(comparator)[0] || ''
 }
 
-function resultComparator(url: string) {
+function resultComparator (url: string) {
   const needle = urlToNeedle(url)
   const comparator = urlComparator(url)
   return function (a: SSObject, b: SSObject) {
-    const valueA = getMatchFieldValue(a.fields, url)
-    const valueB = getMatchFieldValue(b.fields, url)
+    const valueA = getURL(a.fields, url)
+    const valueB = getURL(b.fields, url)
     if (valueA === valueB) return 0
     if (valueA === undefined) return 1
     if (valueB === undefined) return -1
@@ -131,33 +164,38 @@ function resultComparator(url: string) {
 }
 
 /**
- * Filter out results that only matched on e-mail addresses.
+ * Filter out results that have a different subdomain than the provided URL.
+ * Will keep URLs that don't have a subdomain.
  * @param results All StoredSafe results matching the needle.
- * @param needle The needle used for the search.
+ * @param url The url used to generate the needle.
  */
-function filterEmail(results: SSObject[], needle: string) {
+function filterOtherSubdomain (results: SSObject[], url: string) {
+  const parts = getParts(url)
   return results.filter(result => {
-    let isMatch = false
-    for (const field of result.fields) {
-      if (field.value === undefined) continue
-      isMatch = isMatch || field.value.match(new RegExp(`[^@]${needle}`, 'i')) !== null
-    }
+    const fieldURL = getURL(result.fields, url)
+    const fieldParts = getParts(fieldURL)
+    const isMatch =
+      fieldParts.subdomain === ''
+        ? true
+        : fieldParts.subdomain === parts.subdomain
+    if (isMatch)
     return isMatch
   })
 }
 
-export async function find(url: string): Promise<SSObject[]> {
+export async function find (url: string): Promise<SSObject[]> {
   const needle = urlToNeedle(url)
   const sessions = await SessionsActions.fetch()
   let results: SSObject[] = []
   for (const [host] of sessions) {
     try {
-      results = [...results, ...await StoredSafeActions.find(host, needle)]
+      results = [...results, ...(await StoredSafeActions.find(host, needle))]
     } catch (error) {
       logger.error('Unable to perform search on %s, %o', host, error)
     }
   }
-  results = filterEmail(results, needle)
+  results = results.filter(result => getURL(result.fields, url).length > 0)
+  results = filterOtherSubdomain(results, url)
   const comparator = resultComparator(url)
   return results.sort(comparator)
 }
