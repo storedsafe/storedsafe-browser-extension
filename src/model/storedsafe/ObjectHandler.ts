@@ -77,6 +77,8 @@ const parseSearchResult = (
 
 // Only include templates that contain these fields
 const includeFields = ['password', 'pincode']
+// Exclude templates that contain these fields
+const excludeFields = ['file1']
 /**
  * Find and parse StoredSafe objects matching the provided needle.
  * @param request - Request callback function.
@@ -100,7 +102,10 @@ async function find (
     if (
       ssTemplate.structure.findIndex(field =>
         includeFields.includes(field.fieldname)
-      ) === -1
+      ) === -1 ||
+      ssTemplate.structure.findIndex(field =>
+        excludeFields.includes(field.fieldname)
+      ) !== -1
     ) {
       continue
     }
