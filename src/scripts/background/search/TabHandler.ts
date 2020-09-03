@@ -42,7 +42,6 @@ export class TabHandler {
     changeInfo: { url?: string, status?: string },
     tab: browser.tabs.Tab
   ) {
-    console.log(changeInfo)
     // Skip updates if status hasn't updated
     if (changeInfo.status !== 'complete') return
     // Skip updates when there is no url
