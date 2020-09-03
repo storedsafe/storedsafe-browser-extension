@@ -138,11 +138,9 @@ function resultComparator(url: string) {
 function filterEmail(results: SSObject[], needle: string) {
   return results.filter(result => {
     let isMatch = false
-    console.log('CHECK MATCH')
     for (const field of result.fields) {
       if (field.value === undefined) continue
       isMatch = isMatch || field.value.match(new RegExp(`[^@]${needle}`, 'i')) !== null
-      console.log(field.name, field.value, isMatch)
     }
     return isMatch
   })
