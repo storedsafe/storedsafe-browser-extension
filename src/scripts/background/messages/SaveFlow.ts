@@ -21,7 +21,7 @@ const flowLogger = new Logger('Save', messageLogger)
 // Stop trying to open save prompt after `SAVE_RETRIES` attempts
 const SAVE_RETRIES = 3
 // Stop trying to open save prompt after `SAVE_TIMEOUT` ms
-const SAVE_TIMEOUT = 3e4
+const SAVE_TIMEOUT = 10e3
 // Don't count retry if it has been less than `SAVE_RETRY_TIME` ms has passed since the last attempt.
 const SAVE_RETRY_TIME = 1e3
 
