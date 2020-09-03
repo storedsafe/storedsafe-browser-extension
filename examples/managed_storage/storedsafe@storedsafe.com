@@ -1,5 +1,5 @@
 {
-  "name": "addon@storedsafe.com",
+  "name": "storedsafe@storedsafe.com",
   "description": "StoredSafe managed settings",
   "type": "storage",
   "data": {

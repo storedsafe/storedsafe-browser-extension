@@ -9,7 +9,7 @@
     "coverage": "jest --coverage",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx .",
     "build": "webpack --mode production",
-    "zip": "node ./plugins/zip -i build/dist/chrome -o dist/chrome.zip && node ./plugins/zip -i build/dist/firefox -o dist/firefox.zip",
+    "zip": "node ./plugins/zip -i build/dist/chrome/ -o dist/chrome.zip && node ./plugins/zip -i build/dist/firefox/ -o dist/firefox.zip",
     "dev": "webpack --mode development",
     "watch": "webpack --mode development --watch",
     "storybook": "start-storybook",
