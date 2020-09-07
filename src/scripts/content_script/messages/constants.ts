@@ -8,6 +8,7 @@ export const PORT_FILL_PREFIX = 'fill_'
 export const PORT_FILL_CONNECTED = `${PORT_FILL_PREFIX}connected`
 export const PORT_FILL_CLOSE = `${PORT_FILL_PREFIX}close`
 export const PORT_FILL_RESIZE = `${PORT_FILL_PREFIX}resize`
+export const PORT_FILL_FILL = `${PORT_FILL_PREFIX}fill`
 
 export const PORT_CONTENT = 'content_script'
 

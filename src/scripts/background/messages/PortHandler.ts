@@ -23,7 +23,7 @@ export class PortHandler {
     browser.runtime.onConnect.removeListener(PortHandler.onConnect)
   }
 
-  static SendFill (data: [string, string][]): void {
+  static SendFill (data: SSObject[]): void {
     browser.tabs.query({ active: true, currentWindow: true }).then(([tab]) => {
       if (tab === undefined) return
       const contentPortHandler = PortHandler.tabHandlers.get(tab.id)

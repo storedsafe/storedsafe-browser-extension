@@ -68,11 +68,10 @@ export const useSearch = (): SearchHook => {
 
   async function fill (id: number): Promise<void> {
     async function sendFill (result: SSObject): Promise<void> {
-      const data = result.fields.map(({ name, value }) => [name, value])
       const port = browser.runtime.connect()
       port.postMessage({
         type: `${FLOW_FILL}.${ACTION_INIT}`,
-        data
+        data: [result]
       })
       window.close()
     }

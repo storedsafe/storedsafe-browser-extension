@@ -6,30 +6,14 @@ import React, { useState, useEffect } from 'react'
 import DebugStorage from './DebugStorage'
 import Popup from './Popup'
 import Save from './Save'
-import { SAVE_FRAME_ID } from '../scripts/content_script/messages/constants'
+import Fill from './Fill'
+import { SAVE_FRAME_ID, FILL_FRAME_ID } from '../scripts/content_script/messages/constants'
 
 enum Page {
   Popup = 'popup',
   Debug = 'debug',
-  Save = 'save'
-}
-
-const MessageCatcher: React.FunctionComponent = () => {
-  const [message, setMessage] = useState<string>()
-
-  browser.runtime.onMessage.addListener(message => {
-    setMessage(message.type)
-  })
-
-  useEffect(() => {
-    const port = browser.runtime.connect()
-    port.postMessage({ message: 'SAVE CONNECTED' })
-    port.onMessage.addListener(({ message }: { message: string }) => {
-      setMessage(message)
-    })
-  }, [])
-
-  return <p>Message: {message}</p>
+  Save = 'save',
+  Fill = 'fill'
 }
 
 /**
@@ -51,22 +35,22 @@ const Extension: React.FunctionComponent = () => {
         setPage(Page.Save)
         break
       }
+      case FILL_FRAME_ID: {
+        setPage(Page.Fill)
+        break
+      }
       default: {
         setPage(Page.Popup)
       }
     }
   }, [])
 
-  const toggle = () => {
-    browser.runtime.sendMessage({ type: 'toggle' })
-  }
-
   return (
     <section className='extension'>
       {page === Page.Debug && <DebugStorage />}
       {page === Page.Popup && <Popup />}
       {page === Page.Save && <Save />}
-      {/* {page === Page.Save && <MessageCatcher />} */}
+      {page === Page.Fill && <Fill />}
     </section>
   )
 }

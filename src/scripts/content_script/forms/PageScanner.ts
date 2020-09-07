@@ -3,6 +3,7 @@ import StoredSafeError from '../../../utils/StoredSafeError'
 import Logger from '../../../utils/Logger'
 import { getFormType, getInputType, FILL_TYPES } from './matchers'
 import { FormType, InputType } from './constants'
+import { parseResult } from './formsTools'
 
 const logger = new Logger('Page Scanner', formsLogger)
 
@@ -51,30 +52,35 @@ export class PageScanner {
     this.forms = this.scan()
   }
 
-  fill (data: [string, string][]): void {
-    const values = new Map(data)
-    for (const [form, { inputElements, type: formType }] of this.forms) {
-      if (FILL_TYPES.includes(formType)) {
-        let lastElement: HTMLInputElement
-        for (const [input, inputType] of inputElements) {
-          if (values.has(inputType)) lastElement = input
-          input.value = values.get(inputType)
-          input.dispatchEvent(new Event('change', { bubbles: true }))
-        }
+  fill (result: SSObject): void {
+    logger.log('RESULT %o', result)
+    parseResult(result)
+      .then(values => {
+        for (const [form, { inputElements, type: formType }] of this.forms) {
+          if (FILL_TYPES.includes(formType)) {
+            let lastElement: HTMLInputElement
+            for (const [input, inputType] of inputElements) {
+              if (values.has(inputType)) lastElement = input
+              input.value = values.get(inputType)
+              input.dispatchEvent(new Event('change', { bubbles: true }))
+            }
 
-        // Focus the last element
-        const elements = [
-          ...form.querySelectorAll<HTMLElement>('input,button,select,textarea')
-        ].filter(input =>
-          input instanceof HTMLInputElement && input.type === 'hidden'
-            ? false
-            : true
-        )
-        const lastIndex = elements.indexOf(lastElement)
-        const index = lastIndex === -1 ? elements.length - 1 : lastIndex + 1
-        elements[index].focus()
-      }
-    }
+            // Focus the last element
+            const elements = [
+              ...form.querySelectorAll<HTMLElement>(
+                'input,button,select,textarea'
+              )
+            ].filter(input =>
+              input instanceof HTMLInputElement && input.type === 'hidden'
+                ? false
+                : true
+            )
+            const lastIndex = elements.indexOf(lastElement)
+            const index = lastIndex === -1 ? elements.length - 1 : lastIndex + 1
+            if (elements[index] !== undefined) elements[index].focus()
+          }
+        }
+      })
   }
 
   /**
@@ -372,7 +378,8 @@ export class PageScanner {
     return (
       node instanceof HTMLInputElement ||
       node instanceof HTMLButtonElement ||
-      (node instanceof HTMLElement && node.querySelector('input,button,a') !== null)
+      (node instanceof HTMLElement &&
+        node.querySelector('input,button,a') !== null)
     )
   }
 

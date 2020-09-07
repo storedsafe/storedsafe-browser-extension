@@ -11,8 +11,10 @@ import {
   PORT_FILL_CLOSE,
   PORT_FILL_RESIZE,
   PORT_FILL_PREFIX,
-  ACTION_FILL
+  ACTION_FILL,
+  PORT_FILL_FILL
 } from '../../content_script/messages/constants'
+import { logger } from '../search'
 
 const flowLogger = new Logger('Fill', messageLogger)
 
@@ -27,7 +29,7 @@ export class FillFlow {
   private static flows: Map<number, FillFlow> = new Map()
 
   private contentPort: browser.runtime.Port = null
-  private data: [string, string][]
+  private results: SSObject[]
 
   private logger: Logger
 
@@ -36,38 +38,33 @@ export class FillFlow {
    * @param contentPort Port for the content script on the currently active tab.
    * @param data StoredSafe data to fill forms with.
    */
-  static Create (
-    contentPort: browser.runtime.Port,
-    data: [string, string][]
-  ): void {
+  static Create (contentPort: browser.runtime.Port, results: SSObject[]): void {
     if (contentPort?.sender?.tab?.id === undefined)
       throw new StoredSafeFillFlowError('Sender has no tab ID.')
 
-    contentPort.postMessage({
-      type: `${FLOW_FILL}.${ACTION_FILL}`,
-      data
-    })
-
-    // TODO: Implement choice UI
-    if (1 == 1) return
+    if (results.length < 1) return
+    if (results.length === 1) {
+      contentPort.postMessage({
+        type: `${FLOW_FILL}.${ACTION_FILL}`,
+        data: results[0]
+      })
+      return
+    }
 
     const tab = contentPort.sender.tab
     const flow = FillFlow.flows.get(tab.id)
     if (flow !== undefined) {
       flow.cancel()
     }
-    FillFlow.flows.set(tab.id, new FillFlow(contentPort, data))
+    FillFlow.flows.set(tab.id, new FillFlow(contentPort, results))
   }
 
   /**
    * Start a new save flow.
    * @param initPort Port for the content script on the currently active tab.
-   * @param data StoredSafe data to fill forms with.
+   * @param results StoredSafe results availble for fill
    */
-  private constructor (
-    contentPort: browser.runtime.Port,
-    data: [string, string][]
-  ) {
+  private constructor (contentPort: browser.runtime.Port, results: SSObject[]) {
     this.onIframeConnect = this.onIframeConnect.bind(this)
     this.onIframeDisconnect = this.onIframeDisconnect.bind(this)
     this.onIframeMessage = this.onIframeMessage.bind(this)
@@ -75,7 +72,7 @@ export class FillFlow {
     this.cancel = this.cancel.bind(this)
 
     this.contentPort = contentPort
-    this.data = data
+    this.results = results
 
     this.logger = new Logger(
       `(${contentPort.sender.tab.url}) [${contentPort.sender.tab.id}]`,
@@ -97,11 +94,12 @@ export class FillFlow {
     if (port.name === PORT_FILL_CONNECTED) {
       port.postMessage({
         type: `${FLOW_FILL}.${ACTION_POPULATE}`,
-        data: this.data
+        data: this.results
       })
     } else if (
       port.name === PORT_FILL_CLOSE ||
-      port.name === PORT_FILL_RESIZE
+      port.name === PORT_FILL_RESIZE ||
+      port.name === PORT_FILL_FILL
     ) {
       port.onDisconnect.addListener(this.onIframeDisconnect)
       port.onMessage.addListener(this.onIframeMessage)
@@ -130,6 +128,9 @@ export class FillFlow {
       this.cancel()
     } else if (action === ACTION_RESIZE) {
       this.contentPort.postMessage(message) // Forward message to content_script
+    } else if (action === ACTION_FILL) {
+      logger.log('FILL MESSAGE %o', message)
+      this.contentPort.postMessage(message)
     } else {
       throw new StoredSafeFillFlowError(`Unknown message ${flow}.${action}`)
     }

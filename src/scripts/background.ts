@@ -47,15 +47,6 @@ TabHandler.StartTracking()
  */
 
 /**
- * Helper function to select the first result of all results if a result exists.
- * @param results - All search results related to tab.
- * TODO: Sort results on best match?
- * */
-function selectResult (results: SSObject[]): SSObject {
-  return results[0]
-}
-
-/**
  * Decrypt result if needed.
  * */
 async function decryptResult (
@@ -74,31 +65,6 @@ async function decryptResult (
 }
 
 /**
- * Prepare fields for fill function and decrypt if needed.
- * */
-function parseResult (
-  result: SSObject
-): Map<string /* field */, string /* value */> {
-  const data: Map<string, string> = new Map()
-  for (const field of result.fields) {
-    data.set(field.name, field.value)
-  }
-  return data
-}
-
-/**
- * Parse and select result and decrypt as needed before filling form fields on tab.
- * */
-async function fill (results: SSObject[]): Promise<void> {
-  const result = selectResult(results)
-  if (result !== undefined) {
-    const decryptedResult = decryptResult(result.host, result)
-    const data = parseResult(await decryptedResult)
-    PortHandler.SendFill([...data])
-  }
-}
-
-/**
  * Perform a fill operation on the currently active tab.
  */
 async function fillTab (): Promise<void> {
@@ -109,7 +75,7 @@ async function fillTab (): Promise<void> {
   })
 
   const results = await TabHandler.GetResults(tab.id)
-  fill(results)
+  PortHandler.SendFill(results)
 }
 
 /**
