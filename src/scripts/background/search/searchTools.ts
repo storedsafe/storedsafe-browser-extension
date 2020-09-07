@@ -194,6 +194,7 @@ export async function find (url: string): Promise<SSObject[]> {
       logger.error('Unable to perform search on %s, %o', host, error)
     }
   }
+  results = results.filter(result => result.fields.findIndex(field => field.name === 'username') !== -1)
   results = results.filter(result => getURL(result.fields, url).length > 0)
   results = filterOtherSubdomain(results, url)
   const comparator = resultComparator(url)
