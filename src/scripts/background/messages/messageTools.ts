@@ -15,6 +15,10 @@ export function simplifyUrl (url: string) {
   return url.split('?')[0]
 }
 
+export function stripUrl (url: string) {
+  return url.split('/')[0]
+}
+
 export async function shouldSave (
   tab: browser.tabs.Tab,
   data: [string, string][]
@@ -70,7 +74,7 @@ export async function shouldSave (
 export async function getLastUsedResult(url: string): Promise<{ host: string, objectId: string }> {
   const preferences = await PreferencesActions.fetch()
   const lastUsedResults = new Map(preferences.lastUsedResults)
-  return lastUsedResults.get(simplifyUrl(url))
+  return lastUsedResults.get(stripUrl(url))
 }
 
 /**
@@ -80,5 +84,5 @@ export async function getLastUsedResult(url: string): Promise<{ host: string, ob
  * @param result Chosen result to use for fill.
  */
 export async function setLastUsedResult(url: string, result: SSObject) {
-  PreferencesActions.setLastUsedResult(simplifyUrl(url), result.host, result.id)
+  PreferencesActions.setLastUsedResult(stripUrl(url), result.host, result.id)
 }
