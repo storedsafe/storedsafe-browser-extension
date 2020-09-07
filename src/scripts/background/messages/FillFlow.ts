@@ -23,12 +23,11 @@ class StoredSafeFillFlowError extends StoredSafeError {}
 
 /**
  * Initiate a fill flow to attempt to fill forms on page.
- * @param initPort Port where the init action came from.
- * @param data Form data to be saved.
  */
 export class FillFlow {
   private static flows: Map<number, FillFlow> = new Map()
 
+  private tabId: number
   private contentPort: browser.runtime.Port = null
   private results: SSObject[]
 
@@ -36,8 +35,8 @@ export class FillFlow {
 
   /**
    * Create a new fill flow for the active tab.
-   * @param contentPort Port for the content script on the currently active tab.
-   * @param data StoredSafe data to fill forms with.
+   * @param contentPort - Port for the content script on the currently active tab.
+   * @param results - StoredSafe data to fill forms with.
    */
   static Create (contentPort: browser.runtime.Port, results: SSObject[]): void {
     if (contentPort?.sender?.tab?.id === undefined)
@@ -83,11 +82,12 @@ export class FillFlow {
   }
 
   /**
-   * Start a new save flow.
+   * Start a new fill flow.
    * @param initPort Port for the content script on the currently active tab.
    * @param results StoredSafe results availble for fill
    */
   private constructor (contentPort: browser.runtime.Port, results: SSObject[]) {
+    this.onContentDisconnect = this.onContentDisconnect.bind(this)
     this.onIframeConnect = this.onIframeConnect.bind(this)
     this.onIframeDisconnect = this.onIframeDisconnect.bind(this)
     this.onIframeMessage = this.onIframeMessage.bind(this)
@@ -96,6 +96,9 @@ export class FillFlow {
 
     this.contentPort = contentPort
     this.results = results
+
+    this.tabId = this.contentPort.sender.tab.id
+    this.contentPort.onDisconnect.addListener(this.onContentDisconnect)
 
     this.logger = new Logger(
       `(${contentPort.sender.tab.url}) [${contentPort.sender.tab.id}]`,
@@ -109,10 +112,19 @@ export class FillFlow {
   }
 
   /**
+   * Tear-down procedure for when content page disconnectes (on reload)
+   */
+  private onContentDisconnect (): void {
+    this.contentPort.onDisconnect.removeListener(this.onContentDisconnect)
+    this.contentPort = null
+    this.cancel()
+  }
+
+  /**
    * When the iframe connects, it is ready to recieve the flow data.
    */
   private onIframeConnect (port: browser.runtime.Port): void {
-    this.logger.debug('Connected to iframe port')
+    this.logger.debug('Connected to iframe port %s', port.name)
 
     if (port.name === PORT_FILL_CONNECTED) {
       port.postMessage({
@@ -173,7 +185,7 @@ export class FillFlow {
   }
 
   /**
-   * Cancel save flow and discard SaveFlow object.
+   * Cancel fill flow and discard FillFlow object.
    */
   private cancel (): void {
     browser.runtime.onConnect.removeListener(this.onConnect)
@@ -182,6 +194,6 @@ export class FillFlow {
         type: `${FLOW_FILL}.${ACTION_CLOSE}`
       })
     }
-    FillFlow.flows.delete(this.contentPort.sender.tab.id)
+    FillFlow.flows.delete(this.tabId)
   }
 }
