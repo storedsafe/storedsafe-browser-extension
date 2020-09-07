@@ -4,7 +4,7 @@
   background-color: $color-primary-0;
   padding: $spacing;
   box-sizing: border-box;
-  width: 300px;
+  width: 360px;
 
   .fill-info {
     margin-bottom: $spacing;
@@ -13,12 +13,15 @@
   }
 
   .fill-buttons {
+    overflow: hidden auto;
     display: grid;
     grid-template-columns: 1fr;
     grid-template-rows: auto;
     gap: $spacing;
     padding: $spacing;
     background-color: $color-bg-alt;
+    max-height: 300px;
+    box-sizing: border-box;
   }
 
   .fill-option {
@@ -35,5 +38,9 @@
     &:active {
       border-bottom: 1px solid $color-accent-0;
     }
+  }
+
+  .fill-fields {
+    overflow: hidden;
   }
 }
