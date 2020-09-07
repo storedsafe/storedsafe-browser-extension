@@ -131,6 +131,45 @@ describe('uses mocked browser.storage', () => {
     expect(preferences).toEqual(newPreferences)
   })
 
+  test('setLastUsedResult(), preference exists', async () => {
+    const url = 'my.site.com'
+    const host = 'bar.example.com'
+    const objectId = '3'
+    const mockPreferences: Preferences = {
+      lastUsedResults: [
+        [url, { host: 'foo.example.com', objectId: '2' }],
+        ['other.site.com', { host: 'bar.example.com', objectId: '3' }]
+      ],
+      lastUsedSite: 'bar.example.com',
+      sites: {
+        'foo.example.com': {
+          username: 'bob',
+          loginType: 'yubikey'
+        },
+        'bar.example.com': {
+          username: 'alice',
+          loginType: 'totp'
+        }
+      }
+    }
+    const newPreferences: Preferences = {
+      ...mockPreferences,
+      lastUsedResults: [
+        ...new Map([
+          ...mockPreferences.lastUsedResults,
+          [url, { host, objectId }]
+        ])
+      ]
+    }
+    localGetMock.mockImplementationOnce(mockGet(mockPreferences))
+    localGetMock.mockImplementationOnce(mockGet(newPreferences))
+    const preferences = await actions.setLastUsedResult(url, host, objectId)
+    expect(localSetMock).toHaveBeenCalledWith({
+      preferences: newPreferences
+    })
+    expect(preferences).toEqual(newPreferences)
+  })
+
   test('clear()', async () => {
     const preferences = await actions.clear()
     expect(preferences).toEqual({ sites: {} })

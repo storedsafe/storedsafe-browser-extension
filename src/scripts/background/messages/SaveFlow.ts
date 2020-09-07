@@ -13,7 +13,7 @@ import {
   PORT_SAVE_RESIZE,
   PORT_SAVE_PREFIX
 } from '../../content_script/messages/constants'
-import { saveURLToField, shouldSave } from './messageTools'
+import { simplifyUrl, shouldSave } from './messageTools'
 import { logger } from '../sessions'
 
 const flowLogger = new Logger('Save', messageLogger)
@@ -163,7 +163,7 @@ export class SaveFlow {
 
     if (port.name === PORT_SAVE_CONNECTED) {
       const values: SaveValues = {
-        url: saveURLToField(this.initPort.sender?.url),
+        url: simplifyUrl(this.initPort.sender?.url),
         name: this.initPort.sender?.tab?.title
       }
       for (const [key, value] of this.data) {

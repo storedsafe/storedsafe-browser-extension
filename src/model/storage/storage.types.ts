@@ -101,6 +101,13 @@ interface Preferences {
   sites: {
     [host: string]: SitePreferences
   }
+  lastUsedResults?: [
+    string, /* URL */
+    {
+      host: string
+      objectId: string
+    }
+  ][]
 }
 
 /// /////////////////////////////////////////////////////////

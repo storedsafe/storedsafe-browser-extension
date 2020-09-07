@@ -1,16 +1,17 @@
 import { actions as IgnoreActions } from '../../../model/storage/Ignore'
+import { actions as PreferencesActions } from '../../../model/storage/Preferences'
 import { checkOnlineStatus } from '../sessions/sessionTools'
 import { TabHandler } from '../search'
 
 /**
- * Convert the URL from the tab that initiated the save flow to a more
+ * Convert the URL from the tab that initiated the flow to a more
  * easily identifiable version.
  *
  * Attempts to strip random elements of the URL such as URL parameters.
  *
  * @param url URL of tab that initiated save flow.
  */
-export function saveURLToField (url: string) {
+export function simplifyUrl (url: string) {
   return url.split('?')[0]
 }
 
@@ -47,7 +48,7 @@ export async function shouldSave (
   for (const result of results) {
     for (const { value } of result.fields) {
       if (value === undefined) continue
-      const fieldURL = saveURLToField(url)
+      const fieldURL = simplifyUrl(url)
       // Check both ways if one is more specific than the other
       if (value.match(fieldURL) !== null || fieldURL.match(value) !== null) {
         const username = result.fields.find(({ name }) => name === 'username')
@@ -60,4 +61,24 @@ export async function shouldSave (
   }
 
   return true
+}
+
+/**
+ * Get the identifiers for the last result used on the provided URL.
+ * @param url URL related to the fill flow.
+ */
+export async function getLastUsedResult(url: string): Promise<{ host: string, objectId: string }> {
+  const preferences = await PreferencesActions.fetch()
+  const lastUsedResults = new Map(preferences.lastUsedResults)
+  return lastUsedResults.get(simplifyUrl(url))
+}
+
+/**
+ * Remember which result was used for fill so that the same result can be used
+ * for automatic fill on later visits.
+ * @param url URL related to the fill flow.
+ * @param result Chosen result to use for fill.
+ */
+export async function setLastUsedResult(url: string, result: SSObject) {
+  PreferencesActions.setLastUsedResult(simplifyUrl(url), result.host, result.id)
 }

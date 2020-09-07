@@ -53,7 +53,6 @@ export class PageScanner {
   }
 
   fill (result: SSObject): void {
-    logger.log('RESULT %o', result)
     parseResult(result)
       .then(values => {
         for (const [form, { inputElements, type: formType }] of this.forms) {

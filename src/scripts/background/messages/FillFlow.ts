@@ -15,6 +15,7 @@ import {
   PORT_FILL_FILL
 } from '../../content_script/messages/constants'
 import { logger } from '../search'
+import { setLastUsedResult, getLastUsedResult } from './messageTools'
 
 const flowLogger = new Logger('Fill', messageLogger)
 
@@ -42,8 +43,12 @@ export class FillFlow {
     if (contentPort?.sender?.tab?.id === undefined)
       throw new StoredSafeFillFlowError('Sender has no tab ID.')
 
+    // No results, do nothing
     if (results.length < 1) return
+
+    // Single result, fill
     if (results.length === 1) {
+      setLastUsedResult(contentPort.sender.url, results[0])
       contentPort.postMessage({
         type: `${FLOW_FILL}.${ACTION_FILL}`,
         data: results[0]
@@ -51,12 +56,30 @@ export class FillFlow {
       return
     }
 
-    const tab = contentPort.sender.tab
-    const flow = FillFlow.flows.get(tab.id)
-    if (flow !== undefined) {
-      flow.cancel()
-    }
-    FillFlow.flows.set(tab.id, new FillFlow(contentPort, results))
+    getLastUsedResult(contentPort.sender.url).then(lastUsed => {
+      if (lastUsed !== undefined) {
+        const { host, objectId } = lastUsed
+        const result = results.find(
+          result => result.host === host && result.id === objectId
+        )
+        if (result !== undefined) {
+          // Preferred result from preferences
+          contentPort.postMessage({
+            type: `${FLOW_FILL}.${ACTION_FILL}`,
+            data: result
+          })
+          return
+        }
+      }
+
+      // Present choice
+      const tab = contentPort.sender.tab
+      const flow = FillFlow.flows.get(tab.id)
+      if (flow !== undefined) {
+        flow.cancel()
+      }
+      FillFlow.flows.set(tab.id, new FillFlow(contentPort, results))
+    })
   }
 
   /**
@@ -129,7 +152,7 @@ export class FillFlow {
     } else if (action === ACTION_RESIZE) {
       this.contentPort.postMessage(message) // Forward message to content_script
     } else if (action === ACTION_FILL) {
-      logger.log('FILL MESSAGE %o', message)
+      setLastUsedResult(this.contentPort.sender.url, message.data as SSObject)
       this.contentPort.postMessage(message)
     } else {
       throw new StoredSafeFillFlowError(`Unknown message ${flow}.${action}`)

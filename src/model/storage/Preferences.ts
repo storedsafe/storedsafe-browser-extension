@@ -59,6 +59,23 @@ async function updateSitePreferences (
 }
 
 /**
+ * Set the last used result on a particular site so that this result can
+ * be used for autofill-scenarios.
+ * @param url - URL of page where result was used.
+ * @param host - StoredSafe host where the used result was fetched from.
+ * @param objectId - StoredSafe obejct id of the used result.
+ */
+async function setLastUsedResult (url: string, host: string, objectId: string): Promise<Preferences> {
+  const preferences = await get()
+  const lastUsedResults = new Map(preferences.lastUsedResults) ?? new Map()
+  lastUsedResults.set(url, { host, objectId })
+  return await set({
+    ...preferences,
+    lastUsedResults: [...lastUsedResults]
+  }).then(get)
+}
+
+/**
  * Clear user preferences.
  * @returns New user preferences.
  * */
@@ -67,6 +84,7 @@ async function clear (): Promise<Preferences> {
 }
 
 export const actions = {
+  setLastUsedResult,
   setLastUsedSite,
   updateSitePreferences,
   clear,
