@@ -53,33 +53,32 @@ export class PageScanner {
   }
 
   fill (result: SSObject): void {
-    parseResult(result)
-      .then(values => {
-        for (const [form, { inputElements, type: formType }] of this.forms) {
-          if (FILL_TYPES.includes(formType)) {
-            let lastElement: HTMLInputElement
-            for (const [input, inputType] of inputElements) {
-              if (values.has(inputType)) lastElement = input
-              input.value = values.get(inputType)
-              input.dispatchEvent(new Event('change', { bubbles: true }))
-            }
-
-            // Focus the last element
-            const elements = [
-              ...form.querySelectorAll<HTMLElement>(
-                'input,button,select,textarea'
-              )
-            ].filter(input =>
-              input instanceof HTMLInputElement && input.type === 'hidden'
-                ? false
-                : true
-            )
-            const lastIndex = elements.indexOf(lastElement)
-            const index = lastIndex === -1 ? elements.length - 1 : lastIndex + 1
-            if (elements[index] !== undefined) elements[index].focus()
+    parseResult(result).then(values => {
+      for (const [form, { inputElements, type: formType }] of this.forms) {
+        if (FILL_TYPES.includes(formType)) {
+          let lastElement: HTMLInputElement
+          for (const [input, inputType] of inputElements) {
+            if (values.has(inputType)) lastElement = input
+            input.value = values.get(inputType)
+            input.dispatchEvent(new Event('change', { bubbles: true }))
           }
+
+          // Focus the last element
+          const elements = [
+            ...form.querySelectorAll<HTMLElement>(
+              'input,button,select,textarea'
+            )
+          ].filter(input =>
+            input instanceof HTMLInputElement && input.type === 'hidden'
+              ? false
+              : true
+          )
+          const lastIndex = elements.indexOf(lastElement)
+          const index = lastIndex === -1 ? elements.length - 1 : lastIndex + 1
+          if (elements[index] !== undefined) elements[index].focus()
         }
-      })
+      }
+    })
   }
 
   /**
@@ -352,8 +351,19 @@ export class PageScanner {
       ) {
         // Whether the form is a pseudo-form containing another identified form.
         let isPseudoParent = false
-        for (const [matchedForm] of matchedForms) {
-          if (form.contains(matchedForm)) isPseudoParent = true
+        for (const [matchedForm, matchedFormValues] of matchedForms) {
+          if (form.contains(matchedForm)) {
+            if (
+              formValues.inputElements.size ===
+              matchedFormValues.inputElements.size
+            ) {
+              // Same amount of inputs, replace with parent form for better submit coverage
+              matchedForms.delete(matchedForm)
+            } else {
+              // Different amount of inputs, potentially contains another form
+              isPseudoParent = true
+            }
+          }
         }
         if (!isPseudoParent) matchedForms.set(form, formValues)
       }
