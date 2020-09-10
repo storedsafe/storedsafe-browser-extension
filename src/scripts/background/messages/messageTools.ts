@@ -11,12 +11,14 @@ import { TabHandler } from '../search'
  *
  * @param url URL of tab that initiated save flow.
  */
-export function simplifyUrl (url: string) {
+export function simplifyUrl (url: string): string {
   return url.split('?')[0]
 }
 
-export function stripUrl (url: string) {
-  return url.split('/')[0]
+export function stripUrlPath (url: string): string {
+  const match = url.match(/(?:.+?:\/\/)?.*\//)?.[0] ?? url
+  console.log('STRIP URL', url, match)
+  return match
 }
 
 export async function shouldSave (
@@ -71,10 +73,12 @@ export async function shouldSave (
  * Get the identifiers for the last result used on the provided URL.
  * @param url URL related to the fill flow.
  */
-export async function getLastUsedResult(url: string): Promise<{ host: string, objectId: string }> {
+export async function getLastUsedResult (
+  url: string
+): Promise<{ host: string; objectId: string }> {
   const preferences = await PreferencesActions.fetch()
   const lastUsedResults = new Map(preferences.lastUsedResults)
-  return lastUsedResults.get(stripUrl(url))
+  return lastUsedResults.get(stripUrlPath(url))
 }
 
 /**
@@ -83,6 +87,6 @@ export async function getLastUsedResult(url: string): Promise<{ host: string, ob
  * @param url URL related to the fill flow.
  * @param result Chosen result to use for fill.
  */
-export async function setLastUsedResult(url: string, result: SSObject) {
-  PreferencesActions.setLastUsedResult(stripUrl(url), result.host, result.id)
+export async function setLastUsedResult (url: string, result: SSObject) {
+  PreferencesActions.setLastUsedResult(stripUrlPath(url), result.host, result.id)
 }
