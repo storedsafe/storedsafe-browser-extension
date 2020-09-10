@@ -101,7 +101,13 @@ function urlComparator (url: string): (a: string, b: string) => number {
       scoreB = 0
 
     for (const prop in partsUrl) {
-      if (partsUrl[prop] === undefined || partsUrl[prop].length === 0) continue
+      // If url part is undefined but compare part is not
+      if (partsUrl[prop] === undefined || partsUrl[prop].length === 0) {
+        if (partsA[prop] !== undefined && partsA[prop].length > 0) scoreA -= 0.9
+        if (partsB[prop] !== undefined && partsB[prop].length > 0) scoreB -= 0.9
+        continue
+      }
+      // If url part is defined, add if match, subtract if not
       if (partsA[prop] === partsUrl[prop]) scoreA++
       else if (partsA[prop] !== undefined && partsA[prop].length > 0)
         scoreA -= 0.9
@@ -109,7 +115,6 @@ function urlComparator (url: string): (a: string, b: string) => number {
       else if (partsB[prop] !== undefined && partsB[prop].length > 0)
         scoreB -= 0.9
     }
-
     return scoreB - scoreA
   }
 }
@@ -178,8 +183,7 @@ function filterOtherSubdomain (results: SSObject[], url: string) {
       fieldParts.subdomain === ''
         ? true
         : fieldParts.subdomain === parts.subdomain
-    if (isMatch)
-    return isMatch
+    if (isMatch) return isMatch
   })
 }
 
@@ -194,7 +198,9 @@ export async function find (url: string): Promise<SSObject[]> {
       logger.error('Unable to perform search on %s, %o', host, error)
     }
   }
-  results = results.filter(result => result.fields.findIndex(field => field.name === 'username') !== -1)
+  results = results.filter(
+    result => result.fields.findIndex(field => field.name === 'username') !== -1
+  )
   results = results.filter(result => getURL(result.fields, url).length > 0)
   results = filterOtherSubdomain(results, url)
   const comparator = resultComparator(url)
