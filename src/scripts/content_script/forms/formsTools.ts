@@ -11,7 +11,6 @@ export async function parseResult (
     (acc, field) => acc || (field.isEncrypted && field.value === undefined),
     false
   )
-  console.log('IS ENCRYPTED %o %o', isEncrypted, result)
   if (isEncrypted) {
     result = await StoredSafeActions.decrypt(result.host, result.id)
   }
