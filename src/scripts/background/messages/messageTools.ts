@@ -17,7 +17,6 @@ export function simplifyUrl (url: string): string {
 
 export function stripUrlPath (url: string): string {
   const match = url.match(/(?:.+?:\/\/)?.*\//)?.[0] ?? url
-  console.log('STRIP URL', url, match)
   return match
 }
 
