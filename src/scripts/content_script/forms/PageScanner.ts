@@ -3,7 +3,6 @@ import StoredSafeError from '../../../utils/StoredSafeError'
 import Logger from '../../../utils/Logger'
 import { getFormType, getInputType, FILL_TYPES } from './matchers'
 import { FormType, InputType } from './constants'
-import { parseResult } from './formsTools'
 
 const logger = new Logger('Page Scanner', formsLogger)
 
@@ -52,35 +51,30 @@ export class PageScanner {
     this.forms = this.scan()
   }
 
-  fill (result: SSObject): void {
-    parseResult(result)
-      .then(values => {
-        for (const [form, { inputElements, type: formType }] of this.forms) {
-          if (FILL_TYPES.includes(formType)) {
-            let lastElement: HTMLInputElement
-            for (const [input, inputType] of inputElements) {
-              if (values.has(inputType)) lastElement = input
-              input.value = values.get(inputType)
-              // input.dispatchEvent(new Event('input', { bubbles: true }))
-              input.dispatchEvent(new Event('input'))
-            }
-
-            // Focus the last element
-            const elements = [
-              ...form.querySelectorAll<HTMLElement>(
-                'input,button,select,textarea'
-              )
-            ].filter(input =>
-              input instanceof HTMLInputElement && input.type === 'hidden'
-                ? false
-                : true
-            )
-            const lastIndex = elements.indexOf(lastElement)
-            const index = lastIndex === -1 ? elements.length - 1 : lastIndex + 1
-            if (elements[index] !== undefined) elements[index].focus()
-          }
+  fill (data: [string, string][]): void {
+    const values = new Map(data)
+    for (const [form, { inputElements, type: formType }] of this.forms) {
+      if (FILL_TYPES.includes(formType)) {
+        let lastElement: HTMLInputElement
+        for (const [input, inputType] of inputElements) {
+          if (values.has(inputType)) lastElement = input
+          input.value = values.get(inputType)
+          input.dispatchEvent(new Event('input'))
         }
-      })
+
+        // Focus the last element
+        const elements = [
+          ...form.querySelectorAll<HTMLElement>('input,button,select,textarea')
+        ].filter(input =>
+          input instanceof HTMLInputElement && input.type === 'hidden'
+            ? false
+            : true
+        )
+        const lastIndex = elements.indexOf(lastElement)
+        const index = lastIndex === -1 ? elements.length - 1 : lastIndex + 1
+        if (elements[index] !== undefined) elements[index].focus()
+      }
+    }
   }
 
   /**

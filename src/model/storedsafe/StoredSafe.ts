@@ -53,17 +53,16 @@ async function handleErrors (
         const errors = data.ERRORS.join(' | ')
         throw new Error(`StoredSafe Error: ${errors}`)
       }
-      if (data.ERRORCODES !== undefined && Object.keys(data.ERRORCODES).length > 0) {
+      if (
+        data.ERRORCODES !== undefined &&
+        Object.keys(data.ERRORCODES).length > 0
+      ) {
         const errors = Object.values(data.ERRORCODES).join(' | ')
         throw new Error(`StoredSafe Error: ${errors}`)
       }
       // Server sent error code but no error response (see 404 for empty vaults)
       throw error
     } else if (error.request !== undefined) {
-      const { status, statusText } = error.request as {
-        status: string
-        statusText: string
-      }
       console.error('StoredSafe network error: ', error)
       throw new Error(`Network Error, unable to connect to host.`)
     }

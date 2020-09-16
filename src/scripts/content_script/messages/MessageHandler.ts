@@ -55,7 +55,7 @@ export class MessageHandler {
   }
 
   private onMessage ({ type, data }: Message): void {
-    logger.log('Incoming message %s', type)
+    logger.log('Incoming message %s, DATA %o', type, data)
     const [flow, action] = type.split('.')
     if (flow === undefined || action === undefined) {
       throw new StoredSafeMessageHandlerError(

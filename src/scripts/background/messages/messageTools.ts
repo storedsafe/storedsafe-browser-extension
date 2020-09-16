@@ -1,7 +1,26 @@
 import { actions as IgnoreActions } from '../../../model/storage/Ignore'
 import { actions as PreferencesActions } from '../../../model/storage/Preferences'
+import { actions as StoredSafeActions } from '../../../model/storedsafe/StoredSafe'
 import { checkOnlineStatus } from '../sessions/sessionTools'
 import { TabHandler } from '../search'
+
+/**
+ * Decrypt result fields and returned fill-friendly version of result.
+ * @param result Potentially encrypted StoredSafe result
+ */
+export async function parseResult (
+  result: SSObject
+): Promise<[string, string][]> {
+  let isEncrypted = result.isDecrypted || result.fields.reduce(
+    (acc, field) => acc || (field.isEncrypted && field.value === undefined),
+    false
+  )
+  if (isEncrypted) {
+    result = await StoredSafeActions.decrypt(result.host, result.id)
+  }
+  return result.fields.map(field => [field.name, field.value])
+}
+
 
 /**
  * Convert the URL from the tab that initiated the flow to a more

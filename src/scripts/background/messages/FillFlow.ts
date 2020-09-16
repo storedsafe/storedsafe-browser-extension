@@ -14,12 +14,25 @@ import {
   ACTION_FILL,
   PORT_FILL_FILL
 } from '../../content_script/messages/constants'
-import { logger } from '../search'
-import { setLastUsedResult, getLastUsedResult } from './messageTools'
+import {
+  parseResult,
+  setLastUsedResult,
+  getLastUsedResult
+} from './messageTools'
 
 const flowLogger = new Logger('Fill', messageLogger)
 
 class StoredSafeFillFlowError extends StoredSafeError {}
+
+function fill (port: browser.runtime.Port, result: SSObject, remember: boolean = true) {
+  if (remember) setLastUsedResult(port.sender.url, result)
+  parseResult(result).then(values => {
+    port.postMessage({
+      type: `${FLOW_FILL}.${ACTION_FILL}`,
+      data: values
+    })
+  })
+}
 
 /**
  * Initiate a fill flow to attempt to fill forms on page.
@@ -47,12 +60,7 @@ export class FillFlow {
 
     // Single result, fill
     if (results.length === 1) {
-      setLastUsedResult(contentPort.sender.url, results[0])
-      contentPort.postMessage({
-        type: `${FLOW_FILL}.${ACTION_FILL}`,
-        data: results[0]
-      })
-      return
+      return fill(contentPort, results[0])
     }
 
     getLastUsedResult(contentPort.sender.url).then(lastUsed => {
@@ -63,11 +71,7 @@ export class FillFlow {
         )
         if (result !== undefined) {
           // Preferred result from preferences
-          contentPort.postMessage({
-            type: `${FLOW_FILL}.${ACTION_FILL}`,
-            data: result
-          })
-          return
+          return fill(contentPort, result, false)
         }
       }
 
@@ -164,8 +168,7 @@ export class FillFlow {
     } else if (action === ACTION_RESIZE) {
       this.contentPort.postMessage(message) // Forward message to content_script
     } else if (action === ACTION_FILL) {
-      setLastUsedResult(this.contentPort.sender.url, message.data as SSObject)
-      this.contentPort.postMessage(message)
+      fill(this.contentPort, message.data)
     } else {
       throw new StoredSafeFillFlowError(`Unknown message ${flow}.${action}`)
     }

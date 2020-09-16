@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect } from 'react'
 import { FillProps, FillCallback, Fill } from '../components/Fill/Fill'
 import { useIgnore } from '../hooks/storage/useIgnore'
 import { useSessions } from '../hooks/storage/useSessions'
