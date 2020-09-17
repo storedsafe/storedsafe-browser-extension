@@ -59,7 +59,7 @@ export class PageScanner {
         for (const [input, inputType] of inputElements) {
           if (values.has(inputType)) lastElement = input
           input.value = values.get(inputType)
-          input.dispatchEvent(new Event('input'))
+          input.dispatchEvent(new Event('input', { bubbles: true }))
         }
 
         // Focus the last element
