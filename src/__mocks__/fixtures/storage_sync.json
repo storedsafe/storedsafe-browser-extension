@@ -1,7 +1,0 @@
-{
-  "settings": {
-    "sync": true
-  },
-
-  "sites": [{ "host": "host", "apikey": "apikey" }]
-}

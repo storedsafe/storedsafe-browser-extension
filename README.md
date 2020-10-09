@@ -1,40 +1,104 @@
-# storedsafe-browser-extension
+*Looking for a shareable component template? Go here --> [sveltejs/component-template](https://github.com/sveltejs/component-template)*
 
-StoredSafe browser extension for Chrome and Firefox.
+---
 
-## Setup
+# svelte app
 
-### Install
+This is a project template for [Svelte](https://svelte.dev) apps. It lives at https://github.com/sveltejs/template.
 
-1. To build the project, fetch the latest version with git and then run `yarn build` or `npm run build`. This will create unpackaged builds for chrome and firefox in the `build/dist` folder.
-2. Follow instructions for the browser of your choice below:
-  - To install in chrome, go to [chrome://extensions](chrome://extensions) and click *Load Unpackaged*. Navigate to the `dist/chrome` folder and click *open*.
-  - To install in firefox, go to [about:debugging](about:debugging) and click *This Firefox* followed by *Load Temporary Add-on...*. Navigate to the `dist/firefox` folder and click *open*.
-
-### Build
-Requires npm or yarn to build. Currently depends on storedsafe-javascript package from this git server which requires an ssh-key to fetch. Future versions will fetch this from a public repository.
+To create a new project based on this template using [degit](https://github.com/Rich-Harris/degit):
 
 ```bash
-yarn
-yarn build  # Production build
-yarn zip    # Produce zipped folders of build in dist/ for distribution
-yarn dev    # Development build
-yarn watch  # Continous development build
+npx degit sveltejs/template svelte-app
+cd svelte-app
 ```
 
-or
+*Note that you will need to have [Node.js](https://nodejs.org) installed.*
+
+
+## Get started
+
+Install the dependencies...
 
 ```bash
+cd svelte-app
 npm install
-npm run build
-# ... same as yarn but prefixed with run
 ```
 
-Check package.json for all scripts or use `yarn <command>` to use the installed tools directly.
+...then start [Rollup](https://rollupjs.org):
 
-### Managed Storage
+```bash
+npm run dev
+```
 
-It's possible to configure the extension through policies if you as an organization want to configure the extension for your employees. There are some example configurations in the `examples/managed_storage/` folder. How policies are configured depends on the operating system of the client computer and how your organization pushes out policies to its employees. More information can be found in the links below.
+Navigate to [localhost:5000](http://localhost:5000). You should see your app running. Edit a component file in `src`, save it, and reload the page to see your changes.
 
-- [Firefox Managed Policy](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Native_manifests#Managed_storage_manifests).
-- [Chromium Managed Policy](https://www.chromium.org/administrators/policy-templates).
+By default, the server will only respond to requests from localhost. To allow connections from other computers, edit the `sirv` commands in package.json to include the option `--host 0.0.0.0`.
+
+
+## Building and running in production mode
+
+To create an optimised version of the app:
+
+```bash
+npm run build
+```
+
+You can run the newly built app with `npm run start`. This uses [sirv](https://github.com/lukeed/sirv), which is included in your package.json's `dependencies` so that the app will work when you deploy to platforms like [Heroku](https://heroku.com).
+
+
+## Single-page app mode
+
+By default, sirv will only respond to requests that match files in `public`. This is to maximise compatibility with static fileservers, allowing you to deploy your app anywhere.
+
+If you're building a single-page app (SPA) with multiple routes, sirv needs to be able to respond to requests for *any* path. You can make it so by editing the `"start"` command in package.json:
+
+```js
+"start": "sirv public --single"
+```
+
+## Using TypeScript
+
+This template comes with a script to set up a TypeScript development environment, you can run it immediately after cloning the template with:
+
+```bash
+node scripts/setupTypeScript.js
+```
+
+Or remove the script via:
+
+```bash
+rm scripts/setupTypeScript.js
+```
+
+## Deploying to the web
+
+### With [Vercel](https://vercel.com)
+
+Install `vercel` if you haven't already:
+
+```bash
+npm install -g vercel
+```
+
+Then, from within your project folder:
+
+```bash
+cd public
+vercel deploy --name my-project
+```
+
+### With [surge](https://surge.sh/)
+
+Install `surge` if you haven't already:
+
+```bash
+npm install -g surge
+```
+
+Then, from within your project folder:
+
+```bash
+npm run build
+surge public my-project.surge.sh
+```

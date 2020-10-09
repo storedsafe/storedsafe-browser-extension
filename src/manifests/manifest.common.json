@@ -1,0 +1,60 @@
+{
+  "manifest_version": 2,
+  "name": "StoredSafe Svelte",
+  "version": "0.5.9000",
+  "description": "StoredSafe browser integration",
+  "default_locale": "en",
+  "icons": {
+    "48": "assets/icon_48.png",
+    "96": "assets/icon_96.png"
+  },
+  "browser_action": {
+    "default_title": "StoredSafe",
+    "default_popup": "index.html",
+    "default_icon": {
+      "48": "assets/icon-inactive_48.png",
+      "96": "assets/icon-inactive_96.png"
+    }
+  },
+  "commands": {
+    "_execute_browser_action": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+S"
+      },
+      "description": "Open StoredSafe Popup"
+    },
+    "fill": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+F"
+      },
+      "description": "Fill form on page if data is available"
+    }
+  },
+  "background": {
+    "scripts": [
+      "externals/browser-polyfill.min.js",
+      "build/background.bundle.js"
+    ]
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ],
+      "js": [
+        "externals/browser-polyfill.min.js",
+        "build/content_script.bundle.js"
+      ]
+    }
+  ],
+  "web_accessible_resources": [
+    "index.html"
+  ],
+  "permissions": [
+    "storage",
+    "idle",
+    "activeTab",
+    "tabs"
+  ]
+}

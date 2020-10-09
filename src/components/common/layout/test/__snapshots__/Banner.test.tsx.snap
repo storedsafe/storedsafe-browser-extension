@@ -1,3 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`<Banner /> 1`] = `"<div class=\\"banner\\"><img src=\\"test-file-stub\\" alt=\\"StoredSafe\\" class=\\"logo\\"></div>"`;

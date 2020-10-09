@@ -1,0 +1,325 @@
+/**
+ * Variable declarations
+ */
+:root {
+  --color-primary: #526a78;
+  --color-primary-light: #8a9aaf;
+  --color-primary-dark: #2e424f;
+
+  --color-accent: #03a388;
+  --color-accent-light: #43c1ac;
+  --color-accent-dark: #006352;
+
+  --color-warning: #d7820a;
+  --color-warning-light: #ffc16a;
+  --color-warning-dark: #b76b00;
+
+  --color-danger: #c5283e;
+  --color-danger-light: #f27183;
+  --color-danger-dark: #7e0314;
+
+  --color-fg: var(--color-primary-dark);
+  --color-fg-title: var(--color-primary-dark);
+  --color-fg-subtitle: var(--color-primary);
+  --color-fg-light: #fff;
+  --color-bg: #ebeef0;
+
+  --color-input-bg: #f3f5f7;
+  --color-input-bg-light: #fff;
+  --color-input-fg-disabled: #999;
+  --color-input-highlight: var(--color-accent);
+
+  --color-button-bg: var(--color-accent);
+  --color-button-bg-disabled: var(--color-primary);
+  --color-button-highlight: #fff;
+
+  --spacing: 0.4em;
+  --button-icon-size: 1.4em;
+  --border-radius: 4px;
+}
+
+/**
+ * General document styles
+ */
+* {
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  position: relative;
+  width: 100%;
+}
+
+body {
+  color: var(--color-fg-light);
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
+  font-size: 1em;
+  overflow: hidden;
+}
+
+a {
+  color: rgb(0, 100, 200);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+a:visited {
+  color: rgb(0, 80, 160);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  text-align: center;
+  color: var(--color-primary-light);
+}
+
+h1 {
+  font-size: 1.3em;
+}
+
+h2 {
+  font-size: 1.15em;
+}
+
+h4,
+h5,
+h6 {
+  font-size: 1.05em;
+}
+
+li {
+  list-style: none;
+}
+
+/**
+ * Form element styles
+ */
+input,
+button,
+select,
+textarea {
+  font-family: inherit;
+  font-size: inherit;
+  -webkit-padding: 0.4em 0;
+  padding: 0.4em;
+  margin: 0;
+  box-sizing: border-box;
+  border: 0;
+  outline: 0;
+  border-radius: var(--border-radius);
+}
+
+hr {
+  border: 0;
+  height: 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Input styles */
+label {
+  display: flex;
+  flex-direction: column;
+  user-select: none;
+}
+
+input,
+select,
+textarea {
+  background-color: var(--color-input-bg);
+  border: 1px solid var(--color-primary-light);
+  border-bottom-width: 2px;
+  box-shadow: 0 2px 4px 0px rgba(0, 0, 0, 0.1),
+    0 2px 4px 0px rgba(0, 0, 0, 0.05) inset;
+  transition: background-color 0.2s, border-bottom 0.2s, box-shadow 0.2s;
+}
+
+input:not(:disabled):focus,
+input:not(:disabled):hover,
+select:not(:disabled):focus,
+select:not(:disabled):hover,
+textarea:not(:disabled):focus,
+textarea:not(:disabled):hover {
+  background-color: var(--color-input-bg-light);
+  border-bottom-color: var(--color-accent);
+  box-shadow: 0 2px 4px 0px rgba(0, 0, 0, 0.3),
+    0 2px 4px 0px rgba(0, 0, 0, 0.1) inset;
+}
+
+input:disabled,
+select:disabled,
+textarea:disabled {
+  color: var(--color-input-fg-disabled);
+}
+
+/* Button styles */
+button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-fg-light);
+  border-bottom: 2px solid transparent;
+  background-color: var(--color-accent);
+  user-select: none;
+}
+
+button:not(:disabled) {
+  cursor: pointer;
+  box-shadow: 0 2px 4px 0px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.2s, border-bottom 0.2s, border-radius 0.2s,
+    box-shadow 0.2s;
+}
+
+button:disabled {
+  color: var(--color-input-fg-disabled);
+  background-color: var(--color-button-bg-disabled);
+}
+
+button:not(:disabled):focus,
+button:not(:disabled):hover {
+  background-color: var(--color-accent-light);
+  border-bottom-color: var(--color-button-highlight);
+  box-shadow: 0 2px 4px 0px rgba(0, 0, 0, 0.3);
+}
+
+button:not(:disabled):active {
+  border-bottom-color: var(--color-accent);
+}
+
+button:not(:disabled):active svg.isButton {
+  fill: var(--color-accent);
+  stroke: var(--color-accent);
+}
+
+button.primary {
+  background-color: var(--color-primary);
+}
+
+button.primary:not(:disabled):focus,
+button.primary:not(:disabled):hover {
+  background-color: var(--color-primary-light);
+}
+
+button.primary:not(:disabled):active {
+  border-bottom-color: var(--color-primary);
+}
+
+button.danger {
+  background-color: var(--color-danger);
+}
+
+button.danger:not(:disabled):focus,
+button.danger:not(:disabled):hover {
+  background-color: var(--color-danger-light);
+}
+
+button.danger:not(:disabled):active {
+  border-bottom-color: var(--color-danger);
+}
+
+button.warning {
+  background-color: var(--color-warning);
+}
+
+button.warning:not(:disabled):focus,
+button.warning:not(:disabled):hover {
+  background-color: var(--color-warning-light);
+}
+
+button.warning:not(:disabled):active {
+  border-bottom-color: var(--color-warning);
+}
+
+input[type='range'],
+input[type='range']:not(:disabled):focus,
+input[type='range']:not(:disabled):hover {
+  background: initial;
+  border: initial;
+  box-shadow: initial;
+}
+
+button:disabled {
+  background-color: var(--color-primary);
+}
+
+/**
+ * Custom class-based styles
+ */
+.grid {
+  display: grid;
+  row-gap: var(--spacing);
+  grid-template-columns: 100%;
+}
+
+.input-reset,
+.input-reset:not(:disabled) {
+  border: 0;
+  margin: 0;
+  border-radius: 0;
+  box-shadow: none;
+  transition: none;
+}
+
+.input-reset:not(:disabled):hover,
+.input-reset:not(:disabled):focus {
+  border: 0;
+  box-shadow: none;
+  transition: none;
+}
+
+.label-inline {
+  flex-direction: row;
+  align-items: center;
+}
+
+.label-inline input {
+  margin-bottom: 0;
+}
+
+.label-inline *:first-child {
+  margin-right: 0.2em;
+}
+
+.shadow {
+  box-shadow: 0 2px 4px 0px rgba(0, 0, 0, 0.1);
+}
+
+.sticky-buttons {
+  position: sticky;
+  position: -webkit-sticky;
+  bottom: 0;
+  padding: var(--spacing);
+  display: grid;
+  row-gap: var(--spacing);
+  opacity: 0.95;
+}
+
+.title {
+  color: var(--color-fg-title);
+  font-weight: bold;
+  font-size: 1em;
+}
+
+.subtitle {
+  color: var(--color-fg-subtitle);
+  font-size: 0.9em;
+}
+
+.dot-overflow {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}

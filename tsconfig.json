@@ -1,12 +1,8 @@
 {
+  "extends": "@tsconfig/svelte/tsconfig.json",
+  "include": ["src/**/*"],
+  "exclude": ["node_modules/*", "__sapper__/*", "public/*"],
   "compilerOptions": {
-    "sourceMap": true,
-    "noImplicitAny": true,
-    "resolveJsonModule": true,
-    "esModuleInterop": true,
-    "module": "commonjs",
-    "target": "es2017",
-    "jsx": "react",
-    "typeRoots": ["./node_modules/@types", "./src/types"]
+    "types": ["firefox-webext-browser"]
   }
 }

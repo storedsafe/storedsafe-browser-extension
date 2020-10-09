@@ -1,9 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`<LoadingComponent /> 1`] = `
-"<div class=\\"loading-component\\">
-  <div class=\\"loading-spinner\\">
-    <div class=\\"spinner loading\\"></div>
-  </div>
-</div>"
-`;
