@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { Message, MessageStore } from "../../../stores";
+  import type { MessageStore } from "../../../stores";
   import { getMessage, LocalizedMessage } from "../../../../global/i18n";
 
   import MessageBox from "./MessageBox.svelte";

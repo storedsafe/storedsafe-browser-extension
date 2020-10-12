@@ -35,10 +35,10 @@
    * Copy field value to clipboard.
    * Decrypt first if needed.
    * */
-  function copy() {
-    const exec = (value: string) => navigator.clipboard.writeText(value);
-    if (field.isEncrypted) decrypt().then(exec);
-    else exec(field.value);
+  async function copy() {
+    const exec = async (value: string) => await navigator.clipboard.writeText(value);
+    if (field.isEncrypted) await decrypt();
+    else await exec(field.value);
   }
 </script>
 

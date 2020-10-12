@@ -16,11 +16,14 @@
 
 <style>
   h2 {
-    color: var(--color-danger);
     display: grid;
     grid-template-columns: auto 1fr;
     column-gap: var(--spacing);
     align-items: center;
+  }
+
+  h2 span {
+    color: var(--color-danger);
   }
 
   li + li {

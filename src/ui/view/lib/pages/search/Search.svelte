@@ -23,12 +23,15 @@
     SITES_REMOVE_LOADING_ID,
     messages,
     MessageType,
+    loading,
+    messageStore,
   } from "../../../../stores";
   import { getMessage, LocalizedMessage } from "../../../../../global/i18n";
 
   import ListView from "../../menus/ListView.svelte";
   import SearchItem from "./SearchItem.svelte";
   import Result from "./Result.svelte";
+  import MessageViewer from "../../layout/MessageViewer.svelte";
 
   const dispatch = createEventDispatcher();
 
@@ -66,7 +69,8 @@
     };
   }
 
-  let errorMessageId: number = null;
+  const searchMessages = messageStore();
+
   let selected: string = null;
   let result: StoredSafeObject;
 
@@ -78,29 +82,16 @@
     dispatch("scrollTo", 0);
   }
 
-  function clearErrorMessage(): void {
-    if (errorMessageId !== null) {
-      messages.remove(errorMessageId);
-      errorMessageId = null;
-    }
-  }
-
-  function setErrorMessage(error: string): void {
-    clearErrorMessage();
-    if (errorMessageId !== null) messages.remove(errorMessageId);
-    errorMessageId = messages.add(error, MessageType.ERROR);
-  }
-
   function find(): void {
-    search
-      .search(needle)
-      .then(() => {
-        clearErrorMessage();
+    loading.add(`Search.${needle}`, search.search(needle), {
+      onSuccess() {
         selectResult(null);
-      })
-      .catch((error: Error) => {
-        setErrorMessage(error.message);
-      });
+        searchMessages.clear();
+      },
+      onError(error) {
+        searchMessages.add(error.message, MessageType.ERROR);
+      },
+    });
   }
 
   beforeUpdate(() => {
@@ -124,6 +115,7 @@
 </style>
 
 <section class="grid">
+  <MessageViewer messages={searchMessages} />
   {#if items.length > 0}
     <ListView on:select={handleSelectResult} {selected} {items} />
   {:else}

@@ -355,7 +355,11 @@ export class StoredSafeNetworkError extends StoredSafeAPIError {
   readonly id = NETWORK_ID + 1
   readonly networkError: string
   constructor (error: Error, status?: number) {
-    super(`Network error ${status !== undefined ? `(${status})` : ''}, please verify the URL is reachable and try again.`)
+    super(
+      `Network error ${
+        status !== undefined ? `(${status})` : ''
+      }, please verify the URL is reachable and try again.`
+    )
     this.stack = error.stack
     this.networkError = error.message
   }
@@ -369,7 +373,9 @@ const AUTH_ID = 8000
 export class StoredSafeAuthLoginError extends StoredSafeAPIError {
   readonly id = AUTH_ID + 1
   constructor () {
-    super(`Invalid login username, passphrase, otp or API key, please try again`)
+    super(
+      `Invalid login username, passphrase, otp or API key, please try again`
+    )
   }
 }
 
@@ -380,5 +386,57 @@ export class StoredSafeAuthLogoutError extends StoredSafeAPIError {
   readonly id = AUTH_ID + 2
   constructor (status: number) {
     super(`Logout failed with status (${status}), discarded session.`)
+  }
+}
+
+const OBJECT_ID = 9000
+
+/**
+ * Error occured when searching in StoredSafe.
+ */
+export class StoredSafeSearchError extends StoredSafeAPIError {
+  readonly id = OBJECT_ID + 1
+  constructor (status: number) {
+    super(`Search failed with status (${status}).`)
+  }
+}
+
+/**
+ * Error occured when decrypting object.
+ */
+export class StoredSafeDecryptError extends StoredSafeAPIError {
+  readonly id = OBJECT_ID + 2
+  constructor (status: number) {
+    super(`Decrypt failed with status (${status}).`)
+  }
+}
+
+/**
+ * Error occured when parsing a StoredSafe object.
+ */
+export class StoredSafeParseObjectError extends StoredSafeAPIError {
+  readonly id = OBJECT_ID + 3
+  constructor () {
+    super(`Failed to parse object.`)
+  }
+}
+
+/**
+ * Error occured when editing an object.
+ */
+export class StoredSafeEditError extends StoredSafeAPIError {
+  readonly id = OBJECT_ID + 4
+  constructor (status: number) {
+    super(`Edit failed with status (${status}).`)
+  }
+}
+
+/**
+ * Error occured when deleting an object.
+ */
+export class StoredSafeDeleteError extends StoredSafeAPIError {
+  readonly id = OBJECT_ID + 5
+  constructor (status: number) {
+    super(`Delete failed with status (${status}).`)
   }
 }

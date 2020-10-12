@@ -50,7 +50,6 @@ export async function loginTotp (
   const api = new StoredSafe({ host, apikey })
   try {
     const response = await api.loginTotp(username, passphrase, otp)
-    console.log('LOGIN RESPONSE %o', response)
     if (response.status === 200) {
       await afterLogin(host, parseLogin(response.data))
     } else if (response.status === 403) {

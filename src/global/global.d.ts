@@ -103,6 +103,7 @@ interface StoredSafeField {
   name: string
   title: string
   value?: string
+  type: string
   isEncrypted: boolean
   isPassword?: boolean
   pwgen?: boolean
@@ -113,6 +114,7 @@ interface StoredSafeField {
  * @param id StoredSafe ID of the object.
  * @param templateId StoredSafe ID of the associated template.
  * @param vaultId StoredSafe ID of the containing vault.
+ * @param name Name of object.
  * @param type Template title.
  * @param icon Name of template icon.
  * @param isDecrypted True if the object has been decrypted.

@@ -18,7 +18,7 @@ export function onlineStatus (cb: (online: boolean) => void): () => void {
     if (wasOnline !== isOnline) {
       cb(isOnline)
       wasOnline = isOnline
-      console.log(`Online status changed to ${isOnline}`)
+      console.debug(`Online status changed to ${isOnline}`)
     }
   }
 

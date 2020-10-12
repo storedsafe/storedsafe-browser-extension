@@ -19,6 +19,7 @@
   const setEdit = () => dispatch("set-edit", true);
 
   function fill() {
+    // TODO: Real implementation
     console.log("FILL");
   }
 
@@ -27,14 +28,14 @@
   }
 
   function deleteObject() {
-    search.delete(result.host, result.id);
+    search.delete(result);
   }
 
   async function decrypt(field: string): Promise<string> {
     const exec = (decrypted: StoredSafeObject): string =>
       decrypted.fields.find(({ name }) => name === field).value;
     if (result.isDecrypted) return await Promise.resolve(exec(result));
-    return await search.decrypt(result.host, result.id).then(exec);
+    return await search.decrypt(result).then(exec);
   }
 </script>
 

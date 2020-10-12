@@ -31,7 +31,7 @@
   const cancel = (): void => dispatch("set-edit", false);
 
   function editObject(): void {
-    search.edit(result.host, result.id, changedValues).then(() => {
+    search.edit(result, changedValues).then(() => {
       cancel();
     });
   }
