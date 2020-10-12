@@ -30,6 +30,7 @@ export function keepAlive (): () => void {
       if (!sessions.has(host)) {
         console.debug(`Removing keepalive for ${host}`)
         window.clearInterval(timer)
+        timers.delete(host)
       }
     }
     // Set up new timers
