@@ -5,13 +5,13 @@ import { settings } from '../../global/storage'
  * @param cb Callback for when idle state is reached.
  * @returns Cleanup function to stop subscriptions.
  */
-export function idle (cb: () => void): () => void {
+export function idle (cb: (state: browser.idle.IdleState) => void): () => void {
   /**
    * Wrap the callback function for logging.
    */
-  function onIdle() {
-    cb()
-    console.debug('Idle state triggered, clear sessions')
+  function onIdle(state: browser.idle.IdleState) {
+    cb(state)
+    console.debug(`Idle state changed to ${state}`)
   }
 
   /**
@@ -21,11 +21,13 @@ export function idle (cb: () => void): () => void {
    */
   function setDetectionInterval (intervalSeconds: number) {
     if (intervalSeconds > 0) {
+      console.debug(`Idle interval set to ${intervalSeconds}s (${Math.floor(intervalSeconds / 60)}m)`)
       browser.idle.setDetectionInterval(intervalSeconds)
       if (!browser.idle.onStateChanged.hasListener(onIdle)) {
         browser.idle.onStateChanged.addListener(onIdle)
       }
     } else {
+      console.debug('Removing idle state listener')
       browser.idle.onStateChanged.removeListener(onIdle)
     }
   }

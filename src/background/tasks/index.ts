@@ -1,3 +1,4 @@
 export { idle } from './idle'
-export { keepAlive } from './keepalive'
+export { keepAlive } from './keepAlive'
 export { onlineStatus } from './onlineStatus'
+export { hardTimeout } from './hardTimeout'
