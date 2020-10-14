@@ -55,6 +55,7 @@
     "storage",
     "idle",
     "activeTab",
-    "tabs"
+    "tabs",
+    "alarms"
   ]
 }

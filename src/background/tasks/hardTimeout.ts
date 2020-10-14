@@ -1,53 +1,41 @@
-import { auth } from '../../global/api'
 import { settings, sessions } from '../../global/storage'
+import { ALARM_HARD_TIMEOUT, genAlarmName } from '../constants'
 
 /**
  * Keep timers for hard timeout on sessions.
  * @returns Cleanup function to stop subscriptions.
  */
 export function hardTimeout (): () => void {
-  const timers: Map<
-    string,
-    { timer: number; cb: () => void; createdAt: number }
-  > = new Map()
+  const alarms: Map<string, { name: string; session: Session }> = new Map()
   let maxTokenLife: number = null
-
-  /**
-   * Create callback function to invalidate a StoredSafe session.
-   */
-  function onTimeout (host: string, token: string): () => void {
-    return function () {
-      auth.logout(host, token)
-      console.debug(`Hard timeout, invalidating session for ${host}`)
-    }
-  }
 
   /**
    * Calculate the time in ms before the session should time out.
    * @param createdAt Timestamp when the session was created.
    * @param maxTokenLife Max number of hours the token is allowed to stay alive.
    */
-  function getTimeout (createdAt: number): number {
-    const tokenLife = Date.now() - createdAt
+  function getWhen (createdAt: number): number {
     const maxTokenLifeMs = maxTokenLife * 36e5
-    return maxTokenLifeMs - tokenLife
+    const when = createdAt + maxTokenLifeMs
+    const now = Date.now()
+    return when < now ? now : when
   }
 
   /**
    * Set hard timeout for session if `maxTokenLife` is greater than 0.
-   * @param host StoredSafe host associated with session.
-   * @param cb Callback to invalidate session associated with `host`.
-   * @param createdAt Timestamp when the session was created.
+   * @param host StoredSafe host associated with `session`.
+   * @param session StoredSafe session associated with `host`.
    */
-  function setTimeout (host: string, cb: () => void, createdAt: number) {
+  function setAlarm (host: string, session: Session) {
     if (maxTokenLife > 0) {
-      const timeout = getTimeout(createdAt)
-      console.debug(`Hard timeout for ${host} in ${timeout}ms (${Math.floor(timeout / 6e4)}m)`)
-      timers.set(host, {
-        timer: window.setTimeout(cb, timeout),
-        cb,
-        createdAt
-      })
+      const when = getWhen(session.createdAt)
+      const diff = when - Date.now()
+      console.debug(
+        `Hard timeout for ${host} in ${diff}ms (<${Math.ceil(diff / 6e4)}m)`
+      )
+      const name = genAlarmName(ALARM_HARD_TIMEOUT, host, session.token)
+      browser.alarms.create(name, { when })
+      alarms.set(host, { name, session })
     }
   }
 
@@ -60,9 +48,9 @@ export function hardTimeout (): () => void {
       maxTokenLife = (settings.get('maxTokenLife').value as number) ?? -1
 
       // Update existing timers
-      for (const [host, { timer, cb, createdAt }] of timers) {
-        window.clearTimeout(timer)
-        setTimeout(host, cb, createdAt)
+      for (const [host, { name, session }] of alarms) {
+        browser.alarms.clear(name)
+        setAlarm(host, session)
       }
     }
   }
@@ -73,18 +61,17 @@ export function hardTimeout (): () => void {
    */
   function onSessionsChanged (sessions: Map<string, Session>): void {
     // Clear obsolete timers
-    for (const [host, { timer }] of timers) {
+    for (const [host, { name }] of alarms) {
       if (!sessions.has(host)) {
-        window.clearTimeout(timer)
-        timers.delete(host)
+        browser.alarms.clear(name)
+        alarms.delete(host)
       }
     }
 
     // Set up timers for new sessions
-    for (const [host, { token, createdAt }] of sessions) {
-      if (!timers.has(host)) {
-        const cb = onTimeout(host, token)
-        setTimeout(host, cb, createdAt)
+    for (const [host, session] of sessions) {
+      if (!alarms.has(host)) {
+        setAlarm(host, session)
       }
     }
   }
