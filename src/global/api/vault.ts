@@ -1,12 +1,18 @@
 import StoredSafe, {
   StoredSafeObjectData,
   StoredSafeObject as ResponseObject,
-  StoredSafeTemplate as ResponseTemplate
+  StoredSafeTemplate as ResponseTemplate,
+  StoredSafeVaultsData,
+  StoredSafeTemplateData,
+  StoredSafePoliciesData
 } from 'storedsafe'
 import {
   StoredSafeBaseError,
   StoredSafeDecryptError,
   StoredSafeEditError,
+  StoredSafeGetPoliciesError,
+  StoredSafeGetTemplatesError,
+  StoredSafeGetVaultsError,
   StoredSafeNetworkError,
   StoredSafeParseObjectError,
   StoredSafeSearchError
@@ -33,8 +39,11 @@ function parseResult (
       translation: title,
       encrypted: isEncrypted,
       policy: isPassword,
+      opt,
       type
     }) => {
+      const pwgen = type === 'text-passwdgen'
+      const fieldType = pwgen ? 'text' : type
       const value = isEncrypted
         ? isDecrypted
           ? obj.crypted[name]
@@ -43,10 +52,12 @@ function parseResult (
       return {
         name,
         title,
-        value,
+        type: fieldType,
         isEncrypted,
+        required: !opt,
+        value,
         isPassword,
-        type
+        pwgen
       }
     }
   )
@@ -59,7 +70,7 @@ function parseResult (
     vaultId: obj.groupid,
     name: obj.objectname,
     type: template.info.name,
-    icon: template.info.ico,
+    icon: template.info.ico.replace(/^ico_/, ''),
     isDecrypted,
     fields
   }
@@ -74,10 +85,21 @@ function parseResults (
   host: string,
   data: StoredSafeObjectData
 ): StoredSafeObject[] {
-  return data.OBJECT.map(obj => {
+  const objects: StoredSafeObject[] = []
+  console.log('PARSING %d RESULTS', data.OBJECT.length)
+  for (const obj of data.OBJECT) {
+    console.log('ENTER %o', obj)
     const template = data.TEMPLATES.find(({ id }) => id === obj.templateid)
-    return parseResult(host, obj, template)
-  })
+    // Skip objects with files
+    if (!!obj.fileinfo) continue
+    console.log('NOT FILE')
+    // Skip folders
+    if (template.info.name === 'folder') continue
+    console.log('NOT FOLDER')
+    console.log('PARSING %o', obj)
+    objects.push(parseResult(host, obj, template))
+  }
+  return objects
 }
 
 /**
@@ -91,6 +113,7 @@ export async function search (
   token: string,
   needle: string
 ): Promise<StoredSafeObject[]> {
+  if (needle.length === 0) return []
   const api = new StoredSafe({ host, token })
   try {
     const response = await api.find(needle)
@@ -191,4 +214,103 @@ export async function deleteObject (
     throw new StoredSafeNetworkError(error, error.status)
   }
   return obj
+}
+
+function parseVaults (data: StoredSafeVaultsData): StoredSafeVault[] {
+  return data.VAULTS.map(vault => ({
+    id: vault.id,
+    name: vault.groupname,
+    permissions: Number(vault.status),
+    policyId: vault.policy
+  }))
+}
+
+/**
+ * Get a list of all vaults on the host.
+ * @param host StoredSafe host name.
+ * @param token Token associated with session for `host`.
+ */
+export async function getVaults (host: string, token: string) {
+  const api = new StoredSafe({ host, token })
+  try {
+    const response = await api.listVaults()
+    if (response.status !== 200) {
+      throw new StoredSafeGetVaultsError(response.status)
+    }
+    return parseVaults(response.data)
+  } catch (error) {
+    if (error instanceof StoredSafeBaseError) throw error
+    throw new StoredSafeNetworkError(error, error.status)
+  }
+}
+
+function parseTemplates (data: StoredSafeTemplateData): StoredSafeTemplate[] {
+  const templates = data.TEMPLATE.filter(template => {
+    // Filter out file-type objects
+    if (Object.keys(template.STRUCTURE).includes('file1')) return false
+    // Filter out folders
+    if (template.INFO.name === 'folder') return false
+    return true
+  })
+  return templates.map(template => ({
+    id: template.INFO.id,
+    name: template.INFO.name,
+    icon: template.INFO.ico.replace(/^ico_/, ''),
+    structure: Object.keys(template.STRUCTURE).map(field => {
+      const pwgen = template.STRUCTURE[field].type === 'text-passwdgen'
+      const fieldType = pwgen ? 'text' : template.STRUCTURE[field].type
+      return {
+        name: template.STRUCTURE[field].fieldname,
+        title: template.STRUCTURE[field].translation,
+        type: fieldType,
+        isEncrypted: template.STRUCTURE[field].encrypted,
+        required: !template.STRUCTURE[field].opt,
+        pwgen
+      }
+    })
+  }))
+}
+
+/**
+ * Get a list of all templates on the host.
+ * @param host StoredSafe host name.
+ * @param token Token associated with session for `host`.
+ */
+export async function getTemplates (host: string, token: string) {
+  const api = new StoredSafe({ host, token })
+  try {
+    const response = await api.listTemplates()
+    if (response.status !== 200) {
+      throw new StoredSafeGetTemplatesError(response.status)
+    }
+    return parseTemplates(response.data)
+  } catch (error) {
+    if (error instanceof StoredSafeBaseError) throw error
+    throw new StoredSafeNetworkError(error, error.status)
+  }
+}
+
+function parsePolicies (
+  data: StoredSafePoliciesData
+): StoredSafePasswordPolicy[] {
+  return data.CALLINFO.policies
+}
+
+/**
+ * Get a list of all password policies on the host.
+ * @param host StoredSafe host name.
+ * @param token Token associated with session for `host`.
+ */
+export async function getPolicies (host: string, token: string) {
+  const api = new StoredSafe({ host, token })
+  try {
+    const response = await api.passwordPolicies()
+    if (response.status !== 200) {
+      throw new StoredSafeGetPoliciesError(response.status)
+    }
+    return parsePolicies(response.data)
+  } catch (error) {
+    if (error instanceof StoredSafeBaseError) throw error
+    throw new StoredSafeNetworkError(error, error.status)
+  }
 }

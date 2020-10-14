@@ -94,17 +94,19 @@ interface ExtensionStorage {
  * or a StoredSafe template.
  * @param name Identifying field name.
  * @param title Display title of field.
- * @param value Value of field, if decrypted object.
+ * @param type Input type of field.
  * @param isEncrypted True if the field is an encrypted type.
- * @param isPassword True if the field should be displayed as a password.
- * @param pwgen True if the field should have a password generator.
+ * @param value (optional) Value of field, if decrypted object.
+ * @param isPassword (optional) True if the field should be displayed as a password.
+ * @param pwgen (optional) True if the field should have a password generator.
  * */
 interface StoredSafeField {
   name: string
   title: string
-  value?: string
   type: string
   isEncrypted: boolean
+  required: boolean
+  value?: string
   isPassword?: boolean
   pwgen?: boolean
 }
@@ -134,27 +136,31 @@ interface StoredSafeObject {
 
 /**
  * Rules for password policies.
- * @param id StoredSafe ID for password policy
+ * @param id StoredSafe ID for password policy.
+ * @param name Display name of password policy.
+ * @param ...rules
  */
 interface StoredSafePasswordPolicy {
-  id: string
+  id: number
   name: string
-  min_length?: number
-  max_length?: number
-  min_lowercase_chars?: number
-  max_lowercase_chars?: number
-  min_uppercase_chars?: number
-  max_uppercase_chars?: number
-  disallow_numeric_chars?: boolean
-  disallow_numeric_first?: boolean
-  disallow_numeric_last?: boolean
-  min_numeric_chars?: number
-  max_numeric_chars?: number
-  disallow_nonalphanumeric_chars?: boolean
-  disallow_nonalphanumeric_first?: boolean
-  disallow_nonalphanumeric_last?: boolean
-  min_nonalphanumeric_chars?: number
-  max_nonalphanumeric_chars?: number
+  rules: {
+    min_length?: number
+    max_length?: number
+    min_lowercase_chars?: number
+    max_lowercase_chars?: number
+    min_uppercase_chars?: number
+    max_uppercase_chars?: number
+    disallow_numeric_chars?: boolean
+    disallow_numeric_first?: boolean
+    disallow_numeric_last?: boolean
+    min_numeric_chars?: number
+    max_numeric_chars?: number
+    disallow_nonalphanumeric_chars?: boolean
+    disallow_nonalphanumeric_first?: boolean
+    disallow_nonalphanumeric_last?: boolean
+    min_nonalphanumeric_chars?: number
+    max_nonalphanumeric_chars?: number
+  }
 }
 
 /**

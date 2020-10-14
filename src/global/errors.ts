@@ -440,3 +440,33 @@ export class StoredSafeDeleteError extends StoredSafeAPIError {
     super(`Delete failed with status (${status}).`)
   }
 }
+
+/**
+ * Error occured when fetching vaults.
+ */
+export class StoredSafeGetVaultsError extends StoredSafeAPIError {
+  readonly id = OBJECT_ID + 6
+  constructor (status: number) {
+    super(`Get vaults failed with status (${status}).`)
+  }
+}
+
+/**
+ * Error occured when fetching templates.
+ */
+export class StoredSafeGetTemplatesError extends StoredSafeAPIError {
+  readonly id = OBJECT_ID + 7
+  constructor (status: number) {
+    super(`Get templates failed with status (${status}).`)
+  }
+}
+
+/**
+ * Error occured when fetching password policies.
+ */
+export class StoredSafeGetPoliciesError extends StoredSafeAPIError {
+  readonly id = OBJECT_ID + 8
+  constructor (status: number) {
+    super(`Get password policies failed with status (${status}).`)
+  }
+}

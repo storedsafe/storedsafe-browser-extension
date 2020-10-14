@@ -18,31 +18,29 @@ interface SearchStore extends Readable<StoredSafeObject[]> {
   decrypt: (result: StoredSafeObject) => Promise<StoredSafeObject>
 }
 
-// TODO: Replace with actual results
-let results: StoredSafeObject[] = []
-
 export function searchStore (): SearchStore {
-  let searchResults: StoredSafeObject[] = results
+  let results: StoredSafeObject[] = []
   let currentSessions: Map<string, Session> = null
-  const { subscribe, set, update } = writable<StoredSafeObject[]>(searchResults)
+  const { subscribe, set, update } = writable<StoredSafeObject[]>(results)
 
-  // TODO: Remove or real implementation?
   sessions.subscribe(newSessions => {
     if (newSessions === null) return
     currentSessions = newSessions
-    searchResults = results.filter(({ host }) =>
+    results = results.filter(({ host }) =>
       [...newSessions.keys()].includes(host)
     )
-    set(searchResults)
+    set(results)
   })
 
   return {
     subscribe,
 
     search: async function (needle) {
-      let results: StoredSafeObject[] = []
+      results = []
       for (const [host, { token }] of currentSessions) {
-        results.push(...(await vault.search(host, token, needle)))
+        const siteResults = await vault.search(host, token, needle)
+        console.log('RESULTS: %o', siteResults)
+        results.push(...siteResults)
       }
       set(results)
     },
@@ -55,7 +53,8 @@ export function searchStore (): SearchStore {
         result,
         values
       )
-      update(results => {
+      update(prevResults => {
+        results = [...prevResults]
         const index = results.findIndex(({ id }) => id === result.id)
         results[index] = editResult
         return results
@@ -66,8 +65,9 @@ export function searchStore (): SearchStore {
     delete: async function (result) {
       const { token } = currentSessions.get(result.host)
       const deleteResult = await vault.deleteObject(result.host, token, result)
-      update(results => {
-        return results.filter(({ id }) => id === result.id)
+      update(prevResults => {
+        results = prevResults.filter(({ id }) => id === result.id)
+        return results
       })
       return deleteResult
     },
@@ -79,8 +79,9 @@ export function searchStore (): SearchStore {
         token,
         result
       )
-      update(results => {
-        const index = results.findIndex(({ id }) => id === result.id)
+      update(prevResults => {
+        results = [...prevResults]
+        const index = prevResults.findIndex(({ id }) => id === result.id)
         results[index] = decryptedResult
         return results
       })
