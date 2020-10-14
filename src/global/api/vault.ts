@@ -90,8 +90,8 @@ function parseResults (
     const template = data.TEMPLATES.find(({ id }) => id === obj.templateid)
     // Skip objects with files
     if (!!obj.fileinfo) continue
-    // Skip folders
-    if (template.info.name === 'folder') continue
+    // Skip folders (2)
+    if (template.info.id === '2') continue
     objects.push(parseResult(host, obj, template))
   }
   return objects
