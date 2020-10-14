@@ -28,6 +28,10 @@
     white-space: pre-wrap;
   }
 
+  .password:not(.large) {
+    word-break: break-word;
+  }
+
   .lower {
     color: var(--color-primary);
   }
