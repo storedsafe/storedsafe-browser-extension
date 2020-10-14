@@ -21,7 +21,6 @@
     SESSIONS_LOGOUT_LOADING_ID,
     SITES_ADD_LOADING_ID,
     SITES_REMOVE_LOADING_ID,
-    messages,
     MessageType,
     loading,
     messageStore,
