@@ -39,7 +39,6 @@ export function searchStore (): SearchStore {
       results = []
       for (const [host, { token }] of currentSessions) {
         const siteResults = await vault.search(host, token, needle)
-        console.log('RESULTS: %o', siteResults)
         results.push(...siteResults)
       }
       set(results)

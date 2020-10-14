@@ -15,6 +15,7 @@
   $: vault = $structure
     .get(result.host)
     .vaults.find(({ id }) => id === result.vaultId);
+  $: isFillable = result.fields.findIndex((field) => field.isPassword) !== -1;
 
   const setEdit = () => dispatch("set-edit", true);
 
@@ -40,9 +41,11 @@
 </script>
 
 <section class="grid">
-  <button type="button" on:click={fill}>
-    {getMessage(LocalizedMessage.SEARCH_RESULT_FILL)}
-  </button>
+  {#if isFillable}
+    <button type="button" on:click={fill}>
+      {getMessage(LocalizedMessage.SEARCH_RESULT_FILL)}
+    </button>
+  {/if}
   {#each result.fields as field (field.name)}
     <Field {field} decrypt={() => decrypt(field.name)} />
   {/each}

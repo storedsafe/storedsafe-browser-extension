@@ -86,17 +86,12 @@ function parseResults (
   data: StoredSafeObjectData
 ): StoredSafeObject[] {
   const objects: StoredSafeObject[] = []
-  console.log('PARSING %d RESULTS', data.OBJECT.length)
   for (const obj of data.OBJECT) {
-    console.log('ENTER %o', obj)
     const template = data.TEMPLATES.find(({ id }) => id === obj.templateid)
     // Skip objects with files
     if (!!obj.fileinfo) continue
-    console.log('NOT FILE')
     // Skip folders
     if (template.info.name === 'folder') continue
-    console.log('NOT FOLDER')
-    console.log('PARSING %o', obj)
     objects.push(parseResult(host, obj, template))
   }
   return objects
