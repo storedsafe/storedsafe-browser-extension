@@ -1,6 +1,5 @@
 import { Readable, writable } from 'svelte/store'
 import { vault } from '../../global/api'
-import { deleteObject } from '../../global/api/vault'
 import { sessions } from './browserstorage'
 
 export const SEARCH_LOADING_ID = 'search.find'

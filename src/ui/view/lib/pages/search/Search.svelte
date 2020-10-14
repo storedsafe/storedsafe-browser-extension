@@ -44,6 +44,7 @@
     username?: string;
     host?: string;
     vault: StoredSafeVault;
+    id: string;
   }
 
   function parseSearchItem(
@@ -64,6 +65,7 @@
           ?.value,
         host: showHost ? result.host : null,
         vault,
+        id: result.id
       },
     };
   }

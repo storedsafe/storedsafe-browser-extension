@@ -12,6 +12,7 @@
   export let username: string = "";
   export let host: string = "";
   export let vault: StoredSafeVault;
+  export let id: string;
 </script>
 
 <style>
@@ -53,7 +54,7 @@
 
 <section class:selected class="search-item">
   <article class="text">
-    <span class="title" {title}>{title}</span>
+    <span class="title" title={`${title} (${id})`}>{title}</span>
     {#if !!username}
       <span class="subtitle" title={username}>{username}</span>
     {/if}
