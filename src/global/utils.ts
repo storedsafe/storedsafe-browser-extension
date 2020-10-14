@@ -3,16 +3,13 @@ import { getMessage, LocalizedMessage } from './i18n'
 /**
  * Open a URL in the browser window.
  * @param url URL to visit.
+ * // TODO: Real implementation?
  */
 export async function goto (url: string): Promise<void> {
-  // TODO: Real implementation
-  console.log('GOTO %s', url)
-  if (url !== 'error') {
-    window.open(url)
-    return await Promise.resolve()
-  } else {
-    throw new Error(`Unable to open URL: ${url}`)
-  }
+  // Force external url to HTTPS if not defined
+  if (!url.match(/^\w+:\/\/.*/)) url = `https://${url}`
+  window.open(url)
+  return await Promise.resolve()
 }
 
 /**
@@ -37,7 +34,9 @@ export async function generatePassword (
   console.log('PWGEN %s %o', host, properties)
   if (host !== 'error') {
     const chars = 'abcdefg1234567@!;_-'.split('')
-    const pw: string = [...new Array(16).keys()].map(() => Math.floor(Math.random() * chars.length)).join('')
+    const pw: string = [...new Array(16).keys()]
+      .map(() => Math.floor(Math.random() * chars.length))
+      .join('')
     return Promise.resolve(pw)
   } else {
     throw new Error(`Unable to generate password.`)

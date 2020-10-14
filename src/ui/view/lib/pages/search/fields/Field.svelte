@@ -36,7 +36,8 @@
    * Decrypt first if needed.
    * */
   async function copy() {
-    const exec = async (value: string) => await navigator.clipboard.writeText(value);
+    const exec = async (value: string) =>
+      await navigator.clipboard.writeText(value);
     if (field.isEncrypted) await decrypt();
     else await exec(field.value);
   }
@@ -89,11 +90,11 @@
           {getMessage(LocalizedMessage.RESULT_HIDE)}
         </button>
         {#if field.isPassword}
-        <button class="warning" on:click={toggleLarge}>
-          {#if !large}
-            {getMessage(LocalizedMessage.RESULT_LARGE)}
-          {:else}{getMessage(LocalizedMessage.RESULT_SMALL)}{/if}
-        </button>
+          <button class="warning" on:click={toggleLarge}>
+            {#if !large}
+              {getMessage(LocalizedMessage.RESULT_LARGE)}
+            {:else}{getMessage(LocalizedMessage.RESULT_SMALL)}{/if}
+          </button>
         {/if}
       {/if}
     {/if}
