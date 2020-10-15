@@ -80,7 +80,6 @@ export function hardTimeout (): () => void {
   settings
     .subscribe(onSettingsChanged)
     .then(settings => {
-      console.log('SETTINGS CHANGED %o', settings)
       // Set initial detection interval
       onSettingsChanged(settings)
 

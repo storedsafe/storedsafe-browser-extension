@@ -14,6 +14,7 @@
 
   import ListView from "../../menus/ListView.svelte";
   import GeneralSettings from "./GeneralSettings.svelte";
+  import IgnoreList from "./IgnoreList.svelte";
   import ManageData from "./ManageData.svelte";
   import ManageSites from "./ManageSites.svelte";
   import OptionsItem from "./OptionsItem.svelte";
@@ -91,7 +92,9 @@
       <GeneralSettings />
     {:else if selected === 'data'}
       <ManageData />
-    {:else}
+    {:else if selected === 'ignore'}
+      <IgnoreList />
+    {:else if selected === 'sites'}
       <ManageSites />
     {/if}
   {/if}

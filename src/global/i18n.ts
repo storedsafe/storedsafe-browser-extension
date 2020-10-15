@@ -130,7 +130,11 @@ export enum LocalizedMessage {
   OPTIONS_IGNORE_SUBTITLE = 'OPTIONS_IGNORE_SUBTITLE',
   OPTIONS_IGNORE_TITLE = 'OPTIONS_IGNORE_TITLE',
   OPTIONS_DATA_SUBTITLE = 'OPTIONS_DATA_SUBTITLE',
-  OPTIONS_DATA_TITLE = 'OPTIONS_DATA_TITLE'
+  OPTIONS_DATA_TITLE = 'OPTIONS_DATA_TITLE',
+
+  // Ignore options
+  OPTIONS_IGNORE_EMPTY = 'OPTIONS_IGNORE_EMPTY',
+  OPTIONS_IGNORE_DELETE = 'OPTIONS_IGNORE_DELETE'
 }
 
 /**
@@ -145,10 +149,7 @@ export function getMessage (
 ) {
   subsitutions = subsitutions.map(substitution => substitution + '')
   let message = browser.i18n.getMessage(messageName, subsitutions)
-  if (!message)
-    console.warn(
-      `Missing translation for ${messageName}`
-    )
+  if (!message) console.warn(`Missing translation for ${messageName}`)
   return message
 }
 

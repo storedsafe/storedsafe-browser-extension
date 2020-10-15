@@ -480,5 +480,13 @@
   "LOADING_UNKNOWN_ERROR": {
     "message": "Something went wrong here, please tell us or your administrator what you were doing so we can fix the problem!",
     "description": "User-friendly error when some uncaught error occurs further down the chain."
-  }
+	},
+	"OPTIONS_IGNORE_EMPTY": {
+    "message": "There are no ignored websites.",
+    "description": "Message to be displayed in ignore list settings when the list is empty."
+	},
+	"OPTIONS_IGNORE_DELETE": {
+    "message": "Delete",
+    "description": "Text for button to delete URL from ignore list."
+	}
 }

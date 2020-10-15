@@ -1,5 +1,6 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
+  import { slide } from "svelte/transition";
 
   import type { MessageType } from "../../../stores";
   import { addIcon } from "../../../../global/icons";
@@ -77,7 +78,7 @@
   @component
   Notification box for presenting information that requires extra attention.
 -->
-<article class={`grid ${messageType}`}>
+<article transition:slide class={`grid ${messageType}`}>
   <slot>{messageType}</slot>
   <!-- Show type if there is no message -->
   <button type="button" on:click={handleClose} class="input-reset close">

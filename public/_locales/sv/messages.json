@@ -380,5 +380,11 @@
   },
   "LOADING_UNKNOWN_ERROR": {
     "message": "Något gick fel här, säg gärna till oss eller din administratör vad du gjorde så att vi kan lösa problemet!"
-  }
+	},
+	"OPTIONS_IGNORE_EMPTY": {
+		"message": "Det finns inga ignorerade webbsidor."
+	},
+	"OPTIONS_IGNORE_DELETE": {
+		"message": "Ta bort"
+	}
 }

@@ -97,7 +97,7 @@ export async function remove (url: string): Promise<void> {
     // Get current state
     let ignore = await get()
     // Make sure the URL exists in the list
-    if (ignore.findIndex(ignoreUrl => ignoreUrl === url) !== -1)
+    if (ignore.findIndex(ignoreUrl => ignoreUrl === url) === -1)
       throw new StoredSafeIgnoreRemoveNotFoundError(url)
     // Update ignore list in storage
     ignore = ignore.filter(ignoreUrl => ignoreUrl !== url)
