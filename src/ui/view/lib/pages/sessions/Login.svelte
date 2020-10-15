@@ -1,8 +1,10 @@
 <script lang="ts">
   import {
     loading,
-    messageStore,
+messages,
+        messageStore,
     MessageType,
+    preferences,
     sessions,
   } from "../../../../stores";
   import { getMessage, LocalizedMessage } from "../../../../../global/i18n";
@@ -16,8 +18,9 @@
 
   const loginMessages = messageStore();
 
-  let loginType: LoginType = "totp";
-  let username: string = "";
+  let loginType: LoginType =
+    $preferences.sites.get(site.host)?.loginType ?? "totp";
+  let username: string = $preferences.sites.get(site.host)?.username ?? "";
   let passphrase: string = "";
   let otp: string = "";
   $: keys = passphrase;
@@ -49,7 +52,18 @@
     }
     loading.add(`Login.${loginType}`, promise, {
       onSuccess() {
-        // TODO: Remember username / logintype
+        loading.add(
+          `Login.savePreferences`,
+          preferences.setSitePreferences(site.host, {
+            username: remember ? username : "",
+            loginType,
+          }),
+          {
+            onError(error) {
+              messages.add(error.message, MessageType.ERROR);
+            },
+          }
+        );
       },
       onError(error) {
         loginMessages.add(error.message, MessageType.ERROR);
