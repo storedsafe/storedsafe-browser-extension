@@ -8,7 +8,6 @@
 
 <script lang="ts">
   import { createEventDispatcher, onMount } from "svelte";
-  import { slide } from "svelte/transition";
 
   import { getMessage, LocalizedMessage } from "../../../../../global/i18n";
   import {
@@ -104,20 +103,18 @@
     {/if}
     {#if !!values.templateid && !!templates}
       <!-- Generated fields based on the selected template -->
-      <div transition:slide>
-        <Card>
-          {#each fields as field (field.name)}
-            <label for={field.name}>
-              {field.title}
-              {#if field.type === 'password'}
-                <PasswordInput name={field.name} id={field.name} />
-              {:else}
-                <input type={field.type} name={field.name} id={field.name} />
-              {/if}
-            </label>
-          {/each}
-        </Card>
-      </div>
+      <Card>
+        {#each fields as field (field.name)}
+          <label for={field.name}>
+            {field.title}
+            {#if field.type === 'password'}
+              <PasswordInput name={field.name} id={field.name} />
+            {:else}
+              <input type={field.type} name={field.name} id={field.name} />
+            {/if}
+          </label>
+        {/each}
+      </Card>
     {/if}
     <!-- Submit form to add object to StoredSafe -->
     <div class="sticky-buttons">

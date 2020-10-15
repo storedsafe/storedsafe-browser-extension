@@ -110,9 +110,12 @@
 <section class="grid">
   <form class="site-entry" on:submit|preventDefault={updateSettings}>
     <Card>
-      <h2 title={getMessage(LocalizedMessage.OPTIONS_SITES_USER_TITLE)}>
+      <h2 title={getMessage(LocalizedMessage.SETTINGS_USER_TITLE)}>
         {getMessage(LocalizedMessage.SETTINGS_USER_HEADER)}
       </h2>
+      {#if userFields.length === 0}
+        {getMessage(LocalizedMessage.SETTINGS_USER_ALL_LOCKED)}
+      {/if}
       {#each userFields as [key, field] (key)}
         <label for={key} class:label-inline={!!field.isCheckbox}>
           <span
@@ -141,22 +144,25 @@
           {/if}
         </label>
       {/each}
-      <button type="submit" disabled={!isAltered}>
-        {getMessage(LocalizedMessage.SETTINGS_USER_UPDATE)}
-      </button>
-      <MessageViewer messages={settingsMessages} />
+      {#if userFields.length > 0}
+        <button type="submit" disabled={!isAltered}>
+          {getMessage(LocalizedMessage.SETTINGS_USER_UPDATE)}
+        </button>
+        <MessageViewer messages={settingsMessages} />
+      {/if}
     </Card>
   </form>
   {#if managedFields.length > 0}
     <Card>
-      <h2 title={getMessage(LocalizedMessage.OPTIONS_SITES_USER_TITLE)}>
+      <h2 title={getMessage(LocalizedMessage.SETTINGS_MANAGED_TITLE)}>
         {getMessage(LocalizedMessage.SETTINGS_MANAGED_HEADER)}
       </h2>
       {#each managedFields as [key, field] (field.label)}
         <div class="managed-field">
           <span>{field.label}</span>
-          <span
-            class="managed-field-value">{numbers[key] ?? checkboxes[key]}</span>
+          <span class="managed-field-value">
+            {numbers[key] ?? (checkboxes[key] ? getMessage(LocalizedMessage.SETTINGS_MANAGED_TRUE) : getMessage(LocalizedMessage.SETTINGS_MANAGED_FALSE))}
+          </span>
           {#if !!field.unit}<span class="unit">{field.unit}</span>{/if}
         </div>
       {/each}

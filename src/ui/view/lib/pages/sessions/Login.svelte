@@ -1,8 +1,8 @@
 <script lang="ts">
   import {
     loading,
-messages,
-        messageStore,
+    messages,
+    messageStore,
     MessageType,
     preferences,
     sessions,
@@ -24,7 +24,7 @@ messages,
   let passphrase: string = "";
   let otp: string = "";
   $: keys = passphrase;
-  let remember: boolean = false;
+  let remember: boolean = !!$preferences.sites.get(site.host)?.username;
 
   $: isValidated =
     loginType === "totp"

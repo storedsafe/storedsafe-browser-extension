@@ -8,7 +8,7 @@ import { getMessage, LocalizedMessage } from './i18n'
 export async function goto (url: string): Promise<void> {
   // Force external url to HTTPS if not defined
   if (!url.match(/^\w+:\/\/.*/)) url = `https://${url}`
-  window.open(url)
+  window.open(url, url)
   return await Promise.resolve()
 }
 

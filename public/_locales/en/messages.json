@@ -401,13 +401,24 @@
     "message": "Save",
     "description": "Text on button to update settings."
   },
+  "SETTINGS_USER_ALL_LOCKED": {
+    "message": "All settings are locked by your administrator."
+  },
   "SETTINGS_MANAGED_HEADER": {
-    "message": "Managed settings",
+    "message": "Locked settings",
     "description": "Header for section of general settings managed by organization."
   },
   "SETTINGS_MANAGED_TITLE": {
-    "message": "Settings which are enforced by your organization.",
+    "message": "Settings which are enforced by your administrator.",
     "description": "Hover text for managed settings header."
+  },
+  "SETTINGS_MANAGED_TRUE": {
+    "message": "on",
+    "description": "Translation of checkbox boolean checked value."
+  },
+  "SETTINGS_MANAGED_FALSE": {
+    "message": "off",
+    "description": "Translation of checkbox boolean unchecked value."
   },
 	"OPTIONS_GENERAL_TITLE": {
     "message": "General settings",
@@ -454,11 +465,11 @@
     "description": "Header for managed sites area of options."
   },
   "OPTIONS_SITES_USER_TITLE": {
-    "message": "Sites managed by you.",
+    "message": "Sites added by you.",
     "description": "Hover text for header to user sites area of options."
   },
   "OPTIONS_SITES_MANAGED_TITLE": {
-    "message": "Sites managed by your organization.",
+    "message": "Sites added by your administrator.",
     "description": "Hover text for header to managed sites area of options."
   },
   "OPTIONS_SITES_ADD": {

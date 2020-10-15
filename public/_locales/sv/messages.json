@@ -321,11 +321,20 @@
   "SETTINGS_USER_UPDATE": {
     "message": "Spara"
   },
+  "SETTINGS_USER_ALL_LOCKED": {
+    "message": "Alla inställningar är låsta av din administratör."
+  },
   "SETTINGS_MANAGED_HEADER": {
-    "message": "Managerade inställningar"
+    "message": "Låsta inställningar"
   },
   "SETTINGS_MANAGED_TITLE": {
-    "message": "Forcerade inställningar från din organisation."
+    "message": "Inställningar som är låsta av din administratör."
+  },
+  "SETTINGS_MANAGED_TRUE": {
+    "message": "på"
+  },
+  "SETTINGS_MANAGED_FALSE": {
+    "message": "av"
   },
 	"OPTIONS_GENERAL_TITLE": {
 		"message": "Generella inställningar"
@@ -364,7 +373,7 @@
     "message": "Servrar tillagda av dig."
   },
   "OPTIONS_SITES_MANAGED_TITLE": {
-    "message": "Servrar tillagda av din organisation."
+    "message": "Servrar tillagda av din administratör."
   },
   "OPTIONS_SITES_ADD": {
     "message": "Lägg till"
