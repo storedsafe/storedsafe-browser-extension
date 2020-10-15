@@ -5,7 +5,7 @@ import {
   StoredSafeBaseError,
   StoredSafeNetworkError
 } from '../errors'
-import { sessions } from '../storage'
+import * as sessions from '../storage/sessions'
 
 // TODO: Improved error handling
 

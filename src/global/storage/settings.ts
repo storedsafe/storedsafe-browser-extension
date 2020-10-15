@@ -19,8 +19,8 @@ export interface SettingsField {
   label: string
   title?: string
   unit?: string
+  isCheckbox?: boolean
   attributes: {
-    type: string
     [attr: string]: string | number | boolean
   }
 }
@@ -31,9 +31,8 @@ export const FIELDS = new Map<SettingsFields, SettingsField>([
     {
       label: getMessage(LocalizedMessage.SETTINGS_AUTO_FILL_LABEL),
       title: getMessage(LocalizedMessage.SETTINGS_AUTO_FILL_TITLE),
-      attributes: {
-        type: 'checkbox'
-      }
+      isCheckbox: true,
+      attributes: {}
     }
   ],
   [
@@ -42,7 +41,6 @@ export const FIELDS = new Map<SettingsFields, SettingsField>([
       label: getMessage(LocalizedMessage.SETTINGS_IDLE_MAX_LABEL),
       unit: getMessage(LocalizedMessage.SETTINGS_UNIT_MINUTES),
       attributes: {
-        type: 'number',
         min: 1,
         max: 120
       }
@@ -54,7 +52,6 @@ export const FIELDS = new Map<SettingsFields, SettingsField>([
       label: getMessage(LocalizedMessage.SETTINGS_MAX_TOKEN_LIFE_LABEL),
       unit: getMessage(LocalizedMessage.SETTINGS_UNIT_HOURS),
       attributes: {
-        type: 'number',
         min: 1,
         max: 30
       }
@@ -84,12 +81,13 @@ function merge (
   managedDefaults: Map<string, Setting>,
   sync: Map<string, Setting>
 ): Map<string, Setting> {
-  return new Map([
+  const merged = new Map([
     ...DEFAULT_SETTINGS,
     ...managedDefaults,
     ...sync,
     ...enforced
   ])
+  return merged
 }
 
 const DEFAULT_SETTINGS = parse({
@@ -106,8 +104,7 @@ async function getManagedSettings (): Promise<
 > {
   try {
     const { settings } = await browser.storage.managed.get(STORAGE_KEY)
-    console.log('MANAGED %o', settings)
-    return [parse(settings?.enforced, true), parse(settings?.default)]
+    return [parse(settings?.enforced, true), parse(settings?.defaults)]
   } catch (error) {
     // Log debug message if managed storage fails because of missing manifest.
     if (error.toString().includes('storage manifest')) {
@@ -145,11 +142,13 @@ async function set (settings: Map<string, Setting>): Promise<void> {
   // Convert to serializable format, using null coalescing before converting
   // to array to ensure values are not undefined (causes TypeError).
   // Filter out managed fields.
-  await browser.storage.sync.set({
-    [STORAGE_KEY]: [...(settings ?? [])].filter(
-      ([_key, { managed }]) => !managed
-    )
-  })
+  const newSettings: Record<string, any> = {}
+  for (const [key, { managed, value }] of settings) {
+    if (!managed) {
+      newSettings[key] = value
+    }
+  }
+  await browser.storage.sync.set({ [STORAGE_KEY]: newSettings })
 }
 
 /**
@@ -181,16 +180,16 @@ export function unsubscribe (cb: OnAreaChanged<Map<string, Setting>>): void {
  * @throws {StoredSafeSettingsSetManagedValueError}
  */
 export async function setValues (
-  values: Record<string, string | number | boolean>
-) {
+  ...values: [string, number | boolean][]
+): Promise<void> {
   try {
     const settings = await get()
-    for (const key of Object.keys(values)) {
+    for (const [key, value] of values) {
       if (!settings.has(key))
         throw new StoredSafeSettingsSetValueNotFoundError(key)
       else if (settings.get(key).managed)
         throw new StoredSafeSettingsSetManagedValueError(key)
-      settings.get(key).value = values[key]
+      settings.get(key).value = value
     }
     await set(settings)
   } catch (error) {
@@ -227,7 +226,7 @@ export async function clearValue (key: string) {
  */
 export async function clear () {
   try {
-    await browser.storage.local.remove(STORAGE_KEY)
+    await browser.storage.sync.remove(STORAGE_KEY)
   } catch (error) {
     throw new StoredSafeSettingsClearError(error)
   }
@@ -260,8 +259,8 @@ browser.storage.onChanged.addListener((changes, area) => {
       // Changes include managed, but not sync; fetch sync
       getSyncSettings().then(sync => {
         notify(
-          merge(parse(newValue.enforced), parse(newValue.default), sync),
-          merge(parse(oldValue.enforced), parse(oldValue.default), sync)
+          merge(parse(newValue.enforced), parse(newValue.defaults), sync),
+          merge(parse(oldValue.enforced), parse(oldValue.defaults), sync)
         )
       })
     }

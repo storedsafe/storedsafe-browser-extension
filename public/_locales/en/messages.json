@@ -365,62 +365,82 @@
     "message": "Small text",
     "description": "Text for button to revert passwords to small text format."
   },
-	"SETTINGS_AUTO_FILL_LABEL": {
+  "SETTINGS_AUTO_FILL_LABEL": {
     "message": "Auto fill",
     "description": "Label for auto fill settings input."
-	},
-	"SETTINGS_AUTO_FILL_TITLE": {
+  },
+  "SETTINGS_AUTO_FILL_TITLE": {
     "message": "Automatically fill forms on webpages you visit.",
     "description": "Hover text for auto fill settings input."
-	},
-	"SETTINGS_IDLE_MAX_LABEL": {
-		"message": "Logout after being idle for",
+  },
+  "SETTINGS_IDLE_MAX_LABEL": {
+    "message": "Logout after being idle for",
     "description": "Label for idle max settings input."
-	},
-	"SETTINGS_MAX_TOKEN_LIFE_LABEL": {
+  },
+  "SETTINGS_MAX_TOKEN_LIFE_LABEL": {
     "message": "Logout after being online for",
     "description": "Label for max token life settings input."
-	},
-	"SETTINGS_UNIT_MINUTES": {
+  },
+  "SETTINGS_UNIT_MINUTES": {
     "message": "minutes",
     "description": "Descriptive unit for number type settings input."
-	},
-	"SETTINGS_UNIT_HOURS": {
-		"message": "hours",
+  },
+  "SETTINGS_UNIT_HOURS": {
+    "message": "hours",
     "description": "Descriptive unit for number type settings input."
   },
+  "SETTINGS_USER_HEADER": {
+    "message": "User settings",
+    "description": "Header for section of general setting where user can edit settings."
+  },
+  "SETTINGS_USER_TITLE": {
+    "message": "Settings which can be adjusted by you.",
+    "description": "Hover text for user settings header."
+  },
+  "SETTINGS_USER_UPDATE": {
+    "message": "Save",
+    "description": "Text on button to update settings."
+  },
+  "SETTINGS_MANAGED_HEADER": {
+    "message": "Managed settings",
+    "description": "Header for section of general settings managed by organization."
+  },
+  "SETTINGS_MANAGED_TITLE": {
+    "message": "Settings which are enforced by your organization.",
+    "description": "Hover text for managed settings header."
+  },
 	"OPTIONS_GENERAL_TITLE": {
-    "message": "Generel settings",
+    "message": "General settings",
     "description": "Title for options menu item to open general settings."
-	},
-	"OPTIONS_GENERAL_SUBTITLE": {
-		"message": "How the extension should behave",
+  },
+  "OPTIONS_GENERAL_SUBTITLE": {
+    "message": "How the extension should behave",
     "description": "Subtitle for options menu item to open general settings."
-	},
-	"OPTIONS_SITES_TITLE": {
-		"message": "StoredSafe sites",
+  },
+  "OPTIONS_SITES_TITLE": {
+    "message": "StoredSafe sites",
     "description": "Title for options menu item to manage sites."
-	},
-	"OPTIONS_SITES_SUBTITLE": {
-		"message": "Manage available StoredSafe hosts",
+  },
+  "OPTIONS_SITES_SUBTITLE": {
+    "message": "Manage available StoredSafe hosts",
     "description": "Subtitle for options menu item to manage sites."
-	},
-	"OPTIONS_IGNORE_TITLE": {
+  },
+  "OPTIONS_IGNORE_TITLE": {
     "message": "Ignored websites",
     "description": "Title for options menu item to manage ignore list."
-	},
-	"OPTIONS_IGNORE_SUBTITLE": {
+  },
+  "OPTIONS_IGNORE_SUBTITLE": {
     "message": "Websites that shouldn't be saved by StoredSafe",
     "description": "Subtitle for options menu item to manage ignore list."
-	},
-	"OPTIONS_DATA_TITLE": {
+  },
+  "OPTIONS_DATA_TITLE": {
     "message": "Manage data",
     "description": "Title for options menu item to manage extension data."
-	},
-	"OPTIONS_DATA_SUBTITLE": {
-		"message": "See and clear extension data",
+  },
+  "OPTIONS_DATA_SUBTITLE": {
+    "message": "See and clear extension data",
     "description": "Subtitle for options menu item to manage extension data."
-	},
+  },
   "OPTIONS_SITES_ADD_HEADER": {
     "message": "Add a new site",
     "description": "Header for add site area of options."

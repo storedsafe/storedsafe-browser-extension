@@ -39,7 +39,7 @@ interface SessionsStore extends Readable<Map<string, Session>> {
    * @param host StoredSafe host to logout from.
    * @param token Token associated with `host` session.
    */
-  logout: (host: string, token: string) => Promise<void>,
+  logout: (host: string, token: string) => Promise<void>
 
   /**
    * Check the validity of the StoredSafe `token` associated the `host` session,

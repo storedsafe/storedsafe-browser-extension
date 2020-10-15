@@ -8,10 +8,13 @@
     storedSafeIcon,
     warningIcon,
   } from "../../../../../global/icons";
+  import { messages } from "../../../../stores";
 
   import type { ListItem } from "../../menus/ListView";
 
   import ListView from "../../menus/ListView.svelte";
+  import GeneralSettings from "./GeneralSettings.svelte";
+  import ManageData from "./ManageData.svelte";
   import ManageSites from "./ManageSites.svelte";
   import OptionsItem from "./OptionsItem.svelte";
 
@@ -66,6 +69,7 @@
   $: selectedItem = items.find(({ name }) => name === selected);
 
   function handleSelectOptions(e: CustomEvent<string>) {
+    messages.clear();
     selected = e.detail;
     if (selected !== null) dispatch("scrollTo", 0);
   }
@@ -83,6 +87,12 @@
     <ListView on:select={handleSelectOptions} {selected} {items} />
   </div>
   {#if !!selectedItem}
-    <ManageSites />
+    {#if selected === 'general'}
+      <GeneralSettings />
+    {:else if selected === 'data'}
+      <ManageData />
+    {:else}
+      <ManageSites />
+    {/if}
   {/if}
 </section>

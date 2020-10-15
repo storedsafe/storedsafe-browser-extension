@@ -137,8 +137,7 @@ export async function setAutoFillPreferences (
 }
 
 /**
- * Clear site preferences for `host`.
- * @param host StoredSafe host name.
+ * Clear all autofill preferences.
  * @throws {StoredSafeGetPreferencesError}
  * @throws {StoredSafeClearAutoFillPreferencesError}
  */

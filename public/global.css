@@ -283,14 +283,11 @@ button:disabled {
 .label-inline {
   flex-direction: row;
   align-items: center;
+  column-gap: var(--spacing);
 }
 
 .label-inline input {
   margin-bottom: 0;
-}
-
-.label-inline *:first-child {
-  margin-right: 0.2em;
 }
 
 .shadow {

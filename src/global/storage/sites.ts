@@ -1,3 +1,5 @@
+import * as sessionsStorage from './sessions'
+import { auth } from '../api'
 import {
   StoredSafeSitesAddDuplicateError,
   StoredSafeSitesAddError,
@@ -130,6 +132,9 @@ export async function remove (host: string): Promise<void> {
     // Make sure the URL exists in the list
     if (sites.findIndex(({ host }) => host === host) === -1)
       throw new StoredSafeSitesRemoveNotFoundError(host)
+    // Invalidate any existing sessions for site.
+    const sessions = await sessionsStorage.get()
+    if (sessions.has(host)) await auth.logout(host, sessions.get(host).token)
     // Update sites in storage
     sites = sites.filter(({ host: siteHost }) => siteHost !== host)
     await set(sites)
@@ -151,6 +156,13 @@ export async function remove (host: string): Promise<void> {
  */
 export async function clear (): Promise<void> {
   try {
+    const sites = await get()
+    const sessions = await sessionsStorage.get()
+    // Invalidate out related sessions
+    for (const site of sites) {
+      if (!site.managed && sessions.has(site.host))
+        await auth.logout(site.host, sessions.get(site.host).token)
+    }
     await browser.storage.sync.remove(STORAGE_KEY)
   } catch (error) {
     throw new StoredSafeSitesClearError(error)

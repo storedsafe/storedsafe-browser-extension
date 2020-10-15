@@ -312,6 +312,21 @@
 	"SETTINGS_UNIT_HOURS": {
 		"message": "timmar"
 	},
+  "SETTINGS_USER_HEADER": {
+    "message": "Användarinställningar"
+  },
+  "SETTINGS_USER_TITLE": {
+    "message": "Inställningar som kan justeras av dig."
+  },
+  "SETTINGS_USER_UPDATE": {
+    "message": "Spara"
+  },
+  "SETTINGS_MANAGED_HEADER": {
+    "message": "Managerade inställningar"
+  },
+  "SETTINGS_MANAGED_TITLE": {
+    "message": "Forcerade inställningar från din organisation."
+  },
 	"OPTIONS_GENERAL_TITLE": {
 		"message": "Generella inställningar"
 	},
@@ -328,7 +343,7 @@
 		"message": "Ignorerade webbsidor"
 	},
 	"OPTIONS_IGNORE_SUBTITLE": {
-		"message": "Sidor some inte ska sparas av StoredSafe"
+		"message": "Sidor som inte ska sparas av StoredSafe"
 	},
 	"OPTIONS_DATA_TITLE": {
 		"message": "Hantera data"

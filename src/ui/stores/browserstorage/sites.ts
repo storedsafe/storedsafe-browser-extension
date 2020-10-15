@@ -14,10 +14,15 @@ interface SitesStore extends Readable<Site[]> {
   add: (host: string, apikey: string) => Promise<void>
 
   /**
-   * Invalidate the StoredSafe token associated with the host session.
-   * @param host StoredSafe host to logout from.
+   * Remove a StoredSafe site and invalidate any associated session.
+   * @param host StoredSafe host to remove.
    */
   remove: (host: string) => Promise<void>
+
+  /**
+   * Clear all user sites and invalidate any associated sessions.
+   */
+  clear: () => Promise<void>
 }
 
 function sitesStore (): SitesStore {
@@ -29,7 +34,8 @@ function sitesStore (): SitesStore {
   return {
     subscribe,
     add: sitesStorage.add,
-    remove: sitesStorage.remove
+    remove: sitesStorage.remove,
+    clear: sitesStorage.clear
   }
 }
 

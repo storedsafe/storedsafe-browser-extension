@@ -13,16 +13,10 @@ export enum MessageType {
  * How long the message should be displayed.
  */
 export enum Duration {
-  NO_LIMIT,
-  SHORT,
-  MEDIUM,
-  LONG
-}
-
-const durations = {
-  [Duration.SHORT]: 3e3,
-  [Duration.MEDIUM]: 6e3,
-  [Duration.LONG]: 12e5
+  NO_LIMIT = -1,
+  SHORT = 2e3,
+  MEDIUM = 4e3,
+  LONG = 12e5
 }
 
 /**
@@ -35,7 +29,7 @@ export interface Message {
 }
 
 export interface MessageStore extends Readable<Message[]> {
-  add: (message: any, messageType: MessageType, duration?: Duration) => number
+  add: (message: any, messageType: MessageType, duration?: number) => number
   remove: (id: number | CustomEvent<number>) => void
   clear: () => void
 }
@@ -65,7 +59,7 @@ export function messageStore (): MessageStore {
       if (duration !== Duration.NO_LIMIT) {
         timers.set(
           id,
-          window.setTimeout(() => this.remove(id), durations[duration])
+          window.setTimeout(() => this.remove(id), duration)
         )
       }
       return id

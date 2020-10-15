@@ -6,7 +6,7 @@
  * @param managed True if readonly (from managed storage).
  * */
 interface Setting {
-  value: string | number | boolean
+  value: number | boolean
   managed: boolean
 }
 

@@ -242,11 +242,11 @@ export class StoredSafeSettingsSetManagedValueError extends StoredSafeExtensionE
 /**
  * Error occured when setting a settings value.
  */
-export class StoredSafeSettingsSetValueError extends StoredSafeExtensionError {
+export class StoredSafeSettingsSetValuesError extends StoredSafeExtensionError {
   readonly id = SETTINGS_ID + 4
-  constructor (key: string, value: any, error: Error) {
+  constructor (error: Error) {
     super(
-      `Error setting '${key}' to '${value}' (${typeof value}) in settings`,
+      `Error updating settings`,
       error
     )
   }

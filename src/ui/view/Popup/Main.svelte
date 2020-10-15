@@ -39,7 +39,7 @@
    * Set the active page and clear messages.
    * */
   function setPage(newPage: Page) {
-    // messages = [];
+    messages.clear()
     !!content && (content.scrollTop = 0);
     if (page === Page.DEBUG && page === newPage) {
       // No menu for debug, revert to default selection to toggle

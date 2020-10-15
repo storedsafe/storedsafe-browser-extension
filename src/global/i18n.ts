@@ -104,6 +104,10 @@ export enum LocalizedMessage {
   SETTINGS_UNIT_MINUTES = 'SETTINGS_UNIT_MINUTES',
   SETTINGS_UNIT_HOURS = 'SETTINGS_UNIT_HOURS',
 
+  SETTINGS_USER_HEADER = 'SETTINGS_USER_HEADER',
+  SETTINGS_USER_UPDATE = 'SETTINGS_USER_UPDATE',
+  SETTINGS_MANAGED_HEADER = 'SETTINGS_MANAGED_HEADER',
+
   // Loading
   LOADING_UNKNOWN_ERROR = 'LOADING_UNKNOWN_ERROR',
 
@@ -143,7 +147,7 @@ export function getMessage (
   let message = browser.i18n.getMessage(messageName, subsitutions)
   if (!message)
     console.warn(
-      `Missing translation for ${messageName} (${browser.i18n.getUILanguage()})`
+      `Missing translation for ${messageName}`
     )
   return message
 }
