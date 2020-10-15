@@ -1,6 +1,6 @@
 import {
   StoredSafeSettingsGetError,
-  StoredSafeSettingsSetValueError,
+  StoredSafeSettingsSetValuesError,
   StoredSafeSettingsClearError,
   StoredSafeSettingsClearValueError,
   StoredSafeSettingsSetValueNotFoundError,
@@ -9,13 +9,13 @@ import {
 import { getMessage, LocalizedMessage } from '../i18n'
 import type { OnAreaChanged } from './StorageArea'
 
-enum SettingsFields {
+export enum SettingsFields {
   IDLE_MAX = 'idleMax',
   AUTO_FILL = 'autoFill',
   MAX_TOKEN_LIFE = 'maxTokenLife'
 }
 
-interface SettingsField {
+export interface SettingsField {
   label: string
   title?: string
   unit?: string
@@ -62,7 +62,7 @@ export const FIELDS = new Map<SettingsFields, SettingsField>([
   ]
 ])
 
-const STORAGE_KEY = 'sessions'
+const STORAGE_KEY = 'settings'
 const EMPTY_STATE: Record<string, any> = {}
 
 let listeners: OnAreaChanged<Map<string, Setting>>[] = []
@@ -106,10 +106,8 @@ async function getManagedSettings (): Promise<
 > {
   try {
     const { settings } = await browser.storage.managed.get(STORAGE_KEY)
-    return [
-      parse(settings?.enforced, true),
-      parse(settings?.default)
-    ]
+    console.log('MANAGED %o', settings)
+    return [parse(settings?.enforced, true), parse(settings?.default)]
   } catch (error) {
     // Log debug message if managed storage fails because of missing manifest.
     if (error.toString().includes('storage manifest')) {
@@ -176,21 +174,24 @@ export function unsubscribe (cb: OnAreaChanged<Map<string, Setting>>): void {
 }
 
 /**
- * Set a value in user settings.
- * @param key Settings field key
- * @param value Settings field value
+ * Set one or more values in user settings.
+ * @param values Key-value settings pairs.
  * @throws {StoredSafeSettingsGetError}
  * @throws {StoredSafeSettingsSetValueNotFoundError}
  * @throws {StoredSafeSettingsSetManagedValueError}
  */
-export async function setValue (key: string, value: string | number | boolean) {
+export async function setValues (
+  values: Record<string, string | number | boolean>
+) {
   try {
     const settings = await get()
-    if (!settings.has(key))
-      throw new StoredSafeSettingsSetValueNotFoundError(key)
-    else if (settings.get(key).managed)
-      throw new StoredSafeSettingsSetManagedValueError(key)
-    settings.get(key).value = value
+    for (const key of Object.keys(values)) {
+      if (!settings.has(key))
+        throw new StoredSafeSettingsSetValueNotFoundError(key)
+      else if (settings.get(key).managed)
+        throw new StoredSafeSettingsSetManagedValueError(key)
+      settings.get(key).value = values[key]
+    }
     await set(settings)
   } catch (error) {
     if (
@@ -199,7 +200,7 @@ export async function setValue (key: string, value: string | number | boolean) {
       error instanceof StoredSafeSettingsSetManagedValueError
     )
       throw error
-    throw new StoredSafeSettingsSetValueError(key, value, error)
+    throw new StoredSafeSettingsSetValuesError(error)
   }
 }
 
