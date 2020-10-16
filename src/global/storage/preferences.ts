@@ -1,8 +1,10 @@
 import {
+  StoredSafeClearAddPreferencesError,
   StoredSafeClearAutoFillPreferencesError,
   StoredSafeClearPreferencesError,
   StoredSafeClearSitePreferencesError,
   StoredSafeGetPreferencesError,
+  StoredSafeSetAddPreferencesError,
   StoredSafeSetAutoFillPreferencesError,
   StoredSafeSetSitePreferencesError
 } from '../errors'
@@ -10,10 +12,15 @@ import type { OnAreaChanged } from './StorageArea'
 
 const STORAGE_KEY = 'preferences'
 type SerializablePreferences = {
+  add: AddPreferences
   autoFill: [string, AutoFillPreferences][]
   sites: [string, SitePreferences][]
 }
 const EMPTY_STATE: SerializablePreferences = {
+  add: {
+    lastHost: null,
+    hosts: {}
+  },
   autoFill: null,
   sites: null
 }
@@ -23,6 +30,7 @@ let listeners: OnAreaChanged<Preferences>[] = []
 function parse (preferences: SerializablePreferences): Preferences {
   preferences = preferences ?? EMPTY_STATE
   return {
+    add: preferences.add,
     sites: new Map(preferences?.sites),
     autoFill: new Map(preferences?.autoFill)
   }
@@ -45,11 +53,12 @@ export async function get (): Promise<Preferences> {
   }
 }
 
-async function set ({ sites, autoFill }: Preferences): Promise<void> {
+async function set ({ add, sites, autoFill }: Preferences): Promise<void> {
   // Convert to serializable format, using null coalescing before converting
   // to array to ensure values are not undefined (causes TypeError).
   await browser.storage.local.set({
     [STORAGE_KEY]: {
+      add,
       sites: [...(sites ?? [])],
       autoFill: [...(autoFill ?? [])]
     }
@@ -75,6 +84,46 @@ export async function subscribe (
  */
 export function unsubscribe (cb: OnAreaChanged<Preferences>): void {
   listeners = listeners.filter(listener => listener !== cb)
+}
+
+/**
+ * Update preferences for adding objects to StoredSafe.
+ * @param host Name of StoredSafe host used.
+ * @param vaultId StoredSafe ID of vault used.
+ * @throws {StoredSafeGetPreferencesError}
+ * @throws {StoredSafeSetAddPreferencesError}
+ */
+export async function setAddPreferences (host: string, vaultId: string) {
+  try {
+    let { add, ...preferences } = await get()
+    add = {
+      lastHost: host,
+      hosts: {
+        ...add?.hosts,
+        [host]: vaultId
+      }
+    }
+    console.log('PREFERENCES %o', { ...preferences, add })
+    await set({ ...preferences, add })
+  } catch (error) {
+    if (error instanceof StoredSafeGetPreferencesError) throw error
+    throw new StoredSafeSetAddPreferencesError(error)
+  }
+}
+
+/**
+ * Clear all site preferences.
+ * @throws {StoredSafeGetPreferencesError}
+ * @throws {StoredSafeClearAddPreferencesError}
+ */
+export async function clearAddPreferences () {
+  try {
+    const { add, ...preferences } = await get()
+    await set({ ...preferences })
+  } catch (error) {
+    if (error instanceof StoredSafeGetPreferencesError) throw error
+    throw new StoredSafeClearAddPreferencesError(error)
+  }
 }
 
 /**

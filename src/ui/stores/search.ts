@@ -64,7 +64,7 @@ export function searchStore (): SearchStore {
       const { token } = currentSessions.get(result.host)
       const deleteResult = await vault.deleteObject(result.host, token, result)
       update(prevResults => {
-        results = prevResults.filter(({ id }) => id === result.id)
+        results = prevResults.filter(({ id }) => id !== result.id)
         return results
       })
       return deleteResult

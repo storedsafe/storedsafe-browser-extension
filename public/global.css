@@ -165,6 +165,10 @@ textarea:disabled {
   color: var(--color-input-fg-disabled);
 }
 
+input[type='range'] {
+  padding: 0;
+}
+
 /* Button styles */
 button {
   display: flex;

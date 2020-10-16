@@ -7,6 +7,7 @@ import StoredSafe, {
   StoredSafePoliciesData
 } from 'storedsafe'
 import {
+  StoredSafeAddObjectError,
   StoredSafeBaseError,
   StoredSafeDecryptError,
   StoredSafeEditError,
@@ -40,7 +41,10 @@ function parseResult (
       encrypted: isEncrypted,
       policy: isPassword,
       opt,
-      type
+      type,
+      placeholder,
+      options,
+      options_default
     }) => {
       const pwgen = type === 'text-passwdgen'
       const fieldType = pwgen ? 'text' : type
@@ -57,7 +61,10 @@ function parseResult (
         required: !opt,
         value,
         isPassword,
-        pwgen
+        pwgen,
+        placeholder,
+        options,
+        options_default
       }
     }
   )
@@ -244,7 +251,7 @@ function parseTemplates (data: StoredSafeTemplateData): StoredSafeTemplate[] {
     // Filter out file-type objects
     if (Object.keys(template.STRUCTURE).includes('file1')) return false
     // Filter out folders
-    if (template.INFO.name === 'folder') return false
+    if (template.INFO.id === '2') return false
     return true
   })
   return templates.map(template => ({
@@ -253,13 +260,17 @@ function parseTemplates (data: StoredSafeTemplateData): StoredSafeTemplate[] {
     icon: template.INFO.ico.replace(/^ico_/, ''),
     structure: Object.keys(template.STRUCTURE).map(field => {
       const pwgen = template.STRUCTURE[field].type === 'text-passwdgen'
-      const fieldType = pwgen ? 'text' : template.STRUCTURE[field].type
+      let fieldType: string = template.STRUCTURE[field].type
+      if (pwgen) fieldType = 'text'
       return {
-        name: template.STRUCTURE[field].fieldname,
+        name: field,
         title: template.STRUCTURE[field].translation,
         type: fieldType,
         isEncrypted: template.STRUCTURE[field].encrypted,
         required: !template.STRUCTURE[field].opt,
+        options: template.STRUCTURE[field].options,
+        options_default: template.STRUCTURE[field].options_default,
+        placeholder: template.STRUCTURE[field].placeholder,
         pwgen
       }
     })
@@ -304,6 +315,26 @@ export async function getPolicies (host: string, token: string) {
       throw new StoredSafeGetPoliciesError(response.status)
     }
     return parsePolicies(response.data)
+  } catch (error) {
+    if (error instanceof StoredSafeBaseError) throw error
+    throw new StoredSafeNetworkError(error, error.status)
+  }
+}
+
+/**
+ * Add an object to StoredSafe.
+ * @param host StoredSafe host name.
+ * @param token Token associated with session for `host`.
+ * @param params Object data.
+ * @see https://developer.storedsafe.com/objects/create_object.html
+ */
+export async function addObject (host: string, token: string, params: object) {
+  const api = new StoredSafe({ host, token })
+  try {
+    const response = await api.createObject(params)
+    if (response.status !== 200) {
+      throw new StoredSafeAddObjectError(response.status)
+    }
   } catch (error) {
     if (error instanceof StoredSafeBaseError) throw error
     throw new StoredSafeNetworkError(error, error.status)

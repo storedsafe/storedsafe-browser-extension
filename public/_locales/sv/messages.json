@@ -68,6 +68,9 @@
 	"ADD_CREATE": {
 		"message": "Skapa objekt"
 	},
+  "ADD_SUCCESS": {
+    "message": "Objekt tillagt i StoredSafe!"
+  },
 	"LOADING_TITLE": {
 		"message": "Laddar"
 	},

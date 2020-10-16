@@ -1,14 +1,16 @@
 <script lang="ts">
-import { createEventDispatcher } from "svelte";
+  import { createEventDispatcher } from "svelte";
 
   import { pwgenIcon } from "../../../../global/icons";
 
   import Icon from "./Icon.svelte";
 
-  const dispatch = createEventDispatcher()
+  export let value: string;
+
+  const dispatch = createEventDispatcher();
 
   function generatePassword() {
-    dispatch('pwgen')
+    dispatch("pwgen");
   }
 </script>
 
@@ -31,7 +33,7 @@ import { createEventDispatcher } from "svelte";
 </style>
 
 <article class="password-field">
-  <input class="password" type="password" {...$$restProps} />
+  <input class="password" type="password" bind:value {...$$restProps} />
   <button type="button" class="pwgen" on:click={generatePassword}>
     <Icon d={pwgenIcon} size="1.4em" />
   </button>

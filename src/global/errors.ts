@@ -145,6 +145,26 @@ export class StoredSafeClearPreferencesError extends StoredSafeExtensionError {
   }
 }
 
+/**
+ * Error occured when updating add preferences.
+ */
+export class StoredSafeSetAddPreferencesError extends StoredSafeExtensionError {
+  readonly id = PREFERENCES_ID + 2
+  constructor (error: Error) {
+    super(`Error setting add preferences`, error)
+  }
+}
+
+/**
+ * Error occured when clearing add preferences.
+ */
+export class StoredSafeClearAddPreferencesError extends StoredSafeExtensionError {
+  readonly id = PREFERENCES_ID + 6
+  constructor (error: Error) {
+    super(`Error clearing add preferences`, error)
+  }
+}
+
 const SESSIONS_ID = 3000
 
 /**
@@ -245,10 +265,7 @@ export class StoredSafeSettingsSetManagedValueError extends StoredSafeExtensionE
 export class StoredSafeSettingsSetValuesError extends StoredSafeExtensionError {
   readonly id = SETTINGS_ID + 4
   constructor (error: Error) {
-    super(
-      `Error updating settings`,
-      error
-    )
+    super(`Error updating settings`, error)
   }
 }
 
@@ -468,5 +485,15 @@ export class StoredSafeGetPoliciesError extends StoredSafeAPIError {
   readonly id = OBJECT_ID + 8
   constructor (status: number) {
     super(`Get password policies failed with status (${status}).`)
+  }
+}
+
+/**
+ * Error occured when fetching password policies.
+ */
+export class StoredSafeAddObjectError extends StoredSafeAPIError {
+  readonly id = OBJECT_ID + 9
+  constructor (status: number) {
+    super(`Add object failed with status (${status}).`)
   }
 }

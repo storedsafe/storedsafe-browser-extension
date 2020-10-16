@@ -46,20 +46,25 @@ function structureStore (): StructureStore {
       vault.getTemplates(host, token),
       vault.getPolicies(host, token)
     ]).then(([vaults, templates, policies]) => {
-      update(
-        structure =>
-          new Map([
-            ...structure,
-            [
-              host,
-              {
-                vaults,
-                templates,
-                policies
-              }
-            ]
-          ])
-      )
+      update(structure => {
+        const newStructure: [string, StoredSafeStructure][] = [
+          ...structure,
+          [
+            host,
+            {
+              vaults,
+              templates,
+              policies
+            }
+          ]
+        ]
+        // Sort structure to ensure consistent order
+        return new Map(
+          newStructure.sort(([a], [b]) =>
+            a.toUpperCase() < b.toUpperCase() ? -1 : 1
+          )
+        )
+      })
     })
   }
 

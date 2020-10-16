@@ -41,6 +41,18 @@ interface Session {
 type LoginType = 'totp' | 'yubikey'
 
 /**
+ * Preferences for adding new objects to StoredSafe.
+ * @param lastHost StoredSafe host last used for add.
+ * @param hosts Mapping of hosts to last used vault IDs.
+ * */
+interface AddPreferences {
+  lastHost: string,
+  hosts: {
+    [host: string]: string // vaultId
+  }
+}
+
+/**
  * Preferences for a single site.
  * @param username Saved username.
  * @param loginType Last used login type.
@@ -62,10 +74,12 @@ interface AutoFillPreferences {
 
 /**
  * Preferences based on user interaction.
- * @param sites Preferences per host.
- * @param autoFill Preferences for auto fill.
+ * @param add (optional) Preferences for adding object to StoredSafe.
+ * @param sites (optional) Preferences per host.
+ * @param autoFill (optional) Preferences for auto fill.
  * */
 interface Preferences {
+  add?: AddPreferences
   sites?: Map<string, SitePreferences>
   autoFill?: Map<string, AutoFillPreferences>
 }
@@ -96,6 +110,10 @@ interface ExtensionStorage {
  * @param title Display title of field.
  * @param type Input type of field.
  * @param isEncrypted True if the field is an encrypted type.
+ * @param required True if the field is mandatory.
+ * @param options (optional) Options if type is select.
+ * @param options_default (optional) Default selection for options.
+ * @param placeholder (optional) Placeholder text for input.
  * @param value (optional) Value of field, if decrypted object.
  * @param isPassword (optional) True if the field should be displayed as a password.
  * @param pwgen (optional) True if the field should have a password generator.
@@ -106,6 +124,9 @@ interface StoredSafeField {
   type: string
   isEncrypted: boolean
   required: boolean
+  options?: string[]
+  options_default?: string
+  placeholder?: string
   value?: string
   isPassword?: boolean
   pwgen?: boolean
