@@ -25,6 +25,7 @@
   } from "../../../../stores";
 
   import Card from "../../layout/Card.svelte";
+  import PasswordInput from "../../layout/PasswordInput.svelte";
   import AddField from "./AddField.svelte";
 
   export let defaultValues: Record<string, any> = {};
@@ -47,6 +48,12 @@
   $: selectedTemplate = $structure
     .get(host)
     .templates.find(({ id }) => id === values.templateid);
+
+  let policy: StoredSafePasswordPolicy;
+  $: {
+    const policyId = $structure.get(host).vaults.find(({ id }) => id === values.groupid)?.policyId;
+    policy = $structure.get(host).policies.find(({ id }) => id === policyId)
+  }
 
   function add() {
     for (const key of Object.keys(templateValues)) {
@@ -156,7 +163,15 @@
     <Card>
       {#each selectedTemplate.structure as field (host + values.templateid + field.name)}
         <!-- StoredSafe Template -->
-        <AddField {field} bind:value={templateValues[field.name]} />
+        {#if field.pwgen}
+          <PasswordInput
+            {field}
+            bind:value={templateValues[field.name]}
+            {host}
+            {policy} />
+        {:else}
+          <AddField {field} bind:value={templateValues[field.name]} />
+        {/if}
       {/each}
     </Card>
     <!-- Submit form to add object to StoredSafe -->

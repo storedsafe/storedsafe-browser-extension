@@ -12,48 +12,17 @@ export async function goto (url: string): Promise<void> {
   return await Promise.resolve()
 }
 
-/**
- * Generate a password with StoredSafe.
- * @param host Host where the password should be generated.
- * @param properties Password generation parameters.
- */
-export async function generatePassword (
-  host: string,
-  properties: {
-    type?: 'pronouncable' | 'diceword' | 'opie' | 'secure' | 'pin'
-    length?: number
-    language?: 'en_US' | 'sv_SE'
-    delimiter?: 'dash' | 'space' | 'default'
-    words?: number
-    min_char?: number
-    max_char?: number
-    policyid?: string
-  }
-): Promise<string> {
-  // TODO: Real implementation
-  console.log('PWGEN %s %o', host, properties)
-  if (host !== 'error') {
-    const chars = 'abcdefg1234567@!;_-'.split('')
-    const pw: string = [...new Array(16).keys()]
-      .map(() => Math.floor(Math.random() * chars.length))
-      .join('')
-    return Promise.resolve(pw)
-  } else {
-    throw new Error(`Unable to generate password.`)
-  }
-}
-
 /* Rule to verify a password by, relative to a policy */
 type PasswordRule = (password: string, policyValue: any) => boolean
 const passwordRules: Record<string, PasswordRule> = {
   min_length: (password, length: number) => password.length >= length,
   max_length: (password, length: number) => password.length <= length,
 
-  min_lowercase_char: (password, count: number) => {
+  min_lowercase_chars: (password, count: number) => {
     const match = password.match(/[a-z]/g)
     return !!match?.length ? match.length >= count : false
   },
-  max_lowercase_char: (password, count: number) => {
+  max_lowercase_chars: (password, count: number) => {
     const match = password.match(/[a-z]/g)
     return !!match?.length ? match.length <= count : true
   },
@@ -131,11 +100,13 @@ export function isPolicyMatch (
   policy: StoredSafePasswordPolicy
 ): [boolean, string[]] {
   const errors: string[] = []
+  // Ensure password is a string
+  password = password ?? ''
   return [
-    Object.keys(policy).reduce((acc, rule) => {
-      const isRuleMatch = passwordRules[rule](password, policy[rule])
+    Object.keys(policy.rules).reduce((acc, rule) => {
+      const isRuleMatch = passwordRules[rule](password, policy.rules[rule])
       if (!isRuleMatch)
-        errors.push(getMessage(passwordErrors[rule], policy[rule]))
+        errors.push(getMessage(passwordErrors[rule], policy.rules[rule]))
       return acc && isRuleMatch
     }, true),
     errors

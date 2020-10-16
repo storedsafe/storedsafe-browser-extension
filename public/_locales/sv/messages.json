@@ -1,16 +1,16 @@
 {
-  "EXTENSION_NAME": {
-    "message": "StoredSafe"
-  },
-  "WELCOME_MESSAGE_TITLE": {
-    "message": "Välkommen till StoredSafe!"
-  },
-  "WELCOME_MESSAGE_DESCRIPTION": {
-    "message": "Lägg till din värdnamnet och API-nyckeln för din StoredSafe-server nedan, eller be en administratör konfigurera tillägget åt dig."
-  },
-  "WELCOME_MESSAGE_PLUG": {
-    "message": "Om du inte redan är en StoredSafe-kund, besök <a href=\"https://storedsafe.com/\" target=\"_blank\">storedsafe.com</a> för mer information."
-  },
+	"EXTENSION_NAME": {
+		"message": "StoredSafe"
+	},
+	"WELCOME_MESSAGE_TITLE": {
+		"message": "Välkommen till StoredSafe!"
+	},
+	"WELCOME_MESSAGE_DESCRIPTION": {
+		"message": "Lägg till din värdnamnet och API-nyckeln för din StoredSafe-server nedan, eller be en administratör konfigurera tillägget åt dig."
+	},
+	"WELCOME_MESSAGE_PLUG": {
+		"message": "Om du inte redan är en StoredSafe-kund, besök <a href=\"https://storedsafe.com/\" target=\"_blank\">storedsafe.com</a> för mer information."
+	},
 	"SEARCH_PLACEHOLDER": {
 		"message": "Sök StoredSafe"
 	},
@@ -68,9 +68,9 @@
 	"ADD_CREATE": {
 		"message": "Skapa objekt"
 	},
-  "ADD_SUCCESS": {
-    "message": "Objekt tillagt i StoredSafe!"
-  },
+	"ADD_SUCCESS": {
+		"message": "Objekt tillagt i StoredSafe!"
+	},
 	"LOADING_TITLE": {
 		"message": "Laddar"
 	},
@@ -127,97 +127,100 @@
 	},
 	"SESSIONS_ONLINE_SINCE": {
 		"message": "Inloggad sedan $TIME$ ($MINUTES$ minuter)",
-    "placeholders": {
-      "time": {
-        "content": "$1",
-        "example": "12:12:39"
-      },
-      "minutes": {
-        "content": "$2",
-        "example": "42"
-      }
-    }
+		"placeholders": {
+			"time": {
+				"content": "$1",
+				"example": "12:12:39"
+			},
+			"minutes": {
+				"content": "$2",
+				"example": "42"
+			}
+		}
 	},
 	"SESSIONS_GOTO": {
 		"message": "Gå till $HOST$",
-    "placeholders": {
-      "host": {
-        "content": "$1",
-        "example": "appliance.storedsafe.com"
-      }
-    }
+		"placeholders": {
+			"host": {
+				"content": "$1",
+				"example": "appliance.storedsafe.com"
+			}
+		}
 	},
 	"MESSAGES_MORE": {
 		"message": "$NUMBER$ ytterligare meddelanden",
-    "placeholders": {
-      "number": {
-        "content": "$1",
-        "example": "3"
-      }
-    }
+		"placeholders": {
+			"number": {
+				"content": "$1",
+				"example": "3"
+			}
+		}
 	},
 	"MESSAGES_ONE_MORE": {
 		"message": "1 ytterligare meddelande"
 	},
-  "MESSAGES_CLEAR": {
-    "message": "Rensa"
-  },
+	"MESSAGES_CLEAR": {
+		"message": "Rensa"
+	},
 	"IMG_LOGO_ALT": {
 		"message": "StoredSafe logo"
 	},
+	"PASSWORD_MATCH_POLICY": {
+		"message": "Matchar valvets lösenordspolicy."
+	},
 	"PASSWORD_MIN_LENGTH_ERROR": {
-		"message": "Måste vara åtminstone $NUMBER$ tecken långt.",
-    "placeholders": {
-      "number": {
-        "content": "$1",
-        "example": "16"
-      }
-    }
+		"message": "Måste vara minst $NUMBER$ tecken långt.",
+		"placeholders": {
+			"number": {
+				"content": "$1",
+				"example": "16"
+			}
+		}
 	},
 	"PASSWORD_MAX_LENGTH_ERROR": {
 		"message": "Får inte vara längre än $NUMBER$ tecken.",
-    "placeholders": {
-      "number": {
-        "content": "$1",
-        "example": "32"
-      }
-    }
+		"placeholders": {
+			"number": {
+				"content": "$1",
+				"example": "32"
+			}
+		}
 	},
 	"PASSWORD_MIN_LOWERCASE_CHARS_ERROR": {
 		"message": "Måste innehålla minst $NUMBER$ gemener.",
-    "placeholders": {
-      "number": {
-        "content": "$1",
-        "example": "16"
-      }
-    }
+		"placeholders": {
+			"number": {
+				"content": "$1",
+				"example": "16"
+			}
+		}
 	},
 	"PASSWORD_MAX_LOWERCASE_CHARS_ERROR": {
 		"message": "Får inte innehålla mer än $NUMBER$ gemener.",
-    "placeholders": {
-      "number": {
-        "content": "$1",
-        "example": "32"
-      }
-    }
+		"placeholders": {
+			"number": {
+				"content": "$1",
+				"example": "32"
+			}
+		}
 	},
 	"PASSWORD_MIN_UPPERCASE_CHARS_ERROR": {
 		"message": "Måste innehålla minst $NUMBER$ versaler.",
-    "placeholders": {
-      "number": {
-        "content": "$1",
-        "example": "16"
-      }
-    }
+		"placeholders": {
+			"number": {
+				"content": "$1",
+				"example": "16"
+			}
+		}
 	},
 	"PASSWORD_MAX_UPPERCASE_CHARS_ERROR": {
 		"message": "Får inte innehålla mer än $NUMBER$ versaler.",
-    "placeholders": {
-      "number": {
-        "content": "$1",
-        "example": "32"
-      }
-    }
+		"placeholders": {
+			"number": {
+				"content": "$1",
+				"example": "32"
+			}
+		}
 	},
 	"PASSWORD_DISALLOW_NUMERIC_CHARS_ERROR": {
 		"message": "Får inte innehålla siffror."
@@ -230,21 +233,21 @@
 	},
 	"PASSWORD_MIN_NUMERIC_CHARS_ERROR": {
 		"message": "Måste innehålla minst $NUMBER$ siffror.",
-    "placeholders": {
-      "number": {
-        "content": "$1",
-        "example": "16"
-      }
-    }
+		"placeholders": {
+			"number": {
+				"content": "$1",
+				"example": "16"
+			}
+		}
 	},
 	"PASSWORD_MAX_NUMERIC_CHARS_ERROR": {
 		"message": "Får inte innehålla mer än $NUMBER$ siffror.",
-    "placeholders": {
-      "number": {
-        "content": "$1",
-        "example": "32"
-      }
-    }
+		"placeholders": {
+			"number": {
+				"content": "$1",
+				"example": "32"
+			}
+		}
 	},
 	"PASSWORD_DISALLOW_NONALPHANUMERIC_CHARS_ERROR": {
 		"message": "Får inte innehålla icke-alfanumeriska tecken."
@@ -257,21 +260,21 @@
 	},
 	"PASSWORD_MIN_NONALPHANUMERIC_CHARS_ERROR": {
 		"message": "Måste innehålla minst $NUMBER$ icke-alfanumeriska tecken.",
-    "placeholders": {
-      "number": {
-        "content": "$1",
-        "example": "16"
-      }
-    }
+		"placeholders": {
+			"number": {
+				"content": "$1",
+				"example": "16"
+			}
+		}
 	},
 	"PASSWORD_MAX_NONALPHANUMERIC_CHARS_ERROR": {
 		"message": "Får inte innehålla mer än $NUMBER$ icke-alfanumeriska tecken.",
-    "placeholders": {
-      "number": {
-        "content": "$1",
-        "example": "32"
-      }
-    }
+		"placeholders": {
+			"number": {
+				"content": "$1",
+				"example": "32"
+			}
+		}
 	},
 	"CONFIRM_DIALOG_YES": {
 		"message": "Yes"
@@ -315,30 +318,30 @@
 	"SETTINGS_UNIT_HOURS": {
 		"message": "timmar"
 	},
-  "SETTINGS_USER_HEADER": {
-    "message": "Användarinställningar"
-  },
-  "SETTINGS_USER_TITLE": {
-    "message": "Inställningar som kan justeras av dig."
-  },
-  "SETTINGS_USER_UPDATE": {
-    "message": "Spara"
-  },
-  "SETTINGS_USER_ALL_LOCKED": {
-    "message": "Alla inställningar är låsta av din administratör."
-  },
-  "SETTINGS_MANAGED_HEADER": {
-    "message": "Låsta inställningar"
-  },
-  "SETTINGS_MANAGED_TITLE": {
-    "message": "Inställningar som är låsta av din administratör."
-  },
-  "SETTINGS_MANAGED_TRUE": {
-    "message": "på"
-  },
-  "SETTINGS_MANAGED_FALSE": {
-    "message": "av"
-  },
+	"SETTINGS_USER_HEADER": {
+		"message": "Användarinställningar"
+	},
+	"SETTINGS_USER_TITLE": {
+		"message": "Inställningar som kan justeras av dig."
+	},
+	"SETTINGS_USER_UPDATE": {
+		"message": "Spara"
+	},
+	"SETTINGS_USER_ALL_LOCKED": {
+		"message": "Alla inställningar är låsta av din administratör."
+	},
+	"SETTINGS_MANAGED_HEADER": {
+		"message": "Låsta inställningar"
+	},
+	"SETTINGS_MANAGED_TITLE": {
+		"message": "Inställningar som är låsta av din administratör."
+	},
+	"SETTINGS_MANAGED_TRUE": {
+		"message": "på"
+	},
+	"SETTINGS_MANAGED_FALSE": {
+		"message": "av"
+	},
 	"OPTIONS_GENERAL_TITLE": {
 		"message": "Generella inställningar"
 	},
@@ -363,35 +366,35 @@
 	"OPTIONS_DATA_SUBTITLE": {
 		"message": "Se och ta bort tilläggs-data"
 	},
-  "OPTIONS_SITES_ADD_HEADER": {
-    "message": "Lägg till StoredSafe-server"
-  },
-  "OPTIONS_SITES_USER_HEADER": {
-    "message": "Dina servrar"
-  },
-  "OPTIONS_SITES_MANAGED_HEADER": {
-    "message": "Managerade servrar"
-  },
-  "OPTIONS_SITES_USER_TITLE": {
-    "message": "Servrar tillagda av dig."
-  },
-  "OPTIONS_SITES_MANAGED_TITLE": {
-    "message": "Servrar tillagda av din administratör."
-  },
-  "OPTIONS_SITES_ADD": {
-    "message": "Lägg till"
-  },
-  "OPTIONS_SITES_DELETE": {
-    "message": "Ta bort"
-  },
-  "OPTIONS_SITES_ADD_LABEL_HOST": {
-    "message": "Värdnamn"
-  },
-  "OPTIONS_SITES_ADD_LABEL_APIKEY": {
-    "message": "API-nyckel"
-  },
-  "LOADING_UNKNOWN_ERROR": {
-    "message": "Något gick fel här, säg gärna till oss eller din administratör vad du gjorde så att vi kan lösa problemet!"
+	"OPTIONS_SITES_ADD_HEADER": {
+		"message": "Lägg till StoredSafe-server"
+	},
+	"OPTIONS_SITES_USER_HEADER": {
+		"message": "Dina servrar"
+	},
+	"OPTIONS_SITES_MANAGED_HEADER": {
+		"message": "Managerade servrar"
+	},
+	"OPTIONS_SITES_USER_TITLE": {
+		"message": "Servrar tillagda av dig."
+	},
+	"OPTIONS_SITES_MANAGED_TITLE": {
+		"message": "Servrar tillagda av din administratör."
+	},
+	"OPTIONS_SITES_ADD": {
+		"message": "Lägg till"
+	},
+	"OPTIONS_SITES_DELETE": {
+		"message": "Ta bort"
+	},
+	"OPTIONS_SITES_ADD_LABEL_HOST": {
+		"message": "Värdnamn"
+	},
+	"OPTIONS_SITES_ADD_LABEL_APIKEY": {
+		"message": "API-nyckel"
+	},
+	"LOADING_UNKNOWN_ERROR": {
+		"message": "Något gick fel här, säg gärna till oss eller din administratör vad du gjorde så att vi kan lösa problemet!"
 	},
 	"OPTIONS_IGNORE_EMPTY": {
 		"message": "Det finns inga ignorerade webbsidor."

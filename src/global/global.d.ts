@@ -194,7 +194,7 @@ interface StoredSafeVault {
   id: string
   name: string
   permissions: number
-  policyId: string
+  policyId: number
 }
 
 /**

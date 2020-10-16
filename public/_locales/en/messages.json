@@ -213,6 +213,10 @@
     "message": "StoredSafe logo",
     "description": "Alt text for StoredSafe logo image."
   },
+	"PASSWORD_MATCH_POLICY": {
+    "message": "Matches vault password policy.",
+    "description": "Message to be displayed on successfully validated password."
+	},
   "PASSWORD_MIN_LENGTH_ERROR": {
     "message": "Must be at least $NUMBER$ characters long.",
     "description": "Error to be displayed when the password is too short.",

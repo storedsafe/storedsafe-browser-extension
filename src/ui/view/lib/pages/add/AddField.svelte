@@ -1,6 +1,5 @@
 <script lang="ts">
   import { countries } from "./countries";
-  import PasswordInput from "../../layout/PasswordInput.svelte";
 
   export let field: StoredSafeField;
   export let value: any;
@@ -17,7 +16,7 @@
     id: field.name,
     required: field.required,
     placeholder: field.placeholder,
-    title: field.placeholder
+    title: field.placeholder,
   };
 
   const textProps = {
@@ -44,9 +43,7 @@
     {field.title}
     {#if field.type === 'progress'}({value}%){/if}
   </span>
-  {#if field.pwgen}
-    <PasswordInput {...textProps} bind:value />
-  {:else if field.type === 'textarea'}
+  {#if field.type === 'textarea'}
     <textarea {...textareaProps} bind:value />
   {:else if field.type === 'dropdown'}
     <select id={field.name} bind:value>

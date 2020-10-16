@@ -11,6 +11,7 @@ import {
   StoredSafeBaseError,
   StoredSafeDecryptError,
   StoredSafeEditError,
+  StoredSafeGeneratePasswordError,
   StoredSafeGetPoliciesError,
   StoredSafeGetTemplatesError,
   StoredSafeGetVaultsError,
@@ -223,7 +224,7 @@ function parseVaults (data: StoredSafeVaultsData): StoredSafeVault[] {
     id: vault.id,
     name: vault.groupname,
     permissions: Number(vault.status),
-    policyId: vault.policy
+    policyId: Number(vault.policy)
   }))
 }
 
@@ -335,6 +336,38 @@ export async function addObject (host: string, token: string, params: object) {
     if (response.status !== 200) {
       throw new StoredSafeAddObjectError(response.status)
     }
+  } catch (error) {
+    if (error instanceof StoredSafeBaseError) throw error
+    throw new StoredSafeNetworkError(error, error.status)
+  }
+}
+
+/**
+ * Generate a password with StoredSafe.
+ * @param host Host where the password should be generated.
+ * @param properties Password generation parameters.
+ */
+export async function generatePassword (
+  host: string,
+  token: string,
+  properties?: {
+    type?: 'pronouncable' | 'diceword' | 'opie' | 'secure' | 'pin'
+    length?: number
+    language?: 'en_US' | 'sv_SE'
+    delimiter?: 'dash' | 'space' | 'default'
+    words?: number
+    min_char?: number
+    max_char?: number
+    policyid?: number
+  }
+) {
+  const api = new StoredSafe({ host, token })
+  try {
+    const response = await api.generatePassword(properties)
+    if (response.status !== 200) {
+      throw new StoredSafeGeneratePasswordError(response.status)
+    }
+    return response.data.CALLINFO.passphrase
   } catch (error) {
     if (error instanceof StoredSafeBaseError) throw error
     throw new StoredSafeNetworkError(error, error.status)

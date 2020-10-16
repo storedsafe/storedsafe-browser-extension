@@ -497,3 +497,13 @@ export class StoredSafeAddObjectError extends StoredSafeAPIError {
     super(`Add object failed with status (${status}).`)
   }
 }
+
+/**
+ * Error occured when generating password .
+ */
+export class StoredSafeGeneratePasswordError extends StoredSafeAPIError {
+  readonly id = OBJECT_ID + 10
+  constructor (status: number) {
+    super(`Generate password failed with status (${status}).`)
+  }
+}
