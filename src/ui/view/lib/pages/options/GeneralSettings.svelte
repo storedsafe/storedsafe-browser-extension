@@ -19,10 +19,8 @@
 
   const settingsMessages = messageStore();
 
-  let numbers: Record<string, number> = {};
-  let checkboxes: Record<string, boolean> = {};
-  let managedFields: [SettingsFields, SettingsField][];
-  let userFields: [SettingsFields, SettingsField][];
+  let managedFields: [SettingsFields, SettingsField, any][];
+  let userFields: [SettingsFields, SettingsField, any][];
   const unsubscribeSettings = settings.subscribe((newSettings) => {
     managedFields = [];
     userFields = [];
@@ -30,32 +28,20 @@
       const setting = newSettings.get(key);
       if (!setting) console.error(`Field ${key} not in settings.`);
       else {
-        // Set up values
-        if (!!field.isCheckbox) checkboxes[key] = setting.value as boolean;
-        else numbers[key] = setting.value as number;
         // Set up fields
-        if (setting.managed) managedFields.push([key, { ...field }]);
+        if (setting.managed)
+          managedFields.push([key, { ...field }, setting.value]);
         else {
-          userFields.push([key, { ...field }]);
+          userFields.push([key, { ...field }, setting.value]);
         }
       }
     }
   });
 
-  let values: Record<string, number | boolean>;
-  $: {
-    values = {};
-    for (const key of Object.keys(numbers)) {
-      if (!$settings.get(key).managed) values[key] = numbers[key];
-    }
-    for (const key of Object.keys(checkboxes)) {
-      if (!$settings.get(key).managed) values[key] = checkboxes[key];
-    }
-  }
   $: altered = new Map(
-    Object.keys(values).map((key) => [
+    userFields.map(([key, _field, value]) => [
       key,
-      values[key] !== $settings.get(key).value,
+      value !== $settings.get(key).value,
     ])
   );
   $: isAltered = [...altered.values()].reduce(
@@ -65,9 +51,9 @@
 
   function updateSettings(): void {
     settingsMessages.clear();
-    const newSettings: [string, number | boolean][] = Object.keys(values)
-      .filter((key) => altered.get(key))
-      .map((key) => [key, values[key]]);
+    const newSettings: [string, any][] = userFields
+      .filter(([key]) => altered.get(key))
+      .map(([key, _field, value]) => [key, value]);
     loading.add(`GeneralSettings.update`, settings.set(...newSettings), {
       onError(error) {
         settingsMessages.add(error.message, MessageType.ERROR);
@@ -116,7 +102,7 @@
       {#if userFields.length === 0}
         {getMessage(LocalizedMessage.SETTINGS_USER_ALL_LOCKED)}
       {/if}
-      {#each userFields as [key, field] (key)}
+      {#each userFields as [key, field, value] (key)}
         <label for={key} class:label-inline={!!field.isCheckbox}>
           <span
             title={field.title ?? ''}
@@ -129,7 +115,7 @@
               type="checkbox"
               id={key}
               class:altered={altered.get(key)}
-              bind:checked={checkboxes[key]} />
+              bind:checked={value} />
           {:else}
             <div class="user-input">
               <input
@@ -137,7 +123,7 @@
                 type="number"
                 id={key}
                 class:altered={altered.get(key)}
-                bind:value={numbers[key]}
+                bind:value
                 required />
               {#if !!field.unit}<span class="unit">{field.unit}</span>{/if}
             </div>
@@ -157,11 +143,11 @@
       <h2 title={getMessage(LocalizedMessage.SETTINGS_MANAGED_TITLE)}>
         {getMessage(LocalizedMessage.SETTINGS_MANAGED_HEADER)}
       </h2>
-      {#each managedFields as [key, field] (field.label)}
+      {#each managedFields as [key, field, value] (field.label)}
         <div class="managed-field">
           <span>{field.label}</span>
           <span class="managed-field-value">
-            {numbers[key] ?? (checkboxes[key] ? getMessage(LocalizedMessage.SETTINGS_MANAGED_TRUE) : getMessage(LocalizedMessage.SETTINGS_MANAGED_FALSE))}
+            {field.isCheckbox ? (value ? getMessage(LocalizedMessage.SETTINGS_MANAGED_TRUE) : getMessage(LocalizedMessage.SETTINGS_MANAGED_FALSE)) : value}
           </span>
           {#if !!field.unit}<span class="unit">{field.unit}</span>{/if}
         </div>
