@@ -1,4 +1,7 @@
 <script lang="ts">
+import { onMount } from "svelte";
+
+
   export let color: string = "var(--color-fg-light)";
   export let stroke: string = color;
   export let strokeWidth: number = 0;
@@ -8,7 +11,16 @@
   export let viewBox: string = "0 0 32 32";
   export let isButton: boolean = false;
 
+  export let innerHTML: string = null;
   export let d: string;
+
+  let element: SVGElement;
+
+  onMount(() => {
+    if (!!innerHTML && !!element) {
+      element.innerHTML = innerHTML
+    }
+  })
 </script>
 
 <style>
@@ -20,6 +32,7 @@
 </style>
 
 <svg
+  bind:this={element}
   class:isButton
   class="icon"
   style={`
@@ -29,11 +42,14 @@
   `}
   {viewBox}
   xmlns="http://www.w3.org/2000/svg"
+  xmlns:xlink="http://www.w3.org/1999/xlink"
   {...$$restProps}>
-  <path
-    {d}
-    {stroke}
-    stroke-width={strokeWidth}
-    stroke-linecap="round"
-    stroke-linejoin="round" />
+  <slot>
+    <path
+      {d}
+      {stroke}
+      stroke-width={strokeWidth}
+      stroke-linecap="round"
+      stroke-linejoin="round" />
+  </slot>
 </svg>

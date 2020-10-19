@@ -1,5 +1,6 @@
 <script lang="ts">
   import { storedSafeIcon } from "../../../../../global/icons";
+  import templateIcons from "../../../../../global/template_icons";
 
   import Icon from "../../layout/Icon.svelte";
   import VaultInfo from "./VaultInfo.svelte";
@@ -28,10 +29,6 @@
     display: grid;
   }
 
-  img {
-    width: var(--button-icon-size);
-  }
-
   span {
     text-overflow: ellipsis;
     overflow: hidden;
@@ -49,6 +46,11 @@
 
   .selected .host {
     justify-content: center;
+  }
+
+  .icon :global(svg) {
+    width: var(--button-icon-size);
+    height: var(--button-icon-size);
   }
 </style>
 
@@ -69,9 +71,7 @@
       </span>
     {/if}
   </article>
-  <img
-    class="icon"
-    src={`/assets/${icon}.svg`}
-    alt={template}
-    title={template} />
+  <div class="icon" title={template}>
+    {@html templateIcons[icon]}
+  </div>
 </section>
