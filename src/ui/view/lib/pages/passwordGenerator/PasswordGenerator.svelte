@@ -319,6 +319,7 @@
     text-align: center;
     justify-content: center;
     text-transform: uppercase;
+    user-select: none;
   }
 
   .or::before,
@@ -328,6 +329,10 @@
     height: 2px;
     background-color: var(--color-primary-light);
     margin: 0 var(--spacing);
+  }
+
+  .password-preview {
+    cursor: pointer;
   }
 </style>
 
@@ -370,7 +375,12 @@
         {#if edit}
           <textarea bind:value={password} />
         {:else}
-          <Password show={true} {large} {password} />
+          <div
+            class="password-preview"
+            on:click={copy}
+            title={getMessage(LocalizedMessage.RESULT_COPY)}>
+            <Password show={true} {large} {password} />
+          </div>
         {/if}
       </Card>
     </article>
@@ -386,7 +396,9 @@
         {/each}
       </select>
     </form>
-    <p class="or">{getMessage(LocalizedMessage.GENERATE_PASSWORD_OR)}</p>
+    <p class="or subtitle">
+      {getMessage(LocalizedMessage.GENERATE_PASSWORD_OR)}
+    </p>
     <form class="generate" on:submit|preventDefault={() => generate()}>
       <article class="buttons">
         {#each Object.keys(types) as type (type)}
