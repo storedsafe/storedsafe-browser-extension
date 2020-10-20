@@ -71,6 +71,11 @@ function onAlarm (alarmInfo: browser.alarms.Alarm) {
 }
 
 // Set up tasks that depend on changes in storage
+// Returns cleanup function, don't know of an appropriate place to
+// call those from now. There's suspend, but that can be interrupted
+// and I'm not sure how to reliably trigger on that.
+// These functions are defined to run as long as the script is available though,
+// so it's probably fine that there's no cleanup.
 const untrackIdleInterval = idleInterval()
 const untrackKeepAlive = keepAlive()
 const untrackOnlineStatus = onlineStatus(setIcon)
