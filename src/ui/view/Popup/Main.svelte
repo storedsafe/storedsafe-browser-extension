@@ -19,21 +19,43 @@
   import DebugButton from "../lib/pages/debug/DebugButton.svelte";
   import Debug from "../lib/pages/debug/Debug.svelte";
   import Options from "../lib/pages/options/Options.svelte";
+  import { beforeUpdate, onDestroy } from "svelte";
 
   // Set up state
   let page: Page = null;
   let needle: string = "";
   let content: HTMLElement = null;
 
-  // Computed properties
-  $: hasSites = $sites.length > 0;
-  $: isOnline = $sessions.size > 0;
+  let hasSites: boolean = false;
+  let isOnline: boolean = false;
   $: menuItems = isOnline ? mainMenu : offlineMenu;
-  $: {
-    if (!hasSites) page = Page.WELCOME;
-    else if (!isOnline) page = Page.SESSIONS;
-    else if (page === null) page = Page.SEARCH;
-  }
+
+  const unsubscribeFromSessions = sessions.subscribe((newSessions) => {
+    isOnline = newSessions.size > 0;
+    // If online and page isn't already set, go to search
+    if (isOnline && page === null) page = Page.SEARCH;
+    // If offline and page is not in offline menu, go to sessions
+    else if (
+      !isOnline &&
+      offlineMenu.findIndex(({ name }) => name === page) === -1
+    )
+      page = Page.SESSIONS;
+    // Else let page remain the same
+  });
+
+  const unsubscribeFromSites = sites.subscribe((newSites) => {
+    hasSites = newSites.length > 0;
+    // If sites exist and previous page was welcome, go to sessions
+    if (hasSites && page === Page.WELCOME) page = Page.SESSIONS;
+    // If no sites exist, go to welcome page
+    else if (!hasSites) page = Page.WELCOME;
+    // Else let page remain the same
+  });
+
+  onDestroy(() => {
+    unsubscribeFromSessions();
+    unsubscribeFromSites();
+  });
 
   /**
    * Set the active page and clear messages.
@@ -112,7 +134,7 @@
   <nav class="grid shadow">
     <DebugButton on:open-debug={() => setPage(Page.DEBUG)} />
     {#if isOnline}
-      <SearchBar on:search={handleSearch} on:focus={handleSearchFocus} />
+      <SearchBar focus={page === Page.SEARCH} on:search={handleSearch} on:focus={handleSearchFocus} />
     {:else}
       <Logo />
     {/if}

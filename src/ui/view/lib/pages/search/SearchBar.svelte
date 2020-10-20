@@ -9,6 +9,8 @@
 
   // Submit search form automatically after `searchDelay` ms.
   export let searchDelay: number = 500;
+  // Automatically focus search input
+  export let focus = true;
 
   // Reference to form height for button size adjustment
   let formHeight: number;
@@ -98,7 +100,7 @@
     on:focus
     on:input={handleChange}
     bind:value={needle}
-    autofocus={true}
+    autofocus={focus}
     placeholder={getMessage(LocalizedMessage.SEARCH_PLACEHOLDER)}
     aria-label={getMessage(LocalizedMessage.SEARCH_ARIA_LABEL_NEEDLE)}
     type="search" />
