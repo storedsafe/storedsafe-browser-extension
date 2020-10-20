@@ -242,7 +242,7 @@
   }
 
   .buttons button {
-    box-shadow: 0 !important;
+    box-shadow: none !important;
   }
 
   .buttons button:first-child {
