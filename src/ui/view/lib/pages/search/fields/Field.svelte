@@ -1,6 +1,6 @@
 <script lang="ts">
   import { getMessage, LocalizedMessage } from "../../../../../../global/i18n";
-  import { goto } from "../../../../../../global/utils";
+  import { copyText, goto } from "../../../../../../global/utils";
 
   import Card from "../../../layout/Card.svelte";
   import Encrypted from "./Encrypted.svelte";
@@ -36,8 +36,7 @@
    * Decrypt first if needed.
    * */
   async function copy() {
-    const exec = async (value: string) =>
-      await navigator.clipboard.writeText(value);
+    const exec = async (value: string) => await copyText(value);
     if (field.isEncrypted) await decrypt();
     else await exec(field.value);
   }

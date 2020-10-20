@@ -76,7 +76,7 @@
     "description": "Error text to be displayed when a search fails."
   },
   "ADD_HOST": {
-    "message": "StoredSafe host",
+    "message": "StoredSafe Server",
     "description": "Label for StoredSafe host select box when creating a new object."
   },
   "ADD_VAULT": {
@@ -213,10 +213,10 @@
     "message": "StoredSafe logo",
     "description": "Alt text for StoredSafe logo image."
   },
-	"PASSWORD_MATCH_POLICY": {
+  "PASSWORD_MATCH_POLICY": {
     "message": "Matches vault password policy.",
     "description": "Message to be displayed on successfully validated password."
-	},
+  },
   "PASSWORD_MIN_LENGTH_ERROR": {
     "message": "Must be at least $NUMBER$ characters long.",
     "description": "Error to be displayed when the password is too short.",
@@ -428,7 +428,7 @@
     "message": "off",
     "description": "Translation of checkbox boolean unchecked value."
   },
-	"OPTIONS_GENERAL_TITLE": {
+  "OPTIONS_GENERAL_TITLE": {
     "message": "General settings",
     "description": "Title for options menu item to open general settings."
   },
@@ -499,13 +499,65 @@
   "LOADING_UNKNOWN_ERROR": {
     "message": "Something went wrong here, please tell us or your administrator what you were doing so we can fix the problem!",
     "description": "User-friendly error when some uncaught error occurs further down the chain."
-	},
-	"OPTIONS_IGNORE_EMPTY": {
+  },
+  "OPTIONS_IGNORE_EMPTY": {
     "message": "There are no ignored websites.",
     "description": "Message to be displayed in ignore list settings when the list is empty."
-	},
-	"OPTIONS_IGNORE_DELETE": {
+  },
+  "OPTIONS_IGNORE_DELETE": {
     "message": "Delete",
     "description": "Text for button to delete URL from ignore list."
+  },
+  "GENERATE_PASSWORD_HOST": {
+    "message": "StoredSafe Server",
+    "description": "Label text for selecting StoredSafe host to generate password from."
+  },
+  "GENERATE_PASSWORD_LABEL": {
+    "message": "Password",
+    "description": "Label text for generated password"
+  },
+  "GENERATE_PASSWORD_MATCH_POLICY": {
+    "message": "Match policy",
+    "description": "Button text to generate password py password policy."
+  },
+  "GENERATE_PASSWORD_GENERATE": {
+    "message": "Generate password",
+    "description": "Button text to generate a new password."
+  },
+  "GENERATE_PASSWORD_LENGTH": {
+    "message": "Length",
+    "description": "Label of password length input."
+  },
+  "GENERATE_PASSWORD_LANGUAGE": {
+    "message": "Language",
+    "description": "Label of password language input."
+  },
+  "GENERATE_PASSWORD_WORDS": {
+    "message": "Words",
+    "description": "Label of password words input."
+  },
+  "GENERATE_PASSWORD_MIN_CHAR": {
+    "message": "Min characters",
+    "description": "Label of password min_char input."
+  },
+  "GENERATE_PASSWORD_MAX_CHAR": {
+    "message": "Max characters",
+    "description": "Label of password max_char input."
+  },
+  "GENERATE_PASSWORD_DELIMITER": {
+    "message": "Delimiter",
+    "description": "Label of password delimiter input."
+  },
+  "GENERATE_PASSWORD_OR": {
+    "message": "or",
+    "description": "Text to make match policy and regular generator more distinct from each other."
+  },
+	"GENERATE_PASSWORD_EDIT": {
+    "message": "Edit",
+    "description": "Button text to enter edit mode for generated password"
+	},
+	"GENERATE_PASSWORD_PREVIEW": {
+		"message": "Preview",
+    "description": "Button text to exit edit mode for generated password"
 	}
 }

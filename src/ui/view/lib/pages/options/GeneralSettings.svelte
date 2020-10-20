@@ -143,7 +143,7 @@
       <h2 title={getMessage(LocalizedMessage.SETTINGS_MANAGED_TITLE)}>
         {getMessage(LocalizedMessage.SETTINGS_MANAGED_HEADER)}
       </h2>
-      {#each managedFields as [key, field, value] (field.label)}
+      {#each managedFields as [_key, field, value] (field.label)}
         <div class="managed-field">
           <span>{field.label}</span>
           <span class="managed-field-value">

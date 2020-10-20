@@ -14,14 +14,14 @@
   import SessionsPage from "../lib/pages/sessions/Sessions.svelte";
   import MessageViewer from "../lib/layout/MessageViewer.svelte";
   import Logo from "../lib/layout/Logo.svelte";
-  import PasswordGenerator from "../lib/pages/PasswordGenerator.svelte";
+  import PasswordGenerator from "../lib/pages/passwordGenerator/PasswordGenerator.svelte";
   import Welcome from "../lib/pages/welcome/Welcome.svelte";
   import DebugButton from "../lib/pages/debug/DebugButton.svelte";
   import Debug from "../lib/pages/debug/Debug.svelte";
   import Options from "../lib/pages/options/Options.svelte";
 
   // Set up state
-  let page: Page;
+  let page: Page = null;
   let needle: string = "";
   let content: HTMLElement = null;
 
@@ -32,14 +32,14 @@
   $: {
     if (!hasSites) page = Page.WELCOME;
     else if (!isOnline) page = Page.SESSIONS;
-    else page = Page.SEARCH;
+    else if (page === null) page = Page.SEARCH;
   }
 
   /**
    * Set the active page and clear messages.
    * */
   function setPage(newPage: Page) {
-    messages.clear()
+    messages.clear();
     !!content && (content.scrollTop = 0);
     if (page === Page.DEBUG && page === newPage) {
       // No menu for debug, revert to default selection to toggle
@@ -120,7 +120,7 @@
       <Menu on:navigate={handleNavigate} selected={page} {menuItems} />
     {/if}
     <LoadingBar isLoading={$loading.isLoading} />
-    <MessageViewer messages={messages} />
+    <MessageViewer {messages} />
   </nav>
   <article class="content" bind:this={content}>
     {#if page === Page.WELCOME}
