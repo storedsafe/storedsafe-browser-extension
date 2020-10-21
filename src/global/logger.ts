@@ -1,3 +1,5 @@
+import { getMessage, LocalizedMessage } from "./i18n"
+
 export enum LogLevel {
   NONE = 0,
   ERROR = 1,
@@ -8,7 +10,7 @@ export enum LogLevel {
   ALL = 6
 }
 
-const isProduction = process.env.NODE_ENV !== 'development'
+const isProduction = false
 
 export class Logger {
   public static level: LogLevel = isProduction ? LogLevel.ERROR : LogLevel.ALL
@@ -22,7 +24,7 @@ export class Logger {
     this.log = this.log.bind(this)
     this.debug = this.debug.bind(this)
 
-    this.prefix = `[${name}]: `
+    this.prefix = `[${getMessage(LocalizedMessage.EXTENSION_NAME)}][${name}]: `
   }
 
   public group (name: string, level: LogLevel) {
