@@ -40,7 +40,7 @@ export default function (options: RollupOptions | RollupOptions[]) {
           const { pluginCode, frame, plugin, hook } = error
           const { column, line, file } = error.loc
           const message = `
-            <${hook}> ${pluginCode}@${plugin} at ${column}:${line}:${file}
+            <${hook}> ${pluginCode}@${plugin} at ${line}:${column}:${file}
             ${frame}
           `
           this.emit('error', message)
