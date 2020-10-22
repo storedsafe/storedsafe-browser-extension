@@ -6,7 +6,7 @@ import {
   InputType
 } from './constants'
 import { Form, getForms } from './forms'
-import { getInputs, Input } from './inputs'
+import { getInputs, Input, INPUT_SELECTORS } from './inputs'
 
 const logger = new Logger('scanner')
 
@@ -56,6 +56,14 @@ export function scanner (cb: (forms: Form[]) => void) {
       // Added nodes
       for (const node of mutation.addedNodes) {
         if (node instanceof HTMLElement) {
+          // Skip if node has no relevant elements
+          if (
+            !(
+              INPUT_SELECTORS.includes(node.nodeName.toLowerCase()) ||
+              node.querySelector(INPUT_SELECTORS)
+            )
+          )
+            continue
           let isChildNode = false
           for (const form of forms) {
             if (form[0].contains(node)) {

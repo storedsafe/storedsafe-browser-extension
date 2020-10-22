@@ -3,7 +3,7 @@ import { matchAttributes, Matcher, matchers, matchName } from './matchers'
 
 export type Input = [HTMLElement, InputType]
 
-const SELECTORS: string = [
+export const INPUT_SELECTORS: string = [
   'input',
   'button',
   'a'
@@ -90,7 +90,7 @@ export function getInputs (
   const inputs: Input[] = []
 
     // Classify all relevant elements under the root node.
-    const elements = root.querySelectorAll<HTMLElement>(SELECTORS)
+    const elements = root.querySelectorAll<HTMLElement>(INPUT_SELECTORS)
     for (const element of elements) {
       inputs.push([element, getElementType(element)])
     }

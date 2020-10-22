@@ -30,6 +30,7 @@ function onSubmit (form: Form) {
     submitLock = true
 
     // TODO: save form data
+    console.log('submit %o', form)
 
     setTimeout(() => (submitLock = false), 100)
   }
@@ -38,6 +39,7 @@ function onSubmit (form: Form) {
 let submitListeners: Map<HTMLElement, [string, () => void]> = new Map()
 
 function onFormsChange (forms: Form[]) {
+  printForms(forms)
   for (const [listener, [event, cb]] of submitListeners) {
     listener.removeEventListener(event, cb)
   }
