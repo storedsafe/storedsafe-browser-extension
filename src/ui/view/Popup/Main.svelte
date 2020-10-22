@@ -19,7 +19,7 @@
   import DebugButton from "../lib/pages/debug/DebugButton.svelte";
   import Debug from "../lib/pages/debug/Debug.svelte";
   import Options from "../lib/pages/options/Options.svelte";
-  import { beforeUpdate, onDestroy } from "svelte";
+  import { onDestroy } from "svelte";
 
   // Set up state
   let page: Page = null;

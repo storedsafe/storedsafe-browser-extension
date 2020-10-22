@@ -10,7 +10,7 @@
   // Submit search form automatically after `searchDelay` ms.
   export let searchDelay: number = 500;
   // Automatically focus search input
-  export let focus = true;
+  export let focus: boolean = true;
 
   // Reference to form height for button size adjustment
   let formHeight: number;
