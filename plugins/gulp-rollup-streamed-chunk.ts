@@ -36,7 +36,6 @@ export default function (options: RollupOptions | RollupOptions[]) {
             }
           }
         } catch (error) {
-          console.log(error)
           const { pluginCode, frame, plugin, hook } = error
           const { column, line, file } = error.loc
           const message = `
