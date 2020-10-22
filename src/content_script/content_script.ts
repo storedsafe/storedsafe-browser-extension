@@ -1,4 +1,5 @@
 import { Logger, LogLevel } from '../global/logger'
+import { createIframe } from './tasks/createIframe'
 import {
   scanner,
   Form,
@@ -65,3 +66,4 @@ function onFormsChange (forms: Form[]) {
 }
 
 scanner(onFormsChange)
+createIframe('save', {})
