@@ -36,7 +36,14 @@ export default function (options: RollupOptions | RollupOptions[]) {
             }
           }
         } catch (error) {
-          this.emit('error', error.message)
+          console.log(error)
+          const { pluginCode, frame, plugin, hook } = error
+          const { column, line, file } = error.loc
+          const message = `
+            <${hook}> ${pluginCode}@${plugin} at ${column}:${line}:${file}
+            ${frame}
+          `
+          this.emit('error', message)
         }
       })
 
