@@ -4,6 +4,7 @@ import { sessions } from './browserstorage'
 
 export const SEARCH_LOADING_ID = 'search.find'
 export const SEARCH_EDIT_LOADING_ID = 'search.edit'
+export const SEARCH_DELETE_LOADING_ID = 'search.delete'
 export const SEARCH_REMOVE_LOADING_ID = 'search.remove'
 export const SEARCH_DECRYPT_LOADING_ID = 'search.remove'
 

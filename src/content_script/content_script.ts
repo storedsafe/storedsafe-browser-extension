@@ -1,37 +1,38 @@
 import { Logger, LogLevel } from '../global/logger'
-import { createIframe } from './tasks/createIframe'
+import type { Message } from '../global/messages'
+import { createIframe, onIframeMessage } from './tasks/createIframe'
 import {
   scanner,
   Form,
   InputType,
   FORM_FILL_TYPES,
-  FORM_SAVE_TYPES
+  FORM_SAVE_TYPES,
+  INPUT_FILL_TYPES
 } from './tasks/scanner'
 
 const logger = new Logger('content')
 
 logger.debug('CONTENT SCRIPT INITIALIZED')
 
-function printForms (forms: Form[]) {
-  for (const [form, formType, inputs] of forms) {
-    logger.group(formType, LogLevel.DEBUG)
-    logger.debug('%o', form)
-    for (const [input, inputType] of inputs) {
-      if (inputType === InputType.HIDDEN) {
-      }
-      logger.debug('%s %o', inputType, input)
-    }
-    logger.groupEnd(LogLevel.DEBUG)
-  }
-}
-
 let submitLock = false
 function onSubmit (form: Form) {
   if (!submitLock) {
     submitLock = true
 
-    // TODO: save form data
-    console.log('submit %o', form)
+    let data: Record<string, string> = {}
+    data['name'] = document.title.substr(0, 128)
+    data['url'] = document.location.origin + document.location.pathname
+    for (const [input, inputType] of form[2]) {
+      if (INPUT_FILL_TYPES.includes(inputType)) {
+        data[inputType] = (input as HTMLInputElement).value
+      }
+    }
+
+    port.postMessage({
+      context: 'save',
+      action: 'init',
+      data
+    })
 
     setTimeout(() => (submitLock = false), 100)
   }
@@ -40,7 +41,6 @@ function onSubmit (form: Form) {
 let submitListeners: Map<HTMLElement, [string, () => void]> = new Map()
 
 function onFormsChange (forms: Form[]) {
-  printForms(forms)
   for (const [listener, [event, cb]] of submitListeners) {
     listener.removeEventListener(event, cb)
   }
@@ -65,5 +65,15 @@ function onFormsChange (forms: Form[]) {
   }
 }
 
+function onMessage (message: Message) {
+  if (message.context === 'save') {
+    if (message.action === 'open') {
+      createIframe('save')
+    }
+  }
+}
+
+browser.runtime.onMessage.addListener(onIframeMessage)
+const port = browser.runtime.connect({ name: 'content' })
+port.onMessage.addListener(onMessage)
 scanner(onFormsChange)
-createIframe('save', {})

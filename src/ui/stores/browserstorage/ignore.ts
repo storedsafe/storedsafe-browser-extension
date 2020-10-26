@@ -4,6 +4,7 @@ import { ignore as ignoreStorage } from '../../../global/storage'
 
 export const IGNORE_ADD_LOADING_ID = 'ignore.add'
 export const IGNORE_REMOVE_LOADING_ID = 'ignore.remove'
+export const IGNORE_CLEAR_LOADING_ID = 'ignore.clear'
 
 interface IgnoreStore extends Readable<string[]> {
   /**

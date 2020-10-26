@@ -1,7 +1,15 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
 
-  import { Duration, loading, messages, MessageType, search, structure } from "../../../../../stores";
+  import {
+    Duration,
+    loading,
+    messages,
+    MessageType,
+    search,
+    SEARCH_DELETE_LOADING_ID,
+    structure,
+  } from "../../../../../stores";
   import { getMessage, LocalizedMessage } from "../../../../../../global/i18n";
 
   import ConfirmDialog from "../../../layout/ConfirmDialog.svelte";
@@ -29,14 +37,18 @@
   }
 
   function deleteObject() {
-    loading.add(`Search.delete.${result.id}`, search.delete(result), {
-      onError(error) {
-        messages.add(error.message, MessageType.ERROR, Duration.MEDIUM)
-      },
-      onSuccess() {
-        setConfirmDelete(false)
+    loading.add(
+      `${SEARCH_DELETE_LOADING_ID}.${result.id}`,
+      search.delete(result),
+      {
+        onError(error) {
+          messages.add(error.message, MessageType.ERROR, Duration.MEDIUM);
+        },
+        onSuccess() {
+          setConfirmDelete(false);
+        },
       }
-    })
+    );
   }
 
   async function decrypt(field: string): Promise<string> {

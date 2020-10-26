@@ -6,13 +6,20 @@
     sites,
     preferences,
     ignore,
+    SESSIONS_CLEAR_LOADING_ID,
+SETTINGS_CLEAR_LOADING_ID,
+SITES_CLEAR_LOADING_ID,
+PREFERENCES_CLEAR_SITE_LOADING_ID,
+PREFERENCES_CLEAR_AUTO_FILL_LOADING_ID,
+PREFERENCES_CLEAR_LOADING_ID,
+IGNORE_CLEAR_LOADING_ID,
   } from "../../../../stores/browserstorage";
 
   import Card from "../../layout/Card.svelte";
 
   function clearSessions() {
     loading.add(
-      `Data.clear.sessions`,
+      SESSIONS_CLEAR_LOADING_ID,
       Promise.all(
         [...$sessions].map(([host, session]) =>
           sessions.logout(host, session.token)
@@ -34,7 +41,7 @@
   }
 
   function clearSettings() {
-    loading.add(`Data.clear.settings`, settings.clear(), {
+    loading.add(SETTINGS_CLEAR_LOADING_ID, settings.clear(), {
       onError(error) {
         messages.add(error.message, MessageType.ERROR, Duration.SHORT);
       },
@@ -45,7 +52,7 @@
   }
 
   function clearSites() {
-    loading.add(`Data.clear.sites`, sites.clear(), {
+    loading.add(SITES_CLEAR_LOADING_ID, sites.clear(), {
       onError(error) {
         messages.add(error.message, MessageType.ERROR, Duration.SHORT);
       },
@@ -57,7 +64,7 @@
 
   function clearSitePreferences() {
     loading.add(
-      `Data.clear.preferences.site`,
+      PREFERENCES_CLEAR_SITE_LOADING_ID,
       preferences.clearSitePreferences(),
       {
         onError(error) {
@@ -76,7 +83,7 @@
 
   function clearAutoFillPreferences() {
     loading.add(
-      `Data.clear.preferences.fill`,
+      PREFERENCES_CLEAR_AUTO_FILL_LOADING_ID,
       preferences.clearAutoFillPreferences(),
       {
         onError(error) {
@@ -94,7 +101,7 @@
   }
 
   function clearAllPreferences() {
-    loading.add(`Data.clear.preferences.all`, preferences.clear(), {
+    loading.add(PREFERENCES_CLEAR_LOADING_ID, preferences.clear(), {
       onError(error) {
         messages.add(error.message, MessageType.ERROR, Duration.SHORT);
       },
@@ -109,7 +116,7 @@
   }
 
   function clearIgnore() {
-    loading.add(`Data.clear.ignore`, ignore.clear(), {
+    loading.add(IGNORE_CLEAR_LOADING_ID, ignore.clear(), {
       onError(error) {
         messages.add(error.message, MessageType.ERROR, Duration.SHORT);
       },

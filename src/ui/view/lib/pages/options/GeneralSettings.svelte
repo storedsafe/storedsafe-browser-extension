@@ -12,6 +12,7 @@
     messageStore,
     MessageType,
     settings,
+SETTINGS_UPDATE_LOADING_ID,
   } from "../../../../stores";
 
   import Card from "../../layout/Card.svelte";
@@ -54,7 +55,7 @@
     const newSettings: [string, any][] = userFields
       .filter(([key]) => altered.get(key))
       .map(([key, _field, value]) => [key, value]);
-    loading.add(`GeneralSettings.update`, settings.set(...newSettings), {
+    loading.add(SETTINGS_UPDATE_LOADING_ID, settings.set(...newSettings), {
       onError(error) {
         settingsMessages.add(error.message, MessageType.ERROR);
       },

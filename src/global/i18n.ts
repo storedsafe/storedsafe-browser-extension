@@ -34,6 +34,7 @@ export enum LocalizedMessage {
   ADD_VAULT = 'ADD_VAULT',
   ADD_TEMPLATE = 'ADD_TEMPLATE',
   ADD_CREATE = 'ADD_CREATE',
+  ADD_EDIT = 'ADD_EDIT',
   ADD_SUCCESS = 'ADD_SUCCESS',
 
   // Loading

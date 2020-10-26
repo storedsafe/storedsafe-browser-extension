@@ -61,8 +61,8 @@
     max-height: calc(100vh - 4em);
     overflow: auto;
     transform: translate(-50%, -50%);
-    padding: 1em;
-    border-radius: 0.2em;
+    padding: var(--spacing);
+    border-radius: var(--border-radius);
     background: var(--color-bg);
     color: var(--color-fg);
   }

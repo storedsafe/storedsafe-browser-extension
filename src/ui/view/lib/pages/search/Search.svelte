@@ -24,6 +24,7 @@
     MessageType,
     loading,
     messageStore,
+    SEARCH_LOADING_ID,
   } from "../../../../stores";
   import { getMessage, LocalizedMessage } from "../../../../../global/i18n";
 
@@ -65,7 +66,7 @@
           ?.value,
         host: showHost ? result.host : null,
         vault,
-        id: result.id
+        id: result.id,
       },
     };
   }
@@ -84,7 +85,7 @@
   }
 
   function find(): void {
-    loading.add(`Search.${needle}`, search.search(needle), {
+    loading.add(`${SEARCH_LOADING_ID}.${needle}`, search.search(needle), {
       onSuccess() {
         selectResult(null);
         searchMessages.clear();

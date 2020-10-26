@@ -4,6 +4,7 @@ import { sites as sitesStorage } from '../../../global/storage'
 
 export const SITES_ADD_LOADING_ID = 'sites.add'
 export const SITES_REMOVE_LOADING_ID = 'sites.remove'
+export const SITES_CLEAR_LOADING_ID = 'sites.clear'
 
 interface SitesStore extends Readable<Site[]> {
   /**

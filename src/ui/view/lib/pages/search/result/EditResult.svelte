@@ -2,7 +2,14 @@
   import { createEventDispatcher } from "svelte";
 
   import { getMessage, LocalizedMessage } from "../../../../../../global/i18n";
-  import { Duration, loading, messages, MessageType, search } from "../../../../../stores";
+  import {
+    Duration,
+    loading,
+    messages,
+    MessageType,
+    search,
+    SEARCH_EDIT_LOADING_ID,
+  } from "../../../../../stores";
   import { followFocus } from "../../../../use/followFocus";
 
   import Card from "../../../layout/Card.svelte";
@@ -31,14 +38,18 @@
   const cancel = (): void => dispatch("set-edit", false);
 
   function editObject(): void {
-    loading.add(`Search.edit.${result.id}`, search.edit(result, changedValues), {
-      onError(error) {
-        messages.add(error.message, MessageType.ERROR, Duration.LONG)
-      },
-      onSuccess() {
-        cancel();
+    loading.add(
+      `${SEARCH_EDIT_LOADING_ID}.${result.id}`,
+      search.edit(result, changedValues),
+      {
+        onError(error) {
+          messages.add(error.message, MessageType.ERROR, Duration.LONG);
+        },
+        onSuccess() {
+          cancel();
+        },
       }
-    });
+    );
   }
 </script>
 

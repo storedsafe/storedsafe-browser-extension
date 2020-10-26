@@ -78,7 +78,7 @@
 
   button {
     width: 100%;
-    padding: 0.2em;
+    padding: calc(var(--spacing) / 2);
     background-color: var(--color-primary-dark);
     border-top: 2px solid transparent;
     transition: background-color 0.2s, border-radius 0.2s 0.2s;
@@ -138,7 +138,7 @@
     font-weight: initial;
     border-bottom-left-radius: 4px;
     border-bottom-right-radius: 4px;
-    padding: 0.2em;
+    padding: calc(var(--spacing) / 2);
     transition: background-color 0.2s;
     user-select: none;
   }

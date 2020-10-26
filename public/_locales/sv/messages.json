@@ -65,6 +65,9 @@
 	"ADD_TEMPLATE": {
 		"message": "Mall"
 	},
+	"ADD_EDIT": {
+		"message": "Redigera"
+	},
 	"ADD_CREATE": {
 		"message": "Skapa objekt"
 	},

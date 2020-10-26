@@ -5,6 +5,8 @@
     messageStore,
     MessageType,
     sites,
+SITES_ADD_LOADING_ID,
+SITES_REMOVE_LOADING_ID,
   } from "../../../../stores";
 
   import Card from "../../layout/Card.svelte";
@@ -36,7 +38,7 @@
   function addSite(): void {
     addMessages.clear();
     const { host, apikey } = addValues;
-    loading.add(`ManageSites.addSite.${host}`, sites.add(host, apikey), {
+    loading.add(SITES_ADD_LOADING_ID, sites.add(host, apikey), {
       onSuccess() {
         resetAddForm();
       },
@@ -47,7 +49,7 @@
   }
 
   function removeSite(host: string): void {
-    loading.add(`ManageSites.removeSite.${host}`, sites.remove(host), {
+    loading.add(SITES_REMOVE_LOADING_ID, sites.remove(host), {
       onError(error) {
         deleteMessages.add(error.message, MessageType.ERROR);
       },

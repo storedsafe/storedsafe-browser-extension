@@ -5,7 +5,9 @@
     messageStore,
     MessageType,
     preferences,
-    sessions,
+PREFERENCES_SET_SITE_LOADING_ID,
+        sessions,
+SESSIONS_LOGIN_LOADING_ID,
   } from "../../../../stores";
   import { getMessage, LocalizedMessage } from "../../../../../global/i18n";
   import { clearMessages } from "../../../use/clearMessages";
@@ -50,10 +52,10 @@
         new StoredSafeExtensionError(`Invalid login type: ${loginType}`)
       );
     }
-    loading.add(`Login.${loginType}`, promise, {
+    loading.add(SESSIONS_LOGIN_LOADING_ID, promise, {
       onSuccess() {
         loading.add(
-          `Login.savePreferences`,
+          PREFERENCES_SET_SITE_LOADING_ID,
           preferences.setSitePreferences(site.host, {
             username: remember ? username : "",
             loginType,

@@ -113,8 +113,8 @@ select,
 textarea {
   font-family: inherit;
   font-size: inherit;
-  -webkit-padding: 0.4em 0;
-  padding: 0.4em;
+  -webkit-padding: var(--spacing) 0;
+  padding: var(--spacing);
   margin: 0;
   box-sizing: border-box;
   border: 0;

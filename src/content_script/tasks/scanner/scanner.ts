@@ -6,18 +6,18 @@ import {
   InputType
 } from './constants'
 import { Form, getForms } from './forms'
-import { getInputs, Input, INPUT_SELECTORS } from './inputs'
+import { getInputs, INPUT_SELECTORS } from './inputs'
 
-const logger = new Logger('scanner')
+const logger = new Logger('scanner', false)
 
 function printForms (forms: Form[]) {
   for (const [form, formType, inputs] of forms) {
     if (formType === FormType.UNKNOWN) {
-      console.debug('Unknown form %o', form)
+      logger.debug('Unknown form %o', form)
       return
     }
     if (formType === FormType.HIDDEN) {
-      console.debug('Hidden form %o', form)
+      logger.debug('Hidden form %o', form)
       return
     }
     logger.group(formType, LogLevel.DEBUG)
@@ -43,7 +43,7 @@ export function scanner (cb: (forms: Form[]) => void) {
   let forms: Form[] = []
 
   function updateForms (newForms: Form[]) {
-    // printForms(newForms)
+    printForms(newForms)
     forms = filterForms(newForms)
     cb(forms)
   }

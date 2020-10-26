@@ -4,6 +4,7 @@ import { browserStorage } from './browserStorage'
 
 export const SESSIONS_LOGIN_LOADING_ID = 'sessions.login.totp'
 export const SESSIONS_LOGOUT_LOADING_ID = 'sessions.logout'
+export const SESSIONS_CLEAR_LOADING_ID = 'sessions.clear'
 
 interface SessionsStore extends Readable<Map<string, Session>> {
   /**

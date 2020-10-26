@@ -1,12 +1,12 @@
 <script lang="ts">
   import { getMessage, LocalizedMessage } from "../../../../../global/i18n";
   import { Duration, loading, messages, MessageType } from "../../../../stores";
-  import { ignore } from "../../../../stores/browserstorage";
+  import { ignore, IGNORE_REMOVE_LOADING_ID } from "../../../../stores/browserstorage";
 
   import Card from "../../layout/Card.svelte";
 
   function removeUrl(url: string) {
-    loading.add(`IgnoreListe.remove.${url}`, ignore.remove(url), {
+    loading.add(IGNORE_REMOVE_LOADING_ID, ignore.remove(url), {
       onError(error) {
         messages.add(error.message, MessageType.ERROR, Duration.SHORT);
       },

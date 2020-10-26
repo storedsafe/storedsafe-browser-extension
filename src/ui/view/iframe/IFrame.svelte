@@ -1,32 +1,80 @@
 <script lang="ts">
+  import { afterUpdate } from "svelte";
+
+  import { sendMessage } from "../../../global/messages";
+
   import Save from "./Save.svelte";
 
   export let page: string;
+
+  function resize(e: CustomEvent<{ height: string; width: string }>) {
+    const { height, width } = e.detail
+    sendMessage({
+      context: "iframe",
+      action: "resize",
+      data: {
+        id: page,
+        height: `${height + 20}px`,
+        width: `${width + 20}px`,
+      },
+    });
+  }
+
+  function close() {
+    sendMessage({
+      context: "iframe",
+      action: "close",
+      data: {
+        id: page,
+      },
+    });
+  }
 </script>
 
 <style>
+  .iframe,
+  .container {
+    height: min-content;
+    width: min-content;
+  }
+
   .iframe {
-    width: 100vw;
-    height: 100vh;
-    padding: var(--spacing);
+    padding: 5px;
     box-sizing: border-box;
+    animation: zoom 0.8s cubic-bezier(0.8, 0, 0.4, 0.8);
   }
 
   .container {
-    background: var(--color-primary);
+    background: radial-gradient(
+        circle at 0,
+        rgba(255, 255, 255, 0.15),
+        rgba(0, 0, 0, 0.15)
+      ),
+      var(--color-primary-dark);
     border-radius: var(--border-radius);
-    width: 100%;
-    height: 100%;
-    padding: var(--spacing);
+    padding: 5px;
     box-sizing: border-box;
     box-shadow: 0 2px 4px 2px rgba(0, 0, 0, 0.3);
+    overflow: auto auto;
+  }
+
+  @keyframes zoom {
+    0% {
+      transform: scale(0);
+      opacity: 0;
+    }
+
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
   }
 </style>
 
 <div class="iframe">
   <section class="container">
-  {#if page === 'save'}
-    <Save />
-  {/if}
+    {#if page === 'save'}
+      <Save on:resize={resize} on:close={close} />
+    {/if}
   </section>
 </div>

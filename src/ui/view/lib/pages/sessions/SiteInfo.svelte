@@ -7,6 +7,7 @@
     messages,
     MessageType,
     sessions,
+    SESSIONS_LOGOUT_LOADING_ID,
   } from "../../../../stores";
 
   import Card from "../../layout/Card.svelte";
@@ -21,11 +22,15 @@
   const url = `https://${host}/`;
 
   function logout() {
-    loading.add(`SiteInfo.logout.${host}`, sessions.logout(host, token), {
-      onError(error) {
-        messages.add(error.message, MessageType.ERROR, Duration.MEDIUM);
-      },
-    });
+    loading.add(
+      `${SESSIONS_LOGOUT_LOADING_ID}.${host}`,
+      sessions.logout(host, token),
+      {
+        onError(error) {
+          messages.add(error.message, MessageType.ERROR, Duration.MEDIUM);
+        },
+      }
+    );
   }
 </script>
 

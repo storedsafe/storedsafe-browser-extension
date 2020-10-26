@@ -91,6 +91,10 @@
     "message": "Create object",
     "description": "Text for button to create a new object."
   },
+	"ADD_EDIT": {
+    "message": "Edit",
+    "description": "Button text to go into edit mode for pre-populated add form."
+	},
   "ADD_SUCCESS": {
     "message": "Successfully added object to StoredSafe!",
     "description": "Message to be displayed after successfully adding object to StoredSafe."
