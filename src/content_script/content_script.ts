@@ -1,5 +1,6 @@
-import { Logger, LogLevel } from '../global/logger'
+import { Logger } from '../global/logger'
 import type { Message } from '../global/messages'
+import { settings } from '../global/storage'
 import { createIframe, onIframeMessage } from './tasks/createIframe'
 import {
   scanner,
@@ -38,15 +39,21 @@ function onSubmit (form: Form) {
   }
 }
 
+let currentForms: Form[] = []
 let submitListeners: Map<HTMLElement, [string, () => void]> = new Map()
 
 function onFormsChange (forms: Form[]) {
+  currentForms = forms
   for (const [listener, [event, cb]] of submitListeners) {
     listener.removeEventListener(event, cb)
   }
   for (const form of forms) {
     if (FORM_FILL_TYPES.includes(form[1])) {
-      // TODO: autofill
+      settings.get().then(settings => {
+        if (settings.get('autoFill')) {
+
+        }
+      })
     }
 
     if (FORM_SAVE_TYPES.includes(form[1])) {
@@ -65,15 +72,36 @@ function onFormsChange (forms: Form[]) {
   }
 }
 
-function onMessage (message: Message) {
-  if (message.context === 'save') {
-    if (message.action === 'open') {
-      createIframe('save')
+function requestFill () {
+
+}
+
+function fill (data: Record<string, string>) {
+  for (const form of currentForms) {
+    if (FORM_FILL_TYPES.includes(form[1])) {
+      for (const input of form[2]) {
+        if (INPUT_FILL_TYPES.includes(input[1]) && input[0] instanceof HTMLInputElement) {
+          input[0].value = data[input[1]]
+          input[0].dispatchEvent(new InputEvent('input', { bubbles: true }))
+        }
+      }
     }
   }
 }
 
-browser.runtime.onMessage.addListener(onIframeMessage)
+function onMessage (message: Message) {
+  if (message.context === 'save' && message.action === 'open') {
+    createIframe('save')
+  }
+  else if (message.context === 'fill' && message.action === 'fill') {
+    fill(message.data)
+  }
+  else if (message.context === 'iframe') {
+    onIframeMessage(message)
+  }
+}
+
+browser.runtime.onMessage.addListener(onMessage)
 const port = browser.runtime.connect({ name: 'content' })
 port.onMessage.addListener(onMessage)
 scanner(onFormsChange)

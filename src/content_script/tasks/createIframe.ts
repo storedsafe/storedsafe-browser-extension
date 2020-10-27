@@ -80,7 +80,6 @@ export function createIframe (id: string, style: Record<string, string> = {}) {
 }
 
 export function onIframeMessage (message: Message) {
-  console.log('IFRAME MESSAGE %o', message)
   if (message.context === 'iframe') {
     switch (message.action) {
       case 'resize': {

@@ -28,8 +28,15 @@
   const setEdit = () => dispatch("set-edit", true);
 
   function fill() {
-    // TODO: Real implementation
-    console.log("FILL");
+    const values: Record<string, string> = {}
+    for (const field of result.fields) {
+      values[field.name] = field.value
+    }
+    browser.runtime.sendMessage({
+      context: 'fill',
+      action: 'fill',
+      data: values
+    })
   }
 
   function setConfirmDelete(value: boolean) {

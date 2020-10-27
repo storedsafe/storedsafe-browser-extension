@@ -10,6 +10,14 @@ import {
 } from '../errors'
 import type { OnAreaChanged } from './StorageArea'
 
+export function stripURL(url: string) {
+  try {
+    return new URL(url).origin ?? url
+  } catch {
+    return url
+  }
+}
+
 const STORAGE_KEY = 'preferences'
 type SerializablePreferences = {
   add: AddPreferences

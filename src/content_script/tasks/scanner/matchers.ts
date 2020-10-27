@@ -1,4 +1,3 @@
-import { element } from 'svelte/internal'
 import { Logger } from '../../../global/logger'
 import { InputType, FormType } from './constants'
 import type { Input } from './inputs'

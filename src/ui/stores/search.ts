@@ -1,5 +1,6 @@
 import { Readable, writable } from 'svelte/store'
 import { vault } from '../../global/api'
+import type { Message } from '../../global/messages'
 import { sessions } from './browserstorage'
 
 export const SEARCH_LOADING_ID = 'search.find'
@@ -19,29 +20,45 @@ interface SearchStore extends Readable<StoredSafeObject[]> {
 }
 
 export function searchStore (): SearchStore {
-  let results: StoredSafeObject[] = []
+  let tabResults: StoredSafeObject[] = []
+  let results: StoredSafeObject[] = null
   let currentSessions: Map<string, Session> = null
-  const { subscribe, set, update } = writable<StoredSafeObject[]>(results)
+  const { subscribe, set, update } = writable<StoredSafeObject[]>(results ?? [])
+
+  function onMessage (message: Message) {
+    console.log('MESSAGE %o', message)
+    if (message.context === 'autosearch' && message.action === 'populate') {
+      tabResults = message.data
+      set(tabResults)
+    }
+  }
+
+  const port = browser.runtime.connect({ name: 'search' })
+  port.onMessage.addListener(onMessage)
 
   sessions.subscribe(newSessions => {
     if (newSessions === null) return
     currentSessions = newSessions
-    results = results.filter(({ host }) =>
+    results = results?.filter(({ host }) =>
       [...newSessions.keys()].includes(host)
     )
-    set(results)
+    set(results ?? [])
   })
 
   return {
     subscribe,
 
     search: async function (needle) {
-      results = []
-      for (const [host, { token }] of currentSessions) {
-        const siteResults = await vault.search(host, token, needle)
-        results.push(...siteResults)
+      if (needle === '') {
+        results = tabResults
+      } else {
+        results = []
+        for (const [host, { token }] of currentSessions) {
+          const siteResults = await vault.search(host, token, needle)
+          results.push(...siteResults)
+        }
+        set(results)
       }
-      set(results)
     },
 
     edit: async function (result, values) {
