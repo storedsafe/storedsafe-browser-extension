@@ -170,7 +170,6 @@ function onPortMessage (port: browser.runtime.Port) {
 
 function onConnect (port: browser.runtime.Port) {
   if (port.name === 'search') {
-    console.log('SEARCH')
     browser.tabs
       .query({ active: true, currentWindow: true })
       .then(([tab]) => {
@@ -187,7 +186,6 @@ function onConnect (port: browser.runtime.Port) {
   port.onMessage.addListener(messageCallback)
 
   function onDisconnect () {
-    console.log('DISCONNECTED %o', port)
     port.onMessage.removeListener(messageCallback)
     port.onDisconnect.removeListener(onDisconnect)
   }

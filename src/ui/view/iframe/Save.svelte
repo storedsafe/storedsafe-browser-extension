@@ -24,7 +24,6 @@
   }
 
   function resize(height: number, width: number) {
-    console.log(height, width);
     dispatch("resize", {
       height,
       width,

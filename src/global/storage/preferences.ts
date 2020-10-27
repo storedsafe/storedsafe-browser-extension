@@ -111,7 +111,6 @@ export async function setAddPreferences (host: string, vaultId: string) {
         [host]: vaultId
       }
     }
-    console.log('PREFERENCES %o', { ...preferences, add })
     await set({ ...preferences, add })
   } catch (error) {
     if (error instanceof StoredSafeGetPreferencesError) throw error

@@ -196,9 +196,7 @@ async function find (
 ): Promise<StoredSafeObject[]> {
   if (!url.match(/^http/)) return Promise.resolve([])
   const needle = urlToNeedle(url)
-  logger.log('NEEDLE IS %s', needle)
   if (!needle) return Promise.resolve([])
-  logger.log('SEARCHING FOR %s', needle)
 
   const currentSessions = await sessions.get()
   if (!!hosts) {
@@ -271,7 +269,6 @@ export function autoSearch (
       isLoading: true
     }
     tabs.set(tabId, tabHandler)
-    logger.log('FIND')
     find(tab.url).then(results => {
       // In case a new search has been started before the first one ended
       if (tab.url === tabHandler.url) {
