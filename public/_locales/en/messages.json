@@ -563,5 +563,9 @@
 	"GENERATE_PASSWORD_PREVIEW": {
 		"message": "Preview",
     "description": "Button text to exit edit mode for generated password"
-	}
+  },
+  "IFRAME_CLOSE": {
+    "message": "Close",
+    "description": "Button text to close iframe"
+  }
 }

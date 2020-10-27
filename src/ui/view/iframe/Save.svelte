@@ -1,23 +1,32 @@
 <script lang="ts">
   import { afterUpdate, createEventDispatcher } from "svelte";
+
+  import { getMessage, LocalizedMessage } from "../../../global/i18n";
   import type { Message } from "../../../global/messages";
+  import { preferences } from "../../../global/storage";
   import { sites, sessions, structure, loading } from "../../stores";
 
+  import Card from "../lib/layout/Card.svelte";
   import Add, { addRequirements } from "../lib/pages/add/Add.svelte";
   import Login from "../lib/pages/sessions/Login.svelte";
   import Welcome from "../lib/pages/welcome/Welcome.svelte";
   import Initializing from "../Popup/Initializing.svelte";
+  import QuickSave from "./QuickSave.svelte";
 
   const dispatch = createEventDispatcher();
   let siteIndex: number = 0;
   let data: Record<string, string> = {};
+  let edit: boolean = false;
+  let host: string;
 
   let frame: HTMLElement;
   let height: number;
-  let width: number;
 
   $: isInitialized =
-    $sites !== null && $sessions !== null && $structure !== null;
+    $preferences !== null &&
+    $sites !== null &&
+    $sessions !== null &&
+    $structure !== null;
 
   function close() {
     dispatch("close");
@@ -31,13 +40,9 @@
   }
 
   afterUpdate(() => {
-    if (
-      !!frame &&
-      (height !== frame.clientHeight || width !== frame.clientWidth)
-    ) {
+    if (!!frame && height !== frame.clientHeight) {
       height = frame?.clientHeight;
-      width = frame?.clientWidth;
-      resize(height, width);
+      resize(height, 300);
     }
   });
 
@@ -47,24 +52,39 @@
       data = message.data;
     }
   });
+
+  const toggleEdit = () => {
+    edit = !edit;
+  };
 </script>
 
 <style>
   .save {
     width: 300px;
+    max-height: 400px;
     overflow: auto auto;
+  }
+
+  .inline-buttons {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 1fr;
+    column-gap: var(--spacing);
   }
 </style>
 
-{@debug siteIndex}
-
 <article class="save grid" bind:this={frame}>
-  <h2>Save</h2>
+  <div>
+    <p>Save to StoredSafe</p>
+  </div>
   {#if !isInitialized}
+    <!-- Still loading -->
     <Initializing />
   {:else if $sites.length < 1}
+    <!-- No sites available -->
     <Welcome />
   {:else if $sessions.size === 0}
+    <!-- Not logged in -->
     {#if $sites.length === 1}
       <h2>{siteIndex}</h2>
     {:else}
@@ -76,7 +96,23 @@
     {/if}
     <Login site={$sites[siteIndex]} />
   {:else if !$loading.has(...addRequirements)}
-    <Add defaultValues={data} />
+    {#if !edit}
+      <QuickSave bind:host bind:data />
+    {:else}
+      <!-- Full add editor -->
+      <Add {host} defaultValues={data} />
+    {/if}
   {/if}
-  <button class="danger" on:click={close}>Close</button>
+  <div class="sticky-buttons">
+    {#if !edit}
+      <div class="inline-buttons">
+        <button
+          on:click={toggleEdit}>{getMessage(LocalizedMessage.ADD_CREATE)}</button>
+        <button
+          class="warning"
+          on:click={toggleEdit}>{getMessage(LocalizedMessage.SEARCH_RESULT_EDIT)}</button>
+      </div>
+    {/if}
+    <button class="danger" on:click={close}>{getMessage(LocalizedMessage.IFRAME_CLOSE)}</button>
+  </div>
 </article>

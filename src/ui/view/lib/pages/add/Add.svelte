@@ -28,15 +28,12 @@
   import PasswordInput from "../../layout/PasswordInput.svelte";
   import AddField from "./AddField.svelte";
 
-  export let defaultValues: Record<string, any> = {};
-  $: isSave = Object.keys(defaultValues).length > 0;
-  let edit = false;
-  const toggleEdit = (): boolean => (edit = !edit);
-
-  let prevHost: string = null;
-  let host: string = $sessions.has($preferences.add?.lastHost)
+  export let host: string = $sessions.has($preferences.add?.lastHost)
     ? $preferences.add.lastHost
     : $structure.keys().next().value;
+  export let defaultValues: Record<string, any> = {};
+
+  let prevHost: string = null;
   const values: Record<string, any> = {
     parentid: "0",
     groupid: $preferences.add?.hosts[host] ?? $structure.get(host).vaults[0].id,
@@ -129,16 +126,6 @@
   });
 </script>
 
-<style>
-  .buttons {
-    display: flex;
-    flex-direction: row-reverse;
-    justify-content: stretch;
-    align-items: center;
-    column-gap: var(--spacing);
-  }
-</style>
-
 <section>
   <form class="grid" on:submit|preventDefault={add}>
     <Card>
@@ -172,29 +159,22 @@
         </select>
       </label>
     </Card>
-    {#if !isSave || (isSave && edit)}
-      <Card>
-        {#each selectedTemplate.structure as field (host + values.templateid + field.name)}
-          <!-- StoredSafe Template -->
-          {#if field.pwgen}
-            <PasswordInput
-              {field}
-              bind:value={templateValues[field.name]}
-              {host}
-              {policy} />
-          {:else}
-            <AddField {field} bind:value={templateValues[field.name]} />
-          {/if}
-        {/each}
-      </Card>
-    {/if}
+    <Card>
+      {#each selectedTemplate.structure as field (host + values.templateid + field.name)}
+        <!-- StoredSafe Template -->
+        {#if field.pwgen}
+          <PasswordInput
+            {field}
+            bind:value={templateValues[field.name]}
+            {host}
+            {policy} />
+        {:else}
+          <AddField {field} bind:value={templateValues[field.name]} />
+        {/if}
+      {/each}
+    </Card>
     <!-- Submit form to add object to StoredSafe -->
-    <div class="buttons sticky-buttons">
-      {#if isSave && !edit}
-        <button type="button" class="warning" on:click={toggleEdit}>
-          {getMessage(LocalizedMessage.ADD_EDIT)}
-        </button>
-      {/if}
+    <div class="sticky-buttons">
       <button type="submit" disabled={!validated}>
         {getMessage(LocalizedMessage.ADD_CREATE)}
       </button>

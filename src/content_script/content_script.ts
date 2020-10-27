@@ -72,10 +72,6 @@ function onFormsChange (forms: Form[]) {
   }
 }
 
-function requestFill () {
-
-}
-
 function fill (data: Record<string, string>) {
   for (const form of currentForms) {
     if (FORM_FILL_TYPES.includes(form[1])) {

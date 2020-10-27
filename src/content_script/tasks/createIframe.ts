@@ -5,7 +5,7 @@ const BASE_STYLE: Record<string, string> = {
   border: '0',
   padding: '0',
   margin: '0',
-  position: 'fixed',
+  position: 'absolute',
   top: '10px',
   right: '10px',
   'max-width': 'calc(100vw - 20px)',

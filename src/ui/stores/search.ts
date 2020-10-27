@@ -26,7 +26,6 @@ export function searchStore (): SearchStore {
   const { subscribe, set, update } = writable<StoredSafeObject[]>(results ?? [])
 
   function onMessage (message: Message) {
-    console.log('MESSAGE %o', message)
     if (message.context === 'autosearch' && message.action === 'populate') {
       tabResults = message.data
       set(tabResults)
