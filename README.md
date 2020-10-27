@@ -1,104 +1,74 @@
-*Looking for a shareable component template? Go here --> [sveltejs/component-template](https://github.com/sveltejs/component-template)*
+# StoredSafe Browser Extension
 
----
+## Features
 
-# svelte app
+### Popup
 
-This is a project template for [Svelte](https://svelte.dev) apps. It lives at https://github.com/sveltejs/template.
+#### Sessions
+  - [x] Welcome page when no StoredSafe hosts have been added
+  - [x] Login/logout to one or more StoredSafe hosts
+  - [x] See warnings/violations for active sessions
+  - [x] See how long session has been active
 
-To create a new project based on this template using [degit](https://github.com/Rich-Harris/degit):
+#### Search
+  - [x] Able to perform search on all active StoredSafe hosts
+  - [x] Able to edit StoredSafe object
+  - [x] Able to delete StoredSafe object (with prompt)
+  - [x] Able to decrypt StoredSafe objects
+  - [x] Able to show/hide encrypted data
+  - [x] Able to toggle large password view
+  - [x] Able to open URLs in objects
+    - [ ] Able to fill fields on page after URL is opened
+  - [x] Able to view results related to active tab when popup is opened (or search field is empty)
 
-```bash
-npx degit sveltejs/template svelte-app
-cd svelte-app
-```
+#### Add / Generate Password
+  - [x] Able to add objects to StoredSafe
+  - [x] Able to generate passwords in add/edit fields
+  - [x] Able to generate password with full options in password generator tab
+  - [x] Able to verify password against vault password policy
 
-*Note that you will need to have [Node.js](https://nodejs.org) installed.*
+#### Settings
+  - **General Settings**
+    - [x] Able to toggle auto fill on/off
+    - [x] Able to set the amount minutes of idle state required for automatic logout
+    - [x] Able to set the max amount of hours a session is allowed to be active
+    - [x] Able to enforce/override default settings from external configuration
+    - [x] Able to view managed settings
+  - **Sites**
+    - [x] Able to add/remove StoredSafe hosts
+    - [x] Able to add StoredSafe hosts from external configuration
+    - [x] Able to view managed StoredSafe hosts
+  - **Ignore List**
+    - [x] Able to remove URLs from ignore list
+      - [ ] TODO: Verify
+  - **Clear Data**
+    - [x] Able to clear all extension data in browser storage created by the user
+      - [ ] TODO: Translations
+      - [x] Able to clear sessions
+      - [x] Able to clear user settings
+      - [x] Able to clear user sites
+      - [x] Able to clear all preferences (saved user interaction patterns)
+        - [x] Able to clear only login preferences
+        - [x] Able to clear only fill preferences
+        - [ ] Able to clear only add object preferences
+      - [x] Able to clear ignore list
 
+### Background Tasks
+  - [x] Keep sessions alive in favor of browser idle / hard timeout for automatic logout
+  - [x] Logout automatically after idle timer is triggered (based on value in settings)
+    - Keep your StoredSafe vaults secure if you step away from your computer, for example when going to lunch.
+  - [x] Logout automatically after max session life is reached (based on value in settings)
+    - Helps you remember your master password
+  - [x] Enable keyboard shortcut (default ctrl+shift+f) for automatically filling forms on active tab.
+  - [x] Automatically fill forms on active tab when opened (based on value in settings)
+  - [x] Automatically search for results related to the active tab
+    - [x] Only perform search if the URL starts with http (avoids for example chrome://settings etc.)
+    - [x] Filter out irrelevant search results
+      - [x] Remove results with a different subdomain (keep results with no subdomain)
+      - [x] Remove results where the URL is part of an e-mail address
 
-## Get started
-
-Install the dependencies...
-
-```bash
-cd svelte-app
-npm install
-```
-
-...then start [Rollup](https://rollupjs.org):
-
-```bash
-npm run dev
-```
-
-Navigate to [localhost:5000](http://localhost:5000). You should see your app running. Edit a component file in `src`, save it, and reload the page to see your changes.
-
-By default, the server will only respond to requests from localhost. To allow connections from other computers, edit the `sirv` commands in package.json to include the option `--host 0.0.0.0`.
-
-
-## Building and running in production mode
-
-To create an optimised version of the app:
-
-```bash
-npm run build
-```
-
-You can run the newly built app with `npm run start`. This uses [sirv](https://github.com/lukeed/sirv), which is included in your package.json's `dependencies` so that the app will work when you deploy to platforms like [Heroku](https://heroku.com).
-
-
-## Single-page app mode
-
-By default, sirv will only respond to requests that match files in `public`. This is to maximise compatibility with static fileservers, allowing you to deploy your app anywhere.
-
-If you're building a single-page app (SPA) with multiple routes, sirv needs to be able to respond to requests for *any* path. You can make it so by editing the `"start"` command in package.json:
-
-```js
-"start": "sirv public --single"
-```
-
-## Using TypeScript
-
-This template comes with a script to set up a TypeScript development environment, you can run it immediately after cloning the template with:
-
-```bash
-node scripts/setupTypeScript.js
-```
-
-Or remove the script via:
-
-```bash
-rm scripts/setupTypeScript.js
-```
-
-## Deploying to the web
-
-### With [Vercel](https://vercel.com)
-
-Install `vercel` if you haven't already:
-
-```bash
-npm install -g vercel
-```
-
-Then, from within your project folder:
-
-```bash
-cd public
-vercel deploy --name my-project
-```
-
-### With [surge](https://surge.sh/)
-
-Install `surge` if you haven't already:
-
-```bash
-npm install -g surge
-```
-
-Then, from within your project folder:
-
-```bash
-npm run build
-surge public my-project.surge.sh
-```
+### On Tab
+  - [x] Offer to save on login if no matching url+username combo exists
+    - [ ] TODO: Only offer if credentials are new
+    - [ ] TODO: Implement preview interface
+  - [ ] Offer to choose fill
