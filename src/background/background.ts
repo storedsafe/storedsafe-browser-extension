@@ -79,7 +79,7 @@ async function sendToActiveTab (message: Message): Promise<void> {
   browser.tabs.sendMessage(tab.id, message)
 }
 
-async function autoFill () {
+function autoFill (): void {
   const values: Record<string, string> = {}
   const message: Message = {
     context: 'fill',
@@ -130,6 +130,7 @@ async function autoFill () {
       }
       browser.tabs.sendMessage(tab.id, message)
     })
+    .catch(console.error)
 }
 
 /**
@@ -144,8 +145,7 @@ function onMessage (
   if (context === 'save' && action === 'init') {
     saveFlow(data, sender.tab?.id)
   } else if (context === 'fill' && action === 'init') {
-    // TODO: fill flow
-    // saveFlow(data, sender.tab?.id)
+    autoFill()
   } else if (context === 'fill' && action === 'auto') {
     // TODO: Auto fill
   } else if (
@@ -164,23 +164,34 @@ function onMessage (
  * Wrap a message callback with a port.
  * @param port Port that sent the message.
  */
-function onPortMessage (port: browser.runtime.Port) {
+function onPortMessage (port: browser.runtime.Port): any {
   return (message: Message) => onMessage(message, port.sender)
 }
 
-function onConnect (port: browser.runtime.Port) {
-  if (port.name === 'search') {
-    browser.tabs
-      .query({ active: true, currentWindow: true })
-      .then(([tab]) => {
-        port.postMessage({
-          context: 'autosearch',
-          action: 'populate',
-          data: currentTabResults.get(tab.id) ?? []
-        })
+function onSearchConnect (port: browser.runtime.Port): void {
+  browser.tabs
+    .query({ active: true, currentWindow: true })
+    .then(([tab]) => {
+      port.postMessage({
+        context: 'autosearch',
+        action: 'populate',
+        data: currentTabResults.get(tab.id) ?? []
       })
-      .catch(console.error)
-  }
+    })
+    .catch(console.error)
+}
+
+function onContentConnect (port: browser.runtime.Port): void {
+  settings.get().then(currentSettings => {
+    if (currentSettings.get('autoFill')?.value === true) {
+      autoFill()
+    }
+  })
+}
+
+function onConnect (port: browser.runtime.Port) {
+  if (port.name === 'search') onSearchConnect(port)
+  if (port.name === 'content') onContentConnect(port)
 
   const messageCallback = onPortMessage(port)
   port.onMessage.addListener(messageCallback)
@@ -206,6 +217,10 @@ function onTabResultsChanged (tabResults: Map<number, StoredSafeObject[]>) {
   }
 }
 
+function onCommand (command: string): void {
+  if (command === 'fill') autoFill()
+}
+
 // Set up tasks that depend on timers and changes in storage.
 const untrackIdleInterval = idleInterval()
 const untrackKeepAlive = keepAlive()
@@ -217,3 +232,4 @@ browser.idle.onStateChanged.addListener(onIdle)
 browser.alarms.onAlarm.addListener(onAlarm)
 browser.runtime.onMessage.addListener(onMessage)
 browser.runtime.onConnect.addListener(onConnect)
+browser.commands.onCommand.addListener(onCommand)
