@@ -1,12 +1,30 @@
-import type { Message } from '../../global/messages'
-
 const MAX_DURATION_SECONDS = 30
 
 export function saveFlow (
   values: Record<string, string>,
-  tabId: number
+  tabId: number,
+  tabResults: StoredSafeObject[]
 ): () => void {
   let timeoutId = window.setTimeout(close, MAX_DURATION_SECONDS * 1e3)
+  if (
+    tabResults.findIndex(result => {
+      let matchUsername = false
+      let matchURL = false
+      for (const field of result.fields) {
+        if (field.name === 'username' && field.value === values.username) {
+          matchUsername = true
+        }
+        if (
+          (field.name === 'url' || field.name === 'host') &&
+          field.value === values.url
+        ) {
+          matchURL = true
+        }
+      }
+      return matchUsername && matchURL
+    }) !== -1
+  )
+    return
 
   function onSaveConnect (port: browser.runtime.Port) {
     port.postMessage({

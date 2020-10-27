@@ -70,5 +70,4 @@
 ### On Tab
   - [x] Offer to save on login if no matching url+username combo exists
     - [ ] TODO: Only offer if credentials are new
-    - [ ] TODO: Implement preview interface
   - [ ] Offer to choose fill

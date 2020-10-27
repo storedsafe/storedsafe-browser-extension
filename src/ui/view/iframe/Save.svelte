@@ -1,12 +1,22 @@
 <script lang="ts">
   import { afterUpdate, createEventDispatcher } from "svelte";
+  import { vault } from "../../../global/api";
 
   import { getMessage, LocalizedMessage } from "../../../global/i18n";
   import type { Message } from "../../../global/messages";
   import { preferences } from "../../../global/storage";
-  import { sites, sessions, structure, loading } from "../../stores";
+  import {
+    sites,
+    sessions,
+    structure,
+    loading,
+    messages,
+    MessageType,
+  } from "../../stores";
 
   import Card from "../lib/layout/Card.svelte";
+  import LoadingBar from "../lib/layout/LoadingBar.svelte";
+  import MessageViewer from "../lib/layout/MessageViewer.svelte";
   import Add, { addRequirements } from "../lib/pages/add/Add.svelte";
   import Login from "../lib/pages/sessions/Login.svelte";
   import Welcome from "../lib/pages/welcome/Welcome.svelte";
@@ -50,12 +60,35 @@
   port.onMessage.addListener((message: Message) => {
     if (message.context === "save" && message.action === "populate") {
       data = message.data;
+      data.parentid = "0";
     }
   });
 
   const toggleEdit = () => {
     edit = !edit;
   };
+
+  function save() {
+    loading.add(
+      `Save.add`,
+      vault.addObject(host, $sessions.get(host).token, data),
+      {
+        onError(error) {
+          messages.add(error.message, MessageType.ERROR);
+        },
+        onSuccess() {
+          messages.add(
+            getMessage(LocalizedMessage.ADD_SUCCESS),
+            MessageType.INFO
+          );
+          preferences
+            .setAddPreferences(host, data.groupid)
+            .catch(console.error);
+          setTimeout(close, 1000);
+        },
+      }
+    );
+  }
 </script>
 
 <style>
@@ -74,6 +107,8 @@
 </style>
 
 <article class="save grid" bind:this={frame}>
+  <MessageViewer {messages} />
+  <LoadingBar isLoading={$loading.isLoading} />
   <div>
     <p>Save to StoredSafe</p>
   </div>
@@ -107,12 +142,14 @@
     {#if !edit}
       <div class="inline-buttons">
         <button
-          on:click={toggleEdit}>{getMessage(LocalizedMessage.ADD_CREATE)}</button>
+          on:click={save}>{getMessage(LocalizedMessage.ADD_CREATE)}</button>
         <button
           class="warning"
           on:click={toggleEdit}>{getMessage(LocalizedMessage.SEARCH_RESULT_EDIT)}</button>
       </div>
     {/if}
-    <button class="danger" on:click={close}>{getMessage(LocalizedMessage.IFRAME_CLOSE)}</button>
+    <button
+      class="danger"
+      on:click={close}>{getMessage(LocalizedMessage.IFRAME_CLOSE)}</button>
   </div>
 </article>

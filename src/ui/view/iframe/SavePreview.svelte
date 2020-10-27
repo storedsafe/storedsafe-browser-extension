@@ -7,6 +7,7 @@
   export let template: string;
   export let title: string;
   export let username: string;
+  export let url: string;
 </script>
 
 <style>
@@ -37,6 +38,7 @@
 <section class:selected class="search-item">
   <article class="text">
     <span class="title" title={`${title}`}>{title}</span>
+    <span class="subtitle" title={url}>{url}</span>
     <span class="subtitle" title={username}>{username}</span>
   </article>
   <div class="icon" title={template}>

@@ -133,6 +133,8 @@ function autoFill (): void {
     .catch(console.error)
 }
 
+const stopFlows: Map<string, () => void> = new Map()
+
 /**
  * Handle incoming messages.
  * @param message Message sent from other scripts.
@@ -143,15 +145,19 @@ function onMessage (
 ): any {
   const { context, action, data } = message
   if (context === 'save' && action === 'init') {
-    saveFlow(data, sender.tab?.id)
+    stopFlows.set(
+      sender.tab?.id + 'save',
+      saveFlow(data, sender.tab?.id, currentTabResults.get(sender.tab.id))
+    )
   } else if (context === 'fill' && action === 'init') {
     autoFill()
-  } else if (context === 'fill' && action === 'auto') {
-    // TODO: Auto fill
   } else if (
     context === 'iframe' ||
     (context === 'fill' && action === 'fill')
   ) {
+    if (context === 'iframe' && action === 'close') {
+      stopFlows.get(sender.tab?.id + message.data?.id)()
+    }
     // Forward message
     browser.tabs.query({ active: true, currentWindow: true }).then(([tab]) => {
       // Return in case data needs to come back to initiating script
