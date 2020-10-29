@@ -8,12 +8,14 @@
     MessageType,
     search,
     SEARCH_DELETE_LOADING_ID,
-    structure,
+sessions,
+        structure,
   } from "../../../../../stores";
   import { getMessage, LocalizedMessage } from "../../../../../../global/i18n";
 
   import ConfirmDialog from "../../../layout/ConfirmDialog.svelte";
   import Field from "../fields/Field.svelte";
+  import { decryptObject } from "../../../../../../global/api/vault";
 
   export let result: StoredSafeObject;
 
@@ -28,16 +30,19 @@
   const setEdit = () => dispatch("set-edit", true);
 
   function fill() {
-    const values: Record<string, string> = {};
-    for (const field of result.fields) {
-      values[field.name] = field.value;
-    }
-    browser.runtime.sendMessage({
-      context: "fill",
-      action: "fill",
-      data: values,
+    const { token } = $sessions.get(result.host);
+    decryptObject(result.host, token, result).then((decrypted) => {
+      const values: Record<string, string> = {};
+      for (const field of decrypted.fields) {
+        values[field.name] = field.value;
+      }
+      browser.runtime.sendMessage({
+        context: "fill",
+        action: "fill",
+        data: values,
+      });
+      window.close();
     });
-    window.close();
   }
 
   function setConfirmDelete(value: boolean) {
