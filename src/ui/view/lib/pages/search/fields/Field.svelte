@@ -38,7 +38,7 @@
   async function copy() {
     const exec = async (value: string) => await copyText(value);
     if (field.isEncrypted) await decrypt();
-    else await exec(field.value);
+    await exec(field.value);
   }
 </script>
 
