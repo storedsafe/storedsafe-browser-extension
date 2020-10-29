@@ -161,7 +161,10 @@ export enum LocalizedMessage {
   GENERATE_PASSWORD_PREVIEW = 'GENERATE_PASSWORD_PREVIEW',
 
   // Iframe
-  IFRAME_CLOSE = 'IFRAME_CLOSE'
+  IFRAME_CLOSE = 'IFRAME_CLOSE',
+
+  // Save
+  SAVE_IGNORE = 'SAVE_IGNORE'
 }
 
 /**

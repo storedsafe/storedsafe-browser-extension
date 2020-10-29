@@ -1,5 +1,5 @@
 import { getMessage, LocalizedMessage } from '../global/i18n'
-import { preferences, sessions, settings } from '../global/storage'
+import { ignore, preferences, sessions, settings } from '../global/storage'
 import { auth, vault } from '../global/api'
 import { hardTimeout, idleInterval, keepAlive, onlineStatus } from './tasks'
 import {
@@ -134,6 +134,15 @@ function autoFill (): void {
 }
 
 const stopFlows: Map<string, () => void> = new Map()
+async function startSaveFlow (tabId: number, data: Record<string, any>) {
+  const currentSessions = await sessions.get()
+  const currentIgnore = await ignore.get()
+  if (currentSessions.size < 1 || currentIgnore.includes(data.url)) return
+  stopFlows.set(
+    tabId + 'save',
+    saveFlow(data, tabId, currentTabResults.get(tabId))
+  )
+}
 
 /**
  * Handle incoming messages.
@@ -145,10 +154,7 @@ function onMessage (
 ): any {
   const { context, action, data } = message
   if (context === 'save' && action === 'init') {
-    stopFlows.set(
-      sender.tab?.id + 'save',
-      saveFlow(data, sender.tab?.id, currentTabResults.get(sender.tab.id))
-    )
+    startSaveFlow(sender.tab?.id, message.data).catch(console.error)
   } else if (context === 'fill' && action === 'init') {
     autoFill()
   } else if (
@@ -156,6 +162,7 @@ function onMessage (
     (context === 'fill' && action === 'fill')
   ) {
     if (context === 'iframe' && action === 'close') {
+      console.log(stopFlows)
       stopFlows.get(sender.tab?.id + message.data?.id)()
     }
     // Forward message

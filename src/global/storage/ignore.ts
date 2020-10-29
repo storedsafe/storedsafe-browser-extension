@@ -68,7 +68,7 @@ export async function add (url: string): Promise<void> {
     // Get current state
     const ignore = await get()
     // Make sure the URL doesn't already exist in the list
-    if (ignore.findIndex(ignoreUrl => ignoreUrl === url) === -1)
+    if (ignore.findIndex(ignoreUrl => ignoreUrl === url) !== -1)
       throw new StoredSafeIgnoreAddDuplicateError(url)
     // Update ignore list in storage
     ignore.push(url)

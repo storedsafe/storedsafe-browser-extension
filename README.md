@@ -40,7 +40,6 @@
     - [x] Able to view managed StoredSafe hosts
   - **Ignore List**
     - [x] Able to remove URLs from ignore list
-      - [ ] TODO: Verify
   - **Clear Data**
     - [x] Able to clear all extension data in browser storage created by the user
       - [ ] TODO: Translations
@@ -69,5 +68,4 @@
 
 ### On Tab
   - [x] Offer to save on login if no matching url+username combo exists
-    - [ ] TODO: Only offer if credentials are new
   - [ ] Offer to choose fill

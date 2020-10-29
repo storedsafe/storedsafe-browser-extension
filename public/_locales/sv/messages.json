@@ -446,5 +446,8 @@
 	},
 	"IFRAME_CLOSE": {
 		"message": "Stäng"
-	}
+	},
+  "SAVE_IGNORE": {
+    "message": "Fråga inte igen för den här sidan"
+  }
 }

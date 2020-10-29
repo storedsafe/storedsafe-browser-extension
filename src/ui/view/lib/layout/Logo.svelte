@@ -5,7 +5,7 @@
 <style>
   img {
     max-width: 90%;
-    max-height: 2.5em;
+    max-height: 2.2em;
     margin: auto;
     user-select: none;
   }

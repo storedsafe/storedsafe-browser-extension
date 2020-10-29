@@ -567,5 +567,9 @@
   "IFRAME_CLOSE": {
     "message": "Close",
     "description": "Button text to close iframe"
+  },
+  "SAVE_IGNORE": {
+    "message": "Don't ask again for this page",
+    "description": "Button text to add URL to ignore list in save frame."
   }
 }
