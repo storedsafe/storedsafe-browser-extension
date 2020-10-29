@@ -2,13 +2,14 @@
   import { afterUpdate } from "svelte";
 
   import { sendMessage } from "../../../global/messages";
+  import Fill from "./Fill.svelte";
 
   import Save from "./Save.svelte";
 
   export let page: string;
 
   function resize(e: CustomEvent<{ height: string; width: string }>) {
-    const { height, width } = e.detail
+    const { height, width } = e.detail;
     sendMessage({
       context: "iframe",
       action: "resize",
@@ -75,6 +76,8 @@
   <section class="container">
     {#if page === 'save'}
       <Save on:resize={resize} on:close={close} />
+    {:else if page === 'fill'}
+      <Fill on:resize={resize} on:close={close} />
     {/if}
   </section>
 </div>

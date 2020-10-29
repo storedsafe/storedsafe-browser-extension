@@ -11,6 +11,7 @@ import type { Message } from '../global/messages'
 import { saveFlow } from './flows/saveFlow'
 import { autoSearch } from './tasks/autoSearch'
 import { stripURL } from '../global/storage/preferences'
+import { fillFlow } from './flows/fillFlow'
 
 console.log('BACKGROUND - %s', getMessage(LocalizedMessage.EXTENSION_NAME))
 
@@ -79,62 +80,74 @@ async function sendToActiveTab (message: Message): Promise<void> {
   browser.tabs.sendMessage(tab.id, message)
 }
 
-function autoFill (): void {
-  const values: Record<string, string> = {}
-  const message: Message = {
-    context: 'fill',
-    action: 'fill',
-    data: values
+const stopFlows: Map<string, () => void> = new Map()
+
+async function autoFill (): Promise<void> {
+  const [tab] = await browser.tabs.query({ active: true, currentWindow: true })
+  if (!tab) {
+    console.error('Tab is undefined')
+    return
   }
-  browser.tabs
-    .query({ active: true, currentWindow: true })
-    .then(async ([tab]) => {
-      let id = 0
-      const currentPreferences = await preferences.get()
-      const fillPreferences = currentPreferences.autoFill.get(stripURL(tab.url))
-
-      let counter = 3
-      while (!currentTabResults.has(tab.id) && counter-- > 0) {
-        await new Promise(res => {
-          setTimeout(() => {
-            res()
-          }, 500)
-        })
-      }
-      // Could not find results
-      if (!currentTabResults.has(tab.id)) return
-      if (currentTabResults.get(tab.id).length === 0) return
-
-      if (!!fillPreferences) {
-        id = currentTabResults
-          .get(tab.id)
-          .findIndex(
-            ({ host, id: objectId }) =>
-              host === fillPreferences.host &&
-              objectId === fillPreferences.objectId
-          )
-        if (id === -1) id = 0
-      }
-      let result = currentTabResults.get(tab.id)[id]
-      for (const field of currentTabResults.get(tab.id)[id].fields) {
-        // Decrypt if needed
-        if (field.isEncrypted && !result.isDecrypted) {
-          const currentSessions = await sessions.get()
-          result = await vault.decryptObject(
-            result.host,
-            currentSessions.get(result.host).token,
-            result
-          )
-        }
-        values[field.name] = field.value
-      }
-      browser.tabs.sendMessage(tab.id, message)
+  let counter = 3
+  const INTERVAL = 500
+  // Wait for results, maximum of INTERVAL * counter start value ms
+  while (!currentTabResults.has(tab.id) && counter-- > 0) {
+    await new Promise(res => {
+      setTimeout(() => {
+        res()
+      }, INTERVAL)
     })
-    .catch(console.error)
+  }
+  // Could not find results
+  if (!currentTabResults.has(tab.id)) return
+  if (currentTabResults.get(tab.id).length === 0) return
+
+  // Check if user shold be asked for preferred result first
+  const currentPreferences = await preferences.get()
+  const fillPreferences = currentPreferences.autoFill.get(stripURL(tab.url))
+
+  let result: StoredSafeObject
+  const tabResults = currentTabResults.get(tab.id)
+  if (!!fillPreferences) {
+    result = tabResults.find(
+      ({ host, id: objectId }) =>
+        host === fillPreferences.host && objectId === fillPreferences.objectId
+    )
+  }
+  if (!result) {
+    stopFlows.set(tab.id + 'fill', fillFlow(tab.url, tab.id, tabResults))
+  } else {
+    preferences.setAutoFillPreferences(tab.url, {
+      host: result.host,
+      objectId: result.id
+    })
+    const values: Record<string, string> = {}
+    for (let i = 0; i < result.fields.length; i++) {
+      let field = result.fields[i]
+      // Decrypt if needed
+      if (field.isEncrypted && !result.isDecrypted) {
+        const currentSessions = await sessions.get()
+        result = await vault.decryptObject(
+          result.host,
+          currentSessions.get(result.host).token,
+          result
+        )
+        field = result.fields[i]
+      }
+      values[field.name] = field.value
+    }
+    browser.tabs.sendMessage(tab.id, {
+      context: 'fill',
+      action: 'fill',
+      data: values
+    })
+  }
 }
 
-const stopFlows: Map<string, () => void> = new Map()
-async function startSaveFlow (tabId: number, data: Record<string, any>) {
+async function startSaveFlow (
+  tabId: number,
+  data: Record<string, any>
+): Promise<void> {
   const currentSessions = await sessions.get()
   const currentIgnore = await ignore.get()
   if (currentSessions.size < 1 || currentIgnore.includes(data.url)) return
@@ -154,7 +167,7 @@ function onMessage (
 ): any {
   const { context, action, data } = message
   if (context === 'save' && action === 'init') {
-    startSaveFlow(sender.tab?.id, message.data).catch(console.error)
+    startSaveFlow(sender.tab?.id, data).catch(console.error)
   } else if (context === 'fill' && action === 'init') {
     autoFill()
   } else if (
@@ -162,8 +175,7 @@ function onMessage (
     (context === 'fill' && action === 'fill')
   ) {
     if (context === 'iframe' && action === 'close') {
-      console.log(stopFlows)
-      stopFlows.get(sender.tab?.id + message.data?.id)()
+      stopFlows.get(sender.tab?.id + data?.id)()
     }
     // Forward message
     browser.tabs.query({ active: true, currentWindow: true }).then(([tab]) => {

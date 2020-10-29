@@ -89,6 +89,9 @@ function onMessage (message: Message) {
   if (message.context === 'save' && message.action === 'open') {
     createIframe('save')
   }
+  if (message.context === 'fill' && message.action === 'open') {
+    createIframe('fill')
+  }
   else if (message.context === 'fill' && message.action === 'fill') {
     fill(message.data)
   }

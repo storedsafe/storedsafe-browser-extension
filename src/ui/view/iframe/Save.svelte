@@ -1,11 +1,12 @@
 <script lang="ts">
-  import { afterUpdate, createEventDispatcher } from "svelte";
+  import { afterUpdate, createEventDispatcher, onMount } from "svelte";
   import { vault } from "../../../global/api";
 
   import { getMessage, LocalizedMessage } from "../../../global/i18n";
   import type { Message } from "../../../global/messages";
-  import { ignore, preferences } from "../../../global/storage";
   import {
+    ignore,
+    preferences,
     sites,
     sessions,
     structure,
@@ -64,11 +65,13 @@
     }
   });
 
-  const port = browser.runtime.connect({ name: "save" });
-  port.onMessage.addListener((message: Message) => {
-    if (message.context === "save" && message.action === "populate") {
-      data = { ...data, ...message.data };
-    }
+  onMount(() => {
+    const port = browser.runtime.connect({ name: "save" });
+    port.onMessage.addListener((message: Message) => {
+      if (message.context === "save" && message.action === "populate") {
+        data = { ...data, ...message.data };
+      }
+    });
   });
 
   const toggleEdit = () => {

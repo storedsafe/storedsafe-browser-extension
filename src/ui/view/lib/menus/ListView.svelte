@@ -6,9 +6,9 @@
   const dispatch = createEventDispatcher();
 
   export let items: ListItem<any>[] = [];
-  export let selected: string = null;
+  export let selected: any = null;
 
-  function setSelected(name: string) {
+  function setSelected(name: any) {
     dispatch("select", selected !== name ? name : null);
   }
 </script>
