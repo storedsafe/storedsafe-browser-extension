@@ -1,6 +1,7 @@
 <script lang="ts">
   import { getMessage, LocalizedMessage } from "../../../../../../global/i18n";
   import { copyText, goto } from "../../../../../../global/utils";
+  import { loading } from "../../../../../stores";
 
   import Card from "../../../layout/Card.svelte";
   import Encrypted from "./Encrypted.svelte";
@@ -37,8 +38,12 @@
    * */
   async function copy() {
     const exec = async (value: string) => await copyText(value);
-    if (field.isEncrypted) await decrypt();
-    await exec(field.value);
+    let promise = Promise.resolve(field.value);
+    if (field.isEncrypted) promise = decrypt();
+    loading.add(
+      `Field.copy`,
+      promise.then(async (value) => await exec(value))
+    );
   }
 </script>
 
