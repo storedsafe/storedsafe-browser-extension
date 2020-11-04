@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "StoredSafe",
-  "version": "0.6",
+  "version": "0.6.1",
   "description": "StoredSafe browser integration",
   "default_locale": "en",
   "icons": {

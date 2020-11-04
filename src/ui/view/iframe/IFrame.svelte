@@ -1,9 +1,7 @@
 <script lang="ts">
-  import { afterUpdate } from "svelte";
-
   import { sendMessage } from "../../../global/messages";
-  import Fill from "./Fill.svelte";
 
+  import Fill from "./Fill.svelte";
   import Save from "./Save.svelte";
 
   export let page: string;
@@ -21,14 +19,18 @@
     });
   }
 
-  function close() {
-    sendMessage({
-      context: "iframe",
-      action: "close",
-      data: {
-        id: page,
+  function close(e: CustomEvent<browser.runtime.Port>) {
+    const port = e.detail;
+    sendMessage(
+      {
+        context: "iframe",
+        action: "close",
+        data: {
+          id: page,
+        },
       },
-    });
+      port
+    );
   }
 </script>
 

@@ -33,27 +33,27 @@ import json
 import re
 from pathlib import Path
 
-if len(sys.argv) <= 1:
-    print("usage: svg_to_ts <svg_dir> [out_file]")
+if len(sys.argv) <= 2:
+    print("usage: svg_to_ts <svg_dir> <out_file>")
     sys.exit(1)
 
-p = Path(sys.argv[1])
-if not p.exists() and not p.is_dir():
+p_in = Path(sys.argv[1])
+if not p_in.exists() and not p_in.is_dir():
+    print(str(p_in) + " is not a folder.")
+
+p_out = Path(sys.argv[2])
+if not p_out.exists() and not p_out.is_dir():
     print(str(p) + " is not a folder.")
 
-out = Path('./src/global/template_icons.ts')
-if len(sys.argv) >= 3:
-    out = Path(sys.argv[2])
-
-with out.open('w') as out_file:
+with p_out.open('w') as out_file:
     images = {}
     out_file.write('export default ')
     r = re.compile(r'.*<!DOCTYPE[^>]*>(.*)$', re.MULTILINE | re.IGNORECASE | re.DOTALL)
-    for svg in p.glob('*.svg'):
+    for svg in p_in.glob('*.svg'):
         with svg.open('r') as in_file:
             print(f"Processing {svg.stem}...")
             contents = in_file.read().strip()
             contents = r.sub(r'\1', contents)
             images[svg.stem] = contents
     json.dump(images, out_file, indent=4)
-print(f"Finished outputting parsed files to {out}")
+print(f"Finished outputting parsed files to {p_out}")

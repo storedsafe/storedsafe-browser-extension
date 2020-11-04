@@ -41,6 +41,8 @@
   let frame: HTMLElement;
   let height: number;
 
+  let port: browser.runtime.Port;
+
   $: isInitialized =
     $preferences !== null &&
     $sites !== null &&
@@ -48,7 +50,7 @@
     $structure !== null;
 
   function close() {
-    dispatch("close");
+    dispatch("close", port);
   }
 
   function resize(height: number, width: number) {
@@ -66,7 +68,7 @@
   });
 
   onMount(() => {
-    const port = browser.runtime.connect({ name: "save" });
+    port = browser.runtime.connect({ name: "save" });
     port.onMessage.addListener((message: Message) => {
       if (message.context === "save" && message.action === "populate") {
         data = { ...data, ...message.data };
@@ -107,7 +109,7 @@
         messages.add(error.message, MessageType.ERROR);
       },
       onSuccess() {
-        setTimeout(close);
+        close();
       },
     });
   }
