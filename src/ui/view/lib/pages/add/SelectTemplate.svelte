@@ -28,7 +28,7 @@
 
 {#if !!host && !!templates}
   <label for="template">
-    <span>{getMessage(LocalizedMessage.ADD_VAULT)}</span>
+    <span>{getMessage(LocalizedMessage.ADD_TEMPLATE)}</span>
     <select id="template" bind:value={templateid}>
       {#each templates as template (template.id)}
         <option value={template.id}>{template.name}</option>

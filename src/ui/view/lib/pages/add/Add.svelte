@@ -33,7 +33,7 @@
 
   export let host: string;
 
-  let values: Record<string, any> = EMPTY_STATE;
+  let values: Record<string, any> = { ...EMPTY_STATE };
   $: template = $structure
     .get(host)
     ?.templates?.find(({ id }) => id === values.templateid);
@@ -56,7 +56,7 @@
           messages.add(error.message, MessageType.ERROR);
         },
         onSuccess() {
-          values = EMPTY_STATE;
+          values = { ...EMPTY_STATE };
           messages.add(
             getMessage(LocalizedMessage.ADD_SUCCESS),
             MessageType.INFO,
