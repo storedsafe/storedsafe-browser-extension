@@ -31,7 +31,7 @@ function matchingObjectExists(
       }
       // Check for URL matches
       if ((field.name === "url" || field.name === "host") && field.value === url) {
-          matchURL = true;
+        matchURL = true;
       }
     }
     return matchUsername && matchURL;

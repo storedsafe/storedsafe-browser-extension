@@ -1,5 +1,12 @@
-export function fillFlow (url: string, tabId: number, tabResults: StoredSafeObject[]) {
-  function onFillConnect (port: browser.runtime.Port) {
+
+/**
+ * Open prompt to ask user to chose their object preferences for filling forms.
+ * @param url URL of current tab, used for fill preferences.
+ * @param tabId ID of current tab, for tab communications.
+ * @param tabResults Results related to the current tab.
+ */
+export function fillFlow(url: string, tabId: number, tabResults: StoredSafeObject[]) {
+  function onFillConnect(port: browser.runtime.Port) {
     port.postMessage({
       context: 'fill',
       action: 'populate',
@@ -10,7 +17,7 @@ export function fillFlow (url: string, tabId: number, tabResults: StoredSafeObje
     })
   }
 
-  function onConnect (port: browser.runtime.Port) {
+  function onConnect(port: browser.runtime.Port) {
     console.log('CONNECT %o', port)
     if (port.name === 'fill' && port.sender?.tab?.id === tabId) {
       onFillConnect(port)
@@ -22,9 +29,9 @@ export function fillFlow (url: string, tabId: number, tabResults: StoredSafeObje
   browser.tabs.sendMessage(tabId, {
     context: 'fill',
     action: 'open'
-  })
+  }).catch(console.error)
 
-  return function stop () {
+  return function stop() {
     browser.runtime.onConnect.removeListener(onConnect)
   }
 }

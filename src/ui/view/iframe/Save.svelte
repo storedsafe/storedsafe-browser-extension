@@ -1,7 +1,7 @@
 <script lang="ts">
   import { afterUpdate, createEventDispatcher, onMount } from "svelte";
-  import { vault } from "../../../global/api";
 
+  import { vault } from "../../../global/api";
   import { getMessage, LocalizedMessage } from "../../../global/i18n";
   import type { Message } from "../../../global/messages";
   import {
@@ -14,8 +14,8 @@
     messages,
     MessageType,
   } from "../../stores";
-  import Card from "../lib/layout/Card.svelte";
 
+  import Card from "../lib/layout/Card.svelte";
   import LoadingBar from "../lib/layout/LoadingBar.svelte";
   import MessageViewer from "../lib/layout/MessageViewer.svelte";
   import SelectHost from "../lib/pages/add/SelectHost.svelte";

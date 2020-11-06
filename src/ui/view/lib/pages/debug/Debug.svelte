@@ -42,7 +42,9 @@
 
   function parseStorage(value: any): string {
     let output = '<div class="entry">';
-    if (Array.isArray(value)) {
+    if (value === undefined || value === null) {
+      output += value + ` <em>(${typeof value})</em>`;
+    } else if (Array.isArray(value)) {
       output += "<ul><em>(Array)</em> [";
       for (let i = 0; i < value.length; i++) {
         output += `<li>[<strong>${i}</strong>]: ${parseStorage(value[i])}</li>`;

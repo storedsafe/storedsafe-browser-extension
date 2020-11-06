@@ -1,6 +1,6 @@
 {
   "name": "storedsafe-browser-extension",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "author": "Oscar Mattsson",
   "description": "StoredSafe browser extension for chrome and firefox",
   "licanse": "AGPL-3.0-or-later",

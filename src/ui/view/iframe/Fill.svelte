@@ -23,7 +23,7 @@
   import { vault } from "../../../global/api";
 
   const dispatch = createEventDispatcher();
-  let url: string
+  let url: string;
   let results: StoredSafeObject[] = [];
 
   let frame: HTMLElement;
@@ -100,24 +100,10 @@
   }
 
   async function fill(result: StoredSafeObject): Promise<void> {
-    await preferences.setAutoFillPreferences(url, {
-      host: result.host,
-      objectId: result.id
-    })
-    const values: Record<string, any> = {};
-    for (let i = 0; i < result.fields.length; i++) {
-      let field = result.fields[i];
-      if (field.isEncrypted && !result.isDecrypted) {
-        const { token } = $sessions.get(result.host);
-        result = await vault.decryptObject(result.host, token, result);
-        field = result.fields[i];
-      }
-      values[field.name] = field.value;
-    }
     browser.runtime.sendMessage({
       context: "fill",
       action: "fill",
-      data: values,
+      data: result,
     });
   }
 </script>

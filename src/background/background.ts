@@ -75,13 +75,13 @@ function onAlarm(alarmInfo: browser.alarms.Alarm) {
   }
 }
 
-async function sendToActiveTab(message: Message): Promise<void> {
+async function getActiveTab(): Promise<browser.tabs.Tab> {
   const [tab] = await browser.tabs.query({ active: true, currentWindow: true });
-  browser.tabs.sendMessage(tab.id, message);
+  return tab;
 }
 
 async function autoFill(): Promise<void> {
-  const [tab] = await browser.tabs.query({ active: true, currentWindow: true });
+  const tab = await getActiveTab();
   if (!tab) {
     console.error("Tab is undefined");
     return;
@@ -116,27 +116,45 @@ async function autoFill(): Promise<void> {
   if (!result) {
     fillFlow(url, tab.id, tabResults);
   } else {
-    const values: Record<string, string> = {};
-    for (let i = 0; i < result.fields.length; i++) {
-      let field = result.fields[i];
-      // Decrypt if needed
-      if (field.isEncrypted && !result.isDecrypted) {
-        const currentSessions = await sessions.get();
-        result = await vault.decryptObject(
-          result.host,
-          currentSessions.get(result.host).token,
-          result
-        );
-        field = result.fields[i];
-      }
-      values[field.name] = field.value;
-    }
-    browser.tabs.sendMessage(tab.id, {
-      context: "fill",
-      action: "fill",
-      data: values,
-    });
+    fill(result);
   }
+}
+
+/**
+ * Fill forms on the active tab with data from a StoredSafe object.
+ * @param result The StoredSafe object to fill on the active tab.
+ * @param tabId ID of tab if the tab ID is already known, avoids multiple lookups.
+ */
+async function fill(
+  result: StoredSafeObject,
+  tab?: browser.tabs.Tab
+): Promise<void> {
+  if (tab === undefined) tab = await getActiveTab();
+  const url = stripURL(tab.url);
+  await preferences.setAutoFillPreferences(url, {
+    host: result.host,
+    objectId: result.id,
+  });
+  const values: Record<string, string> = {};
+  for (let i = 0; i < result.fields.length; i++) {
+    let field = result.fields[i];
+    // Decrypt if needed
+    if (field.isEncrypted && !result.isDecrypted) {
+      const currentSessions = await sessions.get();
+      result = await vault.decryptObject(
+        result.host,
+        currentSessions.get(result.host).token,
+        result
+      );
+      field = result.fields[i];
+    }
+    values[field.name] = field.value;
+  }
+  browser.tabs.sendMessage(tab.id, {
+    context: "fill",
+    action: "fill",
+    data: values,
+  });
 }
 
 async function startSaveFlow(
@@ -162,10 +180,9 @@ function onMessage(
     startSaveFlow(sender.tab?.id, data).catch(console.error);
   } else if (context === "fill" && action === "init") {
     autoFill();
-  } else if (
-    context === "iframe" ||
-    (context === "fill" && action === "fill")
-  ) {
+  } else if (context === "fill" && action === "fill") {
+    fill(message.data);
+  } else if (context === "iframe") {
     // Forward message
     browser.tabs.query({ active: true, currentWindow: true }).then(([tab]) => {
       // Return in case data needs to come back to initiating script
