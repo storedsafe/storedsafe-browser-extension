@@ -1,8 +1,9 @@
 {
   "browser_specific_settings": {
     "gecko": {
-      "id": "storedsafe@storedsafe.com",
-      "strict_min_version": "57.0"
+      "id": "{5a110dee-fb42-44a1-b64d-d0444a199f96}",
+      "update_url": "https://storedsafe.com/addons/firefox/updates.json",
+      "strict_min_version": "79.0"
     }
   }
 }

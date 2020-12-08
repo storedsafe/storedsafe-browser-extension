@@ -1,6 +1,6 @@
 {
   "name": "storedsafe-browser-extension",
-  "version": "0.6.3",
+  "version": "0.6.5",
   "author": "Oscar Mattsson",
   "description": "StoredSafe browser extension for chrome and firefox",
   "licanse": "AGPL-3.0-or-later",
@@ -10,7 +10,8 @@
     "build": "gulp build",
     "dev": "gulp dev",
     "watch": "gulp watch",
-    "validate": "svelte-check"
+    "validate": "svelte-check",
+    "sign": "ts-node sign"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^14.0.0",
@@ -31,7 +32,8 @@
     "svelte-preprocess": "^4.0.0",
     "ts-node": "^9.0.0",
     "tslib": "^2.0.0",
-    "typescript": "^4.0.2"
+    "typescript": "^4.0.2",
+    "web-ext": "^5.4.1"
   },
   "dependencies": {
     "storedsafe": "git+ssh://git@git.xpd.se:19922/storedsafe/storedsafe-javascript.git",

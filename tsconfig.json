@@ -3,6 +3,7 @@
   "include": ["src/**/*"],
   "exclude": ["node_modules/*", "__sapper__/*", "public/*"],
   "compilerOptions": {
-    "types": ["firefox-webext-browser"]
+    "types": ["firefox-webext-browser"],
+    "resolveJsonModule": true
   }
 }

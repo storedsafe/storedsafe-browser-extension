@@ -4,7 +4,7 @@
 :root {
   --color-primary: #526a78;
   --color-primary-light: #8a9aaf;
-  --color-primary-dark: #2e424f;
+  --color-primary-dark: #394f5e;
 
   --color-accent: #03a388;
   --color-accent-light: #43c1ac;
@@ -12,9 +12,9 @@
 
   --color-warning: #d7820a;
   --color-warning-light: #ffc16a;
-  --color-warning-dark: #b76b00;
+  --color-warning-dark: #925603;
 
-  --color-danger: #c5283e;
+  --color-danger: #d44a5d;
   --color-danger-light: #f27183;
   --color-danger-dark: #7e0314;
 

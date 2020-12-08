@@ -43,7 +43,7 @@ Managed configuration is done differently depending on the user's operating syst
   - **Mac**: `/examples/com.google.Chrome.plist`
   - **Linux**: `/examples/policy.json`
 - **firefox**: https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Native_manifests
-  - **All**: `/examples/storedsafe@storedsafe.com.json` 
+  - **All**: `/examples/{5a110dee-fb42-44a1-b64d-d0444a199f96}.json` 
     - location is set differently per operating system
 - **edge chromium**: https://docs.microsoft.com/en-us/deployedge/microsoft-edge-policies
   - **Windows**: `/examples/edge_chromium.reg`
