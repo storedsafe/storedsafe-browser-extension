@@ -121,8 +121,11 @@
   }
 
   .content {
-    padding: var(--spacing);
     overflow: hidden scroll;
+  }
+
+  .spacer {
+    padding: var(--spacing);
   }
 </style>
 
@@ -134,7 +137,10 @@
   <nav class="grid shadow">
     <DebugButton on:open-debug={() => setPage(Page.DEBUG)} />
     {#if isOnline}
-      <SearchBar focus={page === Page.SEARCH} on:search={handleSearch} on:focus={handleSearchFocus} />
+      <SearchBar
+        focus={page === Page.SEARCH}
+        on:search={handleSearch}
+        on:focus={handleSearchFocus} />
     {:else}
       <Logo />
     {/if}
@@ -145,32 +151,34 @@
     <MessageViewer {messages} />
   </nav>
   <article class="content" bind:this={content}>
-    {#if page === Page.WELCOME}
-      <div transition:slide>
-        <Welcome />
-      </div>
-    {:else if page === Page.SEARCH && !$loading.has(...searchRequirements)}
-      <div transition:slide>
-        <Search on:scrollTo={handleScroll} {needle} />
-      </div>
-    {:else if page === Page.ADD && !$loading.has(...addRequirements)}
-      <div transition:slide>
-        <Add on:scrollTo={handleScroll} />
-      </div>
-    {:else if page === Page.GENERATE_PASSWORD}
-      <div transition:slide>
-        <PasswordGenerator on:scrollTo={handleScroll} />
-      </div>
-    {:else if page === Page.SESSIONS}
-      <div transition:slide>
-        <SessionsPage on:scrollTo={handleScroll} />
-      </div>
-    {:else if page === Page.OPTIONS}
-      <div transition:slide>
-        <Options />
-      </div>
-    {:else if page === Page.DEBUG}
-      <Debug />
-    {/if}
+    <div class="spacer">
+      {#if page === Page.WELCOME}
+        <div transition:slide>
+          <Welcome />
+        </div>
+      {:else if page === Page.SEARCH && !$loading.has(...searchRequirements)}
+        <div transition:slide>
+          <Search on:scrollTo={handleScroll} {needle} />
+        </div>
+      {:else if page === Page.ADD && !$loading.has(...addRequirements)}
+        <div transition:slide>
+          <Add on:scrollTo={handleScroll} />
+        </div>
+      {:else if page === Page.GENERATE_PASSWORD}
+        <div transition:slide>
+          <PasswordGenerator on:scrollTo={handleScroll} />
+        </div>
+      {:else if page === Page.SESSIONS}
+        <div transition:slide>
+          <SessionsPage on:scrollTo={handleScroll} />
+        </div>
+      {:else if page === Page.OPTIONS}
+        <div transition:slide>
+          <Options />
+        </div>
+      {:else if page === Page.DEBUG}
+        <Debug />
+      {/if}
+    </div>
   </article>
 </section>

@@ -6,10 +6,8 @@
     loading,
     messages,
     MessageType,
-    preferences,
     search,
     SEARCH_DELETE_LOADING_ID,
-    sessions,
     structure,
   } from "../../../../../stores";
   import { getMessage, LocalizedMessage } from "../../../../../../global/i18n";

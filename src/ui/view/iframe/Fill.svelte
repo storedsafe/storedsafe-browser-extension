@@ -20,10 +20,9 @@
   import ListView from "../lib/menus/ListView.svelte";
   import type { ListItem } from "../lib/menus/ListView";
   import FillPreview from "./FillPreview.svelte";
-  import { vault } from "../../../global/api";
 
   const dispatch = createEventDispatcher();
-  let url: string;
+  // let url: string;
   let results: StoredSafeObject[] = [];
 
   let frame: HTMLElement;
@@ -55,7 +54,7 @@
     port.onMessage.addListener((message: Message) => {
       if (message.context === "fill" && message.action === "populate") {
         results = message.data.results;
-        url = message.data.url;
+        // url = message.data.url;
       }
     });
   });
@@ -116,20 +115,22 @@
   }
 </style>
 
-<article class="save grid" bind:this={frame}>
-  <Logo />
-  <MessageViewer {messages} />
-  <LoadingBar isLoading={$loading.isLoading} />
-  {#if !isInitialized}
-    <!-- Still loading -->
-    <Initializing />
-  {:else}
-    <ListView {items} on:select={onSelect} />
-  {/if}
-  <div class="sticky-buttons">
-    <button
-      type="button"
-      class="danger"
-      on:click={close}>{getMessage(LocalizedMessage.IFRAME_CLOSE)}</button>
-  </div>
+<article class="save" bind:this={frame}>
+  <article class="grid">
+    <Logo />
+    <MessageViewer {messages} />
+    <LoadingBar isLoading={$loading.isLoading} />
+    {#if !isInitialized}
+      <!-- Still loading -->
+      <Initializing />
+    {:else}
+      <ListView {items} on:select={onSelect} />
+    {/if}
+    <div class="sticky-buttons">
+      <button
+        type="button"
+        class="danger"
+        on:click={close}>{getMessage(LocalizedMessage.IFRAME_CLOSE)}</button>
+    </div>
+  </article>
 </article>

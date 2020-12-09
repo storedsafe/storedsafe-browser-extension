@@ -12,8 +12,10 @@ import { saveFlow } from "./flows/saveFlow";
 import { autoSearch } from "./tasks/autoSearch";
 import { stripURL } from "../global/storage/preferences";
 import { fillFlow } from "./flows/fillFlow";
+import { Logger } from "../global/logger";
 
-console.log("BACKGROUND - %s", getMessage(LocalizedMessage.EXTENSION_NAME));
+const logger = new Logger('background')
+logger.debug('BACKGROUND SCRIPT INITIALIZED')
 
 /**
  * Invalidate all sessions.

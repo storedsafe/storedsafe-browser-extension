@@ -18,7 +18,6 @@ export function fillFlow(url: string, tabId: number, tabResults: StoredSafeObjec
   }
 
   function onConnect(port: browser.runtime.Port) {
-    console.log('CONNECT %o', port)
     if (port.name === 'fill' && port.sender?.tab?.id === tabId) {
       onFillConnect(port)
     }
