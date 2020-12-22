@@ -1,0 +1,9 @@
+{
+  "sites": [
+    {
+      "apikey": "local-api-key",
+      "host": "local.example.com",
+      "managed": false
+    }
+  ]
+}

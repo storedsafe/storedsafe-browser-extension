@@ -137,6 +137,14 @@ export const formMatchers: [FormType, FormMatcher][] = [
       name: /createaccount|reg|signup/,
       fields: new Map([
         [InputType.PASSWORD, 2],
+      ])
+    }
+  ],
+  [
+    FormType.REGISTER,
+    {
+      name: /createaccount|reg|signup/,
+      fields: new Map([
         [InputType.PASSWORD_RETYPE, -1]
       ])
     }
@@ -211,16 +219,20 @@ export function matchName (
 /**
  * Check if a form-like structure contains the types of elements described
  * in `matchers`.
+ * Special count values:
+ *  -2 = All
+ *  -1 = Any
  * @param inputs Elements within a form-like structure.
  * @param matchers Types of elements expected to be found in `inputs`.
  */
 export function matchFields (inputs: Input[], matchers: Map<InputType, number>) {
   if (!matchers) return false
+  const matches: Map<InputType, number> = new Map()
+  for (const [_input, inputType] of inputs) {
+    matches.set(inputType, (matches.get(inputType) ?? 0) + 1)
+  }
   for (const [matcherType, matcherCount] of matchers) {
-    let count = 0
-    for (const [_input, inputType] of inputs) {
-      if (inputType === matcherType) count++
-    }
+    let count = matches.get(matcherType) ?? 0
     if (matcherCount === -2 && count !== inputs.length) return false
     if (matcherCount === -1 && count <= 0) return false
     if (matcherCount >= 0 && count !== matcherCount) return false

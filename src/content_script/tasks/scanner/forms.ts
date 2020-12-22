@@ -92,6 +92,7 @@ function parseContext (form: [HTMLElement, Input[]]): Form {
   // 1. Check for form element name match
   for (const [formType, matcher] of formMatchers) {
     if (matchName(parent, matcher.name)) {
+      console.log("Name match")
       return createMatchableForm(formType)
     }
   }
@@ -99,6 +100,7 @@ function parseContext (form: [HTMLElement, Input[]]): Form {
   // 2. Check for form attributes matches
   for (const [formType, matcher] of formMatchers) {
     if (matchAttributes(parent, matcher.attributes)) {
+      console.log("Attributes match")
       return createMatchableForm(formType)
     }
   }
