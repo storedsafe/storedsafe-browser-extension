@@ -7,7 +7,10 @@ import {
   StoredSafeSettingsSetManagedValueError
 } from '../errors'
 import { getMessage, LocalizedMessage } from '../i18n'
+import { Logger } from '../logger'
 import type { OnAreaChanged } from './StorageArea'
+
+const logger = new Logger('settings')
 
 export enum SettingsFields {
   IDLE_MAX = 'idleMax',
@@ -108,7 +111,7 @@ async function getManagedSettings (): Promise<
   } catch (error) {
     // Log debug message if managed storage fails because of missing manifest.
     if (error.toString().includes('storage manifest')) {
-      console.debug('No managed storage manifest found.')
+      logger.debug('No managed storage manifest found.')
       return [new Map(), new Map()]
     } else throw error
   }

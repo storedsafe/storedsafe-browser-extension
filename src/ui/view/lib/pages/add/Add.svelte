@@ -1,4 +1,7 @@
 <script lang="ts" context="module">
+  import { Logger } from "../../../../../global/logger";
+  const logger = new Logger("add");
+
   export const addRequirements = [
     SESSIONS_LOGIN_LOADING_ID,
     SESSIONS_LOGOUT_LOADING_ID,
@@ -64,7 +67,7 @@
           );
           preferences
             .setAddPreferences(host, values.groupid)
-            .catch(console.error);
+            .catch(logger.error);
         },
       }
     );
@@ -105,7 +108,8 @@
             {host}
             bind:groupid={values.groupid}
             bind:templateid={values.templateid}
-            bind:values />
+            bind:values
+          />
         </Card>
       {/if}
     {/if}

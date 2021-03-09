@@ -1,4 +1,7 @@
+import { Logger } from '../../global/logger'
 import { sessions } from '../../global/storage'
+
+const logger = new Logger('onlinestatus')
 
 /**
  * Track online status.
@@ -18,7 +21,7 @@ export function onlineStatus (cb: (online: boolean) => void): () => void {
     if (wasOnline !== isOnline) {
       cb(isOnline)
       wasOnline = isOnline
-      console.debug(`Online status changed to ${isOnline}`)
+      logger.debug(`Online status changed to ${isOnline}`)
     }
   }
 
@@ -29,7 +32,7 @@ export function onlineStatus (cb: (online: boolean) => void): () => void {
       // Set initial detection interval
       onSessionsChanged(sessions)
     })
-    .catch(console.error)
+    .catch(logger.error)
 
   // Cleanup
   return function stop () {

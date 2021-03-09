@@ -1,4 +1,3 @@
-import { getMessage, LocalizedMessage } from "../global/i18n";
 import { ignore, preferences, sessions, settings } from "../global/storage";
 import { auth, vault } from "../global/api";
 import { hardTimeout, idleInterval, keepAlive, onlineStatus } from "./tasks";
@@ -25,10 +24,10 @@ function logoutAll(): void {
     .get()
     .then((sessions) => {
       for (const [host, session] of sessions) {
-        auth.logout(host, session.token).catch(console.error);
+        auth.logout(host, session.token).catch(logger.error);
       }
     })
-    .catch(console.error);
+    .catch(logger.error);
 }
 
 /**
@@ -51,7 +50,7 @@ function setIcon(isOnline: boolean): void {
  */
 function onIdle(state: browser.idle.IdleState): void {
   if (state === "idle") {
-    console.debug("State changed to idle, invalidating all sessions.");
+    logger.debug("State changed to idle, invalidating all sessions.");
     logoutAll();
   }
 }
@@ -65,14 +64,14 @@ function onAlarm(alarmInfo: browser.alarms.Alarm) {
   switch (name) {
     case ALARM_KEEP_ALIVE: {
       const [host, token] = parts;
-      console.debug("Keepalive triggered for %s", host);
-      auth.check(host, token).catch(console.error);
+      logger.debug("Keepalive triggered for %s", host);
+      auth.check(host, token).catch(logger.error);
       break;
     }
     case ALARM_HARD_TIMEOUT: {
       const [host, token] = parts;
-      console.debug(`Hard timeout, invalidating session for ${host}`);
-      auth.logout(host, token).catch(console.error);
+      logger.debug(`Hard timeout, invalidating session for ${host}`);
+      auth.logout(host, token).catch(logger.error);
     }
   }
 }
@@ -85,7 +84,7 @@ async function getActiveTab(): Promise<browser.tabs.Tab> {
 async function autoFill(): Promise<void> {
   const tab = await getActiveTab();
   if (!tab) {
-    console.error("Tab is undefined");
+    logger.error("Tab is undefined");
     return;
   }
   let counter = 3;
@@ -179,7 +178,7 @@ function onMessage(
 ): any {
   const { context, action, data } = message;
   if (context === "save" && action === "init") {
-    startSaveFlow(sender.tab?.id, data).catch(console.error);
+    startSaveFlow(sender.tab?.id, data).catch(logger.error);
   } else if (context === "fill" && action === "init") {
     autoFill();
   } else if (context === "fill" && action === "fill") {
@@ -211,7 +210,7 @@ function onSearchConnect(port: browser.runtime.Port): void {
         data: currentTabResults.get(tab.id) ?? [],
       });
     })
-    .catch(console.error);
+    .catch(logger.error);
 }
 
 function onContentConnect(port: browser.runtime.Port): void {

@@ -1,7 +1,10 @@
 import { Readable, writable } from 'svelte/store'
 import { vault } from '../../global/api'
+import { Logger } from '../../global/logger'
 import { sessions } from './browserstorage'
 import { loading } from './loading'
+
+const logger = new Logger('structure')
 
 export const STRUCTURE_REFRESH_LOADING_ID = 'structure.refresh'
 
@@ -71,7 +74,7 @@ function structureStore (): StructureStore {
             )
           })
         },
-        onError: console.error
+        onError: logger.error
       }
     )
   }

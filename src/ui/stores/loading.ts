@@ -4,6 +4,9 @@ import {
   StoredSafeExtensionError
 } from '../../global/errors'
 import { getMessage, LocalizedMessage } from '../../global/i18n'
+import { Logger } from '../../global/logger'
+
+const logger = new Logger('loading')
 
 interface LoadingState {
   /** `true` if any promises are currently being processed. */
@@ -64,7 +67,7 @@ class LoadingPromise<T> {
           if (error instanceof StoredSafeBaseError) {
             onError(error)
           } else {
-            console.error(error)
+            logger.error(error)
             onError(
               new StoredSafeExtensionError(
                 getMessage(LocalizedMessage.LOADING_UNKNOWN_ERROR),

@@ -1,5 +1,8 @@
+import { Logger } from '../../global/logger'
 import { settings, sessions } from '../../global/storage'
 import { ALARM_HARD_TIMEOUT, genAlarmName } from '../constants'
+
+const logger = new Logger('hardtimeout')
 
 /**
  * Keep timers for hard timeout on sessions.
@@ -30,7 +33,7 @@ export function hardTimeout (): () => void {
     if (maxTokenLife > 0) {
       const when = getWhen(session.createdAt)
       const diff = when - Date.now()
-      console.debug(
+      logger.debug(
         `Hard timeout for ${host} in ${diff}ms (<${Math.ceil(diff / 6e4)}m)`
       )
       const name = genAlarmName(ALARM_HARD_TIMEOUT, host, session.token)
@@ -91,9 +94,9 @@ export function hardTimeout (): () => void {
           // Set initial detection interval
           onSessionsChanged(sessions)
         })
-        .catch(console.error)
+        .catch(logger.error)
     })
-    .catch(console.error)
+    .catch(logger.error)
 
   // Cleanup
   return function stop () {

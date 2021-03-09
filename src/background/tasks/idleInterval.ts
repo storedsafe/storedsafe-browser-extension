@@ -1,4 +1,7 @@
+import { Logger } from '../../global/logger'
 import { settings } from '../../global/storage'
+
+const logger = new Logger('idleinterval')
 
 /**
  * Set time to idle to match user settings.
@@ -12,7 +15,7 @@ export function idleInterval (): () => void {
   function onSettingsChanged (settings: Map<string, Setting>): void {
     if (settings.has('idleMax')) {
       const idleMax = (settings.get('idleMax').value as number) ?? -1
-      console.debug(`Updated idle interval to ${idleMax} minutes`)
+      logger.debug(`Updated idle interval to ${idleMax} minutes`)
       browser.idle.setDetectionInterval(idleMax * 60)
     }
   }
@@ -24,7 +27,7 @@ export function idleInterval (): () => void {
       // Set initial detection interval
       onSettingsChanged(settings)
     })
-    .catch(console.error)
+    .catch(logger.error)
 
   // Cleanup
   return function stop () {

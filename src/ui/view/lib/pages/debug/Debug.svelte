@@ -1,3 +1,8 @@
+<script lang="ts" context="module">
+  import { Logger } from "../../../../../global/logger";
+  const logger = new Logger("debug");
+</script>
+
 <script lang="ts">
   import { onMount } from "svelte";
 
@@ -9,7 +14,7 @@
   const addWarning = () =>
     messages.add("Debug warning message", MessageType.WARNING);
   const addInfo = () => messages.add("Debug info message", MessageType.INFO);
-  let resolveLoading: () => void = null;
+  let resolveLoading: (value: any) => void = null;
   function toggleLoading() {
     if (resolveLoading === null) {
       loading.add(
@@ -17,7 +22,7 @@
         new Promise((resolve) => (resolveLoading = resolve))
       );
     } else {
-      resolveLoading();
+      resolveLoading(undefined);
       resolveLoading = null;
     }
   }
@@ -80,20 +85,10 @@
     getStorage()
       .then(() => {})
       .catch((error) => {
-        console.error(error);
+        logger.error(error);
       });
   });
 </script>
-
-<style>
-  section :global(.entry) {
-    margin-left: var(--spacing);
-  }
-
-  section :global(em) {
-    color: var(--color-primary-light);
-  }
-</style>
 
 <section class="grid">
   <h1>Debug</h1>
@@ -115,3 +110,13 @@
     <button on:click={addError} class="danger">Add error message</button>
   </Card>
 </section>
+
+<style>
+  section :global(.entry) {
+    margin-left: var(--spacing);
+  }
+
+  section :global(em) {
+    color: var(--color-primary-light);
+  }
+</style>

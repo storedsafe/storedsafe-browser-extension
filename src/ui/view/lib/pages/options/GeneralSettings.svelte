@@ -1,3 +1,8 @@
+<script lang="ts" context="module">
+  import { Logger } from "../../../../../global/logger";
+  const logger = new Logger("generalsettings");
+</script>
+
 <script lang="ts">
   import { onDestroy } from "svelte";
 
@@ -12,7 +17,7 @@
     messageStore,
     MessageType,
     settings,
-SETTINGS_UPDATE_LOADING_ID,
+    SETTINGS_UPDATE_LOADING_ID,
   } from "../../../../stores";
 
   import Card from "../../layout/Card.svelte";
@@ -27,7 +32,7 @@ SETTINGS_UPDATE_LOADING_ID,
     userFields = [];
     for (const [key, field] of FIELDS) {
       const setting = newSettings.get(key);
-      if (!setting) console.error(`Field ${key} not in settings.`);
+      if (!setting) logger.error(`Field ${key} not in settings.`);
       else {
         // Set up fields
         if (setting.managed)
@@ -67,33 +72,6 @@ SETTINGS_UPDATE_LOADING_ID,
   });
 </script>
 
-<style>
-  .label-inline {
-    flex-direction: row-reverse;
-    justify-content: flex-end;
-  }
-
-  .altered {
-    border-color: var(--color-warning);
-  }
-
-  span.altered {
-    border-bottom-width: 2px;
-    border-bottom-style: solid;
-  }
-
-  .user-input {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    column-gap: var(--spacing);
-    align-items: center;
-  }
-
-  .managed-field-value {
-    font-weight: bold;
-  }
-</style>
-
 <section class="grid">
   <form class="site-entry" on:submit|preventDefault={updateSettings}>
     <Card>
@@ -107,7 +85,8 @@ SETTINGS_UPDATE_LOADING_ID,
         <label for={key} class:label-inline={!!field.isCheckbox}>
           <span
             title={field.title ?? ''}
-            class:altered={field.isCheckbox && altered.get(key)}>
+            class:altered={field.isCheckbox && altered.get(key)}
+          >
             {field.label}
           </span>
           {#if !!field.isCheckbox}
@@ -116,7 +95,8 @@ SETTINGS_UPDATE_LOADING_ID,
               type="checkbox"
               id={key}
               class:altered={altered.get(key)}
-              bind:checked={value} />
+              bind:checked={value}
+            />
           {:else}
             <div class="user-input">
               <input
@@ -125,7 +105,8 @@ SETTINGS_UPDATE_LOADING_ID,
                 id={key}
                 class:altered={altered.get(key)}
                 bind:value
-                required />
+                required
+              />
               {#if !!field.unit}<span class="unit">{field.unit}</span>{/if}
             </div>
           {/if}
@@ -156,3 +137,30 @@ SETTINGS_UPDATE_LOADING_ID,
     </Card>
   {/if}
 </section>
+
+<style>
+  .label-inline {
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+  }
+
+  .altered {
+    border-color: var(--color-warning);
+  }
+
+  span.altered {
+    border-bottom-width: 2px;
+    border-bottom-style: solid;
+  }
+
+  .user-input {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    column-gap: var(--spacing);
+    align-items: center;
+  }
+
+  .managed-field-value {
+    font-weight: bold;
+  }
+</style>

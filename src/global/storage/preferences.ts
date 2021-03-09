@@ -8,7 +8,10 @@ import {
   StoredSafeSetAutoFillPreferencesError,
   StoredSafeSetSitePreferencesError
 } from '../errors'
+import { Logger } from '../logger'
 import type { OnAreaChanged } from './StorageArea'
+
+const logger = new Logger('preferences')
 
 export function stripURL(url: string) {
   try {
@@ -56,7 +59,7 @@ export async function get (): Promise<Preferences> {
     // and will result as an empty object if put in storage.
     return parse(preferences)
   } catch (error) {
-    console.error(error)
+    logger.error(error)
     throw new StoredSafeGetPreferencesError(error)
   }
 }

@@ -1,3 +1,6 @@
+import { Logger } from "../../global/logger"
+
+const logger = new Logger('fillflow')
 
 /**
  * Open prompt to ask user to chose their object preferences for filling forms.
@@ -28,7 +31,7 @@ export function fillFlow(url: string, tabId: number, tabResults: StoredSafeObjec
   browser.tabs.sendMessage(tabId, {
     context: 'fill',
     action: 'open'
-  }).catch(console.error)
+  }).catch(logger.error)
 
   return function stop() {
     browser.runtime.onConnect.removeListener(onConnect)

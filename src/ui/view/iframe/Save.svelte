@@ -1,3 +1,8 @@
+<script lang="ts" context="module">
+  import { Logger } from "../../../global/logger";
+  const logger = new Logger("save");
+</script>
+
 <script lang="ts">
   import { afterUpdate, createEventDispatcher, onMount } from "svelte";
 
@@ -96,7 +101,7 @@
           );
           preferences
             .setAddPreferences(host, data.groupid)
-            .catch(console.error);
+            .catch(logger.error);
           window.setTimeout(close, 1000);
         },
       }
@@ -114,6 +119,65 @@
     });
   }
 </script>
+
+<article class="save grid" bind:this={frame}>
+  <Logo />
+  <MessageViewer {messages} />
+  <LoadingBar isLoading={$loading.isLoading} />
+  {#if !success}
+    {#if !isInitialized}
+      <!-- Still loading -->
+      <Initializing />
+    {:else}
+      <Card>
+        {#if !edit}
+          <!-- Quick save -->
+          <QuickSave bind:host bind:data />
+        {:else}
+          <!-- Full add editor -->
+          <SelectHost bind:host />
+          {#if host !== undefined}
+            <SelectVault {host} bind:groupid={data.groupid} />
+            <SelectTemplate {host} bind:templateid={data.templateid} />
+            {#if data.groupid !== undefined && data.templateid !== undefined}
+              <TemplateFields
+                {host}
+                bind:groupid={data.groupid}
+                bind:templateid={data.templateid}
+                bind:values={data}
+              />
+            {/if}
+          {/if}
+        {/if}
+      </Card>
+    {/if}
+    <div class="sticky-buttons">
+      <div class="inline-buttons">
+        <button
+          on:click={save}
+        >{getMessage(LocalizedMessage.ADD_CREATE)}</button>
+        {#if !edit}
+          <button
+            class="warning"
+            on:click={toggleEdit}
+          >{getMessage(LocalizedMessage.SEARCH_RESULT_EDIT)}</button>
+        {/if}
+      </div>
+      <button
+        type="button"
+        class="danger"
+        on:click={close}
+      >{getMessage(LocalizedMessage.IFRAME_CLOSE)}</button>
+      {#if !edit}
+        <button
+          type="button"
+          class="danger ignore"
+          on:click={addToIgnore}
+        >{getMessage(LocalizedMessage.SAVE_IGNORE)}</button>
+      {/if}
+    </div>
+  {/if}
+</article>
 
 <style>
   .save {
@@ -142,57 +206,3 @@
     column-gap: var(--spacing);
   }
 </style>
-
-<article class="save grid" bind:this={frame}>
-  <Logo />
-  <MessageViewer {messages} />
-  <LoadingBar isLoading={$loading.isLoading} />
-  {#if !success}
-    {#if !isInitialized}
-      <!-- Still loading -->
-      <Initializing />
-    {:else}
-      <Card>
-        {#if !edit}
-          <!-- Quick save -->
-          <QuickSave bind:host bind:data />
-        {:else}
-          <!-- Full add editor -->
-          <SelectHost bind:host />
-          {#if host !== undefined}
-            <SelectVault {host} bind:groupid={data.groupid} />
-            <SelectTemplate {host} bind:templateid={data.templateid} />
-            {#if data.groupid !== undefined && data.templateid !== undefined}
-              <TemplateFields
-                {host}
-                bind:groupid={data.groupid}
-                bind:templateid={data.templateid}
-                bind:values={data} />
-            {/if}
-          {/if}
-        {/if}
-      </Card>
-    {/if}
-    <div class="sticky-buttons">
-      <div class="inline-buttons">
-        <button
-          on:click={save}>{getMessage(LocalizedMessage.ADD_CREATE)}</button>
-        {#if !edit}
-          <button
-            class="warning"
-            on:click={toggleEdit}>{getMessage(LocalizedMessage.SEARCH_RESULT_EDIT)}</button>
-        {/if}
-      </div>
-      <button
-        type="button"
-        class="danger"
-        on:click={close}>{getMessage(LocalizedMessage.IFRAME_CLOSE)}</button>
-      {#if !edit}
-        <button
-          type="button"
-          class="danger ignore"
-          on:click={addToIgnore}>{getMessage(LocalizedMessage.SAVE_IGNORE)}</button>
-      {/if}
-    </div>
-  {/if}
-</article>

@@ -1,6 +1,9 @@
 import { auth } from '../global/api'
+import { Logger } from '../global/logger'
 import { sessions } from '../global/storage'
 import Extension from './Extension.svelte'
+
+const logger = new Logger('main')
 
 let extension: Extension
 
@@ -12,7 +15,7 @@ sessions
       auth.check(host, token)
     }
   })
-  .catch(console.error)
+  .catch(logger.error)
   .then(() => {
     extension = new Extension({
       target: document.body

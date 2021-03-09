@@ -9,6 +9,9 @@ import {
   StoredSafeSitesRemoveNotFoundError
 } from '../errors'
 import type { OnAreaChanged } from './StorageArea'
+import { Logger } from '../logger'
+
+const logger = new Logger('sites')
 
 const STORAGE_KEY = 'sites'
 const EMPTY_STATE: Site[] = []
@@ -33,7 +36,7 @@ async function getManagedSites (): Promise<Site[]> {
   } catch (error) {
     // Log debug message if managed storage fails because of missing manifest.
     if (error.toString().includes('storage manifest')) {
-      console.debug('No managed storage manifest found.')
+      logger.debug('No managed storage manifest found.')
       return []
     } else throw error
   }

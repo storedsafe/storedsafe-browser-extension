@@ -3,7 +3,7 @@ import { StoredSafeExtensionError } from '../../global/errors'
 import { Logger } from '../../global/logger'
 import { sessions } from '../../global/storage'
 
-const logger = new Logger('search')
+const logger = new Logger('autosearch')
 
 function getFQDN (url: string) {
   const match = url.match(/(?:\w+:\/\/)?(?:www\.)?([\w\.]+)/)
