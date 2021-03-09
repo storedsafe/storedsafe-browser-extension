@@ -74,12 +74,19 @@
     selected = e.detail;
     if (selected !== null) dispatch("scrollTo", 0);
   }
+
+  const manifest = browser.runtime.getManifest();
 </script>
 
 <style>
   .list {
     padding-right: var(--spacing);
     margin-right: calc(var(--spacing) * -1);
+  }
+
+  .version {
+    text-align: center;
+    color: var(--color-primary-light);
   }
 </style>
 
@@ -97,5 +104,7 @@
     {:else if selected === 'sites'}
       <ManageSites />
     {/if}
+  {:else if !!manifest}
+    <p class="version subtitle">v{manifest.version}</p>
   {/if}
 </section>
