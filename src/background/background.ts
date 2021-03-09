@@ -93,8 +93,8 @@ async function autoFill(): Promise<void> {
   // Wait for results, maximum of INTERVAL * counter start value ms
   while (!currentTabResults.has(tab.id) && counter-- > 0) {
     await new Promise((res) => {
-      setTimeout(() => {
-        res();
+      window.setTimeout(() => {
+        res(undefined);
       }, INTERVAL);
     });
   }

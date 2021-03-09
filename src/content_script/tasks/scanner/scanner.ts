@@ -8,7 +8,7 @@ import {
 import { Form, getForms } from './forms'
 import { getInputs, INPUT_SELECTORS } from './inputs'
 
-const logger = new Logger('scanner', false)
+const logger = new Logger('scanner', true)
 
 function printForms (forms: Form[]) {
   for (const [form, formType, inputs] of forms) {
@@ -105,7 +105,7 @@ export function scanner (cb: (forms: Form[]) => void) {
     }
 
     if (scanQueue.size > 0) {
-      console.debug('Mutations observed, rescanning %d nodes', scanQueue.size)
+      logger.debug('Mutations observed, rescanning %d nodes', scanQueue.size)
       for (const element of scanQueue) {
         const elementForms = getForms(getInputs(element))
         for (const form of elementForms) {

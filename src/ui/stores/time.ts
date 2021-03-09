@@ -9,13 +9,13 @@ import { Readable, readable } from 'svelte/store'
 export function time (interval: number, alignTimeout: number = 0): Readable<number> {
   return readable(Date.now(), function start (set) {
     let intervalId: number = null
-    let timeoutId = setTimeout(function initialize () {
+    let timeoutId = window.setTimeout(function initialize () {
       // Set state at alignment point
       set(Date.now())
       timeoutId = null
 
       // Start interval when aligned
-      intervalId = setInterval(function setTime () {
+      intervalId = window.setInterval(function setTime () {
         set(Date.now())
       }, interval)
     }, alignTimeout)

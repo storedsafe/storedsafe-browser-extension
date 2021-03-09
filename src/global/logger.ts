@@ -10,7 +10,7 @@ export enum LogLevel {
   ALL = 6
 }
 
-const isProduction = false
+const isProduction = true
 
 export class Logger {
   public static level: LogLevel = isProduction ? LogLevel.ERROR : LogLevel.ALL

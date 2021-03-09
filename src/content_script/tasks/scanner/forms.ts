@@ -1,3 +1,4 @@
+import { Logger } from '../../../global/logger'
 import { FormType, InputType } from './constants'
 import {
   formMatchers,
@@ -8,6 +9,8 @@ import {
 import type { Input } from './inputs'
 
 export type Form = [HTMLElement, FormType, Input[]]
+
+const logger = new Logger('scanner', true)
 
 /**
  * Map all inputs to common parents which potentially act as forms.
@@ -20,7 +23,7 @@ export type Form = [HTMLElement, FormType, Input[]]
  * @param inputs All relevant elements under the `root` node.
  * @param root The level element where the scan was initiated from.
  */
-function mapInputContexts (
+function mapInputContexts(
   inputs: Input[],
   root = document.body
 ): [HTMLElement, Input[]][] {
@@ -48,7 +51,7 @@ function mapInputContexts (
   return [...forms]
 }
 
-function parseContext (form: [HTMLElement, Input[]]): Form {
+function parseContext(form: [HTMLElement, Input[]]): Form {
   const [parent, inputs] = form
 
   const hidden: Input[] = []
@@ -67,12 +70,12 @@ function parseContext (form: [HTMLElement, Input[]]): Form {
   }
 
   // Helper function to return form in proper format
-  function createForm (formType: FormType, formInputs: Input[] = inputs): Form {
+  function createForm(formType: FormType, formInputs: Input[] = inputs): Form {
     return [parent, formType, formInputs]
   }
 
   // Helper function to return form with the correct submit elements
-  function createMatchableForm (formType: FormType): Form {
+  function createMatchableForm(formType: FormType): Form {
     const formInputs: Input[] = [...matchable, ...hidden]
     if (submits.length > 0) formInputs.push(...submits)
     else {
@@ -92,7 +95,7 @@ function parseContext (form: [HTMLElement, Input[]]): Form {
   // 1. Check for form element name match
   for (const [formType, matcher] of formMatchers) {
     if (matchName(parent, matcher.name)) {
-      console.log("Name match")
+      logger.debug("Name match: %s %o", matcher.name, parent)
       return createMatchableForm(formType)
     }
   }
@@ -100,7 +103,7 @@ function parseContext (form: [HTMLElement, Input[]]): Form {
   // 2. Check for form attributes matches
   for (const [formType, matcher] of formMatchers) {
     if (matchAttributes(parent, matcher.attributes)) {
-      console.log("Attributes match")
+      logger.debug("Attributes match: %o %o", matcher.attributes, parent)
       return createMatchableForm(formType)
     }
   }
@@ -108,6 +111,7 @@ function parseContext (form: [HTMLElement, Input[]]): Form {
   // 3. Check if the form fields match
   for (const [formType, matcher] of formMatchers) {
     if (matchFields(inputs, matcher.fields)) {
+      logger.debug("Fields match: %o %o", matcher.fields, parent)
       return createMatchableForm(formType)
     }
   }
@@ -115,7 +119,7 @@ function parseContext (form: [HTMLElement, Input[]]): Form {
   return createForm(FormType.UNKNOWN)
 }
 
-export function getForms (inputs: Input[]): Form[] {
+export function getForms(inputs: Input[]): Form[] {
   const contexts = mapInputContexts(inputs)
   const forms: Form[] = []
   for (const context of contexts) {

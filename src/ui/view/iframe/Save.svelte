@@ -97,7 +97,7 @@
           preferences
             .setAddPreferences(host, data.groupid)
             .catch(console.error);
-          setTimeout(close, 1000);
+          window.setTimeout(close, 1000);
         },
       }
     );

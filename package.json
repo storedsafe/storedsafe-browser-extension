@@ -24,7 +24,9 @@
       "ts",
       "svelte"
     ],
-    "setupFilesAfterEnv": ["./jest.setup.ts"]
+    "setupFilesAfterEnv": [
+      "./jest.setup.ts"
+    ]
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^14.0.0",
@@ -35,6 +37,7 @@
     "@tsconfig/svelte": "^1.0.0",
     "@types/firefox-webext-browser": "^78.0.1",
     "@types/jest": "^26.0.19",
+    "@types/node": "^14.14.32",
     "del": "^6.0.0",
     "gulp": "^4.0.2",
     "gulp-livereload": "^4.0.2",

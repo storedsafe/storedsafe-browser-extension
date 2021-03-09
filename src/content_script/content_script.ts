@@ -35,7 +35,7 @@ function onSubmit (form: Form) {
       data
     })
 
-    setTimeout(() => (submitLock = false), 100)
+    window.setTimeout(() => (submitLock = false), 100)
   }
 }
 
