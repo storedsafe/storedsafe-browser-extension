@@ -55,6 +55,7 @@ export function saveFlow(
 ): () => void {
   // Start a timer to stop prompting to save after some time
   let timeoutId = window.setTimeout(stop, MAX_DURATION_SECONDS * 1e3);
+  if (!values.username) return;
   if (matchingObjectExists(tabResults, values.url, values.username)) return;
 
   let savePort: browser.runtime.Port;
