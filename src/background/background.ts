@@ -176,6 +176,7 @@ function onMessage(
   message: Message,
   sender: browser.runtime.MessageSender
 ): any {
+  logger.debug('Message Received: %o', message)
   const { context, action, data } = message;
   if (context === "save" && action === "init") {
     startSaveFlow(sender.tab?.id, data).catch(logger.error);

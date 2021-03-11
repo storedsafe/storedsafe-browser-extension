@@ -29,14 +29,13 @@ function mapInputContexts(
 ): [HTMLElement, Input[]][] {
   const forms: Map<HTMLElement, Input[]> = new Map()
   for (let i = 0; i < inputs.length - 1; i++) {
-    let matchedElements: Input[]
+    let matchedElements: Input[] = []
     let unmatchedElements: Input[]
     const current: HTMLElement = inputs[i][0]
     let others = inputs.slice(i + 1)
     let parent = current.parentElement
     while (others.length > 0 && parent !== root.parentElement) {
       if (!!forms.get(parent)) break
-      matchedElements = []
       unmatchedElements = []
       for (const other of others) {
         if (parent.contains(other[0])) matchedElements.push(other)
@@ -44,6 +43,7 @@ function mapInputContexts(
       }
       if (matchedElements.length > 0)
         forms.set(parent, [inputs[i], ...matchedElements])
+      // Parent of parent will also contain the already matched elements
       others = unmatchedElements
       parent = parent.parentElement
     }

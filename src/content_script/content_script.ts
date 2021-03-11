@@ -18,7 +18,6 @@ logger.debug('CONTENT SCRIPT INITIALIZED')
 let submitLock = false
 function onSubmit (form: Form) {
   if (!submitLock) {
-    logger.debug('Submitted form: o', form)
     submitLock = true
 
     let data: Record<string, string> = {}
@@ -29,6 +28,8 @@ function onSubmit (form: Form) {
         data[inputType] = (input as HTMLInputElement).value
       }
     }
+
+    logger.debug('Submitted form: %o %o', form, data)
 
     port.postMessage({
       context: 'save',
@@ -87,6 +88,7 @@ function fill (data: Record<string, string>) {
 }
 
 function onMessage (message: Message) {
+  logger.debug('Message Received: %o', message)
   if (message.context === 'save' && message.action === 'open') {
     createIframe('save')
   }
