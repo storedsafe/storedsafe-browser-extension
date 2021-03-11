@@ -23,6 +23,10 @@ function isMatch (input: HTMLInputElement, matcher: Matcher): boolean {
   )
 }
 
+function getOpeningTag(element: HTMLElement): string {
+    return element.outerHTML.match(/(<[^>]*>)/)?.[0] || ''
+}
+
 /**
  * Test the contents of an element against submit identifiers when
  * the type of the element isn't enough to determine that it is a submit button.
@@ -32,7 +36,7 @@ function isMatch (input: HTMLInputElement, matcher: Matcher): boolean {
  */
 function testMaybeSubmit (element: HTMLElement): boolean {
   return /login|sign|submit/.test(
-    element.outerHTML.match(/(<[^>]*>)/)?.[0] + element.innerText
+    getOpeningTag(element) + element.innerText
   )
 }
 

@@ -10,7 +10,7 @@ import type { Input } from './inputs'
 
 export type Form = [HTMLElement, FormType, Input[]]
 
-const logger = new Logger('scanner', true)
+const logger = new Logger('forms', true)
 
 /**
  * Map all inputs to common parents which potentially act as forms.

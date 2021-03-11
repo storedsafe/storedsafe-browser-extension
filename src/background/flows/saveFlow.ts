@@ -1,4 +1,7 @@
+import { Logger } from "../../global/logger";
 import type { Message } from "../../global/messages";
+
+const logger = new Logger('saveflow')
 
 // Stop presenting popup after this many seconds
 const MAX_DURATION_SECONDS = 30;
@@ -53,6 +56,8 @@ export function saveFlow(
   tabId: number,
   tabResults: StoredSafeObject[]
 ): () => void {
+  logger.debug('Requesting save: %o', values)
+
   // Start a timer to stop prompting to save after some time
   let timeoutId = window.setTimeout(stop, MAX_DURATION_SECONDS * 1e3);
   if (!values.username) return;

@@ -18,6 +18,7 @@ logger.debug('CONTENT SCRIPT INITIALIZED')
 let submitLock = false
 function onSubmit (form: Form) {
   if (!submitLock) {
+    logger.debug('Submitted form: o', form)
     submitLock = true
 
     let data: Record<string, string> = {}

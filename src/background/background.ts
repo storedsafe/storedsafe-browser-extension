@@ -165,7 +165,7 @@ async function startSaveFlow(
   const currentSessions = await sessions.get();
   const currentIgnore = await ignore.get();
   if (currentSessions.size < 1 || currentIgnore.includes(data.url)) return;
-  saveFlow(data, tabId, currentTabResults.get(tabId));
+  saveFlow(data, tabId, currentTabResults.get(tabId) ?? []);
 }
 
 /**
