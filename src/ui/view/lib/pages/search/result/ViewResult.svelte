@@ -74,7 +74,7 @@
   {/each}
 </section>
 
-{#if vault.permissions >= 1}
+{#if vault.permissions >= 2}
   <div class="sticky-buttons">
     <button
       disabled={vault.permissions < 2}
