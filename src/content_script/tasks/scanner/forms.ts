@@ -1,4 +1,4 @@
-import { Logger } from '../../../global/logger'
+import { Logger, LogLevel } from '../../../global/logger'
 import { FormType, InputType } from './constants'
 import {
   formMatchers,
@@ -122,6 +122,7 @@ function parseContext(form: [HTMLElement, Input[]]): Form {
 export function getForms(inputs: Input[]): Form[] {
   const contexts = mapInputContexts(inputs)
   const forms: Form[] = []
+  logger.group("Form identification", LogLevel.DEBUG)
   for (const context of contexts) {
     const form = parseContext(context)
     if (form[1] !== FormType.INCOMPLETE) {
@@ -145,5 +146,6 @@ export function getForms(inputs: Input[]): Form[] {
       if (shouldAdd) forms.push(form)
     }
   }
+  logger.groupEnd(LogLevel.DEBUG)
   return forms
 }

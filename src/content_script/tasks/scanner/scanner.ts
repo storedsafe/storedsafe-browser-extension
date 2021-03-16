@@ -20,7 +20,7 @@ function printForms (forms: Form[]) {
       logger.debug('Hidden form %o', form)
       return
     }
-    logger.group(formType, LogLevel.DEBUG)
+    logger.group(formType + " form", LogLevel.DEBUG)
     logger.debug('%o', form)
     for (const [input, inputType] of inputs) {
       if (inputType === InputType.HIDDEN) {

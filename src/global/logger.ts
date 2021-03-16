@@ -50,9 +50,11 @@ export class Logger {
     return this.enabled && Logger.level >= level
   }
 
-  public group (name: string, level: LogLevel) {
+  public group (name: string, level: LogLevel, collapsed = true) {
+    const text = this.prefix + name + ' (...)'
     if (this.shouldPrint(level)) {
-      console.group(this.prefix + name)
+      if (collapsed)  console.groupCollapsed(text)
+      else console.group(text)
     }
   }
 

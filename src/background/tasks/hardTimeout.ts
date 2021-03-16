@@ -33,7 +33,7 @@ export function hardTimeout (): () => void {
     if (maxTokenLife > 0) {
       const when = getWhen(session.createdAt)
       const diff = when - Date.now()
-      logger.debug(
+      logger.info(
         `Hard timeout for ${host} in ${diff}ms (<${Math.ceil(diff / 6e4)}m)`
       )
       const name = genAlarmName(ALARM_HARD_TIMEOUT, host, session.token)

@@ -16,9 +16,7 @@ import { Logger } from "../global/logger";
 Logger.Init().then(() => {
   const logger = new Logger('background')
 
-  while (logger === undefined) { }
-
-  logger.debug('BACKGROUND SCRIPT INITIALIZED')
+  logger.info('Background script initialized')
 
   /**
    * Invalidate all sessions.
@@ -68,13 +66,13 @@ Logger.Init().then(() => {
     switch (name) {
       case ALARM_KEEP_ALIVE: {
         const [host, token] = parts;
-        logger.debug("Keepalive triggered for %s", host);
+        logger.info("Keepalive triggered for %s", host);
         auth.check(host, token).catch(logger.error);
         break;
       }
       case ALARM_HARD_TIMEOUT: {
         const [host, token] = parts;
-        logger.debug(`Hard timeout, invalidating session for ${host}`);
+        logger.info(`Hard timeout, invalidating session for ${host}`);
         auth.logout(host, token).catch(logger.error);
       }
     }

@@ -14,7 +14,7 @@ import {
 Logger.Init().then(() => {
   const logger = new Logger('content')
 
-  logger.debug('CONTENT SCRIPT INITIALIZED')
+  logger.info('Content script initialized')
 
   let submitLock = false
   function onSubmit(form: Form) {

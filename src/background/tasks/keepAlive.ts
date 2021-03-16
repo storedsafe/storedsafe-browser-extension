@@ -18,7 +18,7 @@ export function keepAlive (): () => void {
     // Clear obsolete alarms
     for (const [host, name] of alarms) {
       if (!sessions.has(host)) {
-        logger.debug(`Removing keepalive for ${host}`)
+        logger.info(`Removing keepalive for ${host}`)
         browser.alarms.clear(name)
         alarms.delete(host)
       }
@@ -26,7 +26,7 @@ export function keepAlive (): () => void {
     // Set up new alarms
     for (const [host, session] of sessions) {
       if (!alarms.has(host)) {
-        logger.debug(`Setting up keepalive for ${host}`)
+        logger.info(`Setting up keepalive for ${host}`)
         // Set timeout to 75% of server timeout to leave some margin
         const timeout = (session.timeout * 0.75) / 6e4
         const name = genAlarmName(ALARM_KEEP_ALIVE, host, session.token)

@@ -15,7 +15,7 @@ export function idleInterval (): () => void {
   function onSettingsChanged (settings: Map<string, Setting>): void {
     if (settings.has('idleMax')) {
       const idleMax = (settings.get('idleMax').value as number) ?? -1
-      logger.debug(`Updated idle interval to ${idleMax} minutes`)
+      logger.info(`Updated idle interval to ${idleMax} minutes`)
       browser.idle.setDetectionInterval(idleMax * 60)
     }
   }
