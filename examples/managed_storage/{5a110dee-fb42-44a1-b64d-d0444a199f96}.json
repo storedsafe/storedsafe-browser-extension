@@ -5,7 +5,7 @@
   "data": {
     "sites": [
       {
-        "url": "my-site",
+        "host": "my-site",
         "apikey": "my-api-key"
       }
     ],
