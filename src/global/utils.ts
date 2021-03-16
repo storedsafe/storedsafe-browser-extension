@@ -5,7 +5,7 @@ import { getMessage, LocalizedMessage } from './i18n'
  * @param url URL to visit.
  * // TODO: Real implementation?
  */
-export async function goto (url: string): Promise<void> {
+export async function goto(url: string): Promise<void> {
   // Force external url to HTTPS if not defined
   if (!url.match(/^\w+:\/\/.*/)) url = `https://${url}`
   window.open(url, url)
@@ -95,7 +95,7 @@ const passwordErrors: Record<string, LocalizedMessage> = {
     LocalizedMessage.PASSWORD_MAX_NONALPHANUMERIC_CHARS_ERROR
 }
 
-export function isPolicyMatch (
+export function isPolicyMatch(
   password: string,
   policy: StoredSafePasswordPolicy
 ): [boolean, string[]] {

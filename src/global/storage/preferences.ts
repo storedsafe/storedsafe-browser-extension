@@ -38,7 +38,7 @@ const EMPTY_STATE: SerializablePreferences = {
 
 let listeners: OnAreaChanged<Preferences>[] = []
 
-function parse (preferences: SerializablePreferences): Preferences {
+function parse(preferences: SerializablePreferences): Preferences {
   preferences = preferences ?? EMPTY_STATE
   return {
     add: preferences.add,
@@ -52,7 +52,7 @@ function parse (preferences: SerializablePreferences): Preferences {
  * @returns Current preferences.
  * @throws {StoredSafeGetPreferencesError}
  */
-export async function get (): Promise<Preferences> {
+export async function get(): Promise<Preferences> {
   try {
     const { preferences } = await browser.storage.local.get(STORAGE_KEY)
     // Convert to Map from serializable format. Map objects are not serializable
@@ -64,7 +64,7 @@ export async function get (): Promise<Preferences> {
   }
 }
 
-async function set ({ add, sites, autoFill }: Preferences): Promise<void> {
+async function set({ add, sites, autoFill }: Preferences): Promise<void> {
   // Convert to serializable format, using null coalescing before converting
   // to array to ensure values are not undefined (causes TypeError).
   await browser.storage.local.set({
@@ -82,7 +82,7 @@ async function set ({ add, sites, autoFill }: Preferences): Promise<void> {
  * @returns Current preferences.
  * @throws {StoredSafeGetPreferencesError} if get of current state fails.
  */
-export async function subscribe (
+export async function subscribe(
   cb: OnAreaChanged<Preferences>
 ): Promise<Preferences> {
   listeners.push(cb)
@@ -93,7 +93,7 @@ export async function subscribe (
  * Subscribe to changes in storage area.
  * @param cb Callback function to be called when storage area is updated.
  */
-export function unsubscribe (cb: OnAreaChanged<Preferences>): void {
+export function unsubscribe(cb: OnAreaChanged<Preferences>): void {
   listeners = listeners.filter(listener => listener !== cb)
 }
 
@@ -104,7 +104,7 @@ export function unsubscribe (cb: OnAreaChanged<Preferences>): void {
  * @throws {StoredSafeGetPreferencesError}
  * @throws {StoredSafeSetAddPreferencesError}
  */
-export async function setAddPreferences (host: string, vaultId: string) {
+export async function setAddPreferences(host: string, vaultId: string) {
   try {
     let { add, ...preferences } = await get()
     add = {
@@ -126,7 +126,7 @@ export async function setAddPreferences (host: string, vaultId: string) {
  * @throws {StoredSafeGetPreferencesError}
  * @throws {StoredSafeClearAddPreferencesError}
  */
-export async function clearAddPreferences () {
+export async function clearAddPreferences() {
   try {
     const { add, ...preferences } = await get()
     await set({ ...preferences })
@@ -144,7 +144,7 @@ export async function clearAddPreferences () {
  * @throws {StoredSafeGetPreferencesError}
  * @throws {StoredSafeSetSitePreferencesError}
  */
-export async function setSitePreferences (
+export async function setSitePreferences(
   host: string,
   sitePreferences: SitePreferences
 ) {
@@ -163,7 +163,7 @@ export async function setSitePreferences (
  * @throws {StoredSafeGetPreferencesError}
  * @throws {StoredSafeClearSitePreferencesError}
  */
-export async function clearSitePreferences () {
+export async function clearSitePreferences() {
   try {
     const { sites, ...preferences } = await get()
     await set({ ...preferences })
@@ -181,7 +181,7 @@ export async function clearSitePreferences () {
  * @throws {StoredSafeGetPreferencesError}
  * @throws {StoredSafeSetAutoFillPreferencesError}
  */
-export async function setAutoFillPreferences (
+export async function setAutoFillPreferences(
   url: string,
   autoFillPreferences: AutoFillPreferences
 ) {
@@ -200,7 +200,7 @@ export async function setAutoFillPreferences (
  * @throws {StoredSafeGetPreferencesError}
  * @throws {StoredSafeClearAutoFillPreferencesError}
  */
-export async function clearAutoFillPreferences () {
+export async function clearAutoFillPreferences() {
   try {
     const { autoFill, ...preferences } = await get()
     await set({ ...preferences })
@@ -214,7 +214,7 @@ export async function clearAutoFillPreferences () {
  * Clear all preferences.
  * @throws {StoredSafeClearPreferencesError}
  */
-export async function clear () {
+export async function clear() {
   try {
     await browser.storage.local.remove(STORAGE_KEY)
   } catch (error) {

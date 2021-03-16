@@ -34,7 +34,7 @@ export class Logger {
     }
   }
 
-  public constructor (name: string, readonly enabled = true) {
+  public constructor(name: string, readonly enabled = true) {
     this.shouldPrint = this.shouldPrint.bind(this)
     this.group = this.group.bind(this)
     this.error = this.error.bind(this)
@@ -50,45 +50,45 @@ export class Logger {
     return this.enabled && Logger.level >= level
   }
 
-  public group (name: string, level: LogLevel, collapsed = true) {
+  public group(name: string, level: LogLevel, collapsed = true) {
     const text = this.prefix + name + ' (...)'
     if (this.shouldPrint(level)) {
-      if (collapsed)  console.groupCollapsed(text)
+      if (collapsed) console.groupCollapsed(text)
       else console.group(text)
     }
   }
 
-  public groupEnd (level: LogLevel) {
+  public groupEnd(level: LogLevel) {
     if (this.shouldPrint(level)) {
       console.groupEnd()
     }
   }
 
-  public error (msg: any, ...params: any[]) {
+  public error(msg: any, ...params: any[]) {
     if (this.shouldPrint(LogLevel.ERROR)) {
       console.error(this.prefix + msg, ...params)
     }
   }
 
-  public warn (msg: any, ...params: any[]) {
+  public warn(msg: any, ...params: any[]) {
     if (this.shouldPrint(LogLevel.WARN)) {
       console.warn(this.prefix + msg, ...params)
     }
   }
 
-  public info (msg: any, ...params: any[]) {
+  public info(msg: any, ...params: any[]) {
     if (this.shouldPrint(LogLevel.INFO)) {
       console.info(this.prefix + msg, ...params)
     }
   }
 
-  public log (msg: any, ...params: any[]) {
+  public log(msg: any, ...params: any[]) {
     if (this.shouldPrint(LogLevel.LOG)) {
       console.log(this.prefix + msg, ...params)
     }
   }
 
-  public debug (msg: any, ...params: any[]) {
+  public debug(msg: any, ...params: any[]) {
     if (this.shouldPrint(LogLevel.DEBUG)) {
       console.debug(this.prefix + msg, ...params)
     }

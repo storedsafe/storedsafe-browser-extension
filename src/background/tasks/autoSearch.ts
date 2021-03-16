@@ -5,7 +5,7 @@ import { sessions } from '../../global/storage'
 
 const logger = new Logger('autosearch')
 
-function getFQDN (url: string) {
+function getFQDN(url: string) {
   const match = url.match(/(?:\w+:\/\/)?(?:www\.)?([\w\.]+)/)
   return match?.[1]
 }
@@ -20,7 +20,7 @@ function getFQDN (url: string) {
  * Returns the original URL if no match was found.
  * @param url Full URL
  */
-export function urlToNeedle (url: string): string {
+export function urlToNeedle(url: string): string {
   const fqdn = getFQDN(url)
   if (fqdn === undefined) return url
   const parts = fqdn.split('.')
@@ -44,7 +44,7 @@ interface URLParts extends Record<string, string> {
   params: string
 }
 
-function getParts (url: string): URLParts {
+function getParts(url: string): URLParts {
   let parts,
     protocol,
     subdomain,
@@ -55,7 +55,7 @@ function getParts (url: string): URLParts {
     params
 
     // Extract URL parameters
-  ;[url, params] = url.split('?')
+    ;[url, params] = url.split('?')
   params = params || ''
 
   // Extract protocol
@@ -63,10 +63,10 @@ function getParts (url: string): URLParts {
   if (parts.length > 1) [protocol, url] = parts
   protocol = protocol || ''
 
-  // Extract path
-  ;[url, ...parts] = url.split('/')
+    // Extract path
+    ;[url, ...parts] = url.split('/')
   path = parts.join('/') || ''
-  ;[url, ...parts] = url.split(':')
+    ;[url, ...parts] = url.split(':')
   port = parts[0] || ''
 
   // Extract tld
@@ -97,7 +97,7 @@ function getParts (url: string): URLParts {
  *
  * @param url URL or partial URL to be matched against in the comparator.
  */
-function urlComparator (url: string): (a: string, b: string) => number {
+function urlComparator(url: string): (a: string, b: string) => number {
   return function (a: string, b: string): number {
     let [partsA, partsB, partsUrl] = [a, b, url].map(getParts)
     let scoreA = 0,
@@ -127,7 +127,7 @@ function urlComparator (url: string): (a: string, b: string) => number {
  * @param fields Fields of the result object.
  * @param needle The needle that was used for the search.
  */
-function getURL (fields: StoredSafeField[], url: string): string {
+function getURL(fields: StoredSafeField[], url: string): string {
   const needle = urlToNeedle(url)
   const comparator = urlComparator(url)
   const values: string[] = []
@@ -158,7 +158,7 @@ function getURL (fields: StoredSafeField[], url: string): string {
   return values.sort(comparator)[0] || ''
 }
 
-function resultComparator (url: string) {
+function resultComparator(url: string) {
   const needle = urlToNeedle(url)
   const comparator = urlComparator(url)
   return function (a: StoredSafeObject, b: StoredSafeObject) {
@@ -177,7 +177,7 @@ function resultComparator (url: string) {
  * @param results All StoredSafe results matching the needle.
  * @param url The url used to generate the needle.
  */
-function filterOtherSubdomain (results: StoredSafeObject[], url: string) {
+function filterOtherSubdomain(results: StoredSafeObject[], url: string) {
   const parts = getParts(url)
   return results.filter(result => {
     const fieldURL = getURL(result.fields, url)
@@ -190,7 +190,7 @@ function filterOtherSubdomain (results: StoredSafeObject[], url: string) {
   })
 }
 
-async function find (
+async function find(
   url: string,
   hosts: string[] = null
 ): Promise<StoredSafeObject[]> {
@@ -228,7 +228,7 @@ async function find (
   return results.sort(comparator)
 }
 
-export function autoSearch (
+export function autoSearch(
   onResultsChanged: (tabs: Map<number, StoredSafeObject[]>) => void
 ): () => void {
   const tabs: Map<
@@ -236,7 +236,7 @@ export function autoSearch (
     { url: string; results: StoredSafeObject[]; isLoading: boolean }
   > = new Map()
 
-  function onActivated (activeInfo: browser.tabs._OnActivatedActiveInfo): void {
+  function onActivated(activeInfo: browser.tabs._OnActivatedActiveInfo): void {
     const tabId = activeInfo.tabId
     if (tabs.has(tabId)) return
     browser.tabs.get(tabId).then(tab => {
@@ -244,7 +244,7 @@ export function autoSearch (
     })
   }
 
-  function onUpdated (
+  function onUpdated(
     tabId: number,
     changeInfo: browser.tabs._OnUpdatedChangeInfo,
     tab: browser.tabs.Tab
@@ -279,11 +279,11 @@ export function autoSearch (
     })
   }
 
-  function onRemoved (tabId: number) {
+  function onRemoved(tabId: number) {
     tabs.delete(tabId)
   }
 
-  function onSessionsUpdated (
+  function onSessionsUpdated(
     newSessions: Map<string, Session>,
     oldSessions: Map<string, Session>
   ) {
@@ -310,7 +310,7 @@ export function autoSearch (
     }
   }
 
-  function notify (): void {
+  function notify(): void {
     const updatedResults: Map<number, StoredSafeObject[]> = new Map()
     for (const [tabId, { results, isLoading }] of tabs) {
       if (!isLoading) {
@@ -325,7 +325,7 @@ export function autoSearch (
   browser.tabs.onRemoved.addListener(onRemoved)
   sessions.subscribe(onSessionsUpdated)
 
-  return function stop () {
+  return function stop() {
     browser.tabs.onActivated.removeListener(onActivated)
     browser.tabs.onUpdated.removeListener(onUpdated)
     browser.tabs.onRemoved.removeListener(onRemoved)

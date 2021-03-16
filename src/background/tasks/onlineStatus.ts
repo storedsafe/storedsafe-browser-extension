@@ -9,14 +9,14 @@ const logger = new Logger('onlinestatus')
  * @param cb Callback with new online state when changed.
  * @returns Cleanup function to stop subscriptions.
  */
-export function onlineStatus (cb: (online: boolean) => void): () => void {
+export function onlineStatus(cb: (online: boolean) => void): () => void {
   let wasOnline = false
 
   /**
    * Update online status when sessions change.
    * @param sessions New sessions object.
    */
-  function onSessionsChanged (sessions: Map<string, Session>): void {
+  function onSessionsChanged(sessions: Map<string, Session>): void {
     const isOnline = sessions.size > 0
     if (wasOnline !== isOnline) {
       cb(isOnline)
@@ -35,7 +35,7 @@ export function onlineStatus (cb: (online: boolean) => void): () => void {
     .catch(logger.error)
 
   // Cleanup
-  return function stop () {
+  return function stop() {
     sessions.unsubscribe(onSessionsChanged)
   }
 }

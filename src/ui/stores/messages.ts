@@ -37,7 +37,7 @@ export interface MessageStore extends Readable<Message[]> {
 /**
  * Custom message store definition.
  */
-export function messageStore (): MessageStore {
+export function messageStore(): MessageStore {
   const timers = new Map<number, number>()
   const { subscribe, set, update } = writable([])
 
@@ -52,7 +52,7 @@ export function messageStore (): MessageStore {
      * @param message Contents of the message.
      * @param messageType Appearance of the message.
      */
-    add (message, messageType, duration = Duration.NO_LIMIT) {
+    add(message, messageType, duration = Duration.NO_LIMIT) {
       const id = count++
       update(messages => [...messages, { message, messageType, id }])
 
@@ -69,7 +69,7 @@ export function messageStore (): MessageStore {
      * Remove a message from the store.
      * @param id ID (or dispatch event containg ID) of the message to be removed.
      */
-    remove (id) {
+    remove(id) {
       if (id instanceof CustomEvent) id = id.detail
       if (timers.has(id)) {
         clearTimeout(timers.get(id))
@@ -81,7 +81,7 @@ export function messageStore (): MessageStore {
     /**
      * Clear all messages from the store.
      */
-    clear () {
+    clear() {
       set([])
     }
   }

@@ -173,7 +173,7 @@ export enum LocalizedMessage {
  * @param subsitutions Dynamic string substitutions, see _locales.
  * @returns Localized message.
  */
-export function getMessage (
+export function getMessage(
   messageName: LocalizedMessage,
   ...subsitutions: any[]
 ) {
@@ -187,6 +187,6 @@ export function getMessage (
  * Get currently used locale.
  * @returns Locale string.
  */
-export function getLocale () {
+export function getLocale() {
   return browser.i18n.getUILanguage()
 }

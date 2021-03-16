@@ -22,7 +22,7 @@ function parse(ignore: string[]) {
  * @returns Current ignore list.
  * @throws {StoredSafeIgnoreGetError}
  */
-export async function get (): Promise<string[]> {
+export async function get(): Promise<string[]> {
   try {
     const { ignore } = await browser.storage.local.get(STORAGE_KEY)
     return parse(ignore)
@@ -31,7 +31,7 @@ export async function get (): Promise<string[]> {
   }
 }
 
-async function set (ignore: string[]) {
+async function set(ignore: string[]) {
   await browser.storage.local.set({ ignore })
 }
 
@@ -41,7 +41,7 @@ async function set (ignore: string[]) {
  * @returns Current ignore list.
  * @throws {StoredSafeIgnoreGetError} if get of current state fails.
  */
-export async function subscribe (
+export async function subscribe(
   cb: OnAreaChanged<string[]>
 ): Promise<string[]> {
   listeners.push(cb)
@@ -52,7 +52,7 @@ export async function subscribe (
  * Subscribe to changes in storage area.
  * @param cb Callback function to be called when storage area is updated.
  */
-export function unsubscribe (cb: OnAreaChanged<string[]>): void {
+export function unsubscribe(cb: OnAreaChanged<string[]>): void {
   listeners = listeners.filter(listener => listener !== cb)
 }
 
@@ -63,7 +63,7 @@ export function unsubscribe (cb: OnAreaChanged<string[]>): void {
  * @throws {StoredSafeIgnoreAddDuplicateError}
  * @throws {StoredSafeIgnoreAddError}
  */
-export async function add (url: string): Promise<void> {
+export async function add(url: string): Promise<void> {
   try {
     // Get current state
     const ignore = await get()
@@ -92,7 +92,7 @@ export async function add (url: string): Promise<void> {
  * @throws {StoredSafeIgnoreRemoveNotFoundError}
  * @throws {StoredSafeIgnoreRemoveError}
  */
-export async function remove (url: string): Promise<void> {
+export async function remove(url: string): Promise<void> {
   try {
     // Get current state
     let ignore = await get()
@@ -118,7 +118,7 @@ export async function remove (url: string): Promise<void> {
  * Remove all URLs from the ignore list.
  * @throws {StoredSafeIgnoreClearError}
  */
-export async function clear (): Promise<void> {
+export async function clear(): Promise<void> {
   try {
     await browser.storage.local.remove(STORAGE_KEY)
   } catch (error) {

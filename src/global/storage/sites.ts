@@ -18,18 +18,18 @@ const EMPTY_STATE: Site[] = []
 
 let listeners: OnAreaChanged<Site[]>[] = []
 
-function parse (
+function parse(
   sites: Pick<Site, 'host' | 'apikey'>[],
   managed: boolean = false
 ): Site[] {
   return (sites ?? EMPTY_STATE).map(site => ({ managed, ...site }))
 }
 
-function merge (managed: Site[], sync: Site[]) {
+function merge(managed: Site[], sync: Site[]) {
   return [...sync, ...managed]
 }
 
-async function getManagedSites (): Promise<Site[]> {
+async function getManagedSites(): Promise<Site[]> {
   try {
     const { sites } = await browser.storage.managed.get(STORAGE_KEY)
     return parse(sites, true)
@@ -42,7 +42,7 @@ async function getManagedSites (): Promise<Site[]> {
   }
 }
 
-async function getSyncSites () {
+async function getSyncSites() {
   const { sites } = await browser.storage.sync.get(STORAGE_KEY)
   return parse(sites ?? EMPTY_STATE)
 }
@@ -51,7 +51,7 @@ async function getSyncSites () {
  * @returns Current sites.
  * @throws {StoredSafeSitesGetError}
  */
-export async function get (): Promise<Site[]> {
+export async function get(): Promise<Site[]> {
   try {
     const sync = await getSyncSites()
     const managed = await getManagedSites()
@@ -63,7 +63,7 @@ export async function get (): Promise<Site[]> {
   }
 }
 
-async function set (sites: Site[]) {
+async function set(sites: Site[]) {
   // Convert to serializable format, using null coalescing before converting
   // to array to ensure values are not undefined (causes TypeError).
   // Filter out managed sites.
@@ -78,7 +78,7 @@ async function set (sites: Site[]) {
  * @returns Current sites.
  * @throws {StoredSafeSitesGetError} if get of current state fails.
  */
-export async function subscribe (cb: OnAreaChanged<Site[]>): Promise<Site[]> {
+export async function subscribe(cb: OnAreaChanged<Site[]>): Promise<Site[]> {
   listeners.push(cb)
   return await get()
 }
@@ -87,7 +87,7 @@ export async function subscribe (cb: OnAreaChanged<Site[]>): Promise<Site[]> {
  * Subscribe to changes in storage area.
  * @param cb Callback function to be called when storage area is updated.
  */
-export function unsubscribe (cb: OnAreaChanged<Site[]>): void {
+export function unsubscribe(cb: OnAreaChanged<Site[]>): void {
   listeners = listeners.filter(listener => listener !== cb)
 }
 
@@ -99,7 +99,7 @@ export function unsubscribe (cb: OnAreaChanged<Site[]>): void {
  * @throws {StoredSafeSitesAddDuplicateError}
  * @throws {StoredSafeSitesAddError}
  */
-export async function add (host: string, apikey: string): Promise<void> {
+export async function add(host: string, apikey: string): Promise<void> {
   try {
     // Get current state
     const sites = await get()
@@ -128,7 +128,7 @@ export async function add (host: string, apikey: string): Promise<void> {
  * @throws {StoredSafeSitesRemoveNotFoundError}
  * @throws {StoredSafeSitesRemoveError}
  */
-export async function remove (host: string): Promise<void> {
+export async function remove(host: string): Promise<void> {
   try {
     // Get current state
     let sites = await get()
@@ -157,7 +157,7 @@ export async function remove (host: string): Promise<void> {
  * Remove all sites.
  * @throws {StoredSafeSitesClearError}
  */
-export async function clear (): Promise<void> {
+export async function clear(): Promise<void> {
   try {
     const sites = await get()
     const sessions = await sessionsStorage.get()
@@ -172,7 +172,7 @@ export async function clear (): Promise<void> {
   }
 }
 
-function notify (newValues: Site[], oldValues: Site[]): void {
+function notify(newValues: Site[], oldValues: Site[]): void {
   for (const listener of listeners) {
     listener(newValues, oldValues)
   }

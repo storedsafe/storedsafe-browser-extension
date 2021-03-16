@@ -9,12 +9,12 @@ import * as sessions from '../storage/sessions'
 
 // TODO: Improved error handling
 
-function parseMessages (obj: [] | { [key: string]: string }) {
+function parseMessages(obj: [] | { [key: string]: string }) {
   if (Array.isArray(obj)) return obj
   return [...Object.values(obj)]
 }
 
-function parseLogin (data: StoredSafeLoginData): Session {
+function parseLogin(data: StoredSafeLoginData): Session {
   return {
     token: data.CALLINFO.token,
     createdAt: Date.now(),
@@ -29,7 +29,7 @@ function parseLogin (data: StoredSafeLoginData): Session {
  * @param host Name of the newly authenticated host.
  * @param session Newly created session.
  */
-async function afterLogin (host: string, session: Session) {
+async function afterLogin(host: string, session: Session) {
   await sessions.add(host, session)
 }
 
@@ -41,7 +41,7 @@ async function afterLogin (host: string, session: Session) {
  * @param passphrase Passphrase associated with `username`.
  * @param otp YubiKey press.
  */
-export async function loginTotp (
+export async function loginTotp(
   { host, apikey }: Site,
   username: string,
   passphrase: string,
@@ -71,7 +71,7 @@ export async function loginTotp (
  * @param passphrase Passphrase associated with `username`.
  * @param otp YubiKey press.
  */
-export async function loginYubikey (
+export async function loginYubikey(
   { host, apikey }: Site,
   username: string,
   passphrase: string,
@@ -93,7 +93,7 @@ export async function loginYubikey (
   }
 }
 
-async function afterLogout (host: string): Promise<void> {
+async function afterLogout(host: string): Promise<void> {
   await sessions.remove(host)
   // TODO: After logout tasks (purge results, etc)
 }
@@ -104,7 +104,7 @@ async function afterLogout (host: string): Promise<void> {
  * @param host StoredSafe host name.
  * @param token Token associated with session for `host`.
  */
-export async function check (host: string, token: string): Promise<void> {
+export async function check(host: string, token: string): Promise<void> {
   const api = new StoredSafe({ host, token })
   try {
     const response = await api.check()
@@ -125,7 +125,7 @@ export async function check (host: string, token: string): Promise<void> {
  * @param host StoredSafe host name.
  * @param token Token associated with session for `host`.
  */
-export async function logout (host: string, token: string): Promise<void> {
+export async function logout(host: string, token: string): Promise<void> {
   const api = new StoredSafe({ host, token })
   try {
     const response = await api.logout()

@@ -28,7 +28,7 @@ import {
  * @param template Template describing the structure of the StoredSafe object.
  * @param isDecrypted True if the object hsa been decrypted.
  */
-function parseResult (
+function parseResult(
   host: string,
   obj: ResponseObject,
   template: ResponseTemplate,
@@ -89,7 +89,7 @@ function parseResult (
  * @param host StoredSafe host name where the results came from.
  * @param data data returned by the find request.
  */
-function parseResults (
+function parseResults(
   host: string,
   data: StoredSafeObjectData
 ): StoredSafeObject[] {
@@ -111,7 +111,7 @@ function parseResults (
  * @param token Token associated with session for `host`.
  * @param needle Search string to be matched against.
  */
-export async function search (
+export async function search(
   host: string,
   token: string,
   needle: string
@@ -140,7 +140,7 @@ export async function search (
  * @param token Token associated with session for `host`.
  * @param obj Object to be decrypted.
  */
-export async function decryptObject (
+export async function decryptObject(
   host: string,
   token: string,
   obj: StoredSafeObject
@@ -173,7 +173,7 @@ export async function decryptObject (
  * @param obj Object to be edited.
  * @param values New values for StoredSafe object.
  */
-export async function editObject (
+export async function editObject(
   host: string,
   token: string,
   obj: StoredSafeObject,
@@ -201,7 +201,7 @@ export async function editObject (
  * @param token Token associated with session for `host`.
  * @param obj Object to be deleted.
  */
-export async function deleteObject (
+export async function deleteObject(
   host: string,
   token: string,
   obj: StoredSafeObject
@@ -219,7 +219,7 @@ export async function deleteObject (
   return obj
 }
 
-function parseVaults (data: StoredSafeVaultsData): StoredSafeVault[] {
+function parseVaults(data: StoredSafeVaultsData): StoredSafeVault[] {
   return data.VAULTS.map(vault => ({
     id: vault.id,
     name: vault.groupname,
@@ -233,7 +233,7 @@ function parseVaults (data: StoredSafeVaultsData): StoredSafeVault[] {
  * @param host StoredSafe host name.
  * @param token Token associated with session for `host`.
  */
-export async function getVaults (host: string, token: string) {
+export async function getVaults(host: string, token: string) {
   const api = new StoredSafe({ host, token })
   try {
     const response = await api.listVaults()
@@ -247,7 +247,7 @@ export async function getVaults (host: string, token: string) {
   }
 }
 
-function parseTemplates (data: StoredSafeTemplateData): StoredSafeTemplate[] {
+function parseTemplates(data: StoredSafeTemplateData): StoredSafeTemplate[] {
   const templates = data.TEMPLATE.filter(template => {
     // Filter out file-type objects
     if (Object.keys(template.STRUCTURE).includes('file1')) return false
@@ -283,7 +283,7 @@ function parseTemplates (data: StoredSafeTemplateData): StoredSafeTemplate[] {
  * @param host StoredSafe host name.
  * @param token Token associated with session for `host`.
  */
-export async function getTemplates (host: string, token: string) {
+export async function getTemplates(host: string, token: string) {
   const api = new StoredSafe({ host, token })
   try {
     const response = await api.listTemplates()
@@ -297,7 +297,7 @@ export async function getTemplates (host: string, token: string) {
   }
 }
 
-function parsePolicies (
+function parsePolicies(
   data: StoredSafePoliciesData
 ): StoredSafePasswordPolicy[] {
   return data.CALLINFO.policies
@@ -308,7 +308,7 @@ function parsePolicies (
  * @param host StoredSafe host name.
  * @param token Token associated with session for `host`.
  */
-export async function getPolicies (host: string, token: string) {
+export async function getPolicies(host: string, token: string) {
   const api = new StoredSafe({ host, token })
   try {
     const response = await api.passwordPolicies()
@@ -329,7 +329,7 @@ export async function getPolicies (host: string, token: string) {
  * @param params Object data.
  * @see https://developer.storedsafe.com/objects/create_object.html
  */
-export async function addObject (host: string, token: string, params: object) {
+export async function addObject(host: string, token: string, params: object) {
   const api = new StoredSafe({ host, token })
   try {
     const response = await api.createObject(params)
@@ -347,7 +347,7 @@ export async function addObject (host: string, token: string, params: object) {
  * @param host Host where the password should be generated.
  * @param properties Password generation parameters.
  */
-export async function generatePassword (
+export async function generatePassword(
   host: string,
   token: string,
   properties?: {

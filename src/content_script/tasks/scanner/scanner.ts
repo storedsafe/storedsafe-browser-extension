@@ -10,7 +10,7 @@ import { getInputs, INPUT_SELECTORS } from './inputs'
 
 const logger = new Logger('scanner', true)
 
-function printForms (forms: Form[]) {
+function printForms(forms: Form[]) {
   for (const [form, formType, inputs] of forms) {
     if (formType === FormType.UNKNOWN) {
       logger.debug('Unknown form %o', form)
@@ -31,7 +31,7 @@ function printForms (forms: Form[]) {
   }
 }
 
-function filterForms (forms: Form[]): Form[] {
+function filterForms(forms: Form[]): Form[] {
   return forms.filter(([_form, formType]) => {
     return (
       FORM_FILL_TYPES.includes(formType) || FORM_SAVE_TYPES.includes(formType)
@@ -39,10 +39,10 @@ function filterForms (forms: Form[]): Form[] {
   })
 }
 
-export function scanner (cb: (forms: Form[]) => void) {
+export function scanner(cb: (forms: Form[]) => void) {
   let forms: Form[] = []
 
-  function updateForms (newForms: Form[]) {
+  function updateForms(newForms: Form[]) {
     printForms(newForms)
     forms = filterForms(newForms)
     cb(forms)
@@ -122,7 +122,7 @@ export function scanner (cb: (forms: Form[]) => void) {
   })
 
   return {
-    stop () {
+    stop() {
       observer.disconnect()
     }
   }

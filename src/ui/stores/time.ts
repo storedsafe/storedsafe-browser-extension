@@ -6,21 +6,21 @@ import { Readable, readable } from 'svelte/store'
  * @param interval Interval at which to update time.
  * @param alignTimeout Time until first interval is started.
  */
-export function time (interval: number, alignTimeout: number = 0): Readable<number> {
-  return readable(Date.now(), function start (set) {
+export function time(interval: number, alignTimeout: number = 0): Readable<number> {
+  return readable(Date.now(), function start(set) {
     let intervalId: number = null
-    let timeoutId = window.setTimeout(function initialize () {
+    let timeoutId = window.setTimeout(function initialize() {
       // Set state at alignment point
       set(Date.now())
       timeoutId = null
 
       // Start interval when aligned
-      intervalId = window.setInterval(function setTime () {
+      intervalId = window.setInterval(function setTime() {
         set(Date.now())
       }, interval)
     }, alignTimeout)
 
-    return function stop () {
+    return function stop() {
       if (!!timeoutId) clearTimeout(timeoutId)
       if (!!intervalId) clearInterval(intervalId)
     }

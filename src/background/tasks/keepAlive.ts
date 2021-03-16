@@ -11,10 +11,10 @@ const logger = new Logger('keepalive')
  * the time until the next timeout is known.
  * @returns Cleanup function to stop all intervals.
  */
-export function keepAlive (): () => void {
+export function keepAlive(): () => void {
   let alarms: Map<string, string> = new Map()
 
-  function onSessionsChanged (sessions: Map<string, Session>) {
+  function onSessionsChanged(sessions: Map<string, Session>) {
     // Clear obsolete alarms
     for (const [host, name] of alarms) {
       if (!sessions.has(host)) {
@@ -47,7 +47,7 @@ export function keepAlive (): () => void {
     .catch(logger.error)
 
   // Cleanup
-  return function stop () {
+  return function stop() {
     sessions.unsubscribe(onSessionsChanged)
     for (const name of alarms.values()) {
       browser.alarms.clear(name)

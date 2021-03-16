@@ -4,7 +4,7 @@ export interface Message {
   data?: any
 }
 
-export function sendMessage (message: Message, port?: browser.runtime.Port): Promise<Message | void> {
+export function sendMessage(message: Message, port?: browser.runtime.Port): Promise<Message | void> {
   if (!!port) {
     port.postMessage(message)
     return Promise.resolve()

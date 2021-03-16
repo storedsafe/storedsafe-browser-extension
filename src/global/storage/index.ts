@@ -10,7 +10,7 @@ export * as sites from './sites'
  * CLEAR ALL USER DATA.
  * @throws {StoredSafeClearAllDataError}
  */
-export async function clearAllData (): Promise<void> {
+export async function clearAllData(): Promise<void> {
   try {
     const localPromise = browser.storage.local.clear()
     const syncPromise = browser.storage.sync.clear()

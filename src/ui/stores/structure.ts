@@ -21,7 +21,7 @@ interface StructureStore extends Readable<Map<string, StoredSafeStructure>> {
 
 const emptyState: Map<string, StoredSafeStructure> = new Map()
 
-function structureStore (): StructureStore {
+function structureStore(): StructureStore {
   let currentSessions: Map<string, Session> = null
   const { subscribe, update } = writable<Map<string, StoredSafeStructure>>(
     emptyState
@@ -43,7 +43,7 @@ function structureStore (): StructureStore {
     })
   })
 
-  function refresh (host: string): void {
+  function refresh(host: string): void {
     const { token } = currentSessions.get(host)
     loading.add(
       `${STRUCTURE_REFRESH_LOADING_ID}.${host}`,
@@ -53,7 +53,7 @@ function structureStore (): StructureStore {
         vault.getPolicies(host, token)
       ]),
       {
-        onSuccess ([vaults, templates, policies]) {
+        onSuccess([vaults, templates, policies]) {
           update(structure => {
             const newStructure: [string, StoredSafeStructure][] = [
               ...structure,
@@ -79,7 +79,7 @@ function structureStore (): StructureStore {
     )
   }
 
-  function refreshAll (): void {
+  function refreshAll(): void {
     for (const [host] of currentSessions) {
       refresh(host)
     }

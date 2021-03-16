@@ -8,7 +8,7 @@ const logger = new Logger('hardtimeout')
  * Keep timers for hard timeout on sessions.
  * @returns Cleanup function to stop subscriptions.
  */
-export function hardTimeout (): () => void {
+export function hardTimeout(): () => void {
   const alarms: Map<string, { name: string; session: Session }> = new Map()
   let maxTokenLife: number = null
 
@@ -17,7 +17,7 @@ export function hardTimeout (): () => void {
    * @param createdAt Timestamp when the session was created.
    * @param maxTokenLife Max number of hours the token is allowed to stay alive.
    */
-  function getWhen (createdAt: number): number {
+  function getWhen(createdAt: number): number {
     const maxTokenLifeMs = maxTokenLife * 36e5
     const when = createdAt + maxTokenLifeMs
     const now = Date.now()
@@ -29,7 +29,7 @@ export function hardTimeout (): () => void {
    * @param host StoredSafe host associated with `session`.
    * @param session StoredSafe session associated with `host`.
    */
-  function setAlarm (host: string, session: Session) {
+  function setAlarm(host: string, session: Session) {
     if (maxTokenLife > 0) {
       const when = getWhen(session.createdAt)
       const diff = when - Date.now()
@@ -46,7 +46,7 @@ export function hardTimeout (): () => void {
    * Update the detection interval if the settings change.
    * @param settings New settings object.
    */
-  function onSettingsChanged (settings: Map<string, Setting>): void {
+  function onSettingsChanged(settings: Map<string, Setting>): void {
     if (settings.has('maxTokenLife')) {
       maxTokenLife = (settings.get('maxTokenLife').value as number) ?? -1
 
@@ -62,7 +62,7 @@ export function hardTimeout (): () => void {
    * Update the detection interval if the settings change.
    * @param settings New settings object.
    */
-  function onSessionsChanged (sessions: Map<string, Session>): void {
+  function onSessionsChanged(sessions: Map<string, Session>): void {
     // Clear obsolete timers
     for (const [host, { name }] of alarms) {
       if (!sessions.has(host)) {
@@ -99,7 +99,7 @@ export function hardTimeout (): () => void {
     .catch(logger.error)
 
   // Cleanup
-  return function stop () {
+  return function stop() {
     settings.unsubscribe(onSettingsChanged)
     sessions.unsubscribe(onSessionsChanged)
   }

@@ -22,7 +22,7 @@ function parse(sessions: [string, Session][]) {
  * @returns Current sessions.
  * @throws {StoredSafeSessionsGetError}
  */
-export async function get (): Promise<Map<string, Session>> {
+export async function get(): Promise<Map<string, Session>> {
   try {
     const { sessions } = await browser.storage.local.get(STORAGE_KEY)
     // Convert to Map from serializable format. Map objects are not serializable
@@ -33,7 +33,7 @@ export async function get (): Promise<Map<string, Session>> {
   }
 }
 
-async function set (sessions: Map<string, Session>) {
+async function set(sessions: Map<string, Session>) {
   // Convert to serializable format, using null coalescing before converting
   // to array to ensure values are not undefined (causes TypeError).
   await browser.storage.local.set({
@@ -47,7 +47,7 @@ async function set (sessions: Map<string, Session>) {
  * @returns Current sessions.
  * @throws {StoredSafeSessionsGetError} if get of current state fails.
  */
-export async function subscribe (
+export async function subscribe(
   cb: OnAreaChanged<Map<string, Session>>
 ): Promise<Map<string, Session>> {
   listeners.push(cb)
@@ -58,7 +58,7 @@ export async function subscribe (
  * Subscribe to changes in storage area.
  * @param cb Callback function to be called when storage area is updated.
  */
-export function unsubscribe (cb: OnAreaChanged<Map<string, Session>>): void {
+export function unsubscribe(cb: OnAreaChanged<Map<string, Session>>): void {
   listeners = listeners.filter(listener => listener !== cb)
 }
 
@@ -70,7 +70,7 @@ export function unsubscribe (cb: OnAreaChanged<Map<string, Session>>): void {
  * @throws {StoredSafeSessionsAddDuplicateError}
  * @throws {StoredSafeSessionsAddError}
  */
-export async function add (host: string, session: Session): Promise<void> {
+export async function add(host: string, session: Session): Promise<void> {
   try {
     // Get current state
     const sessions = await get()
@@ -98,7 +98,7 @@ export async function add (host: string, session: Session): Promise<void> {
  * @throws {StoredSafeSessionsRemoveNotFoundError}
  * @throws {StoredSafeSessionsRemoveError}
  */
-export async function remove (host: string): Promise<void> {
+export async function remove(host: string): Promise<void> {
   try {
     // Get current state
     const sessions = await get()
@@ -124,7 +124,7 @@ export async function remove (host: string): Promise<void> {
  * Remove all sessions.
  * @throws {StoredSafeSessionsClearError}
  */
-export async function clear (): Promise<void> {
+export async function clear(): Promise<void> {
   try {
     await browser.storage.local.remove(STORAGE_KEY)
   } catch (error) {

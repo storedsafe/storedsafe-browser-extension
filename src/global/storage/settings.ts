@@ -67,7 +67,7 @@ const EMPTY_STATE: Record<string, any> = {}
 
 let listeners: OnAreaChanged<Map<string, Setting>>[] = []
 
-function parse (
+function parse(
   values: Record<string, any>,
   managed: boolean = false
 ): Map<string, Setting> {
@@ -79,7 +79,7 @@ function parse (
   return settings
 }
 
-function merge (
+function merge(
   enforced: Map<string, Setting>,
   managedDefaults: Map<string, Setting>,
   sync: Map<string, Setting>
@@ -102,7 +102,7 @@ const DEFAULT_SETTINGS = parse({
 /**
  * @returns [enforced, default]
  */
-async function getManagedSettings (): Promise<
+async function getManagedSettings(): Promise<
   [Map<string, Setting>, Map<string, Setting>]
 > {
   try {
@@ -117,7 +117,7 @@ async function getManagedSettings (): Promise<
   }
 }
 
-async function getSyncSettings () {
+async function getSyncSettings() {
   const { settings } = await browser.storage.sync.get(STORAGE_KEY)
   return parse(settings)
 }
@@ -127,7 +127,7 @@ async function getSyncSettings () {
  * @returns Current sessions.
  * @throws {StoredSafeSettingsGetError}
  */
-export async function get (): Promise<Map<string, Setting>> {
+export async function get(): Promise<Map<string, Setting>> {
   try {
     // Convert to Map from serializable format. Map objects are not serializable
     // and will result as an empty object if put in storage.
@@ -141,7 +141,7 @@ export async function get (): Promise<Map<string, Setting>> {
   }
 }
 
-async function set (settings: Map<string, Setting>): Promise<void> {
+async function set(settings: Map<string, Setting>): Promise<void> {
   // Convert to serializable format, using null coalescing before converting
   // to array to ensure values are not undefined (causes TypeError).
   // Filter out managed fields.
@@ -160,7 +160,7 @@ async function set (settings: Map<string, Setting>): Promise<void> {
  * @returns Current settings.
  * @throws {StoredSafeSettingsGetError} if get of current state fails.
  */
-export async function subscribe (
+export async function subscribe(
   cb: OnAreaChanged<Map<string, Setting>>
 ): Promise<Map<string, Setting>> {
   listeners.push(cb)
@@ -171,7 +171,7 @@ export async function subscribe (
  * Subscribe to changes in storage area.
  * @param cb Callback function to be called when storage area is updated.
  */
-export function unsubscribe (cb: OnAreaChanged<Map<string, Setting>>): void {
+export function unsubscribe(cb: OnAreaChanged<Map<string, Setting>>): void {
   listeners = listeners.filter(listener => listener !== cb)
 }
 
@@ -182,7 +182,7 @@ export function unsubscribe (cb: OnAreaChanged<Map<string, Setting>>): void {
  * @throws {StoredSafeSettingsSetValueNotFoundError}
  * @throws {StoredSafeSettingsSetManagedValueError}
  */
-export async function setValues (
+export async function setValues(
   ...values: [string, number | boolean][]
 ): Promise<void> {
   try {
@@ -212,7 +212,7 @@ export async function setValues (
  * @throws {StoredSafeSettingsGetError}
  * @throws {StoredSafeSettingsClearValueError}
  */
-export async function clearValue (key: string) {
+export async function clearValue(key: string) {
   try {
     const settings = await get()
     settings.delete(key)
@@ -227,7 +227,7 @@ export async function clearValue (key: string) {
  * Clear all user settings.
  * @throws {StoredSafeSettingsClearError}
  */
-export async function clear () {
+export async function clear() {
   try {
     await browser.storage.sync.remove(STORAGE_KEY)
   } catch (error) {
@@ -235,7 +235,7 @@ export async function clear () {
   }
 }
 
-function notify (
+function notify(
   newValues: Map<string, Setting>,
   oldValues: Map<string, Setting>
 ): void {

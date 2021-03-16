@@ -47,7 +47,7 @@ class LoadingPromise<T> {
    * @param onError Called if the promise throws an error.
    * @param finished Called when the promise has finished, regardless of success.
    */
-  constructor (
+  constructor(
     promise: Promise<any>,
     onSuccess: (value: T) => void | undefined,
     onError: (error: Error) => void | undefined,
@@ -80,7 +80,7 @@ class LoadingPromise<T> {
       })
   }
 
-  cancel (): void {
+  cancel(): void {
     this.canceled = true
   }
 }
@@ -89,7 +89,7 @@ class LoadingPromise<T> {
  * Keeps track of the loading state across one or more promises and issues callbacks once
  * individual promises are completed.
  */
-function loadingStore (): LoadingStore {
+function loadingStore(): LoadingStore {
   const promises: Map<string, LoadingPromise<any>> = new Map()
 
   const { subscribe, set } = writable<LoadingState>({
@@ -100,7 +100,7 @@ function loadingStore (): LoadingStore {
   /**
    * Update the `loadingStore` state.
    */
-  function update () {
+  function update() {
     const ids = [...promises.keys()]
     set({
       isLoading: promises.size !== 0,
@@ -119,7 +119,7 @@ function loadingStore (): LoadingStore {
    * regardless of whether it completes successfully or not.
    * @param id ID associated with promise.
    */
-  function finished (id: string): () => void {
+  function finished(id: string): () => void {
     return function () {
       promises.delete(id)
       update()

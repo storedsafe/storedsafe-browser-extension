@@ -2,14 +2,14 @@ export abstract class StoredSafeBaseError extends Error {
   readonly id: number = -1
   readonly name: string = 'StoredSafeError'
 
-  constructor (message: string, error?: Error) {
+  constructor(message: string, error?: Error) {
     super(message)
     if (!!error?.stack) {
       this.stack = error?.stack
     }
   }
 
-  toString () {
+  toString() {
     return `(${this.id}) ${this.message}`
   }
 }
@@ -28,7 +28,7 @@ const IGNORE_ID = 1000
  */
 export class StoredSafeIgnoreGetError extends StoredSafeExtensionError {
   readonly id = IGNORE_ID + 1
-  constructor (error: Error) {
+  constructor(error: Error) {
     super(`Error getting ignore list from storage`, error)
   }
 }
@@ -38,7 +38,7 @@ export class StoredSafeIgnoreGetError extends StoredSafeExtensionError {
  */
 export class StoredSafeIgnoreAddError extends StoredSafeExtensionError {
   readonly id = IGNORE_ID + 2
-  constructor (url: string, error: Error) {
+  constructor(url: string, error: Error) {
     super(`Error adding '${url}' to ignore list`, error)
   }
 }
@@ -48,7 +48,7 @@ export class StoredSafeIgnoreAddError extends StoredSafeExtensionError {
  */
 export class StoredSafeIgnoreAddDuplicateError extends StoredSafeExtensionError {
   readonly id = IGNORE_ID + 3
-  constructor (url: string) {
+  constructor(url: string) {
     super(`'${url}' already exists in ignore list`)
   }
 }
@@ -58,7 +58,7 @@ export class StoredSafeIgnoreAddDuplicateError extends StoredSafeExtensionError 
  */
 export class StoredSafeIgnoreRemoveError extends StoredSafeExtensionError {
   readonly id = IGNORE_ID + 4
-  constructor (url: string, error: Error) {
+  constructor(url: string, error: Error) {
     super(`Error removing '${url}' from ignore list`, error)
   }
 }
@@ -68,7 +68,7 @@ export class StoredSafeIgnoreRemoveError extends StoredSafeExtensionError {
  */
 export class StoredSafeIgnoreRemoveNotFoundError extends StoredSafeExtensionError {
   readonly id = IGNORE_ID + 5
-  constructor (url: string) {
+  constructor(url: string) {
     super(`'${url}' doesn't exist in ignore list`)
   }
 }
@@ -78,7 +78,7 @@ export class StoredSafeIgnoreRemoveNotFoundError extends StoredSafeExtensionErro
  */
 export class StoredSafeIgnoreClearError extends StoredSafeExtensionError {
   readonly id = IGNORE_ID + 6
-  constructor (error: Error) {
+  constructor(error: Error) {
     super(`Error clearing ignore list`, error)
   }
 }
@@ -90,7 +90,7 @@ const PREFERENCES_ID = 2000
  */
 export class StoredSafeGetPreferencesError extends StoredSafeExtensionError {
   readonly id = PREFERENCES_ID + 1
-  constructor (error: Error) {
+  constructor(error: Error) {
     super(`Error getting preferences from storage`, error)
   }
 }
@@ -100,7 +100,7 @@ export class StoredSafeGetPreferencesError extends StoredSafeExtensionError {
  */
 export class StoredSafeSetSitePreferencesError extends StoredSafeExtensionError {
   readonly id = PREFERENCES_ID + 1
-  constructor (host: string, error: Error) {
+  constructor(host: string, error: Error) {
     super(`Error setting site preferences for '${host}'`, error)
   }
 }
@@ -110,7 +110,7 @@ export class StoredSafeSetSitePreferencesError extends StoredSafeExtensionError 
  */
 export class StoredSafeSetAutoFillPreferencesError extends StoredSafeExtensionError {
   readonly id = PREFERENCES_ID + 2
-  constructor (url: string, error: Error) {
+  constructor(url: string, error: Error) {
     super(`Error setting auto fill preferences for '${url}'`, error)
   }
 }
@@ -120,7 +120,7 @@ export class StoredSafeSetAutoFillPreferencesError extends StoredSafeExtensionEr
  */
 export class StoredSafeClearSitePreferencesError extends StoredSafeExtensionError {
   readonly id = PREFERENCES_ID + 3
-  constructor (error: Error) {
+  constructor(error: Error) {
     super(`Error clearing site preferences`, error)
   }
 }
@@ -130,7 +130,7 @@ export class StoredSafeClearSitePreferencesError extends StoredSafeExtensionErro
  */
 export class StoredSafeClearAutoFillPreferencesError extends StoredSafeExtensionError {
   readonly id = PREFERENCES_ID + 4
-  constructor (error: Error) {
+  constructor(error: Error) {
     super(`Error clearing auto fill preferences`, error)
   }
 }
@@ -140,7 +140,7 @@ export class StoredSafeClearAutoFillPreferencesError extends StoredSafeExtension
  */
 export class StoredSafeClearPreferencesError extends StoredSafeExtensionError {
   readonly id = PREFERENCES_ID + 5
-  constructor (error: Error) {
+  constructor(error: Error) {
     super(`Error clearing preferences`, error)
   }
 }
@@ -150,7 +150,7 @@ export class StoredSafeClearPreferencesError extends StoredSafeExtensionError {
  */
 export class StoredSafeSetAddPreferencesError extends StoredSafeExtensionError {
   readonly id = PREFERENCES_ID + 2
-  constructor (error: Error) {
+  constructor(error: Error) {
     super(`Error setting add preferences`, error)
   }
 }
@@ -160,7 +160,7 @@ export class StoredSafeSetAddPreferencesError extends StoredSafeExtensionError {
  */
 export class StoredSafeClearAddPreferencesError extends StoredSafeExtensionError {
   readonly id = PREFERENCES_ID + 6
-  constructor (error: Error) {
+  constructor(error: Error) {
     super(`Error clearing add preferences`, error)
   }
 }
@@ -172,7 +172,7 @@ const SESSIONS_ID = 3000
  */
 export class StoredSafeSessionsGetError extends StoredSafeExtensionError {
   readonly id = SESSIONS_ID + 1
-  constructor (error: Error) {
+  constructor(error: Error) {
     super(`Error getting sessions from storage`, error)
   }
 }
@@ -182,7 +182,7 @@ export class StoredSafeSessionsGetError extends StoredSafeExtensionError {
  */
 export class StoredSafeSessionsAddError extends StoredSafeExtensionError {
   readonly id = SESSIONS_ID + 2
-  constructor (host: string, error: Error) {
+  constructor(host: string, error: Error) {
     super(`Error adding new session for '${host}' to storage`, error)
   }
 }
@@ -192,7 +192,7 @@ export class StoredSafeSessionsAddError extends StoredSafeExtensionError {
  */
 export class StoredSafeSessionsAddDuplicateError extends StoredSafeExtensionError {
   readonly id = SESSIONS_ID + 3
-  constructor (host: string) {
+  constructor(host: string) {
     super(`Session already exists for '${host}'`)
   }
 }
@@ -202,7 +202,7 @@ export class StoredSafeSessionsAddDuplicateError extends StoredSafeExtensionErro
  */
 export class StoredSafeSessionsRemoveError extends StoredSafeExtensionError {
   readonly id = SESSIONS_ID + 4
-  constructor (host: string, error: Error) {
+  constructor(host: string, error: Error) {
     super(`Error removing session for '${host}' from storage`, error)
   }
 }
@@ -212,7 +212,7 @@ export class StoredSafeSessionsRemoveError extends StoredSafeExtensionError {
  */
 export class StoredSafeSessionsRemoveNotFoundError extends StoredSafeExtensionError {
   readonly id = SESSIONS_ID + 5
-  constructor (host: string) {
+  constructor(host: string) {
     super(`No session found for '${host}'`)
   }
 }
@@ -222,7 +222,7 @@ export class StoredSafeSessionsRemoveNotFoundError extends StoredSafeExtensionEr
  */
 export class StoredSafeSessionsClearError extends StoredSafeExtensionError {
   readonly id = SESSIONS_ID + 6
-  constructor (error: Error) {
+  constructor(error: Error) {
     super(`Error clearing sessions`, error)
   }
 }
@@ -234,7 +234,7 @@ const SETTINGS_ID = 4000
  */
 export class StoredSafeSettingsGetError extends StoredSafeExtensionError {
   readonly id = SETTINGS_ID + 1
-  constructor (error: Error) {
+  constructor(error: Error) {
     super(`Error getting settings`, error)
   }
 }
@@ -244,7 +244,7 @@ export class StoredSafeSettingsGetError extends StoredSafeExtensionError {
  */
 export class StoredSafeSettingsSetValueNotFoundError extends StoredSafeExtensionError {
   readonly id = SETTINGS_ID + 2
-  constructor (key: string) {
+  constructor(key: string) {
     super(`'${key}' is not a valid settings property`)
   }
 }
@@ -254,7 +254,7 @@ export class StoredSafeSettingsSetValueNotFoundError extends StoredSafeExtension
  */
 export class StoredSafeSettingsSetManagedValueError extends StoredSafeExtensionError {
   readonly id = SETTINGS_ID + 3
-  constructor (key: string) {
+  constructor(key: string) {
     super(`'${key}' is a readonly property`)
   }
 }
@@ -264,7 +264,7 @@ export class StoredSafeSettingsSetManagedValueError extends StoredSafeExtensionE
  */
 export class StoredSafeSettingsSetValuesError extends StoredSafeExtensionError {
   readonly id = SETTINGS_ID + 4
-  constructor (error: Error) {
+  constructor(error: Error) {
     super(`Error updating settings`, error)
   }
 }
@@ -274,7 +274,7 @@ export class StoredSafeSettingsSetValuesError extends StoredSafeExtensionError {
  */
 export class StoredSafeSettingsClearValueError extends StoredSafeExtensionError {
   readonly id = SETTINGS_ID + 5
-  constructor (key: string, error: Error) {
+  constructor(key: string, error: Error) {
     super(`Error clearing '${key}' value in settings`, error)
   }
 }
@@ -284,7 +284,7 @@ export class StoredSafeSettingsClearValueError extends StoredSafeExtensionError 
  */
 export class StoredSafeSettingsClearError extends StoredSafeExtensionError {
   readonly id = SETTINGS_ID + 6
-  constructor (error: Error) {
+  constructor(error: Error) {
     super(`Error clearing settings`, error)
   }
 }
@@ -296,7 +296,7 @@ const SITES_ID = 5000
  */
 export class StoredSafeSitesGetError extends StoredSafeExtensionError {
   readonly id = SITES_ID + 1
-  constructor (error: Error) {
+  constructor(error: Error) {
     super(`Error gettings sites from storage`, error)
   }
 }
@@ -306,7 +306,7 @@ export class StoredSafeSitesGetError extends StoredSafeExtensionError {
  */
 export class StoredSafeSitesAddError extends StoredSafeExtensionError {
   readonly id = SITES_ID + 2
-  constructor (host: string, error: Error) {
+  constructor(host: string, error: Error) {
     super(`Error adding site '${host}' to storage`, error)
   }
 }
@@ -316,7 +316,7 @@ export class StoredSafeSitesAddError extends StoredSafeExtensionError {
  */
 export class StoredSafeSitesAddDuplicateError extends StoredSafeExtensionError {
   readonly id = SITES_ID + 3
-  constructor (host: string) {
+  constructor(host: string) {
     super(`Site already exists for '${host}'`)
   }
 }
@@ -326,7 +326,7 @@ export class StoredSafeSitesAddDuplicateError extends StoredSafeExtensionError {
  */
 export class StoredSafeSitesRemoveError extends StoredSafeExtensionError {
   readonly id = SITES_ID + 4
-  constructor (host: string, error: Error) {
+  constructor(host: string, error: Error) {
     super(`Error removing site '${host}' from storage`, error)
   }
 }
@@ -336,7 +336,7 @@ export class StoredSafeSitesRemoveError extends StoredSafeExtensionError {
  */
 export class StoredSafeSitesRemoveNotFoundError extends StoredSafeExtensionError {
   readonly id = SITES_ID + 5
-  constructor (host: string) {
+  constructor(host: string) {
     super(`No site exists for '${host}'`)
   }
 }
@@ -346,7 +346,7 @@ export class StoredSafeSitesRemoveNotFoundError extends StoredSafeExtensionError
  */
 export class StoredSafeSitesClearError extends StoredSafeExtensionError {
   readonly id = SITES_ID + 6
-  constructor (error: Error) {
+  constructor(error: Error) {
     super(`Error clearing sites`, error)
   }
 }
@@ -358,7 +358,7 @@ const CLEAR_ID = 6000
  */
 export class StoredSafeClearAllDataError extends StoredSafeExtensionError {
   readonly id = CLEAR_ID + 1
-  constructor (error: Error) {
+  constructor(error: Error) {
     super(`Error clearing all data`, error)
   }
 }
@@ -371,10 +371,9 @@ const NETWORK_ID = 7000
 export class StoredSafeNetworkError extends StoredSafeAPIError {
   readonly id = NETWORK_ID + 1
   readonly networkError: string
-  constructor (error: Error, status?: number) {
+  constructor(error: Error, status?: number) {
     super(
-      `Network error ${
-        status !== undefined ? `(${status})` : ''
+      `Network error ${status !== undefined ? `(${status})` : ''
       }, please verify the URL is reachable and try again.`
     )
     this.stack = error.stack
@@ -389,7 +388,7 @@ const AUTH_ID = 8000
  */
 export class StoredSafeAuthLoginError extends StoredSafeAPIError {
   readonly id = AUTH_ID + 1
-  constructor () {
+  constructor() {
     super(
       `Invalid login username, passphrase, otp or API key, please try again`
     )
@@ -401,7 +400,7 @@ export class StoredSafeAuthLoginError extends StoredSafeAPIError {
  */
 export class StoredSafeAuthLogoutError extends StoredSafeAPIError {
   readonly id = AUTH_ID + 2
-  constructor (status: number) {
+  constructor(status: number) {
     super(`Logout failed with status (${status}), discarded session.`)
   }
 }
@@ -413,7 +412,7 @@ const OBJECT_ID = 9000
  */
 export class StoredSafeSearchError extends StoredSafeAPIError {
   readonly id = OBJECT_ID + 1
-  constructor (status: number) {
+  constructor(status: number) {
     super(`Search failed with status (${status}).`)
   }
 }
@@ -423,7 +422,7 @@ export class StoredSafeSearchError extends StoredSafeAPIError {
  */
 export class StoredSafeDecryptError extends StoredSafeAPIError {
   readonly id = OBJECT_ID + 2
-  constructor (status: number) {
+  constructor(status: number) {
     super(`Decrypt failed with status (${status}).`)
   }
 }
@@ -433,7 +432,7 @@ export class StoredSafeDecryptError extends StoredSafeAPIError {
  */
 export class StoredSafeParseObjectError extends StoredSafeAPIError {
   readonly id = OBJECT_ID + 3
-  constructor () {
+  constructor() {
     super(`Failed to parse object.`)
   }
 }
@@ -443,7 +442,7 @@ export class StoredSafeParseObjectError extends StoredSafeAPIError {
  */
 export class StoredSafeEditError extends StoredSafeAPIError {
   readonly id = OBJECT_ID + 4
-  constructor (status: number) {
+  constructor(status: number) {
     super(`Edit failed with status (${status}).`)
   }
 }
@@ -453,7 +452,7 @@ export class StoredSafeEditError extends StoredSafeAPIError {
  */
 export class StoredSafeDeleteError extends StoredSafeAPIError {
   readonly id = OBJECT_ID + 5
-  constructor (status: number) {
+  constructor(status: number) {
     super(`Delete failed with status (${status}).`)
   }
 }
@@ -463,7 +462,7 @@ export class StoredSafeDeleteError extends StoredSafeAPIError {
  */
 export class StoredSafeGetVaultsError extends StoredSafeAPIError {
   readonly id = OBJECT_ID + 6
-  constructor (status: number) {
+  constructor(status: number) {
     super(`Get vaults failed with status (${status}).`)
   }
 }
@@ -473,7 +472,7 @@ export class StoredSafeGetVaultsError extends StoredSafeAPIError {
  */
 export class StoredSafeGetTemplatesError extends StoredSafeAPIError {
   readonly id = OBJECT_ID + 7
-  constructor (status: number) {
+  constructor(status: number) {
     super(`Get templates failed with status (${status}).`)
   }
 }
@@ -483,7 +482,7 @@ export class StoredSafeGetTemplatesError extends StoredSafeAPIError {
  */
 export class StoredSafeGetPoliciesError extends StoredSafeAPIError {
   readonly id = OBJECT_ID + 8
-  constructor (status: number) {
+  constructor(status: number) {
     super(`Get password policies failed with status (${status}).`)
   }
 }
@@ -493,7 +492,7 @@ export class StoredSafeGetPoliciesError extends StoredSafeAPIError {
  */
 export class StoredSafeAddObjectError extends StoredSafeAPIError {
   readonly id = OBJECT_ID + 9
-  constructor (status: number) {
+  constructor(status: number) {
     super(`Add object failed with status (${status}).`)
   }
 }
@@ -503,7 +502,7 @@ export class StoredSafeAddObjectError extends StoredSafeAPIError {
  */
 export class StoredSafeGeneratePasswordError extends StoredSafeAPIError {
   readonly id = OBJECT_ID + 10
-  constructor (status: number) {
+  constructor(status: number) {
     super(`Generate password failed with status (${status}).`)
   }
 }

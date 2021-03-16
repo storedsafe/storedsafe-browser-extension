@@ -19,13 +19,13 @@ interface SearchStore extends Readable<StoredSafeObject[]> {
   decrypt: (result: StoredSafeObject) => Promise<StoredSafeObject>
 }
 
-export function searchStore (): SearchStore {
+export function searchStore(): SearchStore {
   let tabResults: StoredSafeObject[] = []
   let results: StoredSafeObject[] = null
   let currentSessions: Map<string, Session> = null
   const { subscribe, set, update } = writable<StoredSafeObject[]>(results ?? [])
 
-  function onMessage (message: Message) {
+  function onMessage(message: Message) {
     if (message.context === 'autosearch' && message.action === 'populate') {
       tabResults = message.data
       set(tabResults)
