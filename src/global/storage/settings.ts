@@ -245,7 +245,7 @@ function notify (
 }
 
 /**
- * When ignore list updates in storage, notify listeners.
+ * When settings updates in storage, notify listeners.
  */
 browser.storage.onChanged.addListener((changes, area) => {
   if (!!changes[STORAGE_KEY]) {

@@ -10,11 +10,29 @@ export enum LogLevel {
   ALL = 6
 }
 
-const isProduction = true
-
 export class Logger {
-  public static level: LogLevel = isProduction ? LogLevel.ERROR : LogLevel.ALL
+  public static level: LogLevel = LogLevel.ERROR
   private readonly prefix: string
+
+  public static async Init(): Promise<void> {
+    const level = await browser.storage.local.get('loglevel').then(({ loglevel }) => loglevel)
+    if (level !== undefined) Logger.SetLogLevel(level)
+
+    browser.storage.onChanged.addListener((changes, area) => {
+      if (area === 'local' && !!changes['loglevel']) {
+        const { newValue: logLevel } = changes['loglevel']
+        if (logLevel !== undefined) Logger.SetLogLevel(logLevel)
+      }
+    })
+  }
+
+  private static SetLogLevel(level: LogLevel) {
+    if (level in LogLevel) {
+      Logger.level = level
+    } else {
+      Logger.level = LogLevel.ERROR
+    }
+  }
 
   public constructor (name: string, readonly enabled = true) {
     this.shouldPrint = this.shouldPrint.bind(this)

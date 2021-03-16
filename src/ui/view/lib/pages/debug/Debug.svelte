@@ -45,6 +45,8 @@
     },
   };
 
+  let logLevel = 1
+
   function parseStorage(value: any): string {
     let output = '<div class="entry">';
     if (value === undefined || value === null) {
@@ -81,12 +83,23 @@
     }
   }
 
+  function setLogLevel(e: Event) {
+    const select = e.target as HTMLSelectElement;
+    browser.storage.local.set({ loglevel: select.value });
+  }
+
   onMount(() => {
     getStorage()
       .then(() => {})
       .catch((error) => {
         logger.error(error);
       });
+
+    browser.storage.local.get("loglevel").then(({ loglevel }) => {
+      if (logLevel !== undefined) {
+        logLevel = loglevel
+      }
+    });
   });
 </script>
 
@@ -103,6 +116,17 @@
     </Card>
   {/each}
   <Card>
+    <h2>Set log level</h2>
+    <!-- svelte-ignore a11y-no-onchange -->
+    <select on:change={setLogLevel} value={logLevel}>
+      <option value="0">None</option>
+      <option value="1">Error</option>
+      <option value="2">Warning</option>
+      <option value="3">Info</option>
+      <option value="4">Log</option>
+      <option value="5">Debug</option>
+      <option value="6">All</option>
+    </select>
     <h2>Test messages/loading</h2>
     <button on:click={toggleLoading} class="primary">Toggle loading</button>
     <button on:click={addInfo} class="accent">Add info message</button>
