@@ -1,3 +1,8 @@
+<script lang="ts" context="module">
+  import { Logger } from "../../../global/logger";
+  const logger = new Logger("fill");
+</script>
+
 <script lang="ts">
   import { afterUpdate, createEventDispatcher, onMount } from "svelte";
 
@@ -53,6 +58,7 @@
     const port = browser.runtime.connect({ name: "fill" });
     port.onMessage.addListener((message: Message) => {
       if (message.context === "fill" && message.action === "populate") {
+        logger.debug('Message Received: %o', message)
         results = message.data.results;
         // url = message.data.url;
       }

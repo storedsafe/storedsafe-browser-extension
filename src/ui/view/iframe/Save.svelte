@@ -75,6 +75,7 @@
   onMount(() => {
     port = browser.runtime.connect({ name: "save" });
     port.onMessage.addListener((message: Message) => {
+      logger.debug('Message Received: %o', message)
       if (message.context === "save" && message.action === "populate") {
         data = { ...data, ...message.data };
       }
