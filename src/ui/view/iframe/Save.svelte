@@ -58,7 +58,7 @@
     dispatch("close", port);
   }
 
-  function resize(height: number, width: number) {
+  function resize(height: number, width: number = 300) {
     dispatch("resize", {
       height,
       width,
@@ -68,7 +68,7 @@
   afterUpdate(() => {
     if (!!frame && height !== frame.clientHeight) {
       height = frame?.clientHeight;
-      resize(height, 300);
+      resize(height);
     }
   });
 
@@ -80,6 +80,14 @@
         data = { ...data, ...message.data };
       }
     });
+
+    // Ensure iframe gets resized (afterUpdate unreliable)
+    for (let delay = 200; delay <= 1000; delay += 200) {
+      setTimeout(() => {
+        height = frame?.clientHeight
+        resize(height)
+      }, delay)
+    }
   });
 
   const toggleEdit = () => {
