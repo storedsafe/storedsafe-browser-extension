@@ -4,7 +4,7 @@ import type { Message } from "../../global/messages";
 const logger = new Logger('saveflow')
 
 // Stop presenting popup after this many seconds
-const MAX_DURATION_SECONDS = 30;
+const MAX_DURATION_SECONDS = 15;
 
 /**
  * Helper function to find out whether or not a StoredSafe object already
