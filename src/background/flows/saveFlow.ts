@@ -63,7 +63,7 @@ export function saveFlow(
   if (!values.username) return;
   if (matchingObjectExists(tabResults, values.url, values.username)) return;
 
-  logger.debug('Starting save flow.')
+  logger.info('Starting save flow.')
 
   let savePort: browser.runtime.Port;
   let contentPort: browser.runtime.Port;
