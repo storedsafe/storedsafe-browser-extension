@@ -26,7 +26,7 @@ Logger.Init().then(() => {
       .get()
       .then((sessions) => {
         for (const [host, session] of sessions) {
-          auth.logout(host, session.token).catch(logger.error);
+          auth.logout(host, session.token).catch(logger.warn);
         }
       })
       .catch(logger.error);
@@ -73,7 +73,7 @@ Logger.Init().then(() => {
       case ALARM_HARD_TIMEOUT: {
         const [host, token] = parts;
         logger.info(`Hard timeout, invalidating session for ${host}`);
-        auth.logout(host, token).catch(logger.error);
+        auth.logout(host, token).catch(logger.warn);
       }
     }
   }

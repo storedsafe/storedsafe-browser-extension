@@ -56,8 +56,8 @@ export function searchStore(): SearchStore {
           const siteResults = await vault.search(host, token, needle)
           results.push(...siteResults)
         }
-        set(results)
       }
+      set(results)
     },
 
     edit: async function (result, values) {
