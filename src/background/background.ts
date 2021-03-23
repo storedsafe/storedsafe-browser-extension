@@ -203,17 +203,25 @@ Logger.Init().then(() => {
     return (message: Message) => onMessage(message, port.sender);
   }
 
+  function populateSearch() {
+    if (searchPort !== null) {
+      browser.tabs
+        .query({ active: true, currentWindow: true })
+        .then(([tab]) => {
+          const data = currentTabResults.get(tab.id) ?? []
+          searchPort.postMessage({ context: "autosearch", action: "populate", data });
+        })
+        .catch(logger.error);
+    }
+  }
+
+  let searchPort: browser.runtime.Port = null
   function onSearchConnect(port: browser.runtime.Port): void {
-    browser.tabs
-      .query({ active: true, currentWindow: true })
-      .then(([tab]) => {
-        port.postMessage({
-          context: "autosearch",
-          action: "populate",
-          data: currentTabResults.get(tab.id) ?? [],
-        });
-      })
-      .catch(logger.error);
+    searchPort = port
+    port.onDisconnect.addListener(() => {
+      searchPort = null
+    })
+    populateSearch()
   }
 
   function onContentConnect(port: browser.runtime.Port): void {
@@ -246,6 +254,7 @@ Logger.Init().then(() => {
       const text = results.length > 0 ? results.length.toString() : ""
       browser.browserAction.setBadgeText({ tabId, text });
     }
+    populateSearch()
   }
 
   function onCommand(command: string): void {
