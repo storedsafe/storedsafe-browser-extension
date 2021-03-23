@@ -243,12 +243,8 @@ Logger.Init().then(() => {
   function onTabResultsChanged(tabResults: Map<number, StoredSafeObject[]>) {
     currentTabResults = tabResults;
     for (const [tabId, results] of tabResults) {
-      if (results.length > 0) {
-        browser.browserAction.setBadgeText({
-          tabId,
-          text: results.length.toString(),
-        });
-      }
+      const text = results.length > 0 ? results.length.toString() : ""
+      browser.browserAction.setBadgeText({ tabId, text });
     }
   }
 
