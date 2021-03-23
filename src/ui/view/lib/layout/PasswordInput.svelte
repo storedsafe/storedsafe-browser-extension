@@ -107,7 +107,7 @@
     <button type="button" class="pwgen" on:click={generatePassword}>
       <Icon d={pwgenIcon} size="1.4em" />
     </button>
-    <p class="grid" transition:slide>
+    <p class="grid">
       {#if isValidated}
         <span
           class="valid">{getMessage(LocalizedMessage.PASSWORD_MATCH_POLICY)}</span>

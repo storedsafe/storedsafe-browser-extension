@@ -10,7 +10,7 @@
   }
 </style>
 
-<section transition:slide class="grid">
+<section class="grid">
   <Logo />
   <LoadingBar isLoading={true} />
 </section>

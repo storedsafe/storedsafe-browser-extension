@@ -34,6 +34,5 @@
   <div
     aria-label={getMessage(LocalizedMessage.LOADING_TITLE)}
     title={getMessage(LocalizedMessage.LOADING_TITLE)}
-    transition:slide
     class="shadow" />
 {/if}

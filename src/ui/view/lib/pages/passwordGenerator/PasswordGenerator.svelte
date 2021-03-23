@@ -350,7 +350,7 @@
     </Card>
   {/if}
   {#if password?.length >= 1}
-    <article class="password" transition:slide>
+    <article class="password">
       <Card>
         <span class="subtitle password-title">
           {getMessage(LocalizedMessage.GENERATE_PASSWORD_LABEL)}
@@ -410,7 +410,7 @@
         {/each}
       </article>
       {#if !!fields}
-        <article class="fields" transition:slide>
+        <article class="fields">
           {#each Object.keys(fields) as field (field)}
             <label for={field} class="label-inline">
               <span>{fields[field].title}</span>

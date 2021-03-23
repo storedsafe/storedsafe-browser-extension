@@ -133,7 +133,7 @@
   @component
   UI entrypoint of popup
 -->
-<section class="main" transition:slide>
+<section class="main">
   <nav class="grid shadow">
     <DebugButton on:open-debug={() => setPage(Page.DEBUG)} />
     {#if isOnline}
@@ -153,27 +153,27 @@
   <article class="content" bind:this={content}>
     <div class="spacer">
       {#if page === Page.WELCOME}
-        <div transition:slide>
+        <div>
           <Welcome />
         </div>
       {:else if page === Page.SEARCH && !$loading.has(...searchRequirements)}
-        <div transition:slide>
+        <div>
           <Search on:scrollTo={handleScroll} {needle} />
         </div>
       {:else if page === Page.ADD && !$loading.has(...addRequirements)}
-        <div transition:slide>
+        <div>
           <Add on:scrollTo={handleScroll} />
         </div>
       {:else if page === Page.GENERATE_PASSWORD}
-        <div transition:slide>
+        <div>
           <PasswordGenerator on:scrollTo={handleScroll} />
         </div>
       {:else if page === Page.SESSIONS}
-        <div transition:slide>
+        <div>
           <SessionsPage on:scrollTo={handleScroll} />
         </div>
       {:else if page === Page.OPTIONS}
-        <div transition:slide>
+        <div>
           <Options />
         </div>
       {:else if page === Page.DEBUG}
