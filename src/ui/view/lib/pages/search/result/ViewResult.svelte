@@ -25,7 +25,20 @@
     .vaults.find(({ id }) => id === result.vaultId);
   $: isFillable = result.fields.findIndex((field) => field.isPassword) !== -1;
 
-  const setEdit = () => dispatch("set-edit", true);
+  function setEdit () {
+    const exec = () => dispatch("set-edit", true);
+    const hasEncrypted = !!result.fields.find(field => field.isEncrypted)
+    if (!result.isDecrypted && hasEncrypted) {
+      loading.add(`ViewResult.setEdit`, search.decrypt(result), {
+        onSuccess: exec,
+        onError: (error) => {
+          messages.add(error.message, MessageType.ERROR)
+        }
+      })
+    } else {
+      exec()
+    }
+  }
 
   function fill() {
     browser.runtime.sendMessage({
@@ -55,7 +68,7 @@
     );
   }
 
-  async function decrypt(field: string): Promise<string> {
+  async function decryptField(field: string): Promise<string> {
     const exec = (decrypted: StoredSafeObject): string =>
       decrypted.fields.find(({ name }) => name === field).value;
     if (result.isDecrypted) return await Promise.resolve(exec(result));
@@ -70,7 +83,7 @@
     </button>
   {/if}
   {#each result.fields as field (field.name)}
-    <Field {field} decrypt={() => decrypt(field.name)} />
+    <Field {field} decrypt={() => decryptField(field.name)} />
   {/each}
 </section>
 
