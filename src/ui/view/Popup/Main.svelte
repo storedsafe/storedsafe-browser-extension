@@ -1,6 +1,4 @@
 <script lang="ts">
-  import { slide } from "svelte/transition";
-
   import { Page, mainMenu, offlineMenu } from "./pages";
   import { sessions, sites, messages, loading } from "../../stores";
 
@@ -23,7 +21,6 @@
 
   // Set up state
   let page: Page = null;
-  let needle: string = "";
   let content: HTMLElement = null;
 
   let hasSites: boolean = false;
@@ -77,14 +74,6 @@
   // Event handlers
 
   /**
-   * Perform search if needle has changed.
-   * */
-  function handleSearch(e: CustomEvent<string>) {
-    setPage(Page.SEARCH);
-    needle = e.detail;
-  }
-
-  /**
    * Set page to search if search bar is focused
    * */
   function handleSearchFocus() {
@@ -107,28 +96,6 @@
   }
 </script>
 
-<style>
-  .main {
-    max-height: 540px;
-    display: grid;
-    grid-template-rows: auto 1fr;
-  }
-
-  nav {
-    background-color: var(--color-primary);
-    padding: var(--spacing);
-    position: relative;
-  }
-
-  .content {
-    overflow: hidden scroll;
-  }
-
-  .spacer {
-    padding: var(--spacing);
-  }
-</style>
-
 <!--
   @component
   UI entrypoint of popup
@@ -137,10 +104,7 @@
   <nav class="grid shadow">
     <DebugButton on:open-debug={() => setPage(Page.DEBUG)} />
     {#if isOnline}
-      <SearchBar
-        focus={page === Page.SEARCH}
-        on:search={handleSearch}
-        on:focus={handleSearchFocus} />
+      <SearchBar focus={page === Page.SEARCH} on:focus={handleSearchFocus} />
     {:else}
       <Logo />
     {/if}
@@ -158,7 +122,7 @@
         </div>
       {:else if page === Page.SEARCH && !$loading.has(...searchRequirements)}
         <div>
-          <Search on:scrollTo={handleScroll} {needle} />
+          <Search on:scrollTo={handleScroll} />
         </div>
       {:else if page === Page.ADD && !$loading.has(...addRequirements)}
         <div>
@@ -182,3 +146,25 @@
     </div>
   </article>
 </section>
+
+<style>
+  .main {
+    max-height: 540px;
+    display: grid;
+    grid-template-rows: auto 1fr;
+  }
+
+  nav {
+    background-color: var(--color-primary);
+    padding: var(--spacing);
+    position: relative;
+  }
+
+  .content {
+    overflow: hidden scroll;
+  }
+
+  .spacer {
+    padding: var(--spacing);
+  }
+</style>

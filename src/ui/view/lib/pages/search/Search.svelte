@@ -9,7 +9,7 @@
 </script>
 
 <script lang="ts">
-  import { afterUpdate, beforeUpdate, createEventDispatcher } from "svelte";
+  import { beforeUpdate, createEventDispatcher } from "svelte";
 
   import type { ListItem } from "../../menus/ListView";
   import {
@@ -21,10 +21,7 @@
     SESSIONS_LOGOUT_LOADING_ID,
     SITES_ADD_LOADING_ID,
     SITES_REMOVE_LOADING_ID,
-    MessageType,
-    loading,
-    messageStore,
-    SEARCH_LOADING_ID,
+    messageStore
   } from "../../../../stores";
   import { getMessage, LocalizedMessage } from "../../../../../global/i18n";
 
@@ -34,9 +31,6 @@
   import MessageViewer from "../../layout/MessageViewer.svelte";
 
   const dispatch = createEventDispatcher();
-
-  export let needle: string;
-  let previousNeedle: string = needle;
 
   interface SearchItemProps {
     icon: string;
@@ -75,8 +69,12 @@
 
   let selected: string = null;
   let result: StoredSafeObject;
+  let items: ListItem<SearchItemProps>[]
 
-  $: items = $search.map(parseSearchItem);
+  $: {
+    items = $search.map(parseSearchItem);
+    selected = null
+  }
   $: result = $search.find(({ host, id }) => selected === host + id);
 
   function selectResult(value: string): void {
@@ -84,27 +82,8 @@
     dispatch("scrollTo", 0);
   }
 
-  function find(): void {
-    loading.add(`${SEARCH_LOADING_ID}.${needle}`, search.search(needle), {
-      onSuccess() {
-        selectResult(null);
-        searchMessages.clear();
-      },
-      onError(error) {
-        searchMessages.add(error.message, MessageType.ERROR);
-      },
-    });
-  }
-
   beforeUpdate(() => {
     if (result === undefined) selected = null;
-  });
-
-  afterUpdate(() => {
-    if (previousNeedle !== needle) {
-      previousNeedle = needle;
-      find();
-    }
   });
 
   const handleSelectResult = (e: CustomEvent<string>) => selectResult(e.detail);
