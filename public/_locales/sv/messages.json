@@ -315,6 +315,12 @@
 	"SETTINGS_MAX_TOKEN_LIFE_LABEL": {
 		"message": "Logga ut efter att ha varit inloggad i"
 	},
+  "SETTINGS_OFFER_SAVE_LABEL": {
+    "message": "Fråga om spara inloggning"
+  },
+  "SETTINGS_OFFER_SAVE_TITLE": {
+    "message": "Fråga om du vill spara din inloggning på webbsidor."
+  },
 	"SETTINGS_UNIT_MINUTES": {
 		"message": "minuter"
 	},

@@ -15,7 +15,8 @@
       },
       "defaults": {
         "autoFill": false,
-        "idleMax": 60
+        "idleMax": 60,
+        "offerSave": true
       }
     }
   }

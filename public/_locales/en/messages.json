@@ -393,6 +393,14 @@
     "message": "Logout after being online for",
     "description": "Label for max token life settings input."
   },
+  "SETTINGS_OFFER_SAVE_LABEL": {
+    "message": "Ask to save login",
+    "description": "Label for offer save settings input."
+  },
+  "SETTINGS_OFFER_SAVE_TITLE": {
+    "message": "Ask to save your login when submitting forms on websites.",
+    "description": "Hover text for offer save settings input."
+  },
   "SETTINGS_UNIT_MINUTES": {
     "message": "minutes",
     "description": "Descriptive unit for number type settings input."

@@ -164,6 +164,8 @@ Logger.Init().then(() => {
     tabId: number,
     data: Record<string, any>
   ): Promise<void> {
+    const currentSettings = await settings.get();
+    if (currentSettings.get('offerSave').value === false) return;
     const currentSessions = await sessions.get();
     const currentIgnore = await ignore.get();
     if (currentSessions.size < 1 || currentIgnore.includes(data.url)) return;

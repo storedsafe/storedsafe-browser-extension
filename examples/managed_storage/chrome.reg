@@ -38,6 +38,8 @@ Windows Registry Editor Version 5.00
 ; "autoFill"="0"
 ; ; Log out after being idle for idleMax minutes
 ; "idleMax"="30"
+; ; Offer to save logins after submitting forms
+; "offerSave": true
 
 ; Override built-in default values in extension.
 [HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Google\Chrome\3rdparty\extensions\jdomodgcaefkonkoihbkaciejfkdgikd\policy\settings\defaults]
@@ -48,3 +50,5 @@ Windows Registry Editor Version 5.00
 ; "autoFill"="0"
 ; ; Log out after being idle for idleMax minutes
 ; "idleMax"="30"
+; ; Offer to save logins after submitting forms
+; "offerSave": true

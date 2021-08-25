@@ -32,11 +32,13 @@
           "enforced": {
             //  Uncomment lines (remove // ) below to enforce values.
             // Hard logout after maxTokenLife hours.
-            "maxTokenLife": 10,
+            // "maxTokenLife": 10,
             // Automatically fill forms on pages with matching values in StoredSafe (true/false).
-            "autoFill": false,
+            // "autoFill": false,
             // Log out after being idle for idleMax minutes
-            "idleMax": 30
+            // "idleMax": 30,
+            // Offer to save logins after submitting forms
+            // "offerSave": true
           },
           // Override built-in default values in extension.
           "defaults": {
@@ -46,7 +48,9 @@
             // // Automatically fill forms on pages with matching values in StoredSafe (true/false).
             // "autoFill": false,
             // // Log out after being idle for idleMax minutes
-            // "idleMax": 30
+            // "idleMax": 30,
+            // Offer to save logins after submitting forms
+            // "offerSave": true
           }
         }
       }

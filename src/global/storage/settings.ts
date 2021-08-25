@@ -15,7 +15,8 @@ const logger = new Logger('settings')
 export enum SettingsFields {
   IDLE_MAX = 'idleMax',
   AUTO_FILL = 'autoFill',
-  MAX_TOKEN_LIFE = 'maxTokenLife'
+  MAX_TOKEN_LIFE = 'maxTokenLife',
+  OFFER_SAVE = 'offerSave'
 }
 
 export interface SettingsField {
@@ -34,6 +35,15 @@ export const FIELDS = new Map<SettingsFields, SettingsField>([
     {
       label: getMessage(LocalizedMessage.SETTINGS_AUTO_FILL_LABEL),
       title: getMessage(LocalizedMessage.SETTINGS_AUTO_FILL_TITLE),
+      isCheckbox: true,
+      attributes: {}
+    }
+  ],
+  [
+    SettingsFields.OFFER_SAVE,
+    {
+      label: getMessage(LocalizedMessage.SETTINGS_OFFER_SAVE_LABEL),
+      title: getMessage(LocalizedMessage.SETTINGS_OFFER_SAVE_TITLE),
       isCheckbox: true,
       attributes: {}
     }
@@ -61,6 +71,13 @@ export const FIELDS = new Map<SettingsFields, SettingsField>([
     }
   ]
 ])
+
+const DEFAULT_SETTINGS = parse({
+  idleMax: 20,
+  autoFill: false,
+  maxTokenLife: 8,
+  offerSave: true
+})
 
 const STORAGE_KEY = 'settings'
 const EMPTY_STATE: Record<string, any> = {}
@@ -92,12 +109,6 @@ function merge(
   ])
   return merged
 }
-
-const DEFAULT_SETTINGS = parse({
-  idleMax: 20,
-  autoFill: false,
-  maxTokenLife: 8
-})
 
 /**
  * @returns [enforced, default]
