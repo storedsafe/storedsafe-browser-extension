@@ -1,6 +1,5 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
-  import { slide } from "svelte/transition";
   import Icon from "../layout/Icon.svelte";
 
   const dispatch = createEventDispatcher();
@@ -81,7 +80,7 @@
     padding: calc(var(--spacing) / 2);
     background-color: var(--color-primary-dark);
     border-top: 2px solid transparent;
-    transition: background-color 0.2s, border-radius 0.2s 0.2s;
+    transition: background-color 0.2s;
   }
 
   button:first-child {
@@ -103,7 +102,7 @@
   section.has-selected button {
     border-bottom-right-radius: 0;
     border-bottom-left-radius: 0;
-    transition: background-color 0.2s, border-radius 0s 0s;
+    transition: background-color 0.2s;
   }
 
   button:focus,
@@ -174,8 +173,7 @@
       class:focused={focused === menuItem.name}
       class:hovered={hovered === menuItem.name}
       class="menu-title shadow"
-      title={menuItem.title}
-      transition:slide>
+      title={menuItem.title}>
       {menuItem.title}
     </section>
   {/if}

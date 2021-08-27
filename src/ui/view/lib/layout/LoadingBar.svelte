@@ -1,6 +1,4 @@
 <script lang="ts">
-  import { slide } from "svelte/transition";
-
   import { getMessage, LocalizedMessage } from "../../../../global/i18n";
 
   export let isLoading: boolean = false;

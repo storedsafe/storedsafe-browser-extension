@@ -1,6 +1,4 @@
 <script lang="ts">
-  import { slide } from "svelte/transition";
-
   import { vault } from "../../../../../global/api";
   import { getMessage, LocalizedMessage } from "../../../../../global/i18n";
   import { copyText } from "../../../../../global/utils";

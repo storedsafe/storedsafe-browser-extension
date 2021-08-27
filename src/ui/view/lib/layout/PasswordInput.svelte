@@ -1,6 +1,5 @@
 <script lang="ts">
   import { afterUpdate } from "svelte";
-  import { slide } from "svelte/transition";
 
   import { vault } from "../../../../global/api";
   import { getMessage, LocalizedMessage } from "../../../../global/i18n";

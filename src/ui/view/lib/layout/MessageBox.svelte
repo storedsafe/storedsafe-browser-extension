@@ -1,6 +1,5 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
-  import { slide } from "svelte/transition";
 
   import type { MessageType } from "../../../stores";
   import { addIcon } from "../../../../global/icons";
