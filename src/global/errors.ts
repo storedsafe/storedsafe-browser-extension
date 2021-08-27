@@ -405,6 +405,16 @@ export class StoredSafeAuthLogoutError extends StoredSafeAPIError {
   }
 }
 
+/**
+ * 403 error when interacting with StoredSafe.
+ */
+export class StoredSafeInvalidTokenError extends StoredSafeAPIError {
+  readonly id = AUTH_ID + 3
+  constructor() {
+    super(`Invalid token, discarded session.`)
+  }
+}
+
 const OBJECT_ID = 9000
 
 /**

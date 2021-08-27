@@ -15,10 +15,12 @@ import {
   StoredSafeGetPoliciesError,
   StoredSafeGetTemplatesError,
   StoredSafeGetVaultsError,
+  StoredSafeInvalidTokenError,
   StoredSafeNetworkError,
   StoredSafeParseObjectError,
   StoredSafeSearchError
 } from '../errors'
+import * as sessions from '../storage/sessions'
 
 /**
  * Parse a single StoredSafe object into a format which is easier to work with
@@ -120,7 +122,10 @@ export async function search(
   const api = new StoredSafe({ host, token })
   try {
     const response = await api.find(needle)
-    if (response.status !== 200) {
+    if (response.status === 403) {
+      sessions.remove(host);
+      throw new StoredSafeInvalidTokenError();
+    } else if (response.status !== 200) {
       throw new StoredSafeSearchError(response.status)
     }
     try {
@@ -148,7 +153,10 @@ export async function decryptObject(
   const api = new StoredSafe({ host, token })
   try {
     const response = await api.decryptObject(obj.id)
-    if (response.status !== 200) {
+    if (response.status === 403) {
+      sessions.remove(host);
+      throw new StoredSafeInvalidTokenError();
+    } else if (response.status !== 200) {
       throw new StoredSafeDecryptError(response.status)
     }
     try {
@@ -182,7 +190,10 @@ export async function editObject(
   const api = new StoredSafe({ host, token })
   try {
     const response = await api.editObject(obj.id, values)
-    if (response.status !== 200) {
+    if (response.status === 403) {
+      sessions.remove(host);
+      throw new StoredSafeInvalidTokenError();
+    } else if (response.status !== 200) {
       throw new StoredSafeEditError(response.status)
     }
   } catch (error) {
@@ -209,7 +220,10 @@ export async function deleteObject(
   const api = new StoredSafe({ host, token })
   try {
     const response = await api.deleteObject(obj.id)
-    if (response.status !== 200) {
+    if (response.status === 403) {
+      sessions.remove(host);
+      throw new StoredSafeInvalidTokenError();
+    } else if (response.status !== 200) {
       throw new StoredSafeEditError(response.status)
     }
   } catch (error) {
@@ -237,7 +251,10 @@ export async function getVaults(host: string, token: string) {
   const api = new StoredSafe({ host, token })
   try {
     const response = await api.listVaults()
-    if (response.status !== 200) {
+    if (response.status === 403) {
+      sessions.remove(host);
+      throw new StoredSafeInvalidTokenError();
+    } else if (response.status !== 200) {
       throw new StoredSafeGetVaultsError(response.status)
     }
     return parseVaults(response.data)
@@ -287,7 +304,10 @@ export async function getTemplates(host: string, token: string) {
   const api = new StoredSafe({ host, token })
   try {
     const response = await api.listTemplates()
-    if (response.status !== 200) {
+    if (response.status === 403) {
+      sessions.remove(host);
+      throw new StoredSafeInvalidTokenError();
+    } else if (response.status !== 200) {
       throw new StoredSafeGetTemplatesError(response.status)
     }
     return parseTemplates(response.data)
@@ -312,7 +332,10 @@ export async function getPolicies(host: string, token: string) {
   const api = new StoredSafe({ host, token })
   try {
     const response = await api.passwordPolicies()
-    if (response.status !== 200) {
+    if (response.status === 403) {
+      sessions.remove(host);
+      throw new StoredSafeInvalidTokenError();
+    } else if (response.status !== 200) {
       throw new StoredSafeGetPoliciesError(response.status)
     }
     return parsePolicies(response.data)
@@ -333,7 +356,10 @@ export async function addObject(host: string, token: string, params: object) {
   const api = new StoredSafe({ host, token })
   try {
     const response = await api.createObject(params)
-    if (response.status !== 200) {
+    if (response.status === 403) {
+      sessions.remove(host);
+      throw new StoredSafeInvalidTokenError();
+    } else if (response.status !== 200) {
       throw new StoredSafeAddObjectError(response.status)
     }
   } catch (error) {
@@ -364,7 +390,10 @@ export async function generatePassword(
   const api = new StoredSafe({ host, token })
   try {
     const response = await api.generatePassword(properties)
-    if (response.status !== 200) {
+    if (response.status === 403) {
+      sessions.remove(host);
+      throw new StoredSafeInvalidTokenError();
+    } else if (response.status !== 200) {
       throw new StoredSafeGeneratePasswordError(response.status)
     }
     return response.data.CALLINFO.passphrase

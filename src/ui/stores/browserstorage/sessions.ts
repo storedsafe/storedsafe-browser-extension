@@ -1,5 +1,5 @@
 import { derived, Readable } from 'svelte/store'
-import { auth } from '../../../global/api'
+import * as auth from '../../../global/api/auth'
 import { browserStorage } from './browserStorage'
 
 export const SESSIONS_LOGIN_LOADING_ID = 'sessions.login.totp'

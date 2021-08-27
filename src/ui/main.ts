@@ -14,10 +14,12 @@ Logger.Init().then(() => {
       // Check validity of sessions before opening
       for (const [host, { token }] of currentSessions) {
         auth.check(host, token)
+        logger.debug(`Checking token validity for ${host}`)
       }
     })
     .catch(logger.error)
     .then(() => {
+      logger.debug("Opening extension window...")
       extension = new Extension({
         target: document.body
       })
