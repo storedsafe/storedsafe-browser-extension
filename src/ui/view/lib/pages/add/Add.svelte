@@ -34,7 +34,7 @@
   const MANDATORY_FIELDS = ["parentid", "groupid", "templateid"];
   const EMPTY_STATE = { parentid: "0" };
 
-  export let host: string;
+  export let host: string = undefined;
 
   let values: Record<string, any> = { ...EMPTY_STATE };
   $: template = $structure
