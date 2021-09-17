@@ -2,13 +2,13 @@
   import { createEventDispatcher } from "svelte";
 
   import type { ListItem } from "../../menus/ListView";
-
   import { sites, sessions } from "../../../../stores";
 
   import ListView from "../../menus/ListView.svelte";
   import SessionItem from "./SessionItem.svelte";
   import Login from "./Login.svelte";
   import SiteInfo from "./SiteInfo.svelte";
+  import ListItemBox from "../../menus/ListItemBox.svelte";
 
   const dispatch = createEventDispatcher();
 
@@ -55,8 +55,8 @@
   }
 
   let selected: string = null;
-  $: selectedSession = $sessions.get(selected)
-  $: selectedSite = $sites.find(({ host }) => host === selected)
+  $: selectedSession = $sessions.get(selected);
+  $: selectedSite = $sites.find(({ host }) => host === selected);
 
   function handleSelectSite(e: CustomEvent<string>) {
     selected = e.detail;
@@ -64,20 +64,15 @@
   }
 </script>
 
-<style>
-  .list {
-    padding-right: var(--spacing);
-    margin-right: calc(var(--spacing) * -1);
-  }
-</style>
-
 <section class="grid">
   {#if items.length > 1}
     <div class="list">
       <ListView on:select={handleSelectSite} {selected} {items} />
     </div>
   {:else if items.length === 1 && !!selectedSite}
-    <h2>{selectedSite.host}</h2>
+    <ListItemBox single={true} selected={true}>
+      <SessionItem selected={true} {...items[0].props} />
+    </ListItemBox>
   {/if}
   {#if !!selectedSession && !!selectedSite}
     <SiteInfo host={selectedSite.host} session={selectedSession} />
@@ -85,3 +80,10 @@
     <Login site={selectedSite} />
   {/if}
 </section>
+
+<style>
+  .list {
+    padding-right: var(--spacing);
+    margin-right: calc(var(--spacing) * -1);
+  }
+</style>

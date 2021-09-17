@@ -3,6 +3,7 @@
   import Icon from "../layout/Icon.svelte";
 
   export let selected: boolean = false;
+  export let single: boolean = false;
 
   const backIconProps = {
     d: backIcon,
@@ -10,6 +11,17 @@
     color: "#333",
   };
 </script>
+
+<!--
+  @component
+  Button representing an item in a ListView component.
+-->
+<button type="button" class:single class:selected on:click>
+  {#if !single && selected}
+    <Icon {...backIconProps} />
+  {/if}
+  <slot />
+</button>
 
 <style>
   button {
@@ -29,20 +41,13 @@
     text-align: center;
   }
 
+  button.single.selected {
+    grid-template-columns: 1fr;
+  }
+
   button:not(:disabled):hover,
   button:not(:disabled):focus {
     background-color: var(--color-input-bg-light);
     border-bottom-color: var(--color-accent);
   }
 </style>
-
-<!--
-  @component
-  Button representing an item in a ListView component.
--->
-<button type="button" class:selected on:click>
-  {#if selected}
-    <Icon {...backIconProps} />
-  {/if}
-  <slot />
-</button>
