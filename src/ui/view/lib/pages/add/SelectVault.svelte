@@ -39,7 +39,9 @@
     <span>{getMessage(LocalizedMessage.ADD_VAULT)}</span>
     <select id="vault" bind:value={groupid}>
       {#each vaults as vault (vault.id)}
-        <option value={vault.id}>{vault.name}</option>
+        {#if vault.permissions >= 2}
+          <option value={vault.id}>{vault.name}</option>
+        {/if}
       {/each}
     </select>
   </label>
