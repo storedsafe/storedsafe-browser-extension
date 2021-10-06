@@ -324,3 +324,7 @@ button:disabled {
   overflow: hidden;
   white-space: nowrap;
 }
+
+.changed {
+  border-color: var(--color-warning);
+}

@@ -26,11 +26,19 @@ interface PreferencesStore extends Readable<Preferences> {
   clearAutoFillPreferences: () => Promise<void>
 
   /**
-   * Update add preferences.
+   * Update host preferences when adding object.
    * @param host Name of StoredSafe host used.
    * @param vaultId StoredSafe ID of vault used.
    */
-  setAddPreferences: (host: string, vaultId: string) => Promise<void>
+  setHostPreferences: (host: string) => Promise<void>
+
+
+  /**
+   * Update vault preferences when adding objects.
+   * @param host Name of StoredSafe host used.
+   * @param vaultId StoredSafe ID of vault used.
+   */
+  setVaultPreferences: (host: string, vaultId: string) => Promise<void>
 
   /**
    * Clear add preferences.
@@ -69,7 +77,8 @@ function preferencesStore (): PreferencesStore {
     subscribe,
     setAutoFillPreferences: preferencesStorage.setAutoFillPreferences,
     setSitePreferences: preferencesStorage.setSitePreferences,
-    setAddPreferences: preferencesStorage.setAddPreferences,
+    setVaultPreferences: preferencesStorage.setVaultPreferences,
+    setHostPreferences: preferencesStorage.setHostPreferences,
     clearAddPreferences: preferencesStorage.clearAddPreferences,
     clearAutoFillPreferences: preferencesStorage.clearAutoFillPreferences,
     clearSitePreferences: preferencesStorage.clearSitePreferences,

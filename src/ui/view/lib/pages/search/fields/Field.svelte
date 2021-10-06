@@ -47,6 +47,75 @@
   }
 </script>
 
+<Card>
+  <!-- Field title and buttons -->
+  <span class="subtitle field-title">
+    {field.title}
+    {#if field.isEncrypted}
+      {#if !show}
+        <button class="danger" on:click={toggleShow}>
+          {getMessage(LocalizedMessage.RESULT_SHOW)}
+        </button>
+      {:else}
+        <button class="danger" on:click={toggleShow}>
+          {getMessage(LocalizedMessage.RESULT_HIDE)}
+        </button>
+        {#if field.isPassword}
+          <button class="warning" on:click={toggleLarge}>
+            {#if !large}
+              {getMessage(LocalizedMessage.RESULT_LARGE)}
+            {:else}{getMessage(LocalizedMessage.RESULT_SMALL)}{/if}
+          </button>
+        {/if}
+      {/if}
+    {/if}
+    {#if field.name === "url" || field.name === "host"}
+      <button class="warning" on:click={() => goto(field.value)}>
+        {getMessage(LocalizedMessage.RESULT_LOGIN)}
+      </button>
+    {/if}
+    <button on:click={copy}>
+      {getMessage(LocalizedMessage.RESULT_COPY)}
+    </button>
+  </span>
+  <!-- Large text field -->
+  {#if field.type === "textarea"}
+    {#if field.isPassword}
+      <!-- Large Password field, uses color coded characters -->
+      <Password password={field.value} {show} {large} />
+    {:else if field.isEncrypted}
+      <!-- Large encrypted field -->
+      <Encrypted {show}>{field.value}</Encrypted>
+    {:else}
+      <!-- Large text field -->
+      <p class="textarea">{field.value}</p>
+    {/if}
+    <!-- Small text field, uses ellipsis overflow -->
+  {:else}
+    <p title={field.value}>
+      {#if field.isPassword}
+        <!-- Password field, uses color coded characters -->
+        <Password password={field.value} {show} {large} />
+      {:else if field.isEncrypted}
+        <!-- Regular encrypted field -->
+        <Encrypted {show}>{field.value}</Encrypted>
+      {:else if field.type === "progress"}
+        <!-- Progress bar -->
+        <span class="progress">
+          <progress value={field.value} max="100" />
+          {field.value}%
+        </span>
+      {:else if field.name === "url" || field.name === "host"}
+        <!-- URL field, create link -->
+        <a href={field.value} target="_blank">{field.value}</a>
+      {:else}
+        <!-- Regular text field -->
+        {field.value}
+      {/if}
+    </p>
+  {/if}
+</Card>
+
 <style>
   .field-title {
     display: grid;
@@ -78,67 +147,13 @@
     overflow: hidden;
     text-overflow: ellipsis;
   }
-</style>
 
-<Card>
-  <!-- Field title and buttons -->
-  <span class="subtitle field-title">
-    {field.title}
-    {#if field.isEncrypted}
-      {#if !show}
-        <button class="danger" on:click={toggleShow}>
-          {getMessage(LocalizedMessage.RESULT_SHOW)}
-        </button>
-      {:else}
-        <button class="danger" on:click={toggleShow}>
-          {getMessage(LocalizedMessage.RESULT_HIDE)}
-        </button>
-        {#if field.isPassword}
-          <button class="warning" on:click={toggleLarge}>
-            {#if !large}
-              {getMessage(LocalizedMessage.RESULT_LARGE)}
-            {:else}{getMessage(LocalizedMessage.RESULT_SMALL)}{/if}
-          </button>
-        {/if}
-      {/if}
-    {/if}
-    {#if field.name === 'url' || field.name === 'host'}
-      <button class="warning" on:click={() => goto(field.value)}>
-        {getMessage(LocalizedMessage.RESULT_LOGIN)}
-      </button>
-    {/if}
-    <button on:click={copy}>
-      {getMessage(LocalizedMessage.RESULT_COPY)}
-    </button>
-  </span>
-  <!-- Large text field -->
-  {#if field.type === 'textarea'}
-    {#if field.isPassword}
-      <!-- Large Password field, uses color coded characters -->
-      <Password password={field.value} {show} {large} />
-    {:else if field.isEncrypted}
-      <!-- Large encrypted field -->
-      <Encrypted {show}>{field.value}</Encrypted>
-    {:else}
-      <!-- Large text field -->
-      <p class="textarea">{field.value}</p>
-    {/if}
-    <!-- Small text field, uses ellipsis overflow -->
-  {:else}
-    <p title={field.value}>
-      {#if field.isPassword}
-        <!-- Password field, uses color coded characters -->
-        <Password password={field.value} {show} {large} />
-      {:else if field.isEncrypted}
-        <!-- Regular encrypted field -->
-        <Encrypted {show}>{field.value}</Encrypted>
-      {:else if field.name === 'url' || field.name === 'host'}
-        <!-- URL field, create link -->
-        <a href={field.value} target="_blank">{field.value}</a>
-      {:else}
-        <!-- Regular text field -->
-        {field.value}
-      {/if}
-    </p>
-  {/if}
-</Card>
+  .progress {
+    display: flex;
+    column-gap: var(--spacing);
+  }
+
+  .progress progress {
+    flex-grow: 1;
+  }
+</style>

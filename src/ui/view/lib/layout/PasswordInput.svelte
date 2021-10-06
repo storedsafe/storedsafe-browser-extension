@@ -20,6 +20,12 @@
   export let host: string;
   let prevPolicy: StoredSafePasswordPolicy = null;
   export let policy: StoredSafePasswordPolicy;
+  export let changed: boolean = false;
+  let inputType = "password";
+
+  if (value === undefined) {
+    value = "";
+  }
 
   let isValidated: boolean = false,
     errors: string[] = [];
@@ -33,7 +39,7 @@
     if (value?.length > 0) {
       [isValidated, errors] = isPolicyMatch(value, policy);
     } else {
-      clearValidate()
+      clearValidate();
     }
   }
 
@@ -41,7 +47,7 @@
     loading.add(
       `Add.generatePassword`,
       vault.generatePassword(host, $sessions.get(host).token, {
-        policyid: policy.id
+        policyid: policy.id,
       }),
       {
         onError(error) {
@@ -55,13 +61,49 @@
     );
   }
 
+  function show(show: boolean) {
+    inputType = show ? "text" : "password";
+  }
+
   afterUpdate(() => {
     if (prevPolicy !== policy) {
       prevPolicy = policy;
       validate();
     }
   });
+
+  function handleInput(e) {
+    value = e.target.value ?? "";
+    validate();
+  }
 </script>
+
+<label for={field.name}>
+  <span class:required={field.required}> {field.title} </span>
+  <div class="password-field">
+    <input
+      id={field.name}
+      class="password"
+      class:changed
+      type={inputType}
+      {value}
+      on:focus={() => show(true)}
+      on:blur={() => show(false)}
+      on:input={handleInput}
+    />
+    <button type="button" class="pwgen" on:click={generatePassword}>
+      <Icon d={pwgenIcon} size="1.4em" />
+    </button>
+    <p class="grid">
+      {#if isValidated}
+        <span class="valid">
+          {getMessage(LocalizedMessage.PASSWORD_MATCH_POLICY)}
+        </span>
+      {/if}
+      {#each errors as error}<span class="error">{error}</span>{/each}
+    </p>
+  </div>
+</label>
 
 <style>
   .password-field {
@@ -93,25 +135,3 @@
     color: var(--color-danger);
   }
 </style>
-
-<label for={field.name}>
-  <span class:required={field.required}> {field.title} </span>
-  <div class="password-field">
-    <input
-      id={field.name}
-      class="password"
-      type="text"
-      bind:value
-      on:input={validate} />
-    <button type="button" class="pwgen" on:click={generatePassword}>
-      <Icon d={pwgenIcon} size="1.4em" />
-    </button>
-    <p class="grid">
-      {#if isValidated}
-        <span
-          class="valid">{getMessage(LocalizedMessage.PASSWORD_MATCH_POLICY)}</span>
-      {/if}
-      {#each errors as error}<span class="error">{error}</span>{/each}
-    </p>
-  </div>
-</label>

@@ -73,9 +73,9 @@
 
   $: {
     items = $search.map(parseSearchItem);
-    selected = null
+    result = $search.find(({ host, id }) => selected === host + id);
+    selected = !!result ? selected : null;
   }
-  $: result = $search.find(({ host, id }) => selected === host + id);
 
   function selectResult(value: string): void {
     selected = value;

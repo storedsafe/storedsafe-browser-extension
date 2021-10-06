@@ -30,13 +30,15 @@
   import SelectVault from "./SelectVault.svelte";
   import SelectTemplate from "./SelectTemplate.svelte";
   import TemplateFields from "./TemplateFields.svelte";
+  import { followFocus } from "../../../use/followFocus";
 
   const MANDATORY_FIELDS = ["parentid", "groupid", "templateid"];
   const EMPTY_STATE = { parentid: "0" };
 
-  export let host: string = undefined;
-
+  let host: string = undefined;
+  let isValid: boolean = false;
   let values: Record<string, any> = { ...EMPTY_STATE };
+
   $: template = $structure
     .get(host)
     ?.templates?.find(({ id }) => id === values.templateid);
@@ -65,41 +67,20 @@
             MessageType.INFO,
             Duration.MEDIUM
           );
-          preferences
-            .setAddPreferences(host, values.groupid)
-            .catch(logger.error);
         },
       }
     );
   }
-
-  $: validated = template?.structure
-    .map(({ name, required }) => {
-      const value = values[name];
-      let isValidated: boolean = true;
-      if (required) {
-        if (typeof value === "string") {
-          isValidated = value?.length > 0;
-        } else {
-          isValidated = value !== undefined;
-        }
-      }
-      return isValidated;
-    })
-    ?.reduce(
-      (isValidated, fieldValidated) => isValidated && fieldValidated,
-      true
-    );
 </script>
 
 <section>
-  <form class="grid" on:submit|preventDefault={add}>
+  <form class="grid" use:followFocus on:submit|preventDefault={add}>
     <Card>
       <SelectHost bind:host />
     </Card>
     {#if host}
       <Card>
-        <SelectVault {host} bind:groupid={values.groupid} />
+        <SelectVault {host} bind:vaultid={values.groupid} />
         <SelectTemplate {host} bind:templateid={values.templateid} />
       </Card>
       {#if !!values.templateid && !!values.groupid}
@@ -109,13 +90,14 @@
             bind:groupid={values.groupid}
             bind:templateid={values.templateid}
             bind:values
+            on:validate={(e) => (isValid = e.detail)}
           />
         </Card>
       {/if}
     {/if}
     <!-- Submit form to add object to StoredSafe -->
     <div class="sticky-buttons">
-      <button type="submit" disabled={!validated}>
+      <button type="submit" disabled={!isValid}>
         {getMessage(LocalizedMessage.ADD_CREATE)}
       </button>
     </div>

@@ -1,6 +1,5 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
-
   import { getMessage, LocalizedMessage } from "../../../../../../global/i18n";
   import {
     Duration,
@@ -11,36 +10,24 @@
     SEARCH_EDIT_LOADING_ID,
   } from "../../../../../stores";
   import { followFocus } from "../../../../use/followFocus";
-
   import Card from "../../../layout/Card.svelte";
+  import TemplateFields from "../../add/TemplateFields.svelte";
 
   const dispatch = createEventDispatcher();
+  let isValid: boolean = false;
 
   export let result: StoredSafeObject;
 
-  const editValues: Record<string, string> = Object.fromEntries(
+  let editValues: Record<string, string> = Object.fromEntries(
     result.fields.map(({ name, value }) => [name, value])
   );
-  $: changedValues = Object.fromEntries(
-    Object.keys(editValues)
-      .map((field) => {
-        const resultfield = result.fields.find(({ name }) => name === field);
-        if (resultfield.value !== editValues[field]) {
-          return [field, editValues[field]];
-        } else {
-          return [field, null];
-        }
-      })
-      .filter(([_field, value]) => value !== null)
-  );
-  $: hasChanges = Object.keys(changedValues).length > 0;
 
   const cancel = (): void => dispatch("set-edit", false);
 
   function editObject(): void {
     loading.add(
       `${SEARCH_EDIT_LOADING_ID}.${result.id}`,
-      search.edit(result, changedValues),
+      search.edit(result, editValues),
       {
         onError(error) {
           messages.add(error.message, MessageType.ERROR, Duration.LONG);
@@ -53,26 +40,19 @@
   }
 </script>
 
-<style>
-  .changed {
-    border-color: var(--color-warning);
-  }
-</style>
-
 <form class="grid" use:followFocus on:submit|preventDefault={editObject}>
   <Card>
-    {#each result.fields as field (field.name)}
-      <article class="grid">
-        <span class="subtitle">{field.title}</span>
-        <input
-          class:changed={!!changedValues[field.name]}
-          type="text"
-          bind:value={editValues[field.name]} />
-      </article>
-    {/each}
+    <TemplateFields
+      host={result.host}
+      groupid={result.vaultId}
+      templateid={result.templateId}
+      bind:values={editValues}
+      edit={true}
+      on:validate={(e) => (isValid = e.detail)}
+    />
   </Card>
   <div class="sticky-buttons">
-    <button type="submit" disabled={!hasChanges}>
+    <button type="submit" disabled={!isValid}>
       {getMessage(LocalizedMessage.SEARCH_RESULT_SAVE)}
     </button>
     <button type="button" class="danger" on:click={cancel}>

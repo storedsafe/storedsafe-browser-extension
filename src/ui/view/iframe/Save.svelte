@@ -30,6 +30,7 @@
   import Initializing from "../Popup/Initializing.svelte";
   import QuickSave from "./QuickSave.svelte";
   import Logo from "../lib/layout/Logo.svelte";
+import { followFocus } from "../use/followFocus";
 
   const dispatch = createEventDispatcher();
   let data: Record<string, string> = {
@@ -41,6 +42,7 @@
   };
   let edit: boolean = false;
   let success: boolean = false;
+  let isValidated: boolean = true;
   let host: string;
 
   let frame: HTMLElement;
@@ -75,7 +77,7 @@
   onMount(() => {
     port = browser.runtime.connect({ name: "save" });
     port.onMessage.addListener((message: Message) => {
-      logger.debug('Message Received: %o', message)
+      logger.debug("Message Received: %o", message);
       if (message.context === "save" && message.action === "populate") {
         data = { ...data, ...message.data };
       }
@@ -84,9 +86,9 @@
     // Ensure iframe gets resized (afterUpdate unreliable)
     for (let delay = 200; delay <= 1000; delay += 200) {
       setTimeout(() => {
-        height = frame?.clientHeight
-        resize(height)
-      }, delay)
+        height = frame?.clientHeight;
+        resize(height);
+      }, delay);
     }
   });
 
@@ -108,9 +110,6 @@
             getMessage(LocalizedMessage.ADD_SUCCESS),
             MessageType.INFO
           );
-          preferences
-            .setAddPreferences(host, data.groupid)
-            .catch(logger.error);
           window.setTimeout(close, 1000);
         },
       }
@@ -134,57 +133,55 @@
   <MessageViewer {messages} />
   <LoadingBar isLoading={$loading.isLoading} />
   {#if !success}
-    {#if !isInitialized}
-      <!-- Still loading -->
-      <Initializing />
-    {:else}
-      <Card>
-        {#if !edit}
-          <!-- Quick save -->
-          <QuickSave bind:host bind:data />
-        {:else}
-          <!-- Full add editor -->
-          <SelectHost bind:host />
-          {#if host !== undefined}
-            <SelectVault {host} bind:groupid={data.groupid} />
-            <SelectTemplate {host} bind:templateid={data.templateid} />
-            {#if data.groupid !== undefined && data.templateid !== undefined}
-              <TemplateFields
-                {host}
-                bind:groupid={data.groupid}
-                bind:templateid={data.templateid}
-                bind:values={data}
-              />
+    <form class="grid" use:followFocus on:submit|preventDefault={save}>
+      {#if !isInitialized}
+        <!-- Still loading -->
+        <Initializing />
+      {:else}
+        <Card>
+          {#if !edit}
+            <!-- Quick save -->
+            <QuickSave bind:host bind:data />
+          {:else}
+            <!-- Full add editor -->
+            <SelectHost bind:host />
+            {#if host !== undefined}
+              <SelectVault {host} bind:vaultid={data.groupid} />
+              <SelectTemplate {host} bind:templateid={data.templateid} />
+              {#if data.groupid !== undefined && data.templateid !== undefined}
+                <TemplateFields
+                  {host}
+                  bind:groupid={data.groupid}
+                  bind:templateid={data.templateid}
+                  bind:values={data}
+                  on:validate={(e) => (isValidated = e.detail)}
+                />
+              {/if}
             {/if}
           {/if}
-        {/if}
-      </Card>
-    {/if}
-    <div class="sticky-buttons">
-      <div class="inline-buttons">
-        <button
-          on:click={save}
-        >{getMessage(LocalizedMessage.ADD_CREATE)}</button>
+        </Card>
+      {/if}
+      <div class="sticky-buttons">
+        <div class="inline-buttons">
+          <button type="submit" disabled={!isValidated}>
+            {getMessage(LocalizedMessage.ADD_CREATE)}
+          </button>
+          {#if !edit}
+            <button type="button" class="warning" on:click={toggleEdit}>
+              {getMessage(LocalizedMessage.SEARCH_RESULT_EDIT)}
+            </button>
+          {/if}
+        </div>
+        <button type="button" class="danger" on:click={close}>
+          {getMessage(LocalizedMessage.IFRAME_CLOSE)}
+        </button>
         {#if !edit}
-          <button
-            class="warning"
-            on:click={toggleEdit}
-          >{getMessage(LocalizedMessage.SEARCH_RESULT_EDIT)}</button>
+          <button type="button" class="danger ignore" on:click={addToIgnore}>
+            {getMessage(LocalizedMessage.SAVE_IGNORE)}
+          </button>
         {/if}
       </div>
-      <button
-        type="button"
-        class="danger"
-        on:click={close}
-      >{getMessage(LocalizedMessage.IFRAME_CLOSE)}</button>
-      {#if !edit}
-        <button
-          type="button"
-          class="danger ignore"
-          on:click={addToIgnore}
-        >{getMessage(LocalizedMessage.SAVE_IGNORE)}</button>
-      {/if}
-    </div>
+    </form>
   {/if}
 </article>
 

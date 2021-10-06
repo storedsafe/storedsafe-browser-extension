@@ -146,10 +146,20 @@ export class StoredSafeClearPreferencesError extends StoredSafeExtensionError {
 }
 
 /**
- * Error occured when updating add preferences.
+ * Error occured when updating host preferences.
  */
-export class StoredSafeSetAddPreferencesError extends StoredSafeExtensionError {
-  readonly id = PREFERENCES_ID + 2
+export class StoredSafeSetHostPreferencesError extends StoredSafeExtensionError {
+  readonly id = PREFERENCES_ID + 6
+  constructor(error: Error) {
+    super(`Error setting last host preferences`, error)
+  }
+}
+
+/**
+ * Error occured when updating vault preferences.
+ */
+export class StoredSafeSetVaultPreferencesError extends StoredSafeExtensionError {
+  readonly id = PREFERENCES_ID + 7
   constructor(error: Error) {
     super(`Error setting add preferences`, error)
   }
@@ -159,7 +169,7 @@ export class StoredSafeSetAddPreferencesError extends StoredSafeExtensionError {
  * Error occured when clearing add preferences.
  */
 export class StoredSafeClearAddPreferencesError extends StoredSafeExtensionError {
-  readonly id = PREFERENCES_ID + 6
+  readonly id = PREFERENCES_ID + 8
   constructor(error: Error) {
     super(`Error clearing add preferences`, error)
   }

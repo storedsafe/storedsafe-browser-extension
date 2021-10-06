@@ -1,7 +1,7 @@
 <script lang="ts">
   import templateIcons from "../../../global/template_icons";
 
-  export let selected: boolean;
+  export let selected: boolean = false;
 
   export let icon: string;
   export let template: string;

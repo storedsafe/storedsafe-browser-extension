@@ -35,7 +35,7 @@
 
 <SelectHost bind:host />
 {#if !!host}
-  <SelectVault {host} bind:groupid={data.groupid} />
+  <SelectVault {host} bind:vaultid={data.groupid} />
 {/if}
 {#if saveItemProps}
   <SavePreview {...saveItemProps} />

@@ -4,7 +4,8 @@ import {
   StoredSafeClearPreferencesError,
   StoredSafeClearSitePreferencesError,
   StoredSafeGetPreferencesError,
-  StoredSafeSetAddPreferencesError,
+  StoredSafeSetVaultPreferencesError,
+  StoredSafeSetHostPreferencesError,
   StoredSafeSetAutoFillPreferencesError,
   StoredSafeSetSitePreferencesError
 } from '../errors'
@@ -29,8 +30,8 @@ type SerializablePreferences = {
 }
 const EMPTY_STATE: SerializablePreferences = {
   add: {
-    lastHost: null,
-    hosts: {}
+    host: null,
+    vaults: {}
   },
   autoFill: null,
   sites: null
@@ -98,26 +99,46 @@ export function unsubscribe(cb: OnAreaChanged<Preferences>): void {
 }
 
 /**
+ * Update host preferences for adding objects to StoredSafe.
+ * @param host Name of StoredSafe host used.
+ * @throws {StoredSafeGetPreferencesError}
+ * @throws {StoredSafeSetHostPreferencesError}
+ */
+export async function setHostPreferences(host: string) {
+  try {
+    let { add, ...preferences } = await get()
+    add = {
+      host: host,
+      vaults: add?.vaults ?? {}
+    }
+    await set({ ...preferences, add })
+  } catch (error) {
+    if (error instanceof StoredSafeGetPreferencesError) throw error
+    throw new StoredSafeSetHostPreferencesError(error)
+  }
+}
+
+/**
  * Update preferences for adding objects to StoredSafe.
  * @param host Name of StoredSafe host used.
  * @param vaultId StoredSafe ID of vault used.
  * @throws {StoredSafeGetPreferencesError}
- * @throws {StoredSafeSetAddPreferencesError}
+ * @throws {StoredSafeSetVaultPreferencesError}
  */
-export async function setAddPreferences(host: string, vaultId: string) {
+export async function setVaultPreferences(host: string, vaultId: string) {
   try {
     let { add, ...preferences } = await get()
     add = {
-      lastHost: host,
-      hosts: {
-        ...add?.hosts,
+      host: add?.host,
+      vaults: {
+        ...add?.vaults,
         [host]: vaultId
       }
     }
     await set({ ...preferences, add })
   } catch (error) {
     if (error instanceof StoredSafeGetPreferencesError) throw error
-    throw new StoredSafeSetAddPreferencesError(error)
+    throw new StoredSafeSetVaultPreferencesError(error)
   }
 }
 

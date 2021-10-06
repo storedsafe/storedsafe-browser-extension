@@ -42,12 +42,12 @@ type LoginType = 'totp' | 'yubikey'
 
 /**
  * Preferences for adding new objects to StoredSafe.
- * @param lastHost StoredSafe host last used for add.
- * @param hosts Mapping of hosts to last used vault IDs.
+ * @param host StoredSafe host preference for add.
+ * @param vaults Mapping of hosts to preferred vault IDs.
  * */
 interface AddPreferences {
-  lastHost: string,
-  hosts: {
+  host: string,
+  vaults: {
     [host: string]: string // vaultId
   }
 }
