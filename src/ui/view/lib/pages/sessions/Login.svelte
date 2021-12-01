@@ -15,6 +15,7 @@ SESSIONS_LOGIN_LOADING_ID,
 
   import Card from "../../layout/Card.svelte";
   import MessageViewer from "../../layout/MessageViewer.svelte";
+import Checkbox from "../../layout/Checkbox.svelte";
 
   export let site: Site;
 
@@ -125,7 +126,7 @@ SESSIONS_LOGIN_LOADING_ID,
       </label>
     {/if}
     <label class="label-inline" for="remember">
-      <input type="checkbox" id="remember" bind:checked={remember} />
+      <Checkbox id="remember" bind:checked={remember} />
       <span>{getMessage(LocalizedMessage.SESSIONS_REMEMBER)}</span>
     </label>
   </Card>

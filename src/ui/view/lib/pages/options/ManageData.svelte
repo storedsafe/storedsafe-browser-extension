@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { getMessage, LocalizedMessage } from "../../../../../global/i18n";
+
   import { Duration, loading, messages, MessageType } from "../../../../stores";
   import {
     sessions,
@@ -6,183 +8,249 @@
     sites,
     preferences,
     ignore,
-    SESSIONS_CLEAR_LOADING_ID,
-SETTINGS_CLEAR_LOADING_ID,
-SITES_CLEAR_LOADING_ID,
-PREFERENCES_CLEAR_SITE_LOADING_ID,
-PREFERENCES_CLEAR_AUTO_FILL_LOADING_ID,
-PREFERENCES_CLEAR_LOADING_ID,
-IGNORE_CLEAR_LOADING_ID,
   } from "../../../../stores/browserstorage";
 
   import Card from "../../layout/Card.svelte";
+  import Checkbox from "../../layout/Checkbox.svelte";
+  import Dropdown from "../../layout/Dropdown.svelte";
+  import RecursiveList from "./RecursiveList.svelte";
 
-  function clearSessions() {
-    loading.add(
-      SESSIONS_CLEAR_LOADING_ID,
-      Promise.all(
-        [...$sessions].map(([host, session]) =>
-          sessions.logout(host, session.token)
-        )
-      ),
-      {
-        onError(error) {
-          messages.add(error.message, MessageType.ERROR, Duration.SHORT);
+  interface DataSource {
+    title: string;
+    method: () => Promise<any>;
+    description?: string;
+    children?: Record<string, DataSource>;
+  }
+
+  let dataSourceList: Record<string, DataSource>;
+  $: dataSourceList = {
+    all: {
+      title: "All",
+      method: () =>
+        Promise.all([
+          browser.storage.local.clear(),
+          browser.storage.sync.clear(),
+        ]),
+      children: {
+        sessions: {
+          title: "Sessions",
+          method: () =>
+            Promise.all(
+              [...$sessions].map(([host, session]) =>
+                sessions.logout(host, session.token)
+              )
+            ),
+          description:
+            $sessions.size === 0
+              ? ""
+              : "<b>" + $sessions.size + "</b> active sessions",
         },
-        onSuccess() {
-          messages.add(
-            "Cleared all sessions.",
-            MessageType.INFO,
-            Duration.SHORT
-          );
+        settings: {
+          title: "Settings",
+          method: settings.clear,
+          description: [...$settings]
+            .map(([key, { value, managed }]) =>
+              managed ? "" : key + `${key}: <b>${value}</b>`
+            )
+            .filter((v) => v !== "")
+            .join("<br/>"),
         },
+        sites: {
+          title: "Sites",
+          method: sites.clear,
+          description: $sites
+            .map(({ host, apikey, managed }) =>
+              managed ? "" : `${host}: apikey <b>${apikey}</b>`
+            )
+            .filter((v) => v !== "")
+            .join("<br>"),
+        },
+        preferences: {
+          title: "Preferences",
+          method: preferences.clear,
+          children: {
+            addPreferences: {
+              title: "Add Preferences",
+              method: preferences.clearAddPreferences,
+              description:
+                ($preferences.add?.host
+                  ? "Host preference: <b>" + $preferences.add.host + "</b><br/>"
+                  : "") +
+                ($preferences.add?.vaults
+                  ? Object.keys($preferences.add?.vaults)
+                      .map(
+                        (key) =>
+                          `${key}: Vault <b>` +
+                          $preferences.add.vaults[key] +
+                          "</b>"
+                      )
+                      .join("<br/>")
+                  : ""),
+            },
+            sitePreferences: {
+              title: "Site Preferences",
+              method: preferences.clearSitePreferences,
+              description: [...$preferences.sites]
+                .map(
+                  ([key, { username, loginType }]) =>
+                    `${key}: <b>${username}</b> <b>${loginType}</b>`
+                )
+                .join("<br/>"),
+            },
+            autoFillPreferences: {
+              title: "Auto Fill Preferences",
+              method: preferences.clearAutoFillPreferences,
+              description: [...$preferences.autoFill]
+                .map(
+                  ([key, { host, objectId }]) =>
+                    `${host}: ${key} <b>${objectId}</b>`
+                )
+                .join("<br/>"),
+            },
+          },
+        },
+        ignore: {
+          title: "Ignore",
+          method: ignore.clear,
+          description:
+            $ignore.length === 0
+              ? ""
+              : "<b>" + $ignore.length + "</b> sites ignored",
+        },
+      },
+    },
+  };
+
+  let checked: Record<string, boolean> = {};
+
+  function onChange(e: Event, obj: Record<string, DataSource>) {
+    checked = {
+      ...checked,
+      ...getCascadeState((e.target as HTMLInputElement).checked, obj),
+    };
+    checked = {
+      ...checked,
+      ...getBubbledState(),
+    };
+  }
+
+  function getBubbledState(
+    obj: Record<string, DataSource> = dataSourceList
+  ): Record<string, boolean> {
+    let newChecked = {};
+    if (obj && Object.keys(obj).length > 0) {
+      Object.keys(obj).forEach((key) => {
+        const children = obj[key].children;
+        if (!!children && Object.keys(children).length > 0) {
+          const keyChecked =
+            Object.keys(children).reduce(
+              (acc, key) => checked[key] && acc,
+              true
+            ) ?? false;
+          newChecked = {
+            ...newChecked,
+            ...getBubbledState(children),
+            [key]: keyChecked,
+          };
+        }
+      });
+    }
+    return newChecked;
+  }
+
+  function getCascadeState(value: boolean, obj: Record<string, DataSource>) {
+    let newChecked = {};
+    if (obj && Object.keys(obj).length > 0) {
+      Object.keys(obj).forEach((key) => {
+        const children = obj[key].children ?? {};
+        newChecked = {
+          ...newChecked,
+          ...getCascadeState(value, children),
+          [key]: value,
+        };
+      });
+    }
+    return newChecked;
+  }
+
+  /**
+   * Set all checkboxes in the provided structure to the same value.
+   * @param value true/false for checked/unchecked.
+   * @param obj The data sources that should be set.
+   */
+  function setAll(
+    value: boolean,
+    obj: Record<string, DataSource> = dataSourceList
+  ) {
+    checked = Object.fromEntries(Object.keys(obj).map((key) => [key, value]));
+  }
+
+  function clearChecked(source: Record<string, DataSource> = dataSourceList) {
+    Object.keys(source).forEach((key) => {
+      if (checked[key]) {
+        loading.add(`Data.clear.${key}`, source[key].method(), {
+          onError(error) {
+            messages.add(error.message, MessageType.ERROR, Duration.SHORT);
+          },
+          onSuccess() {
+            messages.add(
+              `${source[key].title} successfully cleared`,
+              MessageType.INFO,
+              Duration.SHORT
+            );
+            setAll(false, dataSourceList);
+          },
+        });
+      } else {
+        const children = source[key].children;
+        if (!!children) clearChecked(children);
       }
-    );
-  }
-
-  function clearSettings() {
-    loading.add(SETTINGS_CLEAR_LOADING_ID, settings.clear(), {
-      onError(error) {
-        messages.add(error.message, MessageType.ERROR, Duration.SHORT);
-      },
-      onSuccess() {
-        messages.add("Cleared all settings.", MessageType.INFO, Duration.SHORT);
-      },
     });
-  }
-
-  function clearSites() {
-    loading.add(SITES_CLEAR_LOADING_ID, sites.clear(), {
-      onError(error) {
-        messages.add(error.message, MessageType.ERROR, Duration.SHORT);
-      },
-      onSuccess() {
-        messages.add("Cleared all sites.", MessageType.INFO, Duration.SHORT);
-      },
-    });
-  }
-
-  function clearSitePreferences() {
-    loading.add(
-      PREFERENCES_CLEAR_SITE_LOADING_ID,
-      preferences.clearSitePreferences(),
-      {
-        onError(error) {
-          messages.add(error.message, MessageType.ERROR, Duration.SHORT);
-        },
-        onSuccess() {
-          messages.add(
-            "Cleared site preferences.",
-            MessageType.INFO,
-            Duration.SHORT
-          );
-        },
-      }
-    );
-  }
-
-  function clearAutoFillPreferences() {
-    loading.add(
-      PREFERENCES_CLEAR_AUTO_FILL_LOADING_ID,
-      preferences.clearAutoFillPreferences(),
-      {
-        onError(error) {
-          messages.add(error.message, MessageType.ERROR, Duration.SHORT);
-        },
-        onSuccess() {
-          messages.add(
-            "Cleared auto fill preferences.",
-            MessageType.INFO,
-            Duration.SHORT
-          );
-        },
-      }
-    );
-  }
-
-  function clearAllPreferences() {
-    loading.add(PREFERENCES_CLEAR_LOADING_ID, preferences.clear(), {
-      onError(error) {
-        messages.add(error.message, MessageType.ERROR, Duration.SHORT);
-      },
-      onSuccess() {
-        messages.add(
-          "Cleared all preferences.",
-          MessageType.INFO,
-          Duration.SHORT
-        );
-      },
-    });
-  }
-
-  function clearIgnore() {
-    loading.add(IGNORE_CLEAR_LOADING_ID, ignore.clear(), {
-      onError(error) {
-        messages.add(error.message, MessageType.ERROR, Duration.SHORT);
-      },
-      onSuccess() {
-        messages.add("Cleared ignore list.", MessageType.INFO, Duration.SHORT);
-      },
-    });
-  }
-
-  function clearAllData() {
-    loading.add(
-      `Data.clear.all`,
-      Promise.all([
-        browser.storage.local.clear(),
-        browser.storage.sync.clear(),
-      ]),
-      {
-        onError(error) {
-          messages.add(error.message, MessageType.ERROR, Duration.SHORT);
-        },
-        onSuccess() {
-          messages.add("Cleared all data", MessageType.INFO, Duration.SHORT);
-        },
-      }
-    );
   }
 </script>
 
-<style>
-
-</style>
-
 <section class="grid">
   <Card>
-    <h2>Sessions</h2>
-    <button type="button" class="danger" on:click={clearSessions}>
-      Clear
-    </button>
+    <RecursiveList items={dataSourceList} let:key let:item>
+      <Dropdown showing={false} enabled={!!item.description}>
+        <label slot="title" for={key}>
+          <Checkbox
+            id={key}
+            bind:checked={checked[key]}
+            on:change={(e) => onChange(e, item.children)}
+          />
+          <h2>{item.title}</h2>
+        </label>
+        <div slot="content">
+          {#if item.description}
+            <p class="description">{@html item.description}</p>
+          {/if}
+        </div>
+      </Dropdown>
+    </RecursiveList>
   </Card>
-  <Card>
-    <h2>Settings</h2>
-    <button type="button" class="danger" on:click={clearSettings}>
-      Clear user settings
+  <div class="sticky-buttons">
+    <button
+      type="button"
+      class="danger"
+      on:click|preventDefault={() => clearChecked()}
+    >
+      {getMessage(LocalizedMessage.CLEAR_DATA)}
     </button>
-  </Card>
-  <Card>
-    <h2>Sites</h2>
-    <button type="button" class="danger" on:click={clearSites}>Clear</button>
-  </Card>
-  <Card>
-    <h2>Preferences</h2>
-    <button type="button" class="warning" on:click={clearSitePreferences}>
-      Clear site preferences
-    </button>
-    <button type="button" class="warning" on:click={clearAutoFillPreferences}>
-      Clear auto fill preferences
-    </button>
-    <button type="button" class="danger" on:click={clearAllPreferences}>
-      Clear all
-    </button>
-  </Card>
-  <Card>
-    <h2>Ignore list</h2>
-    <button type="button" class="danger" on:click={clearIgnore}>Clear</button>
-  </Card>
-  <button type="button" class="danger" on:click={clearAllData}>
-    CLEAR ALL DATA
-  </button>
+  </div>
 </section>
+
+<style>
+  label {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    column-gap: var(--spacing);
+    cursor: pointer;
+  }
+
+  .description {
+    padding-left: 1em;
+    pointer-events: none;
+  }
+</style>

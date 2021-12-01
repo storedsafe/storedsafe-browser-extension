@@ -345,10 +345,10 @@
 	"SETTINGS_MANAGED_TITLE": {
 		"message": "Inställningar som är låsta av din administratör."
 	},
-	"SETTINGS_MANAGED_TRUE": {
+	"SETTINGS_ON": {
 		"message": "på"
 	},
-	"SETTINGS_MANAGED_FALSE": {
+	"SETTINGS_OFF": {
 		"message": "av"
 	},
 	"OPTIONS_GENERAL_TITLE": {
@@ -455,5 +455,8 @@
 	},
   "SAVE_IGNORE": {
     "message": "Fråga inte igen för den här sidan"
-  }
+  },
+	"CLEAR_DATA": {
+		"message": "Rensa markerad data"
+	}
 }

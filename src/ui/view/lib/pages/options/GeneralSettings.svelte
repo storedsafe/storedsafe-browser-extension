@@ -22,6 +22,7 @@
 
   import Card from "../../layout/Card.svelte";
   import MessageViewer from "../../layout/MessageViewer.svelte";
+  import Toggle from "../../layout/Toggle.svelte";
 
   const settingsMessages = messageStore();
 
@@ -81,37 +82,38 @@
       {#if userFields.length === 0}
         {getMessage(LocalizedMessage.SETTINGS_USER_ALL_LOCKED)}
       {/if}
-      {#each userFields as [key, field, value] (key)}
-        <label for={key} class:label-inline={!!field.isCheckbox}>
-          <span
-            title={field.title ?? ''}
-            class:altered={field.isCheckbox && altered.get(key)}
-          >
-            {field.label}
-          </span>
-          {#if !!field.isCheckbox}
-            <input
-              {...field.attributes}
-              type="checkbox"
-              id={key}
-              class:altered={altered.get(key)}
-              bind:checked={value}
-            />
-          {:else}
-            <div class="user-input">
-              <input
+      <div>
+        {#each userFields as [key, field, value] (key)}
+          <label for={key} class:label-inline={!!field.isCheckbox}>
+            <span
+              title={field.title ?? ""}
+              class:altered={field.isCheckbox && altered.get(key)}
+            >
+              {field.label}
+            </span>
+            {#if !!field.isCheckbox}
+              <Toggle
                 {...field.attributes}
-                type="number"
                 id={key}
-                class:altered={altered.get(key)}
-                bind:value
-                required
+                altered={altered.get(key)}
+                bind:checked={value}
               />
-              {#if !!field.unit}<span class="unit">{field.unit}</span>{/if}
-            </div>
-          {/if}
-        </label>
-      {/each}
+            {:else}
+              <div class="user-input">
+                <input
+                  {...field.attributes}
+                  type="number"
+                  id={key}
+                  class:altered={altered.get(key)}
+                  bind:value
+                  required
+                />
+                {#if !!field.unit}<span class="unit">{field.unit}</span>{/if}
+              </div>
+            {/if}
+          </label>
+        {/each}
+      </div>
       {#if userFields.length > 0}
         <button type="submit" disabled={!isAltered}>
           {getMessage(LocalizedMessage.SETTINGS_USER_UPDATE)}
@@ -125,23 +127,56 @@
       <h2 title={getMessage(LocalizedMessage.SETTINGS_MANAGED_TITLE)}>
         {getMessage(LocalizedMessage.SETTINGS_MANAGED_HEADER)}
       </h2>
-      {#each managedFields as [_key, field, value] (field.label)}
-        <div class="managed-field">
-          <span>{field.label}</span>
-          <span class="managed-field-value">
-            {field.isCheckbox ? (value ? getMessage(LocalizedMessage.SETTINGS_MANAGED_TRUE) : getMessage(LocalizedMessage.SETTINGS_MANAGED_FALSE)) : value}
-          </span>
-          {#if !!field.unit}<span class="unit">{field.unit}</span>{/if}
-        </div>
-      {/each}
+      <div>
+        {#each managedFields as [key, field, value] (key)}
+          <label for={key} class:label-inline={!!field.isCheckbox}>
+            <span
+              title={field.title ?? ""}
+              class:altered={field.isCheckbox && altered.get(key)}
+            >
+              {field.label}
+            </span>
+            {#if !!field.isCheckbox}
+              <Toggle
+                {...field.attributes}
+                id={key}
+                altered={altered.get(key)}
+                bind:checked={value}
+                disabled={true}
+              />
+            {:else}
+              <div class="user-input">
+                <input
+                  {...field.attributes}
+                  type="number"
+                  id={key}
+                  class:altered={altered.get(key)}
+                  bind:value
+                  disabled={true}
+                  required
+                />
+                {#if !!field.unit}<span class="unit">{field.unit}</span>{/if}
+              </div>
+            {/if}
+          </label>
+        {/each}
+      </div>
     </Card>
   {/if}
 </section>
 
 <style>
+  label {
+    padding: var(--spacing);
+    border-bottom: 1px solid var(--color-input-fg-disabled);
+  }
+
+  label:last-child {
+    border-bottom: 0;
+  }
   .label-inline {
-    flex-direction: row-reverse;
-    justify-content: flex-end;
+    flex-direction: row;
+    justify-content: space-between;
   }
 
   .altered {
@@ -151,6 +186,7 @@
   span.altered {
     border-bottom-width: 2px;
     border-bottom-style: solid;
+    box-sizing: border-box;
   }
 
   .user-input {

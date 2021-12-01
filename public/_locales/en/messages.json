@@ -432,11 +432,11 @@
     "message": "Settings which are enforced by your administrator.",
     "description": "Hover text for managed settings header."
   },
-  "SETTINGS_MANAGED_TRUE": {
+  "SETTINGS_ON": {
     "message": "on",
     "description": "Translation of checkbox boolean checked value."
   },
-  "SETTINGS_MANAGED_FALSE": {
+  "SETTINGS_OFF": {
     "message": "off",
     "description": "Translation of checkbox boolean unchecked value."
   },
@@ -579,5 +579,9 @@
   "SAVE_IGNORE": {
     "message": "Don't ask again for this page",
     "description": "Button text to add URL to ignore list in save frame."
+  },
+  "CLEAR_DATA": {
+    "message": "Clear checked data",
+    "description": "Button text to clear all checked data from storage."
   }
 }

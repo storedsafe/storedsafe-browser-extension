@@ -110,7 +110,8 @@ li {
 input,
 button,
 select,
-textarea {
+textarea,
+.custom-input {
   font-family: inherit;
   font-size: inherit;
   -webkit-padding: var(--spacing) 0;
@@ -138,7 +139,8 @@ label {
 
 input,
 select,
-textarea {
+textarea,
+.custom-input {
   background-color: var(--color-input-bg);
   border: 1px solid var(--color-primary-light);
   border-bottom-width: 2px;
@@ -152,7 +154,9 @@ input:not(:disabled):hover,
 select:not(:disabled):focus,
 select:not(:disabled):hover,
 textarea:not(:disabled):focus,
-textarea:not(:disabled):hover {
+textarea:not(:disabled):hover,
+input:not(:disabled):focus ~ .custom-input,
+input:not(:disabled):hover ~ .custom-input {
   background-color: var(--color-input-bg-light);
   border-bottom-color: var(--color-accent);
   box-shadow: 0 2px 4px 0px rgba(0, 0, 0, 0.3),
@@ -161,7 +165,8 @@ textarea:not(:disabled):hover {
 
 input:disabled,
 select:disabled,
-textarea:disabled {
+textarea:disabled,
+input:disabled ~ .custom-input {
   color: var(--color-input-fg-disabled);
 }
 
@@ -327,4 +332,8 @@ button:disabled {
 
 .changed {
   border-color: var(--color-warning);
+}
+
+.indent {
+  margin-left: 1em;
 }
