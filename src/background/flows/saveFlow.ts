@@ -33,7 +33,7 @@ function matchingObjectExists(
         matchUsername = true;
       }
       // Check for URL matches
-      if ((field.name === "url" || field.name === "host") && field.value === url) {
+      if ((field.name === "url" || field.name === "host") && field.value.split('?')[0] === url.split('?')[0]) {
         matchURL = true;
       }
     }
@@ -61,7 +61,10 @@ export function saveFlow(
   // Start a timer to stop prompting to save after some time
   let timeoutId = window.setTimeout(stop, MAX_DURATION_SECONDS * 1e3);
   if (!values.username) return;
-  if (matchingObjectExists(tabResults, values.url, values.username)) return;
+  if (matchingObjectExists(tabResults, values.url, values.username)) {
+    logger.info('Exiting save flow, entry already exists')
+    return;
+  }
 
   logger.info('Starting save flow.')
 
