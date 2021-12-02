@@ -315,12 +315,12 @@
 	"SETTINGS_MAX_TOKEN_LIFE_LABEL": {
 		"message": "Logga ut efter att ha varit inloggad i"
 	},
-  "SETTINGS_OFFER_SAVE_LABEL": {
-    "message": "Fråga om spara inloggning"
-  },
-  "SETTINGS_OFFER_SAVE_TITLE": {
-    "message": "Fråga om du vill spara din inloggning på webbsidor."
-  },
+	"SETTINGS_OFFER_SAVE_LABEL": {
+		"message": "Fråga om spara inloggning"
+	},
+	"SETTINGS_OFFER_SAVE_TITLE": {
+		"message": "Fråga om du vill spara din inloggning på webbsidor."
+	},
 	"SETTINGS_UNIT_MINUTES": {
 		"message": "minuter"
 	},
@@ -335,6 +335,9 @@
 	},
 	"SETTINGS_USER_UPDATE": {
 		"message": "Spara"
+	},
+	"SETTINGS_USER_UPDATE_SUCCESS": {
+		"message": "Inställningar sparade"
 	},
 	"SETTINGS_USER_ALL_LOCKED": {
 		"message": "Alla inställningar är låsta av din administratör."
@@ -411,38 +414,38 @@
 	"OPTIONS_IGNORE_DELETE": {
 		"message": "Ta bort"
 	},
-  "GENERATE_PASSWORD_HOST": {
-    "message": "StoredSafe Server"
-  },
-  "GENERATE_PASSWORD_LABEL": {
-    "message": "Lösenord"
-  },
-  "GENERATE_PASSWORD_MATCH_POLICY": {
-    "message": "Följ policy"
-  },
-  "GENERATE_PASSWORD_GENERATE": {
-    "message": "Generera lösenord"
-  },
-  "GENERATE_PASSWORD_LENGTH": {
-    "message": "Längd"
-  },
-  "GENERATE_PASSWORD_LANGUAGE": {
-    "message": "Språk"
-  },
-  "GENERATE_PASSWORD_WORDS": {
-    "message": "Antal ord"
-  },
-  "GENERATE_PASSWORD_MIN_CHAR": {
-    "message": "Min tecken"
-  },
-  "GENERATE_PASSWORD_MAX_CHAR": {
-    "message": "Max tecken"
-  },
-  "GENERATE_PASSWORD_DELIMITER": {
-    "message": "Avgränsare"
-  },
-  "GENERATE_PASSWORD_OR": {
-    "message": "eller"
+	"GENERATE_PASSWORD_HOST": {
+		"message": "StoredSafe Server"
+	},
+	"GENERATE_PASSWORD_LABEL": {
+		"message": "Lösenord"
+	},
+	"GENERATE_PASSWORD_MATCH_POLICY": {
+		"message": "Följ policy"
+	},
+	"GENERATE_PASSWORD_GENERATE": {
+		"message": "Generera lösenord"
+	},
+	"GENERATE_PASSWORD_LENGTH": {
+		"message": "Längd"
+	},
+	"GENERATE_PASSWORD_LANGUAGE": {
+		"message": "Språk"
+	},
+	"GENERATE_PASSWORD_WORDS": {
+		"message": "Antal ord"
+	},
+	"GENERATE_PASSWORD_MIN_CHAR": {
+		"message": "Min tecken"
+	},
+	"GENERATE_PASSWORD_MAX_CHAR": {
+		"message": "Max tecken"
+	},
+	"GENERATE_PASSWORD_DELIMITER": {
+		"message": "Avgränsare"
+	},
+	"GENERATE_PASSWORD_OR": {
+		"message": "eller"
 	},
 	"GENERATE_PASSWORD_EDIT": {
 		"message": "Redigera"
@@ -453,9 +456,9 @@
 	"IFRAME_CLOSE": {
 		"message": "Stäng"
 	},
-  "SAVE_IGNORE": {
-    "message": "Fråga inte igen för den här sidan"
-  },
+	"SAVE_IGNORE": {
+		"message": "Fråga inte igen för den här sidan"
+	},
 	"CLEAR_DATA": {
 		"message": "Rensa markerad data"
 	}

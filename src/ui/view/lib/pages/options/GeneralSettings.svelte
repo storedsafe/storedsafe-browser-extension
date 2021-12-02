@@ -13,6 +13,7 @@
     SettingsFields,
   } from "../../../../../global/storage/settings";
   import {
+    Duration,
     loading,
     messageStore,
     MessageType,
@@ -62,6 +63,13 @@
       .filter(([key]) => altered.get(key))
       .map(([key, _field, value]) => [key, value]);
     loading.add(SETTINGS_UPDATE_LOADING_ID, settings.set(...newSettings), {
+      onSuccess() {
+        settingsMessages.add(
+          getMessage(LocalizedMessage.SETTINGS_USER_UPDATE_SUCCESS),
+          MessageType.INFO,
+          Duration.SHORT
+        );
+      },
       onError(error) {
         settingsMessages.add(error.message, MessageType.ERROR);
       },

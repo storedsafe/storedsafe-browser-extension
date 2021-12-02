@@ -421,6 +421,10 @@
     "message": "Save",
     "description": "Text on button to update settings."
   },
+  "SETTINGS_USER_UPDATE_SUCCESS": {
+    "message": "Settings saved",
+    "description": "Message text after successfully updating settings."
+  },
   "SETTINGS_USER_ALL_LOCKED": {
     "message": "All settings are locked by your administrator."
   },
