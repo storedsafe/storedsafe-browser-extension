@@ -5,5 +5,19 @@
       "update_url": "https://storedsafe.com/addons/firefox/updates.json",
       "strict_min_version": "79.0"
     }
+  },
+  "commands": {
+    "_execute_browser_action": {
+      "suggested_key": {
+        "default": "Ctrl+Alt+S"
+      },
+      "description": "Open StoredSafe Popup"
+    },
+    "fill": {
+      "suggested_key": {
+        "default": "Ctrl+Alt+F"
+      },
+      "description": "Fill form on page if data is available"
+    }
   }
 }
