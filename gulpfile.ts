@@ -6,6 +6,7 @@ import sveltePreprocess from 'svelte-preprocess'
 import resolve from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
 import typescript from '@rollup/plugin-typescript'
+import json from '@rollup/plugin-json'
 import { terser } from 'rollup-plugin-terser'
 
 // Gulp plugins
@@ -30,7 +31,7 @@ const EXTERNALS = [
 ]
 
 let production = process.env.NODE_ENV !== 'development'
-const rollup_plugins = () => [commonjs(), typescript(), production && terser()]
+const rollup_plugins = () => [commonjs(), typescript(), production && terser(), /* until axios fixes stuff */ json()]
 
 /**
  * Clean build directories.

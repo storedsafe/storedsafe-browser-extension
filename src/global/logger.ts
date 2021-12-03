@@ -67,6 +67,7 @@ export class Logger {
   public error(msg: any, ...params: any[]) {
     if (this.shouldPrint(LogLevel.ERROR)) {
       console.error(this.prefix + msg, ...params)
+      if (typeof console.trace === 'function') console.trace();
     }
   }
 
