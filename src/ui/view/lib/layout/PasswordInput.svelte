@@ -78,32 +78,29 @@
   }
 </script>
 
-<label for={field.name}>
-  <span class:required={field.required}> {field.title} </span>
-  <div class="password-field">
-    <input
-      id={field.name}
-      class="password"
-      class:changed
-      type={inputType}
-      {value}
-      on:focus={() => show(true)}
-      on:blur={() => show(false)}
-      on:input={handleInput}
-    />
-    <button type="button" class="pwgen" on:click={generatePassword}>
-      <Icon d={pwgenIcon} size="1.4em" />
-    </button>
-    <p class="grid">
-      {#if isValidated}
-        <span class="valid">
-          {getMessage(LocalizedMessage.PASSWORD_MATCH_POLICY)}
-        </span>
-      {/if}
-      {#each errors as error}<span class="error">{error}</span>{/each}
-    </p>
-  </div>
-</label>
+<div class="password-field">
+  <input
+    id={field.name}
+    class="password"
+    class:changed
+    type={inputType}
+    {value}
+    on:focus={() => show(true)}
+    on:blur={() => show(false)}
+    on:input={handleInput}
+  />
+  <button type="button" class="pwgen" on:click={generatePassword}>
+    <Icon d={pwgenIcon} size="1.4em" />
+  </button>
+  <p class="grid">
+    {#if isValidated}
+      <span class="valid">
+        {getMessage(LocalizedMessage.PASSWORD_MATCH_POLICY)}
+      </span>
+    {/if}
+    {#each errors as error}<span class="error">{error}</span>{/each}
+  </p>
+</div>
 
 <style>
   .password-field {
@@ -120,11 +117,6 @@
   .pwgen {
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
-  }
-
-  .required::before {
-    content: "*";
-    color: var(--color-danger);
   }
 
   .valid {

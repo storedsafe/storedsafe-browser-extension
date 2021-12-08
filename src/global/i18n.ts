@@ -37,6 +37,8 @@ export enum LocalizedMessage {
   ADD_EDIT = 'ADD_EDIT',
   ADD_SUCCESS = 'ADD_SUCCESS',
 
+  ENCRYPTED_TITLE = 'ENCRYPTED_TITLE',
+
   // Loading
   LOADING_TITLE = 'LOADING_TITLE',
 

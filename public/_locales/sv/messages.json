@@ -74,6 +74,9 @@
 	"ADD_SUCCESS": {
 		"message": "Objekt tillagt i StoredSafe!"
 	},
+	"ENCRYPTED_TITLE": {
+		"message": "Krypterat fält, ej sökbart"
+	},
 	"LOADING_TITLE": {
 		"message": "Laddar"
 	},

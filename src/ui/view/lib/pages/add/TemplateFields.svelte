@@ -1,5 +1,6 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
+  import { getMessage, LocalizedMessage } from "../../../../../global/i18n";
   import { structure } from "../../../../stores";
   import PasswordInput from "../../layout/PasswordInput.svelte";
   import AddField from "./AddField.svelte";
@@ -48,7 +49,7 @@
     if (edit) {
       if (!mapChanges(values)) {
         dispatch("validate", false);
-        return
+        return;
       }
     }
     const validFields = template?.structure.map((field) =>
@@ -66,21 +67,45 @@
 
 {#if !!template && !!policy}
   {#each template?.structure as field (host + values.templateid + field.name)}
-    <!-- StoredSafe Template -->
-    {#if field.pwgen}
-      <PasswordInput
-        {field}
-        bind:value={values[field.name]}
-        {host}
-        {policy}
-        changed={edit && changedFields[field.name]}
-      />
-    {:else}
-      <AddField
-        {field}
-        bind:value={values[field.name]}
-        changed={edit && changedFields[field.name]}
-      />
-    {/if}
+    <label for={field.name}>
+      <span class:required={field.required}>
+        {field.title}
+        {#if field.type === "progress"}({values[field.name] ?? 0}%){/if}
+        {#if field.isEncrypted}
+          <span
+            class="encrypted"
+            title={getMessage(LocalizedMessage.ENCRYPTED_TITLE)}>
+            [enc]
+            </span>
+        {/if}
+      </span>
+      <!-- StoredSafe Template -->
+      {#if field.pwgen}
+        <PasswordInput
+          {field}
+          bind:value={values[field.name]}
+          {host}
+          {policy}
+          changed={edit && changedFields[field.name]}
+        />
+      {:else}
+        <AddField
+          {field}
+          bind:value={values[field.name]}
+          changed={edit && changedFields[field.name]}
+        />
+      {/if}
+    </label>
   {/each}
 {/if}
+
+<style>
+  .required::before {
+    content: "*";
+    color: var(--color-danger);
+  }
+
+  .encrypted {
+    color: var(--color-danger);
+  }
+</style>
