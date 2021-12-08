@@ -4,7 +4,7 @@
   "exclude": ["node_modules/*", "__sapper__/*", "public/*"],
   "module": "es2015",
   "compilerOptions": {
-    "types": ["firefox-webext-browser", "jest"],
+    "types": ["node", "firefox-webext-browser", "jest"],
     "resolveJsonModule": true
   }
 }

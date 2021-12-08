@@ -10,9 +10,12 @@
     "dev": "gulp dev",
     "watch": "gulp watch",
     "validate": "svelte-check",
-    "sign": "ts-node sign",
     "test": "jest src",
-    "test:watch": "npm run test -- --watch"
+    "test:watch": "npm run test -- --watch",
+    "publish": "ts-node scripts/publish.ts",
+    "sign-firefox": "ts-node scripts/publish.ts firefox",
+    "build-chrome": "ts-node scripts/publish.ts chrome",
+    "build-edge": "ts-node scripts/publish.ts edge"
   },
   "jest": {
     "transform": {

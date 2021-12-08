@@ -1,6 +1,6 @@
-const sveltePreprocess = require("svelte-preprocess");
+const sveltePreprocess = require('svelte-preprocess');
 
 module.exports = {
-  preprocess: sveltePreprocess({
-  }),
+  css: css => css.write('bundle.css', true),
+  preprocess: sveltePreprocess(),
 };
