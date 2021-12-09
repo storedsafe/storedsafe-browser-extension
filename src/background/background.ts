@@ -206,7 +206,7 @@ Logger.Init().then(() => {
   }
 
   function populateSearch() {
-    if (searchPort !== null) {
+    if (!!searchPort) {
       browser.tabs
         .query({ active: true, currentWindow: true })
         .then(([tab]) => {

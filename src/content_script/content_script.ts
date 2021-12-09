@@ -94,7 +94,11 @@ Logger.Init().then(() => {
       createIframe('save')
     }
     if (message.context === 'fill' && message.action === 'open') {
-      createIframe('fill')
+      let shouldFill = false;
+      for (const form of currentForms) {
+        if (FORM_FILL_TYPES.includes(form[1])) shouldFill = true
+      }
+      if (shouldFill) createIframe('fill')
     }
     else if (message.context === 'fill' && message.action === 'fill') {
       fill(message.data)
