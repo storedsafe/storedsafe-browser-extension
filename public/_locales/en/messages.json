@@ -91,18 +91,18 @@
     "message": "Create object",
     "description": "Text for button to create a new object."
   },
-	"ADD_EDIT": {
+  "ADD_EDIT": {
     "message": "Edit",
     "description": "Button text to go into edit mode for pre-populated add form."
-	},
+  },
   "ADD_SUCCESS": {
     "message": "Successfully added object to StoredSafe!",
     "description": "Message to be displayed after successfully adding object to StoredSafe."
   },
-	"ENCRYPTED_TITLE": {
-		"message": "Encrypted field, not searchable",
+  "ENCRYPTED_TITLE": {
+    "message": "Encrypted field, not searchable",
     "descriptions": "Message to be displayed when hovering [enc] on encrypted field"
-	},
+  },
   "LOADING_TITLE": {
     "message": "Loading",
     "description": "Hover text for loading bar."
@@ -480,6 +480,14 @@
     "message": "See and clear extension data",
     "description": "Subtitle for options menu item to manage extension data."
   },
+  "OPTIONS_ABOUT_TITLE": {
+    "message": "About",
+    "description": "Title for about menu item to view extension info"
+  },
+  "OPTIONS_ABOUT_SUBTITLE": {
+    "message": "Info about the extension",
+    "description": "Subtitle for options menu item to view extension info"
+  },
   "OPTIONS_SITES_ADD_HEADER": {
     "message": "Add a new site",
     "description": "Header for add site area of options."
@@ -572,12 +580,12 @@
     "message": "or",
     "description": "Text to make match policy and regular generator more distinct from each other."
   },
-	"GENERATE_PASSWORD_EDIT": {
+  "GENERATE_PASSWORD_EDIT": {
     "message": "Edit",
     "description": "Button text to enter edit mode for generated password"
-	},
-	"GENERATE_PASSWORD_PREVIEW": {
-		"message": "Preview",
+  },
+  "GENERATE_PASSWORD_PREVIEW": {
+    "message": "Preview",
     "description": "Button text to exit edit mode for generated password"
   },
   "IFRAME_CLOSE": {

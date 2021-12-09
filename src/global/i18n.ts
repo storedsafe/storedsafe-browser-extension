@@ -1,7 +1,7 @@
 /**
- * Identifiers for localized messages.
- * @see /public/_locales
- */
+* Identifiers for localized messages.
+* @see /public/_locales
+*/
 export enum LocalizedMessage {
   EXTENSION_NAME = 'EXTENSION_NAME',
 
@@ -145,6 +145,8 @@ export enum LocalizedMessage {
   OPTIONS_IGNORE_TITLE = 'OPTIONS_IGNORE_TITLE',
   OPTIONS_DATA_SUBTITLE = 'OPTIONS_DATA_SUBTITLE',
   OPTIONS_DATA_TITLE = 'OPTIONS_DATA_TITLE',
+  OPTIONS_ABOUT_TITLE = "OPTIONS_ABOUT_TITLE",
+  OPTIONS_ABOUT_SUBTITLE = "OPTIONS_ABOUT_SUBTITLE",
 
   // Ignore options
   OPTIONS_IGNORE_EMPTY = 'OPTIONS_IGNORE_EMPTY',
@@ -173,6 +175,8 @@ export enum LocalizedMessage {
 
   // Manage data
   CLEAR_DATA = 'CLEAR_DATA',
+
+  // About
 }
 
 /**

@@ -1,0 +1,34 @@
+{
+  "0.6.10": [
+    "Fixed issue with autofill where fill would trigger even if there was no form to fill",
+    "Added about page with changelog under option"
+  ],
+  "0.6.9": [
+    "Search stability fix",
+    "Fixed bug where object wouldn't be decrypted before entering edit mode",
+    "Disabled transitions for better performance",
+    "Fixed bug where the badge number icon would stay on after logout",
+    "Will now refresh the search after clicking the search icon or pressing enter",
+    "Updated user interface for Manage Data page in settings",
+    "Added global setting for whether or not to ask to save logins",
+    "Password inputs are now obfuscated when not focused",
+    "Updated title interface for a single host",
+    "Will now treat URLs with or without parameters the same when judging whether the used login already exists in StoredSafe"
+  ],
+  "0.6.8": [
+    "Bug fixes for form scanning / save prompt",
+    "Added version number to options",
+    "Other minor fixes"
+  ],
+  "0.6.7": [
+    "Made UI more consistent across browsers"
+  ],
+  "0.6.6": [
+    "Fixed background search"
+  ],
+  "0.6.2": [
+    "New UI",
+    "Swedish translation",
+    "Password generator"
+  ]
+}

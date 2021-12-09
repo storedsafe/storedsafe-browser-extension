@@ -381,6 +381,12 @@
 	"OPTIONS_DATA_SUBTITLE": {
 		"message": "Se och ta bort tilläggs-data"
 	},
+	"OPTIONS_ABOUT_TITLE": {
+		"message": "Om tillägget"
+	},
+	"OPTIONS_ABOUT_SUBTITLE": {
+		"message": "Info om tillägget"
+	},
 	"OPTIONS_SITES_ADD_HEADER": {
 		"message": "Lägg till StoredSafe-server"
 	},
