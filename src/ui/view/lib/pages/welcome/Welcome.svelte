@@ -4,15 +4,9 @@
   import ManageSites from "../options/ManageSites.svelte";
 </script>
 
-<style>
-  h2 {
-    text-align: center;
-  }
-</style>
-
 <section class="grid">
-  <h2>{getMessage(LocalizedMessage.WELCOME_MESSAGE_TITLE)}</h2>
   <Card>
+    <h2>{getMessage(LocalizedMessage.WELCOME_MESSAGE_TITLE)}</h2>
     <p>
       {@html getMessage(LocalizedMessage.WELCOME_MESSAGE_DESCRIPTION)}
     </p>
@@ -22,3 +16,9 @@
   </Card>
   <ManageSites />
 </section>
+
+<style>
+  h2 {
+    text-align: center;
+  }
+</style>
