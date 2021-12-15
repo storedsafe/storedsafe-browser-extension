@@ -1,7 +1,6 @@
 {
   "0.6.10": [
-    "Fixed issue with autofill where fill would trigger even if there was no form to fill",
-    "Added about page with changelog under option"
+    "Fixed issue with autofill where fill would trigger even if there was no form to fill"
   ],
   "0.6.9": [
     "Search stability fix",
