@@ -85,17 +85,22 @@ function parseContext(form: [HTMLElement, Input[]]): Form {
   }
 
   // Special cases
-  if (hidden.length === inputs.length) return createForm(FormType.HIDDEN)
+  if (hidden.length === inputs.length) {
+    logger.debug("Hidden form: %o", parent)
+    return createForm(FormType.HIDDEN)
+  }
   if (
     (submits.length === 0 && maybeSubmits.length === 0) ||
     matchable.length === 0
-  )
+  ) {
+    logger.debug("Incomplete form: %o", parent)
     return createForm(FormType.INCOMPLETE)
+  }
 
   // 1. Check for form element name match
   for (const [formType, matcher] of formMatchers) {
     if (matchName(parent, matcher.name)) {
-      logger.debug("Name match: %s %o", matcher.name, parent)
+      logger.debug("%o name match: %s %o", formType, matcher.name, parent)
       return createMatchableForm(formType)
     }
   }
@@ -103,7 +108,7 @@ function parseContext(form: [HTMLElement, Input[]]): Form {
   // 2. Check for form attributes matches
   for (const [formType, matcher] of formMatchers) {
     if (matchAttributes(parent, matcher.attributes)) {
-      logger.debug("Attributes match: %o %o", matcher.attributes, parent)
+      logger.debug("%o attributes match: %o %o", formType, matcher.attributes, parent)
       return createMatchableForm(formType)
     }
   }
@@ -111,11 +116,12 @@ function parseContext(form: [HTMLElement, Input[]]): Form {
   // 3. Check if the form fields match
   for (const [formType, matcher] of formMatchers) {
     if (matchFields(inputs, matcher.fields)) {
-      logger.debug("Fields match: %o %o", matcher.fields, parent)
+      logger.debug("%o fields match: %o %o", formType, matcher.fields, parent)
       return createMatchableForm(formType)
     }
   }
 
+  logger.debug("Unknown form: %o", parent)
   return createForm(FormType.UNKNOWN)
 }
 

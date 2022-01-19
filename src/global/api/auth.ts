@@ -93,6 +93,34 @@ export async function loginYubikey(
   }
 }
 
+/**
+ * Login to the given StoredSafe `site` using smartcard certificate.
+ * @param site Site to authenticate against.
+ * @param username Username for `host`.
+ * @param passphrase Passphrase associated with `username`.
+ */
+export async function loginSmartcard(
+  { host, apikey }: Site,
+  username: string,
+  passphrase: string,
+  otp: string
+): Promise<void> {
+  const api = new StoredSafe({ host, apikey })
+  try {
+    const response = await api.loginSmartCard(username, passphrase)
+    if (response.status === 200) {
+      await afterLogin(host, parseLogin(response.data))
+    } else if (response.status === 403) {
+      throw new StoredSafeAuthLoginError()
+    } else {
+      throw new Error(`Unknown response status: ${response.status}`)
+    }
+  } catch (error) {
+    if (error instanceof StoredSafeBaseError) throw error
+    throw new StoredSafeNetworkError(error, error.status)
+  }
+}
+
 async function afterLogout(host: string): Promise<void> {
   await sessions.remove(host)
   // TODO: After logout tasks (purge results, etc)

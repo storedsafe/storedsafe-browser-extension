@@ -14,11 +14,11 @@ function printForms(forms: Form[]) {
   for (const [form, formType, inputs] of forms) {
     if (formType === FormType.UNKNOWN) {
       logger.debug('Unknown form %o', form)
-      return
+      continue
     }
     if (formType === FormType.HIDDEN) {
       logger.debug('Hidden form %o', form)
-      return
+      continue
     }
     logger.group(formType + " form", LogLevel.DEBUG)
     logger.debug('%o', form)
@@ -32,11 +32,9 @@ function printForms(forms: Form[]) {
 }
 
 function filterForms(forms: Form[]): Form[] {
-  return forms.filter(([_form, formType]) => {
-    return (
-      FORM_FILL_TYPES.includes(formType) || FORM_SAVE_TYPES.includes(formType)
-    )
-  })
+  return forms.filter(([_form, formType]) => (
+    FORM_FILL_TYPES.includes(formType) || FORM_SAVE_TYPES.includes(formType)
+  ))
 }
 
 export function scanner(cb: (forms: Form[]) => void) {
@@ -104,15 +102,26 @@ export function scanner(cb: (forms: Form[]) => void) {
       }
     }
 
+    console.log(scanQueue)
     if (scanQueue.size > 0) {
       logger.debug('Mutations observed, rescanning %d nodes', scanQueue.size)
-      for (const element of scanQueue) {
-        const elementForms = getForms(getInputs(element))
-        for (const form of elementForms) {
-          newForms.set(form[0], form)
+      let parent = scanQueue[0].parentElement;
+      let i = 0;
+      while (i < scanQueue.size && parent && parent !== document.body) {
+        if (parent.contains(scanQueue[i])) {
+          i++
+        } else if (scanQueue[i] === parent || scanQueue[i].contains(parent)) {
+          parent = scanQueue[i++].parentElement
+        } else {
+          parent = parent.parentElement
         }
       }
-      updateForms([...newForms.values()])
+      const elementForms = getForms(getInputs(parent))
+      console.log("PARENT %o\nFORMS %o", parent, elementForms)
+      // for (const form of elementForms) {
+      //   newForms.set(form[0], form)
+      // }
+      // updateForms([...newForms.values()])
     }
   })
 
