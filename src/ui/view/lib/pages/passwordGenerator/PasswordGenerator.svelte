@@ -125,7 +125,7 @@
           type: "range",
           default: 0,
           attributes: {
-            min: 1,
+            min: 0,
             max: 24,
           },
         },
