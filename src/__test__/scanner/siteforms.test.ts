@@ -1,3 +1,6 @@
+/**
+ * @jest-environment jsdom
+ */
 import '@testing-library/jest-dom'
 import { render, fireEvent } from '@testing-library/svelte'
 import { InputType, FormType } from '../../content_script/tasks/scanner/constants'
