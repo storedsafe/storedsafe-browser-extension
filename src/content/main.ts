@@ -1,0 +1,1 @@
+console.log("[StoredSafe] Content Script Loaded")

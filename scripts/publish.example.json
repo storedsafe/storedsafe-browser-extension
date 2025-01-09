@@ -1,6 +1,0 @@
-{
-  "host": "<my-storedsafe-host>",
-  "firefox": "<storedsafe-object-id>",
-  "chrome": "<storedsafe-object-id>",
-  "edge": "<storedsafe-object-id>"
-}

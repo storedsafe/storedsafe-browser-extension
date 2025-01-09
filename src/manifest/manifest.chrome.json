@@ -1,0 +1,32 @@
+{
+  "manifest_version": 3,
+  "storage": {
+    "managed_schema": "schema.json"
+  },
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "action": {
+    "default_title": "StoredSafe",
+    "default_popup": "popup.html",
+    "default_icon": {
+      "48": "assets/icon-inactive_48.png",
+      "96": "assets/icon-inactive_96.png"
+    }
+  },
+  "commands": {
+    "_execute_action": {
+      "suggested_key": {
+        "default": "Alt+Shift+S"
+      },
+      "description": "Open StoredSafe Popup"
+    },
+    "fill": {
+      "suggested_key": {
+        "default": "Alt+Shift+F"
+      },
+      "description": "Fill form on page if data is available"
+    }
+  }
+}

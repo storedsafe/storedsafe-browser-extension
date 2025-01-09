@@ -1,0 +1,76 @@
+{
+  "type": "object",
+  "properties": {
+    "sites": {
+      "type": "array",
+      "title": "Available StoredSafe sites.",
+      "description": "StoredSafe sites managed by your organization.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "host": {
+            "type": "string"
+          },
+          "apikey": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "settings": {
+      "type": "object",
+      "properties": {
+        "enforced": {
+          "description": "Enforced settings that cannot be changed by users.",
+          "type": "object",
+          "properties": {
+            "autoFill": {
+              "title": "Auto Fill",
+              "type": "boolean"
+            },
+            "idleMax": {
+              "title": "Idle Max",
+              "description": "Max number of minutes a user can be idle before token gets invalidated.",
+              "type": "number"
+            },
+            "maxTokenLife": {
+              "title": "Max Token life",
+              "description": "Max number of minutes a token is allowed to be valid.",
+              "type": "number"
+            },
+            "offerSave": {
+              "title": "Offer Save",
+              "description": "Offer to save login",
+              "type": "boolean"
+            }
+          }
+        },
+        "defaults": {
+          "description": "Default settings to replace the built-in defaults.",
+          "type": "object",
+          "properties": {
+            "autoFill": {
+              "title": "Auto Fill",
+              "type": "boolean"
+            },
+            "idleMax": {
+              "title": "Idle Max",
+              "description": "Max number of minutes a user can be idle before token gets invalidated.",
+              "type": "number"
+            },
+            "maxTokenLife": {
+              "title": "Max Token life",
+              "description": "Max number of minutes a token is allowed to be valid.",
+              "type": "number"
+            },
+            "offerSave": {
+              "title": "Offer Save",
+              "description": "Offer to save login",
+              "type": "boolean"
+            }
+          }
+        }
+      }
+    }
+  }
+}
