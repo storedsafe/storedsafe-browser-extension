@@ -1,1 +1,0 @@
-{"version":3,"file":"content.js","sources":["../../src/content/main.ts"],"sourcesContent":["console.log(\"[StoredSafe] Content Script Loaded\")"],"names":[],"mappings":"AAAA,QAAQ,IAAI,oCAAoC"}

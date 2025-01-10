@@ -11,7 +11,7 @@ import { rm } from "./buildtools/lib/clean";
 
 import type { InlineConfig, PluginOption } from "vite";
 
-const OUT_DIR = "dist";
+const OUT_DIR = path.join("dist", "build");
 const opts = global.buildtools?.opts;
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
