@@ -1,0 +1,103 @@
+<!DOCTYPE HTML>
+<html lang="en">
+
+<head>
+  <title>Login Test</title>
+  <link rel="stylesheet" href="main.css">
+  <script src="main.js"></script>
+</head>
+
+<body>
+  <h1>Test Forms</h1>
+  <main>
+    <div class="form">
+     <h2>Submitted Values</h2> 
+     <div id="submitted-values">
+      No submitted values
+     </div>
+    </div>
+
+    <!-- Regular login -->
+    <form class="form" id="login" method="POST" action="/">
+      <h2>Login</h2>
+      <label for="login-username">
+        <span>Username: </span><input type="text" id="login-username" name="username" autocomplete="username">
+      </label>
+      <label for="login-password">
+        <span>Password: </span><input type="password" id="login-password" name="password" autocomplete="current-password">
+      </label>
+      <BUTTON type="SUBMIT">Submit</button>
+    </form>
+
+    <!-- Regular register -->
+    <form class="form" id="register" method="POST" action="/">
+      <h2>Register</h2>
+      <label for="register-username">
+        <span>Username: </span><input type="text" id="register-username" name="username" autocomplete="username">
+      </label>
+      <label for="register-password">
+        <span>Password: </span><input type="password" id="register-password" autocomplete="new-password" name="password">
+      </label>
+      <label for="register-password-re">
+        <span>Repeat Password: </span><input type="password" id="register-password-re" autocomplete="new-password" name="password-re">
+      </label>
+      <button type="submit">Submit</button>
+    </form>
+
+    <!-- Hidden -->
+    <form class="form" id="hidden">
+      <h2>Hidden</h2>
+      <input type="hidden" value="hidden" id="hidden-hidden-1" />
+      <input type="hidden" value="hidden" id="hidden-hidden-2" />
+    </form>
+
+    <!-- No form login -->
+    <article class="form" id="article-login">
+      <h2>Article Login (no form)</h2>
+      <label for="article-login-username">
+        <span>Username: </span><input type="text" id="article-login-username" name="username" autocomplete="username">
+      </label>
+      <label for="article-login-password">
+        <span>Password: </span><input type="password" id="article-login-password" name="password" autocomplete="current-password">
+      </label>
+      <button>Submit</button>
+    </article>
+
+    <!-- No form register -->
+    <article class="form" id="article-register" method="POST" action="/">
+      <h2>Article Register (no form)</h2>
+      <label for="article-register-username">
+        <span>Username: </span><input type="text" id="article-register-username" name="username" autocomplete="username">
+      </label>
+      <label for="article-register-password">
+        <span>Password: </span><input type="password" id="article-register-password" autocomplete="new-password" name="password">
+      </label>
+      <label for="article-register-password-re">
+        <span>Repeat Password: </span><input type="password" id="article-register-password-re" autocomplete="new-password" name="password-re">
+      </label>
+      <button>Submit</button>
+    </article>
+
+    <!-- Newsletter -->
+    <form class="form" id="newsletter" method="POST" action="/">
+      <h2>Newsletter</h2>
+      <label for="email">
+        <span>E-mail</span>
+        <input type="email" name="email" id="email" />
+      </label>
+      <button>Sign up for our newsletter!</button>
+    </form>
+
+    <!-- Search -->
+    <form class="form" id="search" method="POST" action="/">
+      <h2>Search</h2>
+      <label for="search-text">
+        <span>Search</span>
+        <input type="search" name="search" id="search-text" />
+      </label>
+      <button>Search</button>
+    </form>
+  </main>
+</body>
+
+</html>
