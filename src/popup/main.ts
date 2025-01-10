@@ -30,8 +30,9 @@
 
 // export default extension
 
+import "../styles/global.css"
+
 import { mount } from "svelte";
-import "../global.css";
 
 import Popup from "./Popup.svelte";
 

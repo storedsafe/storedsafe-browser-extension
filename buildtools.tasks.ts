@@ -44,9 +44,10 @@ function makeViteConfig(platform: string): InlineConfig {
     build: {
       rollupOptions: {
         input: {
-          popup: path.resolve(__dirname, "src/popup/main.ts"),
+          popup: path.resolve(__dirname, "popup.html"),
           background: path.resolve(__dirname, "src/background/main.ts"),
           content: path.resolve(__dirname, "src/content/main.ts"),
+          content_ui: path.resolve(__dirname, "content.html"),
         },
         output: {
           entryFileNames: "[name].js",
