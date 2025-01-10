@@ -43,7 +43,7 @@ if not p_in.exists() and not p_in.is_dir():
 
 p_out = Path(sys.argv[2])
 if not p_out.exists() and not p_out.is_dir():
-    print(str(p) + " is not a folder.")
+    print(str(p_out) + " is not a folder.")
 
 with p_out.open('w') as out_file:
     images = {}
