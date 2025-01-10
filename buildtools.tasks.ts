@@ -10,8 +10,10 @@ import fileutils, { copy } from "./buildtools/lib/fileutils";
 import { rm } from "./buildtools/lib/clean";
 
 import type { InlineConfig, PluginOption } from "vite";
+import browserPolyfillPlugin from "./plugins/vite-plugin-browser-polyfill";
 
 const OUT_DIR = path.join("dist", "build");
+const BROWSER_POLYFILL = "/externals/browser-polyfill.min.js";
 const opts = global.buildtools?.opts;
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -40,19 +42,20 @@ function copyPublicFiles(platform: string, inFiles: string[]) {
 function makeViteConfig(platform: string): InlineConfig {
   return {
     logLevel: "info",
-    plugins: [svelte()],
+    plugins: [svelte(), browserPolyfillPlugin(platform, BROWSER_POLYFILL)],
     build: {
       rollupOptions: {
         input: {
           popup: path.resolve(__dirname, "popup.html"),
           background: path.resolve(__dirname, "src/background/main.ts"),
-          content: path.resolve(__dirname, "src/content/main.ts"),
-          content_ui: path.resolve(__dirname, "content.html"),
+          content: path.resolve(__dirname, "src/content_script/main.ts"),
+          content_ui: path.resolve(__dirname, "content_script.html"),
         },
         output: {
           entryFileNames: "[name].js",
           chunkFileNames: "[name].[hash].js",
         },
+        external: [BROWSER_POLYFILL],
       },
       outDir: `${OUT_DIR}/${platform}`,
       sourcemap: opts.dev,
@@ -91,8 +94,8 @@ export const manifest = parallel(manifestChrome, manifestFirefox);
 /* External dependencies */
 export function copyDepsChrome() {
   const inFiles: string[] = [
-    // "node_modules/webextension-polyfill/dist/browser-polyfill.min.js",
-    // "node_modules/webextension-polyfill/dist/browser-polyfill.min.js.map",
+    "node_modules/webextension-polyfill/dist/browser-polyfill.min.js",
+    "node_modules/webextension-polyfill/dist/browser-polyfill.min.js.map",
   ];
   copyDependencies("chrome", inFiles);
 }
