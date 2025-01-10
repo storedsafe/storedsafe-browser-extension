@@ -6,8 +6,18 @@
     "resolveJsonModule": true,
     "moduleDetection": "force",
     "esModuleInterop": true,
-    "useDefineForClassFields": true
+    "useDefineForClassFields": true,
+    "types": [
+      "node",
+      "firefox-webext-browser",
+      "@vitest/browser/providers/playwright"
+    ]
   },
-  "include": ["src/**/*.ts", "src/**/*.js", "src/**/*.svelte", "buildtools/**/*.ts"],
-  "exclude": ["node_modules"],
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.js",
+    "src/**/*.svelte",
+    "buildtools/**/*.ts"
+  ],
+  "exclude": ["node_modules"]
 }

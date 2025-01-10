@@ -28,5 +28,11 @@
       },
       "description": "Fill form on page if data is available"
     }
-  }
+  },
+  "content_scripts": [
+    {
+      "matches": ["http://*/*", "https://*/*"],
+      "js": ["externals/browser-polyfill.min.js", "content.js"]
+    }
+  ]
 }

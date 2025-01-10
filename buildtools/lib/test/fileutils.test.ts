@@ -1,6 +1,9 @@
-import * as path from 'path';
-import * as assert from 'assert';
-import * as fileutils from '../fileutils';
+import { fileURLToPath } from "node:url";
+import * as path from "node:path";
+import * as assert from "node:assert";
+import * as fileutils from "../fileutils";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const fileDir = path.join(__dirname, "foo");
 const filePath = path.join(fileDir, "/bar.txt");
@@ -8,7 +11,7 @@ const altFilePath = path.join(fileDir, "/zot.txt");
 const fileText = "hello world";
 
 if (fileutils.pathExists(fileDir)) {
-    fileutils.deletePath(fileDir);
+  fileutils.deletePath(fileDir);
 }
 
 fileutils.createPath(filePath);

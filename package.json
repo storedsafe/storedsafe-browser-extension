@@ -32,18 +32,25 @@
     "@commander-js/extra-typings": "^13.0.0",
     "@sveltejs/vite-plugin-svelte": "^5.0.3",
     "@tsconfig/svelte": "^5.0.4",
+    "@types/firefox-webext-browser": "^120.0.4",
     "@types/lodash.merge": "^4.6.9",
     "@types/webextension-polyfill": "^0.12.1",
+    "@vitest/browser": "^2.1.8",
     "chokidar": "^4.0.3",
     "commander": "^13.0.0",
     "lodash.merge": "^4.6.2",
+    "playwright": "^1.49.1",
     "storedsafe": "^1.0.0",
-    "svelte": "^5.17.1",
+    "svelte": "^5.17.3",
     "ts-node": "^10.9.2",
     "tsx": "^4.19.2",
     "typescript": "^5.7.3",
     "vite": "^6.0.7",
-    "web-ext": "^8.3.0",
+    "vitest": "^2.1.8",
+    "vitest-browser-svelte": "^0.0.1",
+    "web-ext": "^8.3.0"
+  },
+  "dependencies": {
     "webextension-polyfill": "^0.12.0"
   }
 }

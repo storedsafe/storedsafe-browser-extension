@@ -10,7 +10,7 @@
   "content_scripts": [
     {
       "matches": ["http://*/*", "https://*/*"],
-      "js": ["content.js"]
+      "js": ["externals/browser-polyfill.min.js", "content.js"]
     }
   ],
   "permissions": ["storage", "idle", "activeTab", "tabs", "alarms"]
