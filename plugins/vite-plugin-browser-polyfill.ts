@@ -1,3 +1,5 @@
+import MagicString from "magic-string";
+
 export default function browserPolyfillPlugin(
   platform: string,
   importName: string
@@ -5,16 +7,28 @@ export default function browserPolyfillPlugin(
   return {
     name: "vite-plugin-browser-polyfill",
     transform(code: string, id: string) {
+      const s = new MagicString(code);
       if (platform !== "firefox") {
         if (id.includes("background/main.ts")) {
-          return `import '${importName}';\n` + code;
+          s.prepend(`import '${importName}';\n`)
+          return {
+            code: s.toString(),
+            map: s.generateMap()
+          }
         }
         if (id.includes("popup.html")) {
           const moduleIndex = code.indexOf('<script type="module"')
-          code = [code.slice(0, moduleIndex), `<script src="${importName}"></script>\n`, code.slice(moduleIndex)].join("")
+          s.prependLeft(moduleIndex, `<script src="${importName}"></script>\n`)
+          return {
+            code: s.toString(),
+            map: s.generateMap()
+          }
         }
       }
-      return code;
+      return {
+        code: s.toString(),
+        map: s.generateMap(),
+      };
     },
   };
 }

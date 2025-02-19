@@ -1,4 +1,4 @@
-import { getMessage, LocalizedMessage } from './i18n'
+import { getMessage, LocalizedMessage } from "./i18n";
 
 /**
  * Open a URL in the browser window.
@@ -7,33 +7,33 @@ import { getMessage, LocalizedMessage } from './i18n'
  */
 export async function goto(url: string): Promise<void> {
   // Force external url to HTTPS if not defined
-  if (!url.match(/^\w+:\/\/.*/)) url = `https://${url}`
-  window.open(url, url)
-  return await Promise.resolve()
+  if (!url.match(/^\w+:\/\/.*/)) url = `https://${url}`;
+  window.open(url, url);
+  return await Promise.resolve();
 }
 
 /* Rule to verify a password by, relative to a policy */
-type PasswordRule = (password: string, policyValue: any) => boolean
+type PasswordRule = (password: string, policyValue: any) => boolean;
 const passwordRules: Record<string, PasswordRule> = {
   min_length: (password, length: number) => password.length >= length,
   max_length: (password, length: number) => password.length <= length,
 
   min_lowercase_chars: (password, count: number) => {
-    const match = password.match(/[a-z]/g)
-    return !!match?.length ? match.length >= count : false
+    const match = password.match(/[a-z]/g);
+    return !!match?.length ? match.length >= count : false;
   },
   max_lowercase_chars: (password, count: number) => {
-    const match = password.match(/[a-z]/g)
-    return !!match?.length ? match.length <= count : true
+    const match = password.match(/[a-z]/g);
+    return !!match?.length ? match.length <= count : true;
   },
 
   min_uppercase_chars: (password, count: number) => {
-    const match = password.match(/[A-Z]/g)
-    return !!match?.length ? match.length >= count : false
+    const match = password.match(/[A-Z]/g);
+    return !!match?.length ? match.length >= count : false;
   },
   max_uppercase_chars: (password, count: number) => {
-    const match = password.match(/[A-Z]/g)
-    return !!match?.length ? match.length <= count : true
+    const match = password.match(/[A-Z]/g);
+    return !!match?.length ? match.length <= count : true;
   },
 
   disallow_numeric_chars: (password, disallow) =>
@@ -44,12 +44,12 @@ const passwordRules: Record<string, PasswordRule> = {
     !disallow && !!password.match(/[0-9]$/g),
 
   min_numeric_chars: (password, count: number) => {
-    const match = password.match(/[0-9]/g)
-    return !!match?.length ? match.length >= count : false
+    const match = password.match(/[0-9]/g);
+    return !!match?.length ? match.length >= count : false;
   },
   max_numeric_chars: (password, count: number) => {
-    const match = password.match(/[0-9]/g)
-    return !!match?.length ? match.length <= count : true
+    const match = password.match(/[0-9]/g);
+    return !!match?.length ? match.length <= count : true;
   },
 
   disallow_nonalphanumeric_chars: (password, disallow) =>
@@ -60,14 +60,14 @@ const passwordRules: Record<string, PasswordRule> = {
     !disallow && !!password.match(/[\W]$/g),
 
   min_nonalphanumeric_chars: (password, count: number) => {
-    const match = password.match(/[\W]/g)
-    return !!match?.length ? match.length >= count : false
+    const match = password.match(/[\W]/g);
+    return !!match?.length ? match.length >= count : false;
   },
   max_nonalphanumeric_chars: (password, count: number) => {
-    const match = password.match(/[\W]/g)
-    return !!match?.length ? match.length <= count : true
-  }
-}
+    const match = password.match(/[\W]/g);
+    return !!match?.length ? match.length <= count : true;
+  },
+};
 
 const passwordErrors: Record<string, LocalizedMessage> = {
   min_length: LocalizedMessage.PASSWORD_MIN_LENGTH_ERROR,
@@ -92,27 +92,35 @@ const passwordErrors: Record<string, LocalizedMessage> = {
   min_nonalphanumeric_chars:
     LocalizedMessage.PASSWORD_MIN_NONALPHANUMERIC_CHARS_ERROR,
   max_nonalphanumeric_chars:
-    LocalizedMessage.PASSWORD_MAX_NONALPHANUMERIC_CHARS_ERROR
-}
+    LocalizedMessage.PASSWORD_MAX_NONALPHANUMERIC_CHARS_ERROR,
+};
 
 export function isPolicyMatch(
   password: string,
   policy: StoredSafePasswordPolicy
 ): [boolean, string[]] {
-  const errors: string[] = []
+  const errors: string[] = [];
   // Ensure password is a string
-  password = password ?? ''
+  password = password ?? "";
   return [
     Object.keys(policy.rules).reduce((acc, rule) => {
-      const isRuleMatch = passwordRules[rule](password, policy.rules[rule])
+      const isRuleMatch = passwordRules[rule](
+        password,
+        policy.rules[rule as keyof typeof policy.rules]
+      );
       if (!isRuleMatch)
-        errors.push(getMessage(passwordErrors[rule], policy.rules[rule]))
-      return acc && isRuleMatch
+        errors.push(
+          getMessage(
+            passwordErrors[rule],
+            policy.rules[rule as keyof typeof policy.rules]
+          )
+        );
+      return acc && isRuleMatch;
     }, true),
-    errors
-  ]
+    errors,
+  ];
 }
 
 export function copyText(text: string): Promise<void> {
-  return navigator.clipboard.writeText(text)
+  return navigator.clipboard.writeText(text);
 }

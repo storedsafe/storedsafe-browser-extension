@@ -1,9 +1,23 @@
-<script lang="ts">
-  import { backIcon } from "../../../../global/icons";
-  import Icon from "../layout/Icon.svelte";
+<script lang="ts" module>
+  export interface Props {
+    selected?: boolean;
+    single?: boolean;
+    onClick?: () => void;
+    children?: Snippet;
+  }
+</script>
 
-  export let selected: boolean = false;
-  export let single: boolean = false;
+<script lang="ts">
+  import { backIcon } from "@/global/icons";
+  import Icon from "@/ui/view/lib/layout/Icon.svelte";
+  import type { Snippet } from "svelte";
+
+  const {
+    selected = false,
+    single = false,
+    onClick,
+    children,
+  }: Props = $props();
 
   const backIconProps = {
     d: backIcon,
@@ -16,11 +30,11 @@
   @component
   Button representing an item in a ListView component.
 -->
-<button type="button" class:single class:selected on:click>
+<button type="button" class:single class:selected onclick={() => onClick?.()}>
   {#if !single && selected}
     <Icon {...backIconProps} />
   {/if}
-  <slot />
+  {@render children?.()}
 </button>
 
 <style>
@@ -30,7 +44,9 @@
     justify-content: flex-start;
     background-color: var(--color-input-bg);
     color: var(--color-fg);
-    transition: background-color 0.2s, border-bottom 0.2s;
+    transition:
+      background-color 0.2s,
+      border-bottom 0.2s;
     text-align: left;
     overflow: hidden;
   }

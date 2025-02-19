@@ -1,27 +1,43 @@
 <script lang="ts">
-  import { createEventDispatcher } from "svelte";
-  import { getMessage, LocalizedMessage } from "../../../../../global/i18n";
-  import { structure } from "../../../../stores";
-  import PasswordInput from "../../layout/PasswordInput.svelte";
+  import { getMessage, LocalizedMessage } from "@/global/i18n";
+  import { instances, messages, MessageType } from "@/ui/stores";
+  import PasswordInput from "@/ui/view/lib/layout/PasswordInput.svelte";
   import AddField from "./AddField.svelte";
 
-  export let host: string;
-  export let templateid: string;
-  export let groupid: string;
-  export let values: Record<string, string>;
-  export let edit: boolean = false;
+  interface Props {
+    host: string;
+    templateid: string;
+    groupid: string;
+    values: Record<string, string>;
+    edit?: boolean;
+    onValidate: (isValid: boolean) => void;
+  }
 
-  const dispatch = createEventDispatcher();
+  let {
+    host,
+    templateid = $bindable(),
+    groupid = $bindable(),
+    values = $bindable(),
+    edit = false,
+    onValidate,
+  }: Props = $props();
+
   const startValues: Record<string, string> = { ...values };
-  let changedFields: Record<string, boolean> = {};
+  let changedFields: Record<string, boolean> = $state({});
 
-  $: template = $structure
-    .get(host)
-    ?.templates?.find(({ id }) => id === templateid);
-  $: vault = $structure.get(host)?.vaults?.find(({ id }) => id === groupid);
-  $: policy = $structure
-    .get(host)
-    ?.policies?.find(({ id }) => id === vault?.policyId);
+  let template = $derived(
+    instances.instances
+      .get(host)
+      ?.templates?.find(({ id }) => id === templateid)
+  );
+  let vault = $derived(
+    instances.instances.get(host)?.vaults?.find(({ id }) => id === groupid)
+  );
+  let policy = $derived(
+    instances.instances
+      .get(host)
+      ?.policies?.find(({ id }) => id === vault?.policyId)
+  );
 
   function mapChanges(values: Record<string, string>) {
     changedFields = {};
@@ -33,7 +49,7 @@
     return hasChanges;
   }
 
-  function validateField({ required }, value: string) {
+  function validateField({ required }: StoredSafeField, value: string) {
     let isValid: boolean = true;
     if (required) {
       if (typeof value === "string") {
@@ -46,23 +62,29 @@
   }
 
   function validate(values: Record<string, string>) {
+    if (!template) {
+      messages.add("Template is not set, invalid state.", MessageType.ERROR);
+      return;
+    }
     if (edit) {
       if (!mapChanges(values)) {
-        dispatch("validate", false);
+        onValidate(false);
         return;
       }
     }
-    const validFields = template?.structure.map((field) =>
-      validateField(field, values[field.name])
-    );
-    const isValid = validFields.reduce(
-      (valid, validField) => valid && validField,
-      true
-    );
-    dispatch("validate", isValid);
+
+    for (const field of template.structure) {
+      if (!validateField(field, values[field.name])) {
+        onValidate(false);
+        return;
+      }
+    }
+    onValidate(true);
   }
 
-  $: validate(values);
+  $effect(() => {
+    validate(values);
+  });
 </script>
 
 {#if !!template && !!policy}
@@ -74,9 +96,10 @@
         {#if field.isEncrypted}
           <span
             class="encrypted"
-            title={getMessage(LocalizedMessage.ENCRYPTED_TITLE)}>
+            title={getMessage(LocalizedMessage.ENCRYPTED_TITLE)}
+          >
             [enc]
-            </span>
+          </span>
         {/if}
       </span>
       <!-- StoredSafe Template -->

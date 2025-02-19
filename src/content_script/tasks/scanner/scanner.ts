@@ -110,6 +110,7 @@ export function scanner(cb: (forms: Form[]) => void) {
 
     if (scanQueue.size > 0) {
       logger.debug("Mutations observed, rescanning %d nodes", scanQueue.size);
+      // Find smallest common parent node for minimal rescan
       const scanList = Array.from(scanQueue);
       let parent = scanList[0].parentElement;
       let i = 0;
@@ -117,17 +118,25 @@ export function scanner(cb: (forms: Form[]) => void) {
         if (parent.contains(scanList[i])) {
           i++;
         } else if (scanList[i] === parent || scanList[i].contains(parent)) {
-          parent = scanList[i++].parentElement;
+          let newParent = scanList[i].parentElement;
+          if (newParent) parent = newParent;
+          i++;
         } else {
-          parent = parent.parentElement;
+          let newParent = parent.parentElement;
+          if (newParent) parent = newParent;
         }
       }
-      const elementForms = getForms(getInputs(parent));
-      console.log("PARENT %o\nFORMS %o", parent, elementForms);
-      // for (const form of elementForms) {
-      //   newForms.set(form[0], form)
-      // }
-      // updateForms([...newForms.values()])
+      if (parent === null) {
+        logger.error("Unexpected parent element with value `null`");
+        logger.debug("Current scan queue: %o", scanQueue);
+      } else {
+        const elementForms = getForms(getInputs(parent));
+        console.log("PARENT %o\nFORMS %o", parent, elementForms);
+        for (const form of elementForms) {
+          newForms.set(form[0], form);
+        }
+        updateForms([...newForms.values()]);
+      }
     }
   });
 

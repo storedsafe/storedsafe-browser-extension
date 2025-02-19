@@ -79,6 +79,7 @@ program
   .option("-l, --list-tasks", "List exported tasks from tasks file")
   .option("-w, --watch", "Set tasks to watch for changes and rerun where applicable.")
   .option("-d, --dev", "Run in development mode", false)
+  .option("--debug", "Run in debug mode", false)
   .argument("[tasks...]")
   .action(action);
 

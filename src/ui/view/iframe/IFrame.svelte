@@ -8,29 +8,29 @@
 
   function resize(e: CustomEvent<{ height: string; width: string }>) {
     const { height, width } = e.detail;
-    sendMessage({
-      context: "iframe",
-      action: "resize",
-      data: {
-        id: page,
-        height: `${height + 20}px`,
-        width: `${width + 20}px`,
-      },
-    });
+    // sendMessage({
+    //   context: "iframe",
+    //   action: "resize",
+    //   data: {
+    //     id: page,
+    //     height: `${height + 20}px`,
+    //     width: `${width + 20}px`,
+    //   },
+    // });
   }
 
   function close(e: CustomEvent<browser.runtime.Port>) {
     const port = e.detail;
-    sendMessage(
-      {
-        context: "iframe",
-        action: "close",
-        data: {
-          id: page,
-        },
-      },
-      port
-    );
+    // sendMessage(
+    //   {
+    //     context: "iframe",
+    //     action: "close",
+    //     data: {
+    //       id: page,
+    //     },
+    //   },
+    //   port
+    // );
   }
 </script>
 
@@ -77,7 +77,7 @@
 <div class="iframe">
   <section class="container">
     {#if page === 'save'}
-      <Save on:resize={resize} on:close={close} />
+      <Save onResize={resize} onClose={close} />
     {:else if page === 'fill'}
       <Fill on:resize={resize} on:close={close} />
     {/if}

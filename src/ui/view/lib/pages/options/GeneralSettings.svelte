@@ -1,39 +1,41 @@
-<script lang="ts" context="module">
-  import { Logger } from "../../../../../global/logger";
+<script lang="ts" module>
+  import { Logger } from "@/global/logger";
   const logger = new Logger("generalsettings");
 </script>
 
 <script lang="ts">
-  import { onDestroy } from "svelte";
-
-  import { getMessage, LocalizedMessage } from "../../../../../global/i18n";
-  import {
-    FIELDS,
+  import { getMessage, LocalizedMessage } from "@/global/i18n";
+  import type {
     SettingsField,
     SettingsFields,
-  } from "../../../../../global/storage/settings";
+  } from "@/global/storage/settings";
+  import { FIELDS } from "@/global/storage/settings";
   import {
     Duration,
     loading,
-    messageStore,
+    Messages,
     MessageType,
     settings,
     SETTINGS_UPDATE_LOADING_ID,
-  } from "../../../../stores";
+  } from "@/ui/stores";
 
-  import Card from "../../layout/Card.svelte";
-  import MessageViewer from "../../layout/MessageViewer.svelte";
-  import Toggle from "../../layout/Toggle.svelte";
+  import Card from "@/ui/view/lib/layout/Card.svelte";
+  import MessageViewer from "@/ui/view/lib/layout/MessageViewer.svelte";
+  import Toggle from "@/ui/view/lib/layout/Toggle.svelte";
 
-  const settingsMessages = messageStore();
+  const settingsMessages = new Messages();
 
-  let managedFields: [SettingsFields, SettingsField, any][];
-  let userFields: [SettingsFields, SettingsField, any][];
-  const unsubscribeSettings = settings.subscribe((newSettings) => {
+  const KEY_INDEX = 0;
+  const FIELD_INDEX = 1;
+  const VALUE_INDEX = 2;
+
+  let managedFields: [SettingsFields, SettingsField, any][] = $state([]);
+  let userFields: [SettingsFields, SettingsField, any][] = $state([]);
+  $effect(() => {
     managedFields = [];
     userFields = [];
     for (const [key, field] of FIELDS) {
-      const setting = newSettings.get(key);
+      const setting = settings.data.get(key);
       if (!setting) logger.error(`Field ${key} not in settings.`);
       else {
         // Set up fields
@@ -46,21 +48,27 @@
     }
   });
 
-  $: altered = new Map(
-    userFields.map(([key, _field, value]) => [
-      key,
-      value !== $settings.get(key).value,
-    ])
-  );
-  $: isAltered = [...altered.values()].reduce(
-    (hasAltered, keyAltered) => hasAltered || keyAltered,
-    false
+  let alteredFields = $derived(
+    new Map(
+      userFields.map(([key, _field, value]) => [
+        key,
+        value !== settings.data.get(key)?.value,
+      ])
+    )
   );
 
-  function updateSettings(): void {
+  let isAltered: boolean = $derived(
+    [...alteredFields.values()].reduce(
+      (hasAltered, keyAltered) => hasAltered || keyAltered,
+      false
+    )
+  );
+
+  function updateSettings(e: SubmitEvent): void {
+    e.preventDefault()
     settingsMessages.clear();
     const newSettings: [string, any][] = userFields
-      .filter(([key]) => altered.get(key))
+      .filter(([key]) => alteredFields.get(key))
       .map(([key, _field, value]) => [key, value]);
     loading.add(SETTINGS_UPDATE_LOADING_ID, settings.set(...newSettings), {
       onSuccess() {
@@ -75,14 +83,10 @@
       },
     });
   }
-
-  onDestroy(() => {
-    unsubscribeSettings();
-  });
 </script>
 
 <section class="grid">
-  <form class="site-entry" on:submit|preventDefault={updateSettings}>
+  <form class="site-entry" onsubmit={updateSettings}>
     <Card>
       <h2 title={getMessage(LocalizedMessage.SETTINGS_USER_TITLE)}>
         {getMessage(LocalizedMessage.SETTINGS_USER_HEADER)}
@@ -91,32 +95,38 @@
         {getMessage(LocalizedMessage.SETTINGS_USER_ALL_LOCKED)}
       {/if}
       <div>
-        {#each userFields as [key, field, value] (key)}
-          <label for={key} class:label-inline={!!field.isCheckbox}>
+        {#each userFields as field (field[KEY_INDEX])}
+          <label
+            for={field[KEY_INDEX]}
+            class:label-inline={!!field[FIELD_INDEX].isCheckbox}
+          >
             <span
-              title={field.title ?? ""}
-              class:altered={field.isCheckbox && altered.get(key)}
+              title={field[FIELD_INDEX].title ?? ""}
+              class:altered={field[FIELD_INDEX].isCheckbox &&
+                alteredFields.get(field[KEY_INDEX])}
             >
-              {field.label}
+              {field[FIELD_INDEX].label}
             </span>
-            {#if !!field.isCheckbox}
+            {#if !!field[FIELD_INDEX].isCheckbox}
               <Toggle
-                {...field.attributes}
-                id={key}
-                altered={altered.get(key)}
-                bind:checked={value}
+                {...field[FIELD_INDEX].attributes}
+                id={field[KEY_INDEX]}
+                altered={alteredFields.get(field[KEY_INDEX]) ?? false}
+                bind:checked={field[VALUE_INDEX]}
               />
             {:else}
               <div class="user-input">
                 <input
-                  {...field.attributes}
+                  {...field[FIELD_INDEX].attributes}
                   type="number"
-                  id={key}
-                  class:altered={altered.get(key)}
-                  bind:value
+                  id={field[KEY_INDEX]}
+                  class:altered={alteredFields.get(field[KEY_INDEX])}
+                  bind:value={field[VALUE_INDEX]}
                   required
                 />
-                {#if !!field.unit}<span class="unit">{field.unit}</span>{/if}
+                {#if !!field[FIELD_INDEX].unit}<span class="unit"
+                    >{field[FIELD_INDEX].unit}</span
+                  >{/if}
               </div>
             {/if}
           </label>
@@ -136,34 +146,40 @@
         {getMessage(LocalizedMessage.SETTINGS_MANAGED_HEADER)}
       </h2>
       <div>
-        {#each managedFields as [key, field, value] (key)}
-          <label for={key} class:label-inline={!!field.isCheckbox}>
+        {#each managedFields as field (field[KEY_INDEX])}
+          <label
+            for={field[KEY_INDEX]}
+            class:label-inline={!!field[FIELD_INDEX].isCheckbox}
+          >
             <span
-              title={field.title ?? ""}
-              class:altered={field.isCheckbox && altered.get(key)}
+              title={field[FIELD_INDEX].title ?? ""}
+              class:altered={field[FIELD_INDEX].isCheckbox &&
+                alteredFields.get(field[KEY_INDEX])}
             >
-              {field.label}
+              {field[FIELD_INDEX].label}
             </span>
-            {#if !!field.isCheckbox}
+            {#if !!field[FIELD_INDEX].isCheckbox}
               <Toggle
-                {...field.attributes}
-                id={key}
-                altered={altered.get(key)}
-                bind:checked={value}
+                {...field[FIELD_INDEX].attributes}
+                id={field[KEY_INDEX]}
+                altered={alteredFields.get(field[KEY_INDEX])}
+                bind:checked={field[VALUE_INDEX]}
                 disabled={true}
               />
             {:else}
               <div class="user-input">
                 <input
-                  {...field.attributes}
+                  {...field[FIELD_INDEX].attributes}
                   type="number"
-                  id={key}
-                  class:altered={altered.get(key)}
-                  bind:value
+                  id={field[KEY_INDEX]}
+                  class:altered={alteredFields.get(field[KEY_INDEX])}
+                  bind:value={field[VALUE_INDEX]}
                   disabled={true}
                   required
                 />
-                {#if !!field.unit}<span class="unit">{field.unit}</span>{/if}
+                {#if !!field[FIELD_INDEX].unit}<span class="unit"
+                    >{field[FIELD_INDEX].unit}</span
+                  >{/if}
               </div>
             {/if}
           </label>

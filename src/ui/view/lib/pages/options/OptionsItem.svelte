@@ -1,12 +1,23 @@
+<script lang="ts" module>
+  export interface Props {
+    selected?: boolean;
+    title: string;
+    subtitle: string;
+    icon: string;
+  }
+</script>
+
 <script lang="ts">
   import Icon from "../../layout/Icon.svelte";
 
-  export let selected: boolean;
-
-  export let title: string;
-  export let subtitle: string;
-  export let icon: string;
+  let { selected = false, title, subtitle, icon }: Props = $props();
 </script>
+
+<div class:selected class="item">
+  <div class="icon"><Icon d={icon} color="var(--color-primary)" /></div>
+  <span class="title">{title}</span>
+  <span class="subtitle dot-overflow" title={subtitle}>{subtitle}</span>
+</div>
 
 <style>
   .item {
@@ -47,9 +58,3 @@
     grid-area: subtitle;
   }
 </style>
-
-<div class:selected class="item">
-  <div class="icon"><Icon d={icon} color="var(--color-primary)" /></div>
-  <span class="title">{title}</span>
-  <span class="subtitle dot-overflow" title={subtitle}>{subtitle}</span>
-</div>

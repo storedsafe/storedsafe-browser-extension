@@ -4,7 +4,7 @@
     "managed_schema": "schema.json"
   },
   "background": {
-    "service_worker": "background.js",
+    "service_worker": "background.storedsafe.js",
     "type": "module"
   },
   "action": {
@@ -32,7 +32,7 @@
   "content_scripts": [
     {
       "matches": ["http://*/*", "https://*/*"],
-      "js": ["externals/browser-polyfill.min.js", "content.js"]
+      "js": ["externals/browser-polyfill.min.js", "content_script.storedsafe.js"]
     }
   ]
 }

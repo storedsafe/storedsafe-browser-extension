@@ -1,20 +1,18 @@
 <script lang="ts" context="module">
-  import { Logger } from "../../../../../global/logger";
+  import { Logger } from "@/global/logger";
   const logger = new Logger("debug");
 </script>
 
 <script lang="ts">
   import { onMount } from "svelte";
-
-  import { loading, messages, MessageType } from "../../../../stores";
-
-  import Card from "../../layout/Card.svelte";
+  import { loading, messages, MessageType } from "@/ui/stores";
+  import Card from "@/ui/view/lib/layout/Card.svelte";
 
   const addError = () => messages.add("Debug error message", MessageType.ERROR);
   const addWarning = () =>
     messages.add("Debug warning message", MessageType.WARNING);
   const addInfo = () => messages.add("Debug info message", MessageType.INFO);
-  let resolveLoading: (value: any) => void = null;
+  let resolveLoading: ((value: any) => void) | null = null;
   function toggleLoading() {
     if (resolveLoading === null) {
       loading.add(
@@ -45,7 +43,7 @@
     },
   };
 
-  let logLevel = 1
+  let logLevel = 1;
 
   function parseStorage(value: any): string {
     let output = '<div class="entry">';
@@ -73,11 +71,11 @@
   }
 
   async function getStorage() {
-    for (const key of Object.keys(storage)) {
+    for (const key of Object.keys(storage) as (keyof typeof storage)[]) {
       try {
         storage[key].values = parseStorage(await browser.storage[key].get());
         storage[key].error = null;
-      } catch (error) {
+      } catch (error: any) {
         storage[key].error = error.toString();
       }
     }
@@ -89,6 +87,7 @@
   }
 
   onMount(() => {
+    console.log("Mounted debug")
     getStorage()
       .then(() => {})
       .catch((error) => {
@@ -97,7 +96,7 @@
 
     browser.storage.local.get("loglevel").then(({ loglevel }) => {
       if (logLevel !== undefined) {
-        logLevel = loglevel
+        logLevel = loglevel;
       }
     });
   });
@@ -105,7 +104,7 @@
 
 <section class="grid">
   <h1>Debug</h1>
-  {#each Object.keys(storage) as key}
+  {#each Object.keys(storage) as (keyof typeof storage)[] as key}
     <Card>
       <h2>{storage[key].title}</h2>
       {#if !!storage[key].error}

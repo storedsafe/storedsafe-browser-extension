@@ -1,24 +1,20 @@
 <script lang="ts">
-  import { vault } from "../../../../../global/api";
-  import { getMessage, LocalizedMessage } from "../../../../../global/i18n";
-  import { copyText } from "../../../../../global/utils";
-  import {
-    loading,
-    messages,
-    MessageType,
-    structure,
-  } from "../../../../stores";
-  import { sessions, sites } from "../../../../stores/browserstorage";
+  import { vault } from "@/global/api";
+  import { getMessage, LocalizedMessage } from "@/global/i18n";
+  import { copyText } from "@/global/utils";
+  import { loading, messages, MessageType, instances } from "@/ui/stores";
+  import { sessions, sites } from "@/ui/stores/browserstorage";
 
-  import Card from "../../layout/Card.svelte";
+  import Card from "@/ui/view/lib/layout/Card.svelte";
   import Password from "../search/fields/Password.svelte";
+  import { StoredSafeExtensionError } from "@/global/errors";
 
-  let host: string = $sessions.keys().next().value;
-  let password: string = "";
-  let large: boolean = false;
-  let edit: boolean = false;
+  let host: string = $state(sessions.data.keys().next().value ?? "");
+  let password: string = $state("");
+  let large: boolean = $state(false);
+  let edit: boolean = $state(false);
 
-  const types: {
+  const passwordTypes: {
     [key: string]: {
       title: string;
       fields: {
@@ -46,6 +42,7 @@
         },
       },
     },
+
     pronounceable: {
       title: "Pronounceable",
       fields: {
@@ -60,6 +57,7 @@
         },
       },
     },
+
     secure: {
       title: "Secure",
       fields: {
@@ -74,6 +72,7 @@
         },
       },
     },
+
     opie: {
       title: "Opie",
       fields: {
@@ -90,6 +89,7 @@
         },
       },
     },
+
     diceword: {
       title: "Dice",
       fields: {
@@ -143,8 +143,8 @@
     },
   };
 
-  let values: Record<string, any> = {};
-  let policyid: number;
+  let values: Record<string, any> = $state({});
+  let policyid: number | null = $state(null);
 
   /**
    * Update the password type and optionally generate a new password.
@@ -161,17 +161,17 @@
     if (values.type !== passwordType) {
       values = {};
       values.type = passwordType;
-      for (const field of Object.keys(types[passwordType].fields)) {
-        values[field] = types[passwordType].fields[field].default;
+      for (const field of Object.keys(passwordTypes[passwordType].fields)) {
+        values[field] = passwordTypes[passwordType].fields[field].default;
       }
     }
     if (shouldGenerate) generate();
   }
 
   setPasswordType("secure", false);
-  $: fields = types[values.type]?.fields;
+  let fields = $derived(passwordTypes[values.type]?.fields);
 
-  let lastError: number = null;
+  let lastError: number | null = null;
   function clearLastError() {
     if (lastError !== null) {
       messages.remove(lastError);
@@ -179,16 +179,16 @@
     }
   }
 
-  function generate(options: object = null) {
+  function generate(options: object | null = null) {
     edit = false;
     clearLastError();
+    const token: string | undefined = sessions.data.get(host)?.token;
+    if (!token) {
+      throw new StoredSafeExtensionError("Token is undefined.");
+    }
     loading.add(
       `PasswordGenerator.generate`,
-      vault.generatePassword(
-        host,
-        $sessions.get(host).token,
-        options ?? values
-      ),
+      vault.generatePassword(host, token, options ?? values),
       {
         onError(error) {
           lastError = messages.add(error.message, MessageType.ERROR);
@@ -200,8 +200,14 @@
     );
   }
 
-  function generateFromPolicy() {
-    generate({ policyid });
+  function onSubmitGenerate(e: SubmitEvent) {
+    e.preventDefault()
+    generate()
+  }
+
+  function onSubmitFromPolicy(e: SubmitEvent) {
+    if (policyid) generate({ policyid });
+    else generate()
   }
 
   const toggleLarge = (): void => {
@@ -219,11 +225,120 @@
     clearLastError();
     try {
       await copyText(password);
-    } catch (error) {
+    } catch (error: any) {
       lastError = messages.add(error.message, MessageType.ERROR);
     }
   }
 </script>
+
+<section class="grid">
+  {#if sites.data.length > 1}
+    <Card>
+      <label for="host">
+        <span> {getMessage(LocalizedMessage.GENERATE_PASSWORD_HOST)} </span>
+        <select bind:value={host}>
+          {#each [...sessions.data.keys()] as sessionHost (sessionHost)}
+            <option value={sessionHost}>{sessionHost}</option>
+          {/each}
+        </select>
+      </label>
+    </Card>
+  {/if}
+  {#if password?.length >= 1}
+    <article class="password">
+      <Card>
+        <span class="subtitle password-title">
+          {getMessage(LocalizedMessage.GENERATE_PASSWORD_LABEL)}
+          {#if edit}
+            <button class="primary" onclick={toggleEdit} type="button">
+              {getMessage(LocalizedMessage.GENERATE_PASSWORD_PREVIEW)}
+            </button>
+          {:else}
+            <button class="primary" onclick={toggleEdit} type="button">
+              {getMessage(LocalizedMessage.GENERATE_PASSWORD_EDIT)}
+            </button>
+            <button class="warning" onclick={toggleLarge} type="button">
+              {#if !large}
+                {getMessage(LocalizedMessage.RESULT_LARGE)}
+              {:else}{getMessage(LocalizedMessage.RESULT_SMALL)}{/if}
+            </button>
+          {/if}
+          <button onclick={copy} type="button">
+            {getMessage(LocalizedMessage.RESULT_COPY)}
+          </button>
+        </span>
+        {#if edit}
+          <textarea bind:value={password}></textarea>
+        {:else}
+          <!-- svelte-ignore a11y_click_events_have_key_events -->
+          <div
+            class="password-preview"
+            onclick={copy}
+            title={getMessage(LocalizedMessage.RESULT_COPY)}
+            role="button"
+            tabindex="0"
+          >
+            <Password show={true} {large} {password} />
+          </div>
+        {/if}
+      </Card>
+    </article>
+  {/if}
+  <Card>
+    <form class="policy" onsubmit={onSubmitFromPolicy}>
+      <button type="submit">
+        {getMessage(LocalizedMessage.GENERATE_PASSWORD_MATCH_POLICY)}
+      </button>
+      <select bind:value={policyid}>
+        {#each instances.instances.get(host)?.policies ?? [] as policy}
+          <option value={policy.id}>{policy.name}</option>
+        {/each}
+      </select>
+    </form>
+    <p class="or subtitle">
+      {getMessage(LocalizedMessage.GENERATE_PASSWORD_OR)}
+    </p>
+    <form class="generate" onsubmit={onSubmitGenerate}>
+      <article class="buttons">
+        {#each Object.keys(passwordTypes) as type (type)}
+          <button
+            type="button"
+            class="primary"
+            class:selected={values.type === type}
+            onclick={() => setPasswordType(type)}>{passwordTypes[type].title}</button
+          >
+        {/each}
+      </article>
+      {#if !!fields}
+        <article class="fields">
+          {#each Object.keys(fields) as field (field)}
+            <label for={field} class="label-inline">
+              <span>{fields[field].title}</span>
+              {#if fields[field].type === "dropdown"}
+                <select id={field} bind:value={values[field]}>
+                  {#each fields[field].options ?? [] as { value, title } (value)}
+                    <option {value}>{title}</option>
+                  {/each}
+                </select>
+              {:else if fields[field].type === "range"}
+                {values[field]}
+                <input
+                  id={field}
+                  type="range"
+                  {...fields[field].attributes}
+                  bind:value={values[field]}
+                />
+              {/if}
+            </label>
+          {/each}
+        </article>
+      {/if}
+      <button type="submit">
+        {getMessage(LocalizedMessage.GENERATE_PASSWORD_GENERATE)}
+      </button>
+    </form>
+  </Card>
+</section>
 
 <style>
   .buttons {
@@ -333,106 +448,3 @@
     cursor: pointer;
   }
 </style>
-
-<section class="grid">
-  {#if $sites.length > 1}
-    <Card>
-      <label for="host">
-        <span> {getMessage(LocalizedMessage.GENERATE_PASSWORD_HOST)} </span>
-        <select bind:value={host}>
-          {#each [...$sessions.keys()] as sessionHost (sessionHost)}
-            <option value={sessionHost}>{sessionHost}</option>
-          {/each}
-        </select>
-      </label>
-    </Card>
-  {/if}
-  {#if password?.length >= 1}
-    <article class="password">
-      <Card>
-        <span class="subtitle password-title">
-          {getMessage(LocalizedMessage.GENERATE_PASSWORD_LABEL)}
-          {#if edit}
-            <button class="primary" on:click={toggleEdit}>
-              {getMessage(LocalizedMessage.GENERATE_PASSWORD_PREVIEW)}
-            </button>
-          {:else}
-            <button class="primary" on:click={toggleEdit}>
-              {getMessage(LocalizedMessage.GENERATE_PASSWORD_EDIT)}
-            </button>
-            <button class="warning" on:click={toggleLarge}>
-              {#if !large}
-                {getMessage(LocalizedMessage.RESULT_LARGE)}
-              {:else}{getMessage(LocalizedMessage.RESULT_SMALL)}{/if}
-            </button>
-          {/if}
-          <button on:click={copy}>
-            {getMessage(LocalizedMessage.RESULT_COPY)}
-          </button>
-        </span>
-        {#if edit}
-          <textarea bind:value={password} />
-        {:else}
-          <div
-            class="password-preview"
-            on:click={copy}
-            title={getMessage(LocalizedMessage.RESULT_COPY)}>
-            <Password show={true} {large} {password} />
-          </div>
-        {/if}
-      </Card>
-    </article>
-  {/if}
-  <Card>
-    <form class="policy" on:submit|preventDefault={() => generateFromPolicy()}>
-      <button type="submit">
-        {getMessage(LocalizedMessage.GENERATE_PASSWORD_MATCH_POLICY)}
-      </button>
-      <select bind:value={policyid}>
-        {#each $structure.get(host).policies as policy}
-          <option value={policy.id}>{policy.name}</option>
-        {/each}
-      </select>
-    </form>
-    <p class="or subtitle">
-      {getMessage(LocalizedMessage.GENERATE_PASSWORD_OR)}
-    </p>
-    <form class="generate" on:submit|preventDefault={() => generate()}>
-      <article class="buttons">
-        {#each Object.keys(types) as type (type)}
-          <button
-            type="button"
-            class="primary"
-            class:selected={values.type === type}
-            on:click={() => setPasswordType(type)}>{types[type].title}</button>
-        {/each}
-      </article>
-      {#if !!fields}
-        <article class="fields">
-          {#each Object.keys(fields) as field (field)}
-            <label for={field} class="label-inline">
-              <span>{fields[field].title}</span>
-              {#if fields[field].type === 'dropdown'}
-                <select id={field} bind:value={values[field]}>
-                  {#each fields[field].options as { value, title } (value)}
-                    <option {value}>{title}</option>
-                  {/each}
-                </select>
-              {:else if fields[field].type === 'range'}
-                {values[field]}
-                <input
-                  id={field}
-                  type="range"
-                  {...fields[field].attributes}
-                  bind:value={values[field]} />
-              {/if}
-            </label>
-          {/each}
-        </article>
-      {/if}
-      <button type="submit">
-        {getMessage(LocalizedMessage.GENERATE_PASSWORD_GENERATE)}
-      </button>
-    </form>
-  </Card>
-</section>

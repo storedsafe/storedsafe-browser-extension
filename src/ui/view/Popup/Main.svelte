@@ -1,65 +1,61 @@
 <script lang="ts">
   import { Page, mainMenu, offlineMenu } from "./pages";
-  import { sessions, sites, messages, loading } from "../../stores";
+  import { sessions, sites, messages, loading } from "@/ui/stores";
 
-  import SearchBar from "../lib/pages/search/SearchBar.svelte";
-  import Menu from "../lib/menus/Menu.svelte";
-  import LoadingBar from "../lib/layout/LoadingBar.svelte";
-  import Add, { addRequirements } from "../lib/pages/add/Add.svelte";
+  import SearchBar from "@/ui/view/lib/pages/search/SearchBar.svelte";
+  import Menu from "@/ui/view/lib/menus/Menu.svelte";
+  import LoadingBar from "@/ui/view/lib/layout/LoadingBar.svelte";
+  import Add, { addRequirements } from "@/ui/view/lib/pages/add/Add.svelte";
   import Search, {
     searchRequirements,
-  } from "../lib/pages/search/Search.svelte";
-  import SessionsPage from "../lib/pages/sessions/Sessions.svelte";
-  import MessageViewer from "../lib/layout/MessageViewer.svelte";
-  import Logo from "../lib/layout/Logo.svelte";
-  import PasswordGenerator from "../lib/pages/passwordGenerator/PasswordGenerator.svelte";
-  import Welcome from "../lib/pages/welcome/Welcome.svelte";
-  import DebugButton from "../lib/pages/debug/DebugButton.svelte";
-  import Debug from "../lib/pages/debug/Debug.svelte";
-  import Options from "../lib/pages/options/Options.svelte";
-  import { onDestroy } from "svelte";
+  } from "@/ui/view/lib/pages/search/Search.svelte";
+  import SessionsPage from "@/ui/view/lib/pages/sessions/Sessions.svelte";
+  import MessageViewer from "@/ui/view/lib/layout/MessageViewer.svelte";
+  import Logo from "@/ui/view/lib/layout/Logo.svelte";
+  import PasswordGenerator from "@/ui/view/lib/pages/passwordGenerator/PasswordGenerator.svelte";
+  import Welcome from "@/ui/view/lib/pages/welcome/Welcome.svelte";
+  import DebugButton from "@/ui/view/lib/pages/debug/DebugButton.svelte";
+  import Debug from "@/ui/view/lib/pages/debug/Debug.svelte";
+  import Options from "@/ui/view/lib/pages/options/Options.svelte";
 
   // Set up state
-  let page: Page = null;
-  let content: HTMLElement = null;
+  let hasSites: boolean = $derived(sites.data.length > 0);
+  let isOnline: boolean = $derived(sessions.data.size > 0);
+  let menuItems = $derived(isOnline ? mainMenu : offlineMenu);
 
-  let hasSites: boolean = false;
-  let isOnline: boolean = false;
-  $: menuItems = isOnline ? mainMenu : offlineMenu;
+  let page: Page | null = $state(Page.WELCOME);
+  let content: HTMLElement | null = null;
 
-  const unsubscribeFromSessions = sessions.subscribe((newSessions) => {
-    isOnline = newSessions.size > 0;
-    // If online and page isn't already set, go to search
-    if (isOnline && page === null) page = Page.SEARCH;
-    // If offline and page is not in offline menu, go to sessions
-    else if (
+  // When sessions changes
+  $effect(() => {
+    // Set default page
+    if (isOnline && page === null) {
+      // Default to search if user is logged in
+      page = Page.SEARCH;
+    } else if (
       !isOnline &&
       offlineMenu.findIndex(({ name }) => name === page) === -1
-    )
+    ) {
+      // Default to login if user is not logged in
       page = Page.SESSIONS;
-    // Else let page remain the same
+    }
   });
 
-  const unsubscribeFromSites = sites.subscribe((newSites) => {
-    hasSites = newSites.length > 0;
-    // If sites exist and previous page was welcome, go to sessions
+  // When sites changes
+  $effect(() => {
+    // Welcome page should only be shown when no sites are configured
     if (hasSites && page === Page.WELCOME) page = Page.SESSIONS;
-    // If no sites exist, go to welcome page
+    // Default to welcome page if no sites are configured
     else if (!hasSites) page = Page.WELCOME;
-    // Else let page remain the same
-  });
-
-  onDestroy(() => {
-    unsubscribeFromSessions();
-    unsubscribeFromSites();
   });
 
   /**
    * Set the active page and clear messages.
    * */
   function setPage(newPage: Page) {
+    console.log("Page: %o", newPage)
     messages.clear();
-    !!content && (content.scrollTop = 0);
+    if (content) content.scrollTop = 0;
     if (page === Page.DEBUG && page === newPage) {
       // No menu for debug, revert to default selection to toggle
       if (!hasSites) page = Page.WELCOME;
@@ -74,26 +70,13 @@
   // Event handlers
 
   /**
-   * Set page to search if search bar is focused
-   * */
-  function handleSearchFocus() {
-    setPage(Page.SEARCH);
-  }
-
-  /**
-   * Update page when nav menu item is clicked.
-   * */
-  function handleNavigate(e: CustomEvent<Page>) {
-    setPage(e.detail);
-  }
-
-  /**
    * Scroll content container to position.
    * */
-  function handleScroll(e: CustomEvent<number>) {
-    const scrollTop = e.detail;
-    content.scrollTop = scrollTop;
+  function handleScroll(offset: number) {
+    const scrollTop = offset;
+    if (content) content.scrollTop = scrollTop;
   }
+  $inspect(page)
 </script>
 
 <!--
@@ -102,16 +85,19 @@
 -->
 <section class="main">
   <nav class="grid shadow">
-    <DebugButton on:open-debug={() => setPage(Page.DEBUG)} />
+    <DebugButton openDebug={() => setPage(Page.DEBUG)} />
     {#if isOnline}
-      <SearchBar focus={page === Page.SEARCH} on:focus={handleSearchFocus} />
+      <SearchBar
+        autoFocus={page === Page.SEARCH}
+        onFocus={() => setPage(Page.SEARCH)}
+      />
     {:else}
       <Logo />
     {/if}
     {#if hasSites}
-      <Menu on:navigate={handleNavigate} selected={page} {menuItems} />
+      <Menu onNavigate={(page) => setPage(page)} selected={page} {menuItems} />
     {/if}
-    <LoadingBar isLoading={$loading.isLoading} />
+    <LoadingBar isLoading={loading.isLoading} />
     <MessageViewer {messages} />
   </nav>
   <article class="content" bind:this={content}>
@@ -120,21 +106,21 @@
         <div>
           <Welcome />
         </div>
-      {:else if page === Page.SEARCH && !$loading.has(...searchRequirements)}
+      {:else if page === Page.SEARCH && !loading.has(...searchRequirements)}
         <div>
-          <Search on:scrollTo={handleScroll} />
+          <Search scrollTo={handleScroll} />
         </div>
-      {:else if page === Page.ADD && !$loading.has(...addRequirements)}
+      {:else if page === Page.ADD && !loading.has(...addRequirements)}
         <div>
-          <Add on:scrollTo={handleScroll} />
+          <Add />
         </div>
       {:else if page === Page.GENERATE_PASSWORD}
         <div>
-          <PasswordGenerator on:scrollTo={handleScroll} />
+          <PasswordGenerator />
         </div>
       {:else if page === Page.SESSIONS}
         <div>
-          <SessionsPage on:scrollTo={handleScroll} />
+          <SessionsPage scrollTo={handleScroll} />
         </div>
       {:else if page === Page.OPTIONS}
         <div>

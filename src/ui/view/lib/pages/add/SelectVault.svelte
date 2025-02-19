@@ -1,43 +1,45 @@
-<script lang="ts" context="module">
-  import { Logger } from "../../../../../global/logger";
+<script lang="ts" module>
+  import { Logger } from "@/global/logger";
   const logger = new Logger("select-vault");
 </script>
 
 <script lang="ts">
-  import { afterUpdate } from "svelte";
-  import { getMessage, LocalizedMessage } from "../../../../../global/i18n";
-  import { preferences, structure } from "../../../../stores";
+  import { getMessage, LocalizedMessage } from "@/global/i18n";
+  import { preferences, instances, type StoredSafeInstance } from "@/ui/stores";
 
-  let oldHost: string = null;
-  export let host: string;
-  export let vaultid: string;
-
-  let vaults: StoredSafeVault[];
-
-  function getDefaultVault(): string {
-    if (!vaults) return undefined;
-    const preferredVault = $preferences.add?.vaults?.[host];
-    if (vaults.findIndex(({ id }) => id === preferredVault) !== -1) {
-      return preferredVault;
-    }
-    return vaults[0]?.id;
+  interface Props {
+    host: string;
+    vaultid: string;
   }
 
-  structure.subscribe((newStructure) => {
-    let hostStructure = newStructure.get(host);
-    vaults = hostStructure?.vaults;
+  let { host, vaultid = $bindable() }: Props = $props();
+
+  let vaults: StoredSafeVault[] = $derived(
+    instances.instances.get(host)?.vaults ?? []
+  );
+
+  $effect(() => {
+    // Reselect the vault when the vault list changes.
+    // Depends on the `vaults` derived store.
     vaultid = getDefaultVault();
   });
 
-  afterUpdate(() => {
-    if (oldHost !== host) {
-      oldHost = host;
-      let hostStructure = $structure.get(host);
-      vaults = hostStructure?.vaults;
-      vaultid = getDefaultVault();
+  /**
+   * Gets the preferred vault if it exists, otherwise the first available vault.
+   */
+  function getDefaultVault(): string {
+    if (!vaults) return "";
+    const preferredVault = preferences.data.add?.vaults?.[host];
+    if (preferredVault) {
+      const vaultIndex = vaults.findIndex(({ id }) => id === preferredVault);
+      if (vaultIndex !== -1) return preferredVault;
     }
-  });
+    return vaults[0]?.id ?? "";
+  }
 
+  /**
+   * Updates the preferred vault so it is automatically selected in the future.
+   */
   function updatePreferences() {
     preferences.setVaultPreferences(host, vaultid).catch(logger.error);
   }
@@ -46,7 +48,7 @@
 {#if !!host && !!vaults}
   <label for="vault">
     <span>{getMessage(LocalizedMessage.ADD_VAULT)}</span>
-    <select id="vault" bind:value={vaultid} on:change={updatePreferences}>
+    <select id="vault" bind:value={vaultid} onchange={() => updatePreferences}>
       {#each vaults as vault (vault.id)}
         {#if vault.permissions >= 2}
           <option value={vault.id}>{vault.name}</option>

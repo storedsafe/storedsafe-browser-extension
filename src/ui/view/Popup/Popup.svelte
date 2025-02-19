@@ -1,11 +1,11 @@
 <script lang="ts">
   import { sites, sessions } from "../../stores";
-  import Initializing from "./Initializing.svelte";
   import Main from "./Main.svelte";
-
-  let isInitialized: boolean = false
-  $: isInitialized = !!$sites && !!$sessions;
 </script>
+
+<section>
+  <Main />
+</section>
 
 <style>
   section {
@@ -19,11 +19,3 @@
     box-sizing: border-box;
   }
 </style>
-
-<section>
-  {#if isInitialized}
-    <Main />
-  {:else}
-    <Initializing />
-  {/if}
-</section>

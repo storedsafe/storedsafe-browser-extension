@@ -2,42 +2,58 @@
   import {
     loading,
     messages,
-    messageStore,
+    Messages,
     MessageType,
     preferences,
-PREFERENCES_SET_SITE_LOADING_ID,
-        sessions,
-SESSIONS_LOGIN_LOADING_ID,
-  } from "../../../../stores";
-  import { getMessage, LocalizedMessage } from "../../../../../global/i18n";
-  import { clearMessages } from "../../../use/clearMessages";
-  import { StoredSafeExtensionError } from "../../../../../global/errors";
+    sessions,
+    PREFERENCES_SET_SITE_LOADING_ID,
+    SESSIONS_LOGIN_LOADING_ID,
+  } from "@/ui/stores";
+  import { getMessage, LocalizedMessage } from "@/global/i18n";
+  import { clearMessages } from "@/ui/view/use/clearMessages";
+  import { StoredSafeExtensionError } from "@/global/errors";
 
-  import Card from "../../layout/Card.svelte";
-  import MessageViewer from "../../layout/MessageViewer.svelte";
-import Checkbox from "../../layout/Checkbox.svelte";
+  import Card from "@/ui/view/lib/layout/Card.svelte";
+  import MessageViewer from "@/ui/view/lib/layout/MessageViewer.svelte";
+  import Checkbox from "@/ui/view/lib/layout/Checkbox.svelte";
 
-  export let site: Site;
+  const {
+    site
+  }: {
+    site: Site
+  } = $props()
 
-  const loginMessages = messageStore();
+  const loginMessages = new Messages();
 
-  let loginType: LoginType =
-    $preferences.sites.get(site.host)?.loginType ?? "totp";
-  let username: string = $preferences.sites.get(site.host)?.username ?? "";
-  let passphrase: string = "";
-  let otp: string = "";
-  $: keys = passphrase;
-  let remember: boolean = !!$preferences.sites.get(site.host)?.username;
+  let sitesPreferences = preferences.data.sites ?? new Map()
+  let loginType: LoginType = $state(sitesPreferences.get(site.host)?.loginType ?? "totp");
+  let username: string = $state(sitesPreferences.get(site.host)?.username ?? "");
+  let passphrase: string = $state("");
+  let otp: string = $state("");
+  let keys: string = $state("");
+  let remember: boolean = $state(!!sitesPreferences.get(site.host)?.username);
 
-  $: isValidated =
-    loginType === "totp"
-      ? username.length > 0 && passphrase.length > 0 && otp.length > 0
-      : loginType === "yubikey"
-      ? username.length > 0 && keys.length > 44
-      : false;
+  $effect(() => {
+    keys = passphrase
+  })
 
-  function handleLogin() {
+  let isValidated = $derived.by(() => {
+    if (loginType === "totp") {
+      return username.length > 0 && passphrase.length > 0 && otp.length > 0
+    }
+    if (loginType === "yubikey") {
+      return username.length > 0 && keys.length > 44 // (keys = passphrase + yubico otp)
+    }
+    return false
+  })
+
+  function handleLogin(e: SubmitEvent) {
+    e.preventDefault();
+
+    // Clear old messages since they're related to previous login attempt
     loginMessages.clear();
+
+    // Validate the login type and choose accordingly
     let promise: Promise<any>;
     if (loginType === "totp") {
       promise = sessions.loginTotp(site, username, passphrase, otp);
@@ -53,8 +69,11 @@ import Checkbox from "../../layout/Checkbox.svelte";
         new StoredSafeExtensionError(`Invalid login type: ${loginType}`)
       );
     }
+
+    // Wait for result
     loading.add(SESSIONS_LOGIN_LOADING_ID, promise, {
       onSuccess() {
+        // Update preferences to default to current site on successful login
         loading.add(
           PREFERENCES_SET_SITE_LOADING_ID,
           preferences.setSitePreferences(site.host, {
@@ -77,16 +96,17 @@ import Checkbox from "../../layout/Checkbox.svelte";
 
 <form
   class="grid"
-  on:submit|preventDefault={handleLogin}
-  use:clearMessages={{ clear: loginMessages.clear }}>
+  onsubmit={handleLogin}
+  use:clearMessages={{ clear: loginMessages.clear }}
+>
   <Card>
     <label for="loginType">
       {getMessage(LocalizedMessage.SESSIONS_LOGIN_TYPE)}
       <select id="loginType" bind:value={loginType}>
-        <option value={'totp'}>
+        <option value={"totp"}>
           {getMessage(LocalizedMessage.SESSIONS_LOGIN_TYPE_TOTP)}
         </option>
-        <option value={'yubikey'}>
+        <option value={"yubikey"}>
           {getMessage(LocalizedMessage.SESSIONS_LOGIN_TYPE_YUBIKEY)}
         </option>
       </select>
@@ -98,9 +118,10 @@ import Checkbox from "../../layout/Checkbox.svelte";
         id="username"
         autocomplete="username"
         bind:value={username}
-        required />
+        required
+      />
     </label>
-    {#if loginType == 'totp'}
+    {#if loginType == "totp"}
       <label for="passphrase">
         {getMessage(LocalizedMessage.SESSIONS_PASSPHRASE)}
         <input
@@ -108,13 +129,14 @@ import Checkbox from "../../layout/Checkbox.svelte";
           id="passphrase"
           autocomplete="current-password"
           bind:value={passphrase}
-          required />
+          required
+        />
       </label>
       <label for="otp">
         {getMessage(LocalizedMessage.SESSIONS_OTP)}
         <input id="otp" autocomplete="off" bind:value={otp} required />
       </label>
-    {:else if loginType == 'yubikey'}
+    {:else if loginType == "yubikey"}
       <label for="keys">
         {getMessage(LocalizedMessage.SESSIONS_KEYS)}
         <input
@@ -122,7 +144,8 @@ import Checkbox from "../../layout/Checkbox.svelte";
           id="keys"
           autocomplete="current-password"
           bind:value={keys}
-          required />
+          required
+        />
       </label>
     {/if}
     <label class="label-inline" for="remember">

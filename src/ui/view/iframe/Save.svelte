@@ -1,73 +1,56 @@
-<script lang="ts" context="module">
-  import { Logger } from "../../../global/logger";
+<script lang="ts" module>
+  import { Logger } from "@/global/logger";
   const logger = new Logger("save");
+
+  export interface Props {
+    onResize: (height: number, width: number) => void;
+    onClose: () => void;
+  }
 </script>
 
 <script lang="ts">
-  import { afterUpdate, createEventDispatcher, onMount } from "svelte";
+  import { onMount } from "svelte";
 
-  import { vault } from "../../../global/api";
-  import { getMessage, LocalizedMessage } from "../../../global/i18n";
-  import type { Message } from "../../../global/messages";
-  import {
-    ignore,
-    preferences,
-    sites,
-    sessions,
-    structure,
-    loading,
-    messages,
-    MessageType,
-  } from "../../stores";
+  import { vault } from "@/global/api";
+  import { getMessage, LocalizedMessage } from "@/global/i18n";
+  import { isMessage, type Message } from "@/global/messages";
+  import { sessions, loading, messages, MessageType } from "@/ui/stores";
 
-  import Card from "../lib/layout/Card.svelte";
-  import LoadingBar from "../lib/layout/LoadingBar.svelte";
-  import MessageViewer from "../lib/layout/MessageViewer.svelte";
-  import SelectHost from "../lib/pages/add/SelectHost.svelte";
-  import SelectVault from "../lib/pages/add/SelectVault.svelte";
-  import SelectTemplate from "../lib/pages/add/SelectTemplate.svelte";
-  import TemplateFields from "../lib/pages/add/TemplateFields.svelte";
-  import Initializing from "../Popup/Initializing.svelte";
+  import Card from "@/ui/view/lib/layout/Card.svelte";
+  import LoadingBar from "@/ui/view/lib/layout/LoadingBar.svelte";
+  import MessageViewer from "@/ui/view/lib/layout/MessageViewer.svelte";
+  import SelectHost from "@/ui/view/lib/pages/add/SelectHost.svelte";
+  import SelectVault from "@/ui/view/lib/pages/add/SelectVault.svelte";
+  import SelectTemplate from "@/ui/view/lib/pages/add/SelectTemplate.svelte";
+  import TemplateFields from "@/ui/view/lib/pages/add/TemplateFields.svelte";
   import QuickSave from "./QuickSave.svelte";
-  import Logo from "../lib/layout/Logo.svelte";
-import { followFocus } from "../use/followFocus";
+  import Logo from "@/ui/view/lib/layout/Logo.svelte";
+  import { followFocus } from "@/ui/view/use/followFocus";
 
-  const dispatch = createEventDispatcher();
-  let data: Record<string, string> = {
+  let { onResize, onClose }: Props = $props();
+
+  let data: Record<string, string> = $state({
     parentid: "0",
     templateid: "20",
     name: "Foo",
     username: "foobar",
     url: "foo.bar",
-  };
-  let edit: boolean = false;
-  let success: boolean = false;
-  let isValidated: boolean = true;
-  let host: string;
+  });
+  let edit: boolean = $state(false);
+  let success: boolean = $state(false);
+  let isValid: boolean = $state(true);
+  let host: string | null = $state(null);
 
   let frame: HTMLElement;
   let height: number;
 
   let port: browser.runtime.Port;
 
-  $: isInitialized =
-    $preferences !== null &&
-    $sites !== null &&
-    $sessions !== null &&
-    $structure !== null;
-
-  function close() {
-    dispatch("close", port);
-  }
-
   function resize(height: number, width: number = 300) {
-    dispatch("resize", {
-      height,
-      width,
-    });
+    onResize(height, width);
   }
 
-  afterUpdate(() => {
+  $effect(() => {
     if (!!frame && height !== frame.clientHeight) {
       height = frame?.clientHeight;
       resize(height);
@@ -76,10 +59,12 @@ import { followFocus } from "../use/followFocus";
 
   onMount(() => {
     port = browser.runtime.connect({ name: "save" });
-    port.onMessage.addListener((message: Message) => {
-      logger.debug("Message Received: %o", message);
-      if (message.context === "save" && message.action === "populate") {
-        data = { ...data, ...message.data };
+    port.onMessage.addListener((message: object) => {
+      if (isMessage(message)) {
+        logger.debug("Message Received: %o", message);
+        if (message.context === "save" && message.action === "populate") {
+          data = { ...data, ...message.data };
+        }
       }
     });
 
@@ -134,36 +119,31 @@ import { followFocus } from "../use/followFocus";
   <LoadingBar isLoading={$loading.isLoading} />
   {#if !success}
     <form class="grid" use:followFocus on:submit|preventDefault={save}>
-      {#if !isInitialized}
-        <!-- Still loading -->
-        <Initializing />
-      {:else}
-        <Card>
-          {#if !edit}
-            <!-- Quick save -->
-            <QuickSave bind:host bind:data />
-          {:else}
-            <!-- Full add editor -->
-            <SelectHost bind:host />
-            {#if host !== undefined}
-              <SelectVault {host} bind:vaultid={data.groupid} />
-              <SelectTemplate {host} bind:templateid={data.templateid} />
-              {#if data.groupid !== undefined && data.templateid !== undefined}
-                <TemplateFields
-                  {host}
-                  bind:groupid={data.groupid}
-                  bind:templateid={data.templateid}
-                  bind:values={data}
-                  on:validate={(e) => (isValidated = e.detail)}
-                />
-              {/if}
+      <Card>
+        {#if !edit}
+          <!-- Quick save -->
+          <QuickSave bind:host bind:data />
+        {:else}
+          <!-- Full add editor -->
+          <SelectHost bind:host />
+          {#if host !== null}
+            <SelectVault {host} bind:vaultid={data.groupid} />
+            <SelectTemplate {host} bind:templateid={data.templateid} />
+            {#if data.groupid !== undefined && data.templateid !== undefined}
+              <TemplateFields
+                {host}
+                bind:groupid={data.groupid}
+                bind:templateid={data.templateid}
+                bind:values={data}
+                onValidate={(value) => (isValid = value)}
+              />
             {/if}
           {/if}
-        </Card>
-      {/if}
+        {/if}
+      </Card>
       <div class="sticky-buttons">
         <div class="inline-buttons">
-          <button type="submit" disabled={!isValidated}>
+          <button type="submit" disabled={!isValid}>
             {getMessage(LocalizedMessage.ADD_CREATE)}
           </button>
           {#if !edit}

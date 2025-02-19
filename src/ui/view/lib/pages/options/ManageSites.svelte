@@ -1,30 +1,30 @@
 <script lang="ts">
-  import { getMessage, LocalizedMessage } from "../../../../../global/i18n";
+  import { getMessage, LocalizedMessage } from "@/global/i18n";
   import {
     loading,
-    messageStore,
+    Messages,
     MessageType,
     sites,
-SITES_ADD_LOADING_ID,
-SITES_REMOVE_LOADING_ID,
-  } from "../../../../stores";
+    SITES_ADD_LOADING_ID,
+    SITES_REMOVE_LOADING_ID,
+  } from "@/ui/stores";
 
-  import Card from "../../layout/Card.svelte";
-  import MessageViewer from "../../layout/MessageViewer.svelte";
+  import Card from "@/ui/view/lib/layout/Card.svelte";
+  import MessageViewer from "@/ui/view/lib/layout/MessageViewer.svelte";
 
   let addHost: HTMLInputElement;
 
   let addInitialState = { host: "", apikey: "" };
   let addValues: Pick<Site, "host" | "apikey"> = { ...addInitialState };
 
-  const addMessages = messageStore();
-  const deleteMessages = messageStore();
+  const addMessages = new Messages();
+  const deleteMessages = new Messages();
 
   let managedSites: Site[], userSites: Site[];
   $: {
     managedSites = [];
     userSites = [];
-    for (const site of $sites) {
+    for (const site of sites.data) {
       if (site.managed) managedSites.push(site);
       else userSites.push(site);
     }
@@ -57,21 +57,6 @@ SITES_REMOVE_LOADING_ID,
   }
 </script>
 
-<style>
-  .site-entry {
-    background-color: var(--color-input-bg);
-    border-radius: var(--border-radius);
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .site-entry span {
-    padding: var(--spacing);
-  }
-</style>
-
 <section class="grid">
   <form class="grid" on:submit|preventDefault={addSite}>
     <Card>
@@ -85,7 +70,8 @@ SITES_REMOVE_LOADING_ID,
           bind:this={addHost}
           bind:value={addValues.host}
           on:input={addMessages.clear}
-          required />
+          required
+        />
       </label>
       <label>
         {getMessage(LocalizedMessage.OPTIONS_SITES_ADD_LABEL_APIKEY)}
@@ -95,7 +81,8 @@ SITES_REMOVE_LOADING_ID,
           placeholder="abcde12345"
           bind:value={addValues.apikey}
           on:input={addMessages.clear}
-          required />
+          required
+        />
       </label>
       <button type="submit">
         {getMessage(LocalizedMessage.OPTIONS_SITES_ADD)}
@@ -112,7 +99,8 @@ SITES_REMOVE_LOADING_ID,
       {#each userSites as site (site.host)}
         <form
           class="site-entry"
-          on:submit|preventDefault={() => removeSite(site.host)}>
+          on:submit|preventDefault={() => removeSite(site.host)}
+        >
           <span>{site.host}</span>
           <button type="submit" class="danger">
             {getMessage(LocalizedMessage.OPTIONS_SITES_DELETE)}
@@ -134,3 +122,18 @@ SITES_REMOVE_LOADING_ID,
     </Card>
   {/if}
 </section>
+
+<style>
+  .site-entry {
+    background-color: var(--color-input-bg);
+    border-radius: var(--border-radius);
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .site-entry span {
+    padding: var(--spacing);
+  }
+</style>

@@ -2,9 +2,9 @@ import { Logger } from '../global/logger'
 import type { Message } from '../global/messages'
 import { settings } from '../global/storage'
 import { createIframe, onIframeMessage } from './tasks/createIframe'
+import type { Form } from './tasks/scanner'
 import {
   scanner,
-  Form,
   InputType,
   FORM_FILL_TYPES,
   FORM_SAVE_TYPES,

@@ -11,6 +11,8 @@ import { rm } from "./buildtools/lib/clean";
 
 import type { InlineConfig, PluginOption } from "vite";
 import browserPolyfillPlugin from "./plugins/vite-plugin-browser-polyfill";
+import viteCustomLogging from "./plugins/vite-plugin-custom-logging";
+import merge from "lodash.merge";
 
 const OUT_DIR = path.join("dist", "build");
 const BROWSER_POLYFILL = "/externals/browser-polyfill.min.js";
@@ -39,22 +41,16 @@ function copyPublicFiles(platform: string, inFiles: string[]) {
   copy(inFiles, outPath);
 }
 
-function makeViteConfig(platform: string): InlineConfig {
-  return {
-    logLevel: "info",
-    plugins: [svelte(), browserPolyfillPlugin(platform, BROWSER_POLYFILL)],
+function makeViteConfig(platform: string): InlineConfig | InlineConfig[] {
+  const commonConfig: InlineConfig = {
+    logLevel: "silent",
+    plugins: [
+      svelte(),
+      browserPolyfillPlugin(platform, BROWSER_POLYFILL),
+      viteCustomLogging(),
+    ],
     build: {
       rollupOptions: {
-        input: {
-          popup: path.resolve(__dirname, "popup.html"),
-          background: path.resolve(__dirname, "src/background/main.ts"),
-          content: path.resolve(__dirname, "src/content_script/main.ts"),
-          content_ui: path.resolve(__dirname, "content_script.html"),
-        },
-        output: {
-          entryFileNames: "[name].js",
-          chunkFileNames: "[name].[hash].js",
-        },
         external: [BROWSER_POLYFILL],
       },
       outDir: `${OUT_DIR}/${platform}`,
@@ -67,6 +63,64 @@ function makeViteConfig(platform: string): InlineConfig {
       },
     },
   };
+
+  return [
+    merge(
+      {
+        build: {
+          rollupOptions: {
+            input: path.resolve(__dirname, "popup.html"),
+            output: {
+              entryFileNames: "popup.storedsafe.js",
+            },
+          },
+        },
+      },
+      commonConfig
+    ),
+    merge(
+      {
+        build: {
+          rollupOptions: {
+            input: path.resolve(__dirname, "src/background/main.ts"),
+            output: {
+              entryFileNames: "background.storedsafe.js",
+              format: "es",
+            },
+          },
+        },
+      },
+      commonConfig
+    ),
+    merge(
+      {
+        build: {
+          rollupOptions: {
+            input: path.resolve(__dirname, "src/content_script/main.ts"),
+            output: {
+              entryFileNames: "content_script.storedsafe.js",
+              format: "iife",
+            },
+          },
+        },
+      },
+      commonConfig
+    ),
+    merge(
+      {
+        build: {
+          rollupOptions: {
+            input: path.resolve(__dirname, "content_script.html"),
+            output: {
+              entryFileNames: "content_script.ui.storedsafe.js",
+              format: "iife",
+            },
+          },
+        },
+      },
+      commonConfig
+    ),
+  ];
 }
 
 //

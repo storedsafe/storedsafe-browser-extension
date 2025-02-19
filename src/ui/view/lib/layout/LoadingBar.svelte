@@ -1,8 +1,16 @@
 <script lang="ts">
-  import { getMessage, LocalizedMessage } from "../../../../global/i18n";
+  import { getMessage, LocalizedMessage } from "@/global/i18n";
 
   export let isLoading: boolean = false;
 </script>
+
+{#if isLoading}
+  <div
+    aria-label={getMessage(LocalizedMessage.LOADING_TITLE)}
+    title={getMessage(LocalizedMessage.LOADING_TITLE)}
+    class="shadow"
+  ></div>
+{/if}
 
 <style>
   div {
@@ -27,10 +35,3 @@
     }
   }
 </style>
-
-{#if isLoading}
-  <div
-    aria-label={getMessage(LocalizedMessage.LOADING_TITLE)}
-    title={getMessage(LocalizedMessage.LOADING_TITLE)}
-    class="shadow" />
-{/if}

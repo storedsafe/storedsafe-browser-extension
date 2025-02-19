@@ -1,24 +1,26 @@
 <script lang="ts">
-  import { createEventDispatcher } from "svelte";
-  import Icon from "../layout/Icon.svelte";
+  import type { Page } from "@/ui/view/Popup/pages";
+  import Icon from "@/ui/view/lib/layout/Icon.svelte";
 
-  const dispatch = createEventDispatcher();
+  interface Props {
+    menuItems: {
+      name: Page;
+      title: string;
+      icon: string;
+    }[];
+    selected: string | null;
+    onNavigate?: (page: Page) => void;
+  }
 
-  // List of items to display in menu
-  export let menuItems: {
-    name: string;
-    title: string;
-    icon: string;
-  }[];
+  let { menuItems, selected = null, onNavigate }: Props = $props();
 
-  // The currently selected menu item
-  export let selected: string = null;
   // Track focused and hovered state for accurate coloring
-  let focused: string;
-  let hovered: string;
+  let focused: string | null = $state(null);
+  let hovered: string | null = $state(null);
+
   // Currently highlighted or selected object, depending on hover/focus state
-  $: menuItem = menuItems.find(
-    (item) => item.name === (hovered ?? focused ?? selected)
+  let menuItem = $derived(
+    menuItems.find((item) => item.name === (hovered ?? focused ?? selected))
   );
 
   // Set properties of menu icons
@@ -60,15 +62,48 @@
   function setHovered(name: string) {
     hovered = name;
   }
-
-  /**
-   * Dispatch event on navigation for parent to handle.
-   * @param name Name identifier of focused element.
-   * */
-  function handleClick(name: string) {
-    dispatch("navigate", name);
-  }
 </script>
+
+<!--
+  @component
+  Top menu of extension.
+  Emits `navigate` event with the menu item name on navigation.
+-->
+<nav>
+  <section
+    class="icons"
+    class:has-selected={!!menuItem}
+    onmouseleave={() => clearHovered}
+    role="button"
+    tabindex="0"
+  >
+    {#each menuItems as item (item.name)}
+      <button
+        type="button"
+        class="input-reset"
+        class:selected={selected === item.name}
+        onmouseenter={() => setHovered(item.name)}
+        onfocus={() => setFocused(item.name)}
+        onclick={() => onNavigate?.(item.name)}
+        onblur={() => clearFocused()}
+        aria-label={item.title}
+      >
+        <Icon {...{ ...iconProps, d: item.icon }} />
+      </button>
+    {/each}
+  </section>
+  {#if !!menuItem}
+    <section
+      class:selected={selected === menuItem.name}
+      class:focused={focused === menuItem.name}
+      class:hovered={hovered === menuItem.name}
+      class="menu-title shadow"
+      title={menuItem.title}
+    >
+      {menuItem.title}
+    </section>
+  {/if}
+</nav>
 
 <style>
   nav {
@@ -142,39 +177,3 @@
     user-select: none;
   }
 </style>
-
-<!--
-  @component
-  Top menu of extension.
-  Emits `navigate` event with the menu item name on navigation.
--->
-<nav>
-  <section
-    class="icons"
-    class:has-selected={!!menuItem}
-    on:mouseleave={clearHovered}>
-    {#each menuItems as item (item.name)}
-      <button
-        type="button"
-        class="input-reset"
-        class:selected={selected === item.name}
-        on:mouseenter={() => setHovered(item.name)}
-        on:focus={() => setFocused(item.name)}
-        on:click={() => handleClick(item.name)}
-        on:blur={clearFocused}
-        aria-label={item.title}>
-        <Icon {...{ ...iconProps, d: item.icon }} />
-      </button>
-    {/each}
-  </section>
-  {#if !!menuItem}
-    <section
-      class:selected={selected === menuItem.name}
-      class:focused={focused === menuItem.name}
-      class:hovered={hovered === menuItem.name}
-      class="menu-title shadow"
-      title={menuItem.title}>
-      {menuItem.title}
-    </section>
-  {/if}
-</nav>

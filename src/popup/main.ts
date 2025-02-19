@@ -30,17 +30,19 @@
 
 // export default extension
 
-import "../styles/global.css"
-
+import "../styles/global.css";
 import { mount } from "svelte";
 
-import Popup from "./Popup.svelte";
+import Popup from "./App.svelte";
+import { Logger } from "@/global/logger";
 
-const popup = mount(Popup, {
-  target: document.body,
-  props: {
-    name: "World"
-  }
+let popup;
+
+Logger.Init().then(() => {
+  popup = mount(Popup, {
+    target: document.body,
+    props: {},
+  });
 });
 
 export default popup;

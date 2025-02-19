@@ -1,11 +1,11 @@
-import { getMessage, LocalizedMessage } from '../../../global/i18n'
+import { getMessage, LocalizedMessage } from '@/global/i18n'
 import {
   addIcon,
   optionsIcon,
   pwgenIcon,
   vaultIcon,
   vaultOpenIcon
-} from '../../../global/icons'
+} from '@/global/icons'
 
 // Define pages available for navigation
 export enum Page {

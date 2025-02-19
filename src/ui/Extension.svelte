@@ -2,7 +2,7 @@
   import IFrame from "./view/iframe/IFrame.svelte";
   import Popup from "./view/Popup/Popup.svelte";
 
-  $: page = window.location.hash.replace("#", "");
+  let page = $derived(window.location.hash.replace("#", ""))
 </script>
 
 <main>

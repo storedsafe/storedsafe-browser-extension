@@ -1,18 +1,18 @@
 <script lang="ts">
-  import { getMessage, LocalizedMessage } from "../../../../../global/i18n";
+  import { getMessage, LocalizedMessage } from "@/global/i18n";
 
-  import { Duration, loading, messages, MessageType } from "../../../../stores";
+  import { Duration, loading, messages, MessageType } from "@/ui/stores";
   import {
     sessions,
     settings,
     sites,
     preferences,
-    ignore,
-  } from "../../../../stores/browserstorage";
+    ignoreURLs,
+  } from "@/ui/stores/browserstorage";
 
-  import Card from "../../layout/Card.svelte";
-  import Checkbox from "../../layout/Checkbox.svelte";
-  import Dropdown from "../../layout/Dropdown.svelte";
+  import Card from "@/ui/view/lib/layout/Card.svelte";
+  import Checkbox from "@/ui/view/lib/layout/Checkbox.svelte";
+  import Dropdown from "@/ui/view/lib/layout/Dropdown.svelte";
   import RecursiveList from "./RecursiveList.svelte";
 
   interface DataSource {
@@ -36,19 +36,19 @@
           title: "Sessions",
           method: () =>
             Promise.all(
-              [...$sessions].map(([host, session]) =>
+              [...sessions.data].map(([host, session]) =>
                 sessions.logout(host, session.token)
               )
             ),
           description:
-            $sessions.size === 0
+            sessions.data.size === 0
               ? ""
-              : "<b>" + $sessions.size + "</b> active sessions",
+              : "<b>" + sessions.data.size + "</b> active sessions",
         },
         settings: {
           title: "Settings",
           method: settings.clear,
-          description: [...$settings]
+          description: [...settings.data]
             .map(([key, { value, managed }]) =>
               managed ? "" : key + `${key}: <b>${value}</b>`
             )
@@ -58,7 +58,7 @@
         sites: {
           title: "Sites",
           method: sites.clear,
-          description: $sites
+          description: sites.data
             .map(({ host, apikey, managed }) =>
               managed ? "" : `${host}: apikey <b>${apikey}</b>`
             )
@@ -73,15 +73,17 @@
               title: "Add Preferences",
               method: preferences.clearAddPreferences,
               description:
-                ($preferences.add?.host
-                  ? "Host preference: <b>" + $preferences.add.host + "</b><br/>"
+                (preferences.data.add?.host
+                  ? "Host preference: <b>" +
+                    preferences.data.add.host +
+                    "</b><br/>"
                   : "") +
-                ($preferences.add?.vaults
-                  ? Object.keys($preferences.add?.vaults)
+                (preferences.data.add?.vaults
+                  ? Object.keys(preferences.data.add?.vaults)
                       .map(
                         (key) =>
                           `${key}: Vault <b>` +
-                          $preferences.add.vaults[key] +
+                          preferences.data.add?.vaults[key] +
                           "</b>"
                       )
                       .join("<br/>")
@@ -90,7 +92,7 @@
             sitePreferences: {
               title: "Site Preferences",
               method: preferences.clearSitePreferences,
-              description: [...$preferences.sites]
+              description: [...(preferences.data.sites ?? [])]
                 .map(
                   ([key, { username, loginType }]) =>
                     `${key}: <b>${username}</b> <b>${loginType}</b>`
@@ -100,7 +102,7 @@
             autoFillPreferences: {
               title: "Auto Fill Preferences",
               method: preferences.clearAutoFillPreferences,
-              description: [...$preferences.autoFill]
+              description: [...(preferences.data.autoFill ?? [])]
                 .map(
                   ([key, { host, objectId }]) =>
                     `${host}: ${key} <b>${objectId}</b>`
@@ -111,11 +113,11 @@
         },
         ignore: {
           title: "Ignore",
-          method: ignore.clear,
+          method: ignoreURLs.clear,
           description:
-            $ignore.length === 0
+            ignoreURLs.data.length === 0
               ? ""
-              : "<b>" + $ignore.length + "</b> sites ignored",
+              : "<b>" + ignoreURLs.data.length + "</b> sites ignored",
         },
       },
     },
@@ -213,19 +215,23 @@
   <Card>
     <RecursiveList items={dataSourceList} let:key let:item>
       <Dropdown showing={false} enabled={!!item.description}>
-        <label slot="title" for={key}>
-          <Checkbox
-            id={key}
-            bind:checked={checked[key]}
-            on:change={(e) => onChange(e, item.children)}
-          />
-          <h2>{item.title}</h2>
-        </label>
-        <div slot="content">
-          {#if item.description}
-            <p class="description">{@html item.description}</p>
-          {/if}
-        </div>
+        {#snippet title()}
+          <label for={key}>
+            <Checkbox
+              id={key}
+              bind:checked={checked[key]}
+              on:change={(e) => onChange(e, item.children)}
+            />
+            <h2>{item.title}</h2>
+          </label>
+        {/snippet}
+        {#snippet content()}
+          <div>
+            {#if item.description}
+              <p class="description">{@html item.description}</p>
+            {/if}
+          </div>
+        {/snippet}
       </Dropdown>
     </RecursiveList>
   </Card>
