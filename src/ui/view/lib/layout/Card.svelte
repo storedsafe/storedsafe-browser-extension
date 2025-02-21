@@ -1,7 +1,34 @@
-<script lang="ts">
-  export let backgroundColor: string = "var(--color-bg)";
-  export let color: string = "var(--color-fg)";
+<script lang="ts" module>
+  import type { Snippet } from "svelte";
+
+  export interface Props {
+    backgroundColor?: string;
+    color?: string;
+    children?: Snippet;
+  }
 </script>
+
+<script lang="ts">
+  let {
+    backgroundColor = "var(--color-bg)",
+    color = "var(--color-fg)",
+    children,
+  }: Props = $props();
+</script>
+
+<!--
+  @component
+  Card-style container for creating uniform page content.
+-->
+<article
+  class="grid card"
+  style={`
+    --card-bg: ${backgroundColor};
+    --card-fg: ${color};
+    `}
+>
+  {@render children?.()}
+</article>
 
 <style>
   article {
@@ -23,16 +50,3 @@
     text-align: left;
   }
 </style>
-
-<!--
-  @component
-  Card-style container for creating uniform page content.
--->
-<article
-  class="grid card"
-  style={`
-    --card-bg: ${backgroundColor};
-    --card-fg: ${color};
-    `}>
-  <slot />
-</article>
