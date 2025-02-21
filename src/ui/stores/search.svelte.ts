@@ -11,28 +11,19 @@ export const SEARCH_DELETE_LOADING_ID = "search.delete";
 export const SEARCH_REMOVE_LOADING_ID = "search.remove";
 export const SEARCH_DECRYPT_LOADING_ID = "search.remove";
 
-interface SearchC {
-  search: (needle: string) => Promise<void>;
-  edit: (
-    result: StoredSafeObject,
-    values: Record<string, string>
-  ) => Promise<StoredSafeObject>;
-  delete: (result: StoredSafeObject) => Promise<StoredSafeObject>;
-  decrypt: (result: StoredSafeObject) => Promise<StoredSafeObject>;
-}
-
 class Search {
   tabResults: StoredSafeObject[] = $state([]);
   results: StoredSafeObject[] = $state([]);
   sessions: Map<string, Session> = $state(new Map());
 
-  onMessage(message: Message) {
-    if (message.context === "autosearch" && message.action === "populate") {
-      this.tabResults = message.data;
-    }
-  }
-
   constructor() {
+    this.onMessage = this.onMessage.bind(this);
+    this.onSessionsChanged = this.onSessionsChanged.bind(this);
+    this.search = this.search.bind(this);
+    this.edit = this.edit.bind(this);
+    this.delete = this.delete.bind(this);
+    this.decrypt = this.decrypt.bind(this);
+
     const port = browser.runtime.connect({ name: "search" });
     addMessageListener(port, this.onMessage);
 
@@ -40,6 +31,12 @@ class Search {
     loading.add(SEARCH_INIT_LOADING_ID, promise, {
       onSuccess: (data) => (this.sessions = data),
     });
+  }
+
+  onMessage(message: Message) {
+    if (message.context === "autosearch" && message.action === "populate") {
+      this.tabResults = message.data;
+    }
   }
 
   onSessionsChanged(

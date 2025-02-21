@@ -59,10 +59,8 @@ async function getSyncSites() {
  */
 export async function get(): Promise<Site[]> {
   try {
-    const sync = await getSyncSites();
-    const managed = await getManagedSites();
-    // Convert to Map from serializable format. Map objects are not serializable
-    // and will result as an empty object if put in storage.
+    const sync = (await getSyncSites()) ?? [];
+    const managed = (await getManagedSites()) ?? [];
     return merge(managed, sync);
   } catch (error) {
     throw new StoredSafeSitesGetError(error as Error);

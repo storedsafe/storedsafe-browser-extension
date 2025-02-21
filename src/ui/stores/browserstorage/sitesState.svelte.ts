@@ -10,7 +10,7 @@ class SitesStore {
   data: Site[] = $state([]);
 
   constructor() {
-    const promise = sitesStorage.subscribe(this.#update);
+    const promise = sitesStorage.subscribe(this.#update.bind(this));
     loading.add(SITES_LOADING_ID, promise, {
       onSuccess: (data) => (this.data = data),
     });

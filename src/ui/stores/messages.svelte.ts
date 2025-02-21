@@ -12,9 +12,9 @@ export enum MessageType {
  */
 export enum Duration {
   NO_LIMIT = -1,
-  SHORT = 5e3,    // 5 seconds
-  MEDIUM = 10e3,  // 10 seconds
-  LONG = 18e5,     // 30 minutes
+  SHORT = 5e3, // 5 seconds
+  MEDIUM = 10e3, // 10 seconds
+  LONG = 18e5, // 30 minutes
 }
 
 /**
@@ -35,6 +35,12 @@ export class Messages {
   // Counter used to generate message IDs
   messages: Message[] = $state([]);
   count: number = $derived(this.messages.length);
+
+  constructor() {
+    this.add = this.add.bind(this);
+    this.remove = this.remove.bind(this);
+    this.clear = this.clear.bind(this);
+  }
 
   /**
    * Add a message to the store.

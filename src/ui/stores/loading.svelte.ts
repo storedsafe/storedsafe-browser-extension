@@ -69,6 +69,13 @@ class Loading {
   promises: Map<string, LoadingPromise<any>> = $state(new Map());
   isLoading: boolean = $state(false);
 
+  constructor() {
+    this.has = this.has.bind(this);
+    this.add = this.add.bind(this);
+    this.cancel = this.cancel.bind(this);
+    this.finished = this.finished.bind(this);
+  }
+
   /**
    * @param searchIDs IDs associated with the promises that progress should be checked for.
    * @returns `true` if any of the searched promises are still in progress.

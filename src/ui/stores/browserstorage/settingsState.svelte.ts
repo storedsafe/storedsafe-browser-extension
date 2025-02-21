@@ -1,4 +1,4 @@
-import { settings as settingsStorage } from "../../../global/storage";
+import { settings as settingsStorage } from "@/global/storage";
 import { loading } from "../loading.svelte";
 
 export const SETTINGS_LOADING_ID = "settings.loading";
@@ -9,7 +9,7 @@ class SettingsState {
   data: SettingsMap = $state(new Map());
 
   constructor() {
-    const promise = settingsStorage.subscribe(this.#update);
+    const promise = settingsStorage.subscribe(this.#update.bind(this));
     loading.add(SETTINGS_LOADING_ID, promise, {
       onSuccess: (data) => (this.data = data),
     });

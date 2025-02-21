@@ -14,6 +14,9 @@ export class Timer {
   now = $state(Date.now());
 
   constructor(interval: number, alignTimeout: number = 0) {
+    this.start = this.start.bind(this);
+    this.stop = this.stop.bind(this);
+
     this.interval = interval;
     this.alignTimeout = alignTimeout;
   }

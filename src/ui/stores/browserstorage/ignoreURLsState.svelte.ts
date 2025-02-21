@@ -10,7 +10,7 @@ class IgnoreURLsState {
   data: IgnoreURLs = $state([]);
 
   constructor() {
-    const promise = ignoreStorage.subscribe(this.#update);
+    const promise = ignoreStorage.subscribe(this.#update.bind(this));
     loading.add(IGNORE_LOADING_ID, promise, {
       onSuccess: (data) => (this.data = data),
     });

@@ -9,12 +9,14 @@ class Router {
   props: RouteParams = $state({});
 
   constructor() {
+    this.addRoute = this.addRoute.bind(this);
+    this.goto = this.goto.bind(this);
     this.goto(window.location.hash.replace("#", ""));
   }
 
   addRoute(route: string, component: Component<any>) {
     this.routes[route] = component;
-    this.updateComponentAndProps();
+    this.#updateComponentAndProps();
   }
 
   goto(route: string): void {
@@ -27,16 +29,16 @@ class Router {
 
   private set route(route: string) {
     this._route = route;
-    this.updateComponentAndProps();
+    this.#updateComponentAndProps();
   }
 
-  private updateComponentAndProps() {
-    const [component, props] = this.getComponentAndProps() ?? [null, {}];
+  #updateComponentAndProps() {
+    const [component, props] = this.#getComponentAndProps() ?? [null, {}];
     this.component = component;
     this.props = props;
   }
 
-  private getComponentAndProps(): [Component, RouteParams] | null {
+  #getComponentAndProps(): [Component, RouteParams] | null {
     for (const route of Object.keys(this.routes)) {
       const routeRegex = route
         .replaceAll("/", "/")

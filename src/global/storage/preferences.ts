@@ -72,13 +72,14 @@ async function set({
   sites,
   autoFill,
 }: Partial<Preferences>): Promise<void> {
+  console.log(add, sites, autoFill);
   // Convert to serializable format, using null coalescing before converting
   // to array to ensure values are not undefined (causes TypeError).
   await browser.storage.local.set({
     [STORAGE_KEY]: {
-      add: add ?? structuredClone(EMPTY_STATE.add),
-      sites: structuredClone(sites ?? EMPTY_STATE.sites),
-      autoFill: structuredClone(autoFill ?? EMPTY_STATE.autoFill),
+      add: structuredClone(add ?? EMPTY_STATE.add),
+      sites: structuredClone(Array.from(sites ?? EMPTY_STATE.sites)),
+      autoFill: structuredClone(Array.from(autoFill ?? EMPTY_STATE.autoFill)),
     },
   });
 }
@@ -252,11 +253,11 @@ export async function clear() {
 /**
  * When ignore list updates in storage, notify listeners.
  */
-browser.storage.onChanged.addListener(changes => {
+browser.storage.onChanged.addListener((changes) => {
   if (!!changes[STORAGE_KEY]) {
-    const { oldValue, newValue } = changes[STORAGE_KEY]
+    const { oldValue, newValue } = changes[STORAGE_KEY];
     for (const listener of listeners) {
-      listener(parse(newValue), parse(oldValue))
+      listener(parse(newValue), parse(oldValue));
     }
   }
-})
+});

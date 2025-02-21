@@ -11,7 +11,7 @@ class SessionsState {
   data: SessionsMap = $state(new Map());
 
   constructor() {
-    const promise = sessionsStorage.subscribe(this.#update);
+    const promise = sessionsStorage.subscribe(this.#update.bind(this));
     loading.add(SESSIONS_LOADING_ID, promise, {
       onSuccess: (data) => (this.data = data),
     });
