@@ -12,30 +12,28 @@
   import Card from "@/ui/view/lib/layout/Card.svelte";
   import MessageViewer from "@/ui/view/lib/layout/MessageViewer.svelte";
 
-  let addHost: HTMLInputElement;
+  let addHost: HTMLInputElement | undefined = $state();
 
-  let addInitialState = { host: "", apikey: "" };
-  let addValues: Pick<Site, "host" | "apikey"> = { ...addInitialState };
+  const addInitialState = { host: "", apikey: "" };
+  let addValues: Pick<Site, "host" | "apikey"> = $state(
+    structuredClone(addInitialState)
+  );
 
   const addMessages = new Messages();
   const deleteMessages = new Messages();
 
-  let managedSites: Site[], userSites: Site[];
-  $: {
-    managedSites = [];
-    userSites = [];
-    for (const site of sites.data) {
-      if (site.managed) managedSites.push(site);
-      else userSites.push(site);
-    }
-  }
+  let managedSites: Site[] = $derived(
+    sites.data.filter((site) => site.managed)
+  );
+  let userSites: Site[] = $derived(sites.data.filter((site) => !site.managed));
 
   function resetAddForm() {
-    addValues = { ...addInitialState };
+    addValues = structuredClone(addInitialState);
     addHost?.focus();
   }
 
-  function addSite(): void {
+  function addSite(e: SubmitEvent): void {
+    e.preventDefault();
     addMessages.clear();
     const { host, apikey } = addValues;
     loading.add(SITES_ADD_LOADING_ID, sites.add(host, apikey), {
@@ -48,7 +46,8 @@
     });
   }
 
-  function removeSite(host: string): void {
+  function removeSite(e: SubmitEvent, host: string): void {
+    e.preventDefault();
     loading.add(SITES_REMOVE_LOADING_ID, sites.remove(host), {
       onError(error) {
         deleteMessages.add(error.message, MessageType.ERROR);
@@ -58,7 +57,7 @@
 </script>
 
 <section class="grid">
-  <form class="grid" on:submit|preventDefault={addSite}>
+  <form class="grid" onsubmit={addSite}>
     <Card>
       <h2>{getMessage(LocalizedMessage.OPTIONS_SITES_ADD_HEADER)}</h2>
       <label for="host">
@@ -69,7 +68,7 @@
           placeholder="myvault.storedsafe.com"
           bind:this={addHost}
           bind:value={addValues.host}
-          on:input={addMessages.clear}
+          oninput={() => addMessages.clear()}
           required
         />
       </label>
@@ -80,7 +79,7 @@
           id="apikey"
           placeholder="abcde12345"
           bind:value={addValues.apikey}
-          on:input={addMessages.clear}
+          oninput={() => addMessages.clear()}
           required
         />
       </label>
@@ -97,10 +96,7 @@
         {getMessage(LocalizedMessage.OPTIONS_SITES_USER_HEADER)}
       </h2>
       {#each userSites as site (site.host)}
-        <form
-          class="site-entry"
-          on:submit|preventDefault={() => removeSite(site.host)}
-        >
+        <form class="site-entry" onsubmit={(e) => removeSite(e, site.host)}>
           <span>{site.host}</span>
           <button type="submit" class="danger">
             {getMessage(LocalizedMessage.OPTIONS_SITES_DELETE)}
