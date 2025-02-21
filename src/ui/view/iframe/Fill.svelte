@@ -77,7 +77,7 @@
         ?.vaults?.find(({ id }) => id === result.vaultId);
       if (!vault) throw new StoredSafeExtensionError("Vault not found.");
       newItems.push({
-        component: FillPreview,
+        Component: FillPreview,
         name: i,
         props: {
           icon: result.icon,
