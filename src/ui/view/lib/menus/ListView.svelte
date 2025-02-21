@@ -22,13 +22,13 @@
 </script>
 
 <section class:selected={!!selected} class="grid">
-  {#each items as { component, props, name } (name)}
+  {#each items as { Component, props, name } (name)}
     {#if !selected || selected === name}
       <ListItemBox
         onClick={() => setSelected(name)}
         selected={selected === name}
       >
-        <component selected={selected === name} {...props}></component>
+        <Component selected={selected === name} {...props}></Component>
       </ListItemBox>
     {/if}
   {/each}

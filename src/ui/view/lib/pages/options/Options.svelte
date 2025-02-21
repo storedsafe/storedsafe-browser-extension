@@ -22,7 +22,7 @@
 
   let items: ListItem<OptionsItemProps>[] = [
     {
-      component: OptionsItem,
+      Component: OptionsItem,
       name: "general",
       props: {
         title: getMessage(LocalizedMessage.OPTIONS_GENERAL_TITLE),
@@ -31,7 +31,7 @@
       },
     },
     {
-      component: OptionsItem,
+      Component: OptionsItem,
       name: "sites",
       props: {
         title: getMessage(LocalizedMessage.OPTIONS_SITES_TITLE),
@@ -40,7 +40,7 @@
       },
     },
     {
-      component: OptionsItem,
+      Component: OptionsItem,
       name: "ignore",
       props: {
         title: getMessage(LocalizedMessage.OPTIONS_IGNORE_TITLE),
@@ -49,7 +49,7 @@
       },
     },
     {
-      component: OptionsItem,
+      Component: OptionsItem,
       name: "data",
       props: {
         title: getMessage(LocalizedMessage.OPTIONS_DATA_TITLE),
