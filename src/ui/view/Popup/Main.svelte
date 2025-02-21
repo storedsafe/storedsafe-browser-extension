@@ -17,6 +17,7 @@
   import DebugButton from "@/ui/view/lib/pages/debug/DebugButton.svelte";
   import Debug from "@/ui/view/lib/pages/debug/Debug.svelte";
   import Options from "@/ui/view/lib/pages/options/Options.svelte";
+  import { untrack } from "svelte";
 
   // Set up state
   let hasSites: boolean = $derived(sites.data.length > 0);
@@ -26,34 +27,27 @@
   let page: Page | null = $state(Page.WELCOME);
   let content: HTMLElement | null = null;
 
-  // When sessions changes
+  // When sessions or sites change
   $effect(() => {
-    // Set default page
-    if (isOnline && page === null) {
+    let oldPage = untrack(() => page);
+    if (!hasSites) {
+      page = Page.WELCOME;
+    } else if (isOnline && oldPage === null) {
       // Default to search if user is logged in
       page = Page.SEARCH;
     } else if (
       !isOnline &&
-      offlineMenu.findIndex(({ name }) => name === page) === -1
+      offlineMenu.findIndex(({ name }) => name === oldPage) === -1
     ) {
       // Default to login if user is not logged in
       page = Page.SESSIONS;
     }
   });
 
-  // When sites changes
-  $effect(() => {
-    // Welcome page should only be shown when no sites are configured
-    if (hasSites && page === Page.WELCOME) page = Page.SESSIONS;
-    // Default to welcome page if no sites are configured
-    else if (!hasSites) page = Page.WELCOME;
-  });
-
   /**
    * Set the active page and clear messages.
    * */
   function setPage(newPage: Page) {
-    console.log("Page: %o", newPage)
     messages.clear();
     if (content) content.scrollTop = 0;
     if (page === Page.DEBUG && page === newPage) {
@@ -76,7 +70,6 @@
     const scrollTop = offset;
     if (content) content.scrollTop = scrollTop;
   }
-  $inspect(page)
 </script>
 
 <!--
