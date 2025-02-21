@@ -87,12 +87,9 @@
   }
 
   onMount(() => {
-    console.log("Mounted debug")
     getStorage()
       .then(() => {})
-      .catch((error) => {
-        logger.error(error);
-      });
+      .catch(logger.error);
 
     browser.storage.local.get("loglevel").then(({ loglevel }) => {
       if (logLevel !== undefined) {
