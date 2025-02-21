@@ -32,20 +32,22 @@
   let managedFields: [SettingsFields, SettingsField, any][] = $state([]);
   let userFields: [SettingsFields, SettingsField, any][] = $state([]);
   $effect(() => {
-    managedFields = [];
-    userFields = [];
+    const newManagedFields: [SettingsFields, SettingsField, any][] = [];
+    const newUserFields: [SettingsFields, SettingsField, any][] = [];
     for (const [key, field] of FIELDS) {
       const setting = settings.data.get(key);
       if (!setting) logger.error(`Field ${key} not in settings.`);
       else {
         // Set up fields
         if (setting.managed)
-          managedFields.push([key, { ...field }, setting.value]);
+          newManagedFields.push([key, { ...field }, setting.value]);
         else {
-          userFields.push([key, { ...field }, setting.value]);
+          newUserFields.push([key, { ...field }, setting.value]);
         }
       }
     }
+    managedFields = newManagedFields;
+    userFields = newUserFields;
   });
 
   let alteredFields = $derived(
@@ -65,7 +67,7 @@
   );
 
   function updateSettings(e: SubmitEvent): void {
-    e.preventDefault()
+    e.preventDefault();
     settingsMessages.clear();
     const newSettings: [string, any][] = userFields
       .filter(([key]) => alteredFields.get(key))
