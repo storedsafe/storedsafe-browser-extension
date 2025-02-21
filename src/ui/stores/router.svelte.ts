@@ -1,4 +1,5 @@
 import type { Component } from "svelte";
+import { messages } from "./messages.svelte";
 
 type RouteParams = Record<string, string>;
 
@@ -41,7 +42,9 @@ class Router {
   }
 
   private set route(route: string) {
+    if (route === this._route) return;
     this._route = route;
+    messages.clear();
     this.#updateComponentAndProps();
   }
 
