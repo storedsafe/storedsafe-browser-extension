@@ -50,7 +50,7 @@
           method: settings.clear,
           description: [...settings.data]
             .map(([key, { value, managed }]) =>
-              managed ? "" : key + `${key}: <b>${value}</b>`
+              managed ? "" : `${key}: <b>${value}</b>`
             )
             .filter((v) => v !== "")
             .join("<br/>"),
