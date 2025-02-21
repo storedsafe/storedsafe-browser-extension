@@ -15,7 +15,7 @@ class IgnoreURLsState {
     loading.add(IGNORE_LOADING_ID, promise, {
       onSuccess: (data) => {
         this.isInitialized = true;
-        this.data = data;
+        this.#update(data, this.data);
       },
     });
   }

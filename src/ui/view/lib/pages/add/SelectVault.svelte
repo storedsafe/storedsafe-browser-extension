@@ -1,16 +1,16 @@
 <script lang="ts" module>
   import { Logger } from "@/global/logger";
   const logger = new Logger("select-vault");
+
+  export interface Props {
+    host: string;
+    vaultid: string;
+  }
 </script>
 
 <script lang="ts">
   import { getMessage, LocalizedMessage } from "@/global/i18n";
-  import { preferences, instances, type StoredSafeInstance } from "@/ui/stores";
-
-  interface Props {
-    host: string;
-    vaultid: string;
-  }
+  import { preferences, instances } from "@/ui/stores";
 
   let { host, vaultid = $bindable() }: Props = $props();
 
@@ -43,6 +43,8 @@
   function updatePreferences() {
     preferences.setVaultPreferences(host, vaultid).catch(logger.error);
   }
+
+  if (!vaultid) vaultid = getDefaultVault();
 </script>
 
 {#if !!host && !!vaults}

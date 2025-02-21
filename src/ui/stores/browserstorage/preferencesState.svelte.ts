@@ -1,5 +1,6 @@
 import { preferences as preferencesStorage } from "@/global/storage";
 import { loading } from "../loading.svelte";
+import { SvelteMap } from "svelte/reactivity";
 
 export const PREFERENCES_LOADING_ID = "preferences.loading";
 export const PREFERENCES_SET_AUTO_FILL_LOADING_ID = "preferences.autofill";
@@ -13,8 +14,8 @@ class PreferencesState {
   isInitialized: boolean = $state(false);
   data: Preferences = $state({
     add: { host: null, vaults: {} },
-    sites: new Map(),
-    autoFill: new Map(),
+    sites: new SvelteMap(),
+    autoFill: new SvelteMap(),
   });
 
   constructor() {
@@ -22,7 +23,7 @@ class PreferencesState {
     loading.add(PREFERENCES_LOADING_ID, promise, {
       onSuccess: (data) => {
         this.isInitialized = true;
-        this.data = data;
+        this.#update(data, this.data);
       },
     });
   }
@@ -36,7 +37,11 @@ class PreferencesState {
   clear = preferencesStorage.clear;
 
   #update(newValue: Preferences, _oldValue: Preferences) {
-    this.data = newValue;
+    this.data = {
+      add: newValue.add,
+      sites: new SvelteMap(newValue.sites),
+      autoFill: new SvelteMap(newValue.autoFill),
+    };
   }
 }
 

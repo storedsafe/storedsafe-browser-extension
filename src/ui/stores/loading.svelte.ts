@@ -1,6 +1,7 @@
 import { StoredSafeBaseError, StoredSafeExtensionError } from "@/global/errors";
 import { getMessage, LocalizedMessage } from "@/global/i18n";
 import { Logger } from "@/global/logger";
+import { SvelteMap } from "svelte/reactivity";
 
 const logger = new Logger("loading");
 
@@ -66,7 +67,7 @@ class LoadingPromise<T> {
  * individual promises are completed.
  */
 class Loading {
-  promises: Map<string, LoadingPromise<any>> = $state(new Map());
+  promises: Map<string, LoadingPromise<any>> = $state(new SvelteMap());
   isLoading: boolean = $state(false);
 
   constructor() {

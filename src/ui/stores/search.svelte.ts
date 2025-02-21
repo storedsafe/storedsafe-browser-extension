@@ -3,6 +3,7 @@ import { addMessageListener, type Message } from "@/global/messages";
 import { sessions } from "@/global/storage";
 import { loading } from "./loading.svelte";
 import { Duration, messages, MessageType } from "./messages.svelte";
+import { SvelteMap } from "svelte/reactivity";
 
 export const SEARCH_INIT_LOADING_ID = "search.initializing";
 export const SEARCH_LOADING_ID = "search.find";
@@ -15,7 +16,7 @@ class Search {
   isInitialized: boolean = $state(false);
   tabResults: StoredSafeObject[] = $state([]);
   results: StoredSafeObject[] = $state([]);
-  sessions: Map<string, Session> = $state(new Map());
+  sessions: Map<string, Session> = $state(new SvelteMap());
 
   constructor() {
     this.onMessage = this.onMessage.bind(this);
@@ -28,11 +29,13 @@ class Search {
     const port = browser.runtime.connect({ name: "search" });
     addMessageListener(port, this.onMessage);
 
-    const promise = sessions.subscribe((data) => (this.sessions = data));
+    const promise = sessions.subscribe(
+      (data) => (this.sessions = new SvelteMap(data))
+    );
     loading.add(SEARCH_INIT_LOADING_ID, promise, {
       onSuccess: (data) => {
         this.isInitialized = true;
-        this.sessions = data;
+        this.sessions = new SvelteMap(data);
       },
     });
   }
@@ -47,7 +50,7 @@ class Search {
     newValue: Map<string, Session>,
     _oldValues: Map<string, Session>
   ) {
-    this.sessions = newValue;
+    this.sessions = new SvelteMap(newValue);
     this.results = this.results.filter((result) =>
       this.sessions.has(result.host)
     );

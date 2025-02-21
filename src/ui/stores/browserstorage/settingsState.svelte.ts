@@ -1,5 +1,6 @@
 import { settings as settingsStorage } from "@/global/storage";
 import { loading } from "../loading.svelte";
+import { SvelteMap } from "svelte/reactivity";
 
 export const SETTINGS_LOADING_ID = "settings.loading";
 export const SETTINGS_UPDATE_LOADING_ID = "settings.update";
@@ -7,14 +8,14 @@ export const SETTINGS_CLEAR_LOADING_ID = "settings.clear";
 
 class SettingsState {
   isInitialized: boolean = $state(false);
-  data: SettingsMap = $state(new Map());
+  data: SettingsMap = $state(new SvelteMap());
 
   constructor() {
     const promise = settingsStorage.subscribe(this.#update.bind(this));
     loading.add(SETTINGS_LOADING_ID, promise, {
       onSuccess: (data) => {
         this.isInitialized = true;
-        this.data = data;
+        this.#update(data, this.data);
       },
     });
   }
@@ -23,7 +24,7 @@ class SettingsState {
   clear = settingsStorage.clear;
 
   #update(newValue: SettingsMap, _oldValue: SettingsMap) {
-    this.data = newValue;
+    this.data = new SvelteMap(newValue);
   }
 }
 

@@ -2,6 +2,7 @@ import { sessions } from "@/global/storage";
 import { vault } from "@/global/api";
 import { Logger } from "@/global/logger";
 import { loading } from "./loading.svelte";
+import { SvelteMap } from "svelte/reactivity";
 
 const logger = new Logger("structure");
 
@@ -18,7 +19,7 @@ export interface StoredSafeInstance {
 
 class StoredSafeInstances {
   isInitialized: boolean = $state(false);
-  instances: Map<Host, StoredSafeInstance> = $state(new Map());
+  instances: Map<Host, StoredSafeInstance> = $state(new SvelteMap());
 
   constructor() {
     this.onSessionsChanged = this.onSessionsChanged.bind(this);
@@ -35,17 +36,20 @@ class StoredSafeInstances {
     newValue: Map<string, Session>,
     _oldValues: Map<string, Session>
   ) {
+    logger.debug("Sessions changed.");
     const sessions = newValue;
     const instances: Map<Host, StoredSafeInstance> = new Map(this.instances);
 
     for (const host of instances.keys()) {
       if (!sessions.has(host)) {
+        logger.debug("Deleting instance for %s", host);
         instances.delete(host);
       }
     }
 
     for (const [host, session] of sessions.entries()) {
       const loadingId = `${INSTANCES_REFRESH_LOADING_ID}.${host}`;
+      logger.debug("Loading instance data for %s...", host);
       const promises = Promise.all([
         vault.getVaults(host, session.token),
         vault.getTemplates(host, session.token),
@@ -56,20 +60,21 @@ class StoredSafeInstances {
         StoredSafeTemplate[],
         StoredSafePasswordPolicy[]
       ]) => {
+        logger.debug("Updated instance data for %s", host);
         instances.set(host, {
           session,
           vaults,
           templates,
           policies,
         });
+        // Sort instances to ensure consistent order
+        this.instances = new SvelteMap(
+          instances.entries().toArray().sort(this.#sortInstances)
+        );
       };
       const onError = logger.error;
       loading.add(loadingId, promises, { onSuccess, onError });
     }
-    // Sort instances to ensure consistent order
-    this.instances = new Map(
-      instances.entries().toArray().sort(this.#sortInstances)
-    );
   }
 
   #sortInstances(

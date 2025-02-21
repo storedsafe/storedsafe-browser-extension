@@ -1,11 +1,13 @@
-<script lang="ts">
-  import { getMessage, LocalizedMessage } from "@/global/i18n";
-  import { Duration, instances, messages, MessageType } from "@/ui/stores";
-
-  interface Props {
+<script lang="ts" module>
+  export interface Props {
     host: string;
     templateid: string;
   }
+</script>
+
+<script lang="ts">
+  import { getMessage, LocalizedMessage } from "@/global/i18n";
+  import { Duration, instances, messages, MessageType } from "@/ui/stores";
 
   let { host, templateid = $bindable() }: Props = $props();
 

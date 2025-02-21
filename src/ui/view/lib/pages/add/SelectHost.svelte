@@ -1,11 +1,17 @@
-<script lang="ts" context="module">
+<script lang="ts" module>
   import { Logger } from "@/global/logger";
   const logger = new Logger("select-host");
+
+  export interface Props {
+    host: string;
+  }
 </script>
 
 <script lang="ts">
   import { getMessage, LocalizedMessage } from "@/global/i18n";
   import { preferences, sessions } from "@/ui/stores";
+
+  let { host = $bindable() }: Props = $props();
 
   function getDefaultHost(): string {
     const preferredHost = preferences.data.add?.host;
@@ -19,16 +25,16 @@
     return preferredHost;
   }
 
-  export let host: string = getDefaultHost();
-
   function updatePreferences() {
     preferences.setHostPreferences(host).catch(logger.error);
   }
+
+  if (!host) host = getDefaultHost();
 </script>
 
 <label>
   <span>{getMessage(LocalizedMessage.ADD_HOST)}</span>
-  <select bind:value={host} on:change={updatePreferences}>
+  <select bind:value={host} onchange={() => updatePreferences()}>
     {#each sessions.data.keys() as host (host)}
       <option value={host}>{host}</option>
     {/each}
