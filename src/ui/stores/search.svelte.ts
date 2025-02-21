@@ -12,6 +12,7 @@ export const SEARCH_REMOVE_LOADING_ID = "search.remove";
 export const SEARCH_DECRYPT_LOADING_ID = "search.remove";
 
 class Search {
+  isInitialized: boolean = $state(false);
   tabResults: StoredSafeObject[] = $state([]);
   results: StoredSafeObject[] = $state([]);
   sessions: Map<string, Session> = $state(new Map());
@@ -29,7 +30,10 @@ class Search {
 
     const promise = sessions.subscribe((data) => (this.sessions = data));
     loading.add(SEARCH_INIT_LOADING_ID, promise, {
-      onSuccess: (data) => (this.sessions = data),
+      onSuccess: (data) => {
+        this.isInitialized = true;
+        this.sessions = data;
+      },
     });
   }
 

@@ -8,12 +8,16 @@ export const SESSIONS_LOGOUT_LOADING_ID = "sessions.logout";
 export const SESSIONS_CLEAR_LOADING_ID = "sessions.clear";
 
 class SessionsState {
+  isInitialized: boolean = $state(false);
   data: SessionsMap = $state(new Map());
 
   constructor() {
     const promise = sessionsStorage.subscribe(this.#update.bind(this));
     loading.add(SESSIONS_LOADING_ID, promise, {
-      onSuccess: (data) => (this.data = data),
+      onSuccess: (data) => {
+        this.isInitialized = true;
+        this.data = data;
+      },
     });
   }
 

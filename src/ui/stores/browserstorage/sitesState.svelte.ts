@@ -7,12 +7,16 @@ export const SITES_REMOVE_LOADING_ID = "sites.remove";
 export const SITES_CLEAR_LOADING_ID = "sites.clear";
 
 class SitesStore {
+  isInitialized: boolean = $state(false);
   data: Site[] = $state([]);
 
   constructor() {
     const promise = sitesStorage.subscribe(this.#update.bind(this));
     loading.add(SITES_LOADING_ID, promise, {
-      onSuccess: (data) => (this.data = data),
+      onSuccess: (data) => {
+        this.isInitialized = true;
+        this.data = data;
+      },
     });
   }
 

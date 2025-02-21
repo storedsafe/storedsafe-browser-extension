@@ -7,12 +7,16 @@ export const IGNORE_REMOVE_LOADING_ID = "ignore.remove";
 export const IGNORE_CLEAR_LOADING_ID = "ignore.clear";
 
 class IgnoreURLsState {
+  isInitialized: boolean = $state(false);
   data: IgnoreURLs = $state([]);
 
   constructor() {
     const promise = ignoreStorage.subscribe(this.#update.bind(this));
     loading.add(IGNORE_LOADING_ID, promise, {
-      onSuccess: (data) => (this.data = data),
+      onSuccess: (data) => {
+        this.isInitialized = true;
+        this.data = data;
+      },
     });
   }
 

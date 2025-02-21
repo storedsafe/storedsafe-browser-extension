@@ -10,6 +10,7 @@ export const PREFERENCES_CLEAR_SITE_LOADING_ID = "preferences.clear.site";
 export const PREFERENCES_CLEAR_LOADING_ID = "preferences.clear.all";
 
 class PreferencesState {
+  isInitialized: boolean = $state(false);
   data: Preferences = $state({
     add: { host: null, vaults: {} },
     sites: new Map(),
@@ -19,7 +20,10 @@ class PreferencesState {
   constructor() {
     const promise = preferencesStorage.subscribe(this.#update.bind(this));
     loading.add(PREFERENCES_LOADING_ID, promise, {
-      onSuccess: (data) => (this.data = data),
+      onSuccess: (data) => {
+        this.isInitialized = true;
+        this.data = data;
+      },
     });
   }
   setAutoFillPreferences = preferencesStorage.setAutoFillPreferences;

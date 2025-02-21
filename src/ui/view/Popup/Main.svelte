@@ -1,64 +1,49 @@
 <script lang="ts">
-  import { Page, mainMenu, offlineMenu } from "./pages";
+  import {
+    Page,
+    pagesToRoutes,
+    mainMenu,
+    offlineMenu,
+    nonMenuPages,
+  } from "./pages";
   import { sessions, sites, messages, loading } from "@/ui/stores";
 
   import SearchBar from "@/ui/view/lib/pages/search/SearchBar.svelte";
   import Menu from "@/ui/view/lib/menus/Menu.svelte";
   import LoadingBar from "@/ui/view/lib/layout/LoadingBar.svelte";
-  import Add, { addRequirements } from "@/ui/view/lib/pages/add/Add.svelte";
-  import Search, {
-    searchRequirements,
-  } from "@/ui/view/lib/pages/search/Search.svelte";
-  import SessionsPage from "@/ui/view/lib/pages/sessions/Sessions.svelte";
   import MessageViewer from "@/ui/view/lib/layout/MessageViewer.svelte";
   import Logo from "@/ui/view/lib/layout/Logo.svelte";
-  import PasswordGenerator from "@/ui/view/lib/pages/passwordGenerator/PasswordGenerator.svelte";
   import Welcome from "@/ui/view/lib/pages/welcome/Welcome.svelte";
   import DebugButton from "@/ui/view/lib/pages/debug/DebugButton.svelte";
-  import Debug from "@/ui/view/lib/pages/debug/Debug.svelte";
-  import Options from "@/ui/view/lib/pages/options/Options.svelte";
+  import { router } from "@/ui/stores/router.svelte";
+  import Debug from "../lib/pages/debug/Debug.svelte";
   import { untrack } from "svelte";
 
   // Set up state
   let hasSites: boolean = $derived(sites.data.length > 0);
   let isOnline: boolean = $derived(sessions.data.size > 0);
+  let debug: boolean = $state(false);
   let menuItems = $derived(isOnline ? mainMenu : offlineMenu);
-
-  let page: Page | null = $state(Page.WELCOME);
+  let routes = $derived(pagesToRoutes([...nonMenuPages, ...menuItems]));
   let content: HTMLElement | null = null;
 
-  // When sessions or sites change
-  $effect(() => {
-    let oldPage = untrack(() => page);
-    if (!hasSites) {
-      page = Page.WELCOME;
-    } else if (isOnline && oldPage === null) {
-      // Default to search if user is logged in
-      page = Page.SEARCH;
-    } else if (
-      !isOnline &&
-      offlineMenu.findIndex(({ name }) => name === oldPage) === -1
-    ) {
-      // Default to login if user is not logged in
-      page = Page.SESSIONS;
+  function getDefaultPage(currentPage: string): string {
+    const validRoutes = Object.keys(routes);
+    for (const route of validRoutes) {
+      // Page is one of the valid routes or one of their subroutes
+      if (currentPage.startsWith(route)) {
+        if (currentPage === Page.SEARCH && !isOnline) return Page.SESSIONS;
+        return currentPage;
+      }
     }
-  });
-
-  /**
-   * Set the active page and clear messages.
-   * */
-  function setPage(newPage: Page) {
-    messages.clear();
-    if (content) content.scrollTop = 0;
-    if (page === Page.DEBUG && page === newPage) {
-      // No menu for debug, revert to default selection to toggle
-      if (!hasSites) page = Page.WELCOME;
-      else if (!isOnline) page = Page.SESSIONS;
-      else page = Page.SEARCH;
-    } else {
-      page = newPage;
-    }
+    if (isOnline) return Page.SEARCH;
+    return Page.SESSIONS;
   }
+
+  $effect(() => {
+    untrack(() => router).setRoutes(routes);
+    untrack(() => router).goto(getDefaultPage(router.route));
+  });
 
   ////////////////////////////////////////////////////////////
   // Event handlers
@@ -78,49 +63,35 @@
 -->
 <section class="main">
   <nav class="grid shadow">
-    <DebugButton openDebug={() => setPage(Page.DEBUG)} />
+    <DebugButton toggleDebug={() => (debug = !debug)} />
     {#if isOnline}
       <SearchBar
-        autoFocus={page === Page.SEARCH}
-        onFocus={() => setPage(Page.SEARCH)}
+        autoFocus={router.route === Page.SEARCH}
+        onFocus={() => router.goto(Page.SEARCH)}
       />
     {:else}
       <Logo />
     {/if}
     {#if hasSites}
-      <Menu onNavigate={(page) => setPage(page)} selected={page} {menuItems} />
+      <Menu
+        onNavigate={(page) => router.goto(page)}
+        selected={router.route}
+        {menuItems}
+      />
     {/if}
     <LoadingBar isLoading={loading.isLoading} />
     <MessageViewer {messages} />
   </nav>
   <article class="content" bind:this={content}>
     <div class="spacer">
-      {#if page === Page.WELCOME}
+      {#if debug}
+        <Debug />
+      {:else if !hasSites}
         <div>
           <Welcome />
         </div>
-      {:else if page === Page.SEARCH && !loading.has(...searchRequirements)}
-        <div>
-          <Search scrollTo={handleScroll} />
-        </div>
-      {:else if page === Page.ADD && !loading.has(...addRequirements)}
-        <div>
-          <Add />
-        </div>
-      {:else if page === Page.GENERATE_PASSWORD}
-        <div>
-          <PasswordGenerator />
-        </div>
-      {:else if page === Page.SESSIONS}
-        <div>
-          <SessionsPage scrollTo={handleScroll} />
-        </div>
-      {:else if page === Page.OPTIONS}
-        <div>
-          <Options />
-        </div>
-      {:else if page === Page.DEBUG}
-        <Debug />
+      {:else}
+        <router.component {...router.props} />
       {/if}
     </div>
   </article>

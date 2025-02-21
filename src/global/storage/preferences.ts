@@ -72,7 +72,6 @@ async function set({
   sites,
   autoFill,
 }: Partial<Preferences>): Promise<void> {
-  console.log(add, sites, autoFill);
   // Convert to serializable format, using null coalescing before converting
   // to array to ensure values are not undefined (causes TypeError).
   await browser.storage.local.set({

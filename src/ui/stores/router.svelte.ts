@@ -11,7 +11,13 @@ class Router {
   constructor() {
     this.addRoute = this.addRoute.bind(this);
     this.goto = this.goto.bind(this);
+    this.gotoparent = this.gotoparent.bind(this);
     this.goto(window.location.hash.replace("#", ""));
+  }
+
+  setRoutes(routes: Record<string, Component>) {
+    this.routes = routes;
+    this.#updateComponentAndProps();
   }
 
   addRoute(route: string, component: Component<any>) {
@@ -19,7 +25,14 @@ class Router {
     this.#updateComponentAndProps();
   }
 
+  gotoparent(): void {
+    this.goto("..");
+  }
+
   goto(route: string): void {
+    if (route === "..") {
+      this.route = this.route.split("/").slice(0, -1).join("/") || "/";
+    }
     this.route = route;
   }
 

@@ -17,13 +17,17 @@ export interface StoredSafeInstance {
 }
 
 class StoredSafeInstances {
+  isInitialized: boolean = $state(false);
   instances: Map<Host, StoredSafeInstance> = $state(new Map());
 
   constructor() {
     this.onSessionsChanged = this.onSessionsChanged.bind(this);
     const promise = sessions.subscribe(this.onSessionsChanged);
     loading.add(INSTANCES_LOADING_ID, promise, {
-      onSuccess: (data) => this.onSessionsChanged(data, new Map()),
+      onSuccess: (data) => {
+        this.isInitialized = true;
+        this.onSessionsChanged(data, new Map());
+      },
     });
   }
 

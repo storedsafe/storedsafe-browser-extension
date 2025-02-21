@@ -49,7 +49,7 @@
       throw new StoredSafeExtensionError("Vault is not set, invalid state.");
     }
     return {
-      component: SearchItem,
+      Component: SearchItem,
       name: result.host + result.id,
       props: {
         icon: result.icon,

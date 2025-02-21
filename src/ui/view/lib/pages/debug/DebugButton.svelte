@@ -1,14 +1,14 @@
 <script lang="ts">
   interface Props {
-    openDebug?: () => void;
+    toggleDebug?: () => void;
   }
 
-  let { openDebug }: Props = $props();
+  let { toggleDebug }: Props = $props();
 </script>
 
 <div
   id="debug-button"
-  ondblclick={() => openDebug?.()}
+  ondblclick={() => toggleDebug?.()}
   role="button"
   tabindex="-1"
 ></div>

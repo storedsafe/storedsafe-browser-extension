@@ -1,10 +1,33 @@
 <script lang="ts">
-  import { sites, sessions } from "../../stores";
+  import {
+    ignoreURLs,
+    preferences,
+    sessions,
+    settings,
+    sites,
+    instances,
+    search,
+  } from "@/ui/stores";
   import Main from "./Main.svelte";
+  import Initializing from "./Initializing.svelte";
+
+  let isInitialized = $derived(
+    ignoreURLs.isInitialized &&
+      preferences.isInitialized &&
+      sessions.isInitialized &&
+      settings.isInitialized &&
+      sites.isInitialized &&
+      instances.isInitialized &&
+      search.isInitialized
+  );
 </script>
 
 <section>
-  <Main />
+  {#if isInitialized}
+    <Main />
+  {:else}
+    <Initializing />
+  {/if}
 </section>
 
 <style>

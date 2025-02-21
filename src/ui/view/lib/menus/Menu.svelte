@@ -1,13 +1,9 @@
 <script lang="ts">
-  import type { Page } from "@/ui/view/Popup/pages";
+  import type { Page, PageNavigation } from "@/ui/view/Popup/pages";
   import Icon from "@/ui/view/lib/layout/Icon.svelte";
 
   interface Props {
-    menuItems: {
-      name: Page;
-      title: string;
-      icon: string;
-    }[];
+    menuItems: PageNavigation[];
     selected: string | null;
     onNavigate?: (page: Page) => void;
   }
@@ -20,7 +16,7 @@
 
   // Currently highlighted or selected object, depending on hover/focus state
   let menuItem = $derived(
-    menuItems.find((item) => item.name === (hovered ?? focused ?? selected))
+    menuItems.find((item) => item.route === (hovered ?? focused ?? selected))
   );
 
   // Set properties of menu icons
@@ -77,14 +73,14 @@
     role="button"
     tabindex="0"
   >
-    {#each menuItems as item (item.name)}
+    {#each menuItems as item (item.route)}
       <button
         type="button"
         class="input-reset"
-        class:selected={selected === item.name}
-        onmouseenter={() => setHovered(item.name)}
-        onfocus={() => setFocused(item.name)}
-        onclick={() => onNavigate?.(item.name)}
+        class:selected={selected === item.route}
+        onmouseenter={() => setHovered(item.route)}
+        onfocus={() => setFocused(item.route)}
+        onclick={() => onNavigate?.(item.route)}
         onblur={() => clearFocused()}
         aria-label={item.title}
       >
@@ -94,9 +90,9 @@
   </section>
   {#if !!menuItem}
     <section
-      class:selected={selected === menuItem.name}
-      class:focused={focused === menuItem.name}
-      class:hovered={hovered === menuItem.name}
+      class:selected={selected === menuItem.route}
+      class:focused={focused === menuItem.route}
+      class:hovered={hovered === menuItem.route}
       class="menu-title shadow"
       title={menuItem.title}
     >

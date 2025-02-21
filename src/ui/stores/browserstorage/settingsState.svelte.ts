@@ -6,12 +6,16 @@ export const SETTINGS_UPDATE_LOADING_ID = "settings.update";
 export const SETTINGS_CLEAR_LOADING_ID = "settings.clear";
 
 class SettingsState {
+  isInitialized: boolean = $state(false);
   data: SettingsMap = $state(new Map());
 
   constructor() {
     const promise = settingsStorage.subscribe(this.#update.bind(this));
     loading.add(SETTINGS_LOADING_ID, promise, {
-      onSuccess: (data) => (this.data = data),
+      onSuccess: (data) => {
+        this.isInitialized = true;
+        this.data = data;
+      },
     });
   }
 
