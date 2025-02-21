@@ -13,7 +13,6 @@
   import Login from "./Login.svelte";
   import SiteInfo from "./SiteInfo.svelte";
   import ListItemBox from "@/ui/view/lib/menus/ListItemBox.svelte";
-  import { untrack } from "svelte";
 
   let { scrollTo }: Props = $props();
 
@@ -30,7 +29,7 @@
     }
 
     return {
-      component: SessionItem,
+      Component: SessionItem,
       name: host,
       props: {
         host,
