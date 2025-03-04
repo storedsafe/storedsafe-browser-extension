@@ -56,11 +56,11 @@ export async function loginTotp(
     } else if (response.status === 403) {
       throw new StoredSafeAuthLoginError()
     } else {
-      throw new Error(`Unknown response status: ${response.status}`)
+      throw new Error(`Unexpected response status: ${response.status}`)
     }
   } catch (error) {
     if (error instanceof StoredSafeBaseError) throw error
-    throw new StoredSafeNetworkError(error as Error, error.status)
+    throw error
   }
 }
 
@@ -81,16 +81,16 @@ export async function loginYubikey(
   const api = new StoredSafe({ host, apikey })
   try {
     const response = await api.loginYubikey(username, passphrase, otp)
-    if (response.status === 200) {
+    if (response.status === 200 && response.data) {
       await afterLogin(host, parseLogin(response.data))
     } else if (response.status === 403) {
       throw new StoredSafeAuthLoginError()
     } else {
-      throw new Error(`Unknown response status: ${response.status}`)
+      throw new Error(`Unexpected response status: ${response.status}`)
     }
   } catch (error) {
     if (error instanceof StoredSafeBaseError) throw error
-    throw new StoredSafeNetworkError(error, error.status)
+    throw error
   }
 }
 
@@ -109,16 +109,16 @@ export async function loginSmartcard(
   const api = new StoredSafe({ host, apikey })
   try {
     const response = await api.loginSmartCard(username, passphrase)
-    if (response.status === 200) {
+    if (response.status === 200 && response.data) {
       await afterLogin(host, parseLogin(response.data))
     } else if (response.status === 403) {
       throw new StoredSafeAuthLoginError()
     } else {
-      throw new Error(`Unknown response status: ${response.status}`)
+      throw new Error(`Unexpected response status: ${response.status}`)
     }
   } catch (error) {
     if (error instanceof StoredSafeBaseError) throw error
-    throw new StoredSafeNetworkError(error, error.status)
+    throw error
   }
 }
 
@@ -140,11 +140,11 @@ export async function check(host: string, token: string): Promise<void> {
     if (response.status === 403) {
       await afterLogout(host)
     } else if (response.status !== 200) {
-      throw new Error(`Unknown response status: ${response.status}`)
+      throw new Error(`Unexpected response status: ${response.status}`)
     }
   } catch (error) {
     if (error instanceof StoredSafeBaseError) throw error
-    throw new StoredSafeNetworkError(error, error.status)
+    throw error
   }
 }
 
@@ -164,7 +164,7 @@ export async function logout(host: string, token: string): Promise<void> {
     // Defer success actions to finally block
   } catch (error) {
     if (error instanceof StoredSafeBaseError) throw error
-    throw new StoredSafeNetworkError(error, error.status)
+    throw error
   } finally {
     await afterLogout(host)
   }
