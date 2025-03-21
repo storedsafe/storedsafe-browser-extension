@@ -53,7 +53,7 @@ export async function loginTotp(
     const response = await api.loginTotp(username, passphrase, otp)
     if (response.status === 200 && response.data) {
       await afterLogin(host, parseLogin(response.data))
-    } else if (response.status === 403) {
+    } else if ([401, 403].includes(response.status)) {
       throw new StoredSafeAuthLoginError()
     } else {
       throw new Error(`Unexpected response status: ${response.status}`)
@@ -83,7 +83,7 @@ export async function loginYubikey(
     const response = await api.loginYubikey(username, passphrase, otp)
     if (response.status === 200 && response.data) {
       await afterLogin(host, parseLogin(response.data))
-    } else if (response.status === 403) {
+    } else if ([401, 403].includes(response.status)) {
       throw new StoredSafeAuthLoginError()
     } else {
       throw new Error(`Unexpected response status: ${response.status}`)
@@ -111,7 +111,7 @@ export async function loginSmartcard(
     const response = await api.loginSmartCard(username, passphrase)
     if (response.status === 200 && response.data) {
       await afterLogin(host, parseLogin(response.data))
-    } else if (response.status === 403) {
+    } else if ([401, 403].includes(response.status)) {
       throw new StoredSafeAuthLoginError()
     } else {
       throw new Error(`Unexpected response status: ${response.status}`)
@@ -137,7 +137,7 @@ export async function check(host: string, token: string): Promise<void> {
   const api = new StoredSafe({ host, token })
   try {
     const response = await api.check()
-    if (response.status === 403) {
+    if ([401, 403].includes(response.status)) {
       await afterLogout(host)
     } else if (response.status !== 200) {
       throw new Error(`Unexpected response status: ${response.status}`)
