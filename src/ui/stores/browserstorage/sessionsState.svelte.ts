@@ -18,6 +18,9 @@ class SessionsState {
       onSuccess: (data) => {
         this.isInitialized = true;
         this.#update(data, this.data);
+        for (const [host, session] of data) {
+          auth.check(host, session.token)
+        }
       },
     });
   }
