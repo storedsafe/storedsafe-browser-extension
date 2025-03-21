@@ -1,6 +1,6 @@
 <script lang="ts" module>
   export interface Props {
-    host: string;
+    host: string | undefined;
     data: Record<string, string>;
   }
 </script>
@@ -11,7 +11,7 @@
   import SelectVault from "@/ui/view/lib/pages/add/SelectVault.svelte";
   import SavePreview from "./SavePreview.svelte";
 
-  let { host, data = {} }: Props = $props();
+  let { host = $bindable(), data = $bindable({}) }: Props = $props();
 
   interface SavePreviewProps {
     icon: string;
@@ -21,21 +21,23 @@
     url: string;
   }
 
-  let template = $derived(
-    instances.instances
-      .get(host)
-      ?.templates?.find(({ id }) => id === data.templateid)
-  );
+  let template: StoredSafeTemplate | undefined = $derived.by(() => {
+    const instance = instances.instances.get(host ?? "");
+    if (instance) {
+      return instance.templates.find(({ id }) => id === data.templateid);
+    }
+  });
 
-  let saveItemProps: SavePreviewProps | null = $derived.by(() => {
-    if (!template) return null;
-    return {
-      icon: template.icon,
-      template: template.name,
-      title: data.name,
-      username: data.username,
-      url: data.url,
-    };
+  let saveItemProps: SavePreviewProps | undefined = $derived.by(() => {
+    if (template) {
+      return {
+        icon: template.icon,
+        template: template.name,
+        title: data.name,
+        username: data.username,
+        url: data.url,
+      };
+    }
   });
 </script>
 

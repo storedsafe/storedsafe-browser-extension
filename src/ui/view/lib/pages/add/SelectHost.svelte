@@ -3,7 +3,7 @@
   const logger = new Logger("select-host");
 
   export interface Props {
-    host: string;
+    host: string | undefined;
   }
 </script>
 
@@ -26,7 +26,7 @@
   }
 
   function updatePreferences() {
-    preferences.setHostPreferences(host).catch(logger.error);
+    if (host) preferences.setHostPreferences(host).catch(logger.error);
   }
 
   if (!host) host = getDefaultHost();
