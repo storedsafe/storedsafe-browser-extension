@@ -1,18 +1,18 @@
-import type { StoredSafeLoginData } from 'storedsafe'
-import { StoredSafe } from 'storedsafe'
+import type { StoredSafeLoginData } from "storedsafe";
+import { StoredSafe } from "storedsafe";
 import {
   StoredSafeAuthLoginError,
   StoredSafeAuthLogoutError,
   StoredSafeBaseError,
-  StoredSafeNetworkError
-} from '../errors'
-import * as sessions from '../storage/sessions'
+  StoredSafeNetworkError,
+} from "../errors";
+import * as sessions from "../storage/sessions";
 
 // TODO: Improved error handling
 
 function parseMessages(obj: [] | { [key: string]: string }) {
-  if (Array.isArray(obj)) return obj
-  return [...Object.values(obj)]
+  if (Array.isArray(obj)) return obj;
+  return [...Object.values(obj)];
 }
 
 function parseLogin(data: StoredSafeLoginData): Session {
@@ -21,8 +21,8 @@ function parseLogin(data: StoredSafeLoginData): Session {
     createdAt: Date.now(),
     warnings: parseMessages(data.CALLINFO.audit.warnings),
     violations: parseMessages(data.CALLINFO.audit.violations),
-    timeout: data.CALLINFO.timeout
-  }
+    timeout: data.CALLINFO.timeout,
+  };
 }
 
 /**
@@ -31,7 +31,7 @@ function parseLogin(data: StoredSafeLoginData): Session {
  * @param session Newly created session.
  */
 async function afterLogin(host: string, session: Session) {
-  await sessions.add(host, session)
+  await sessions.add(host, session);
 }
 
 /**
@@ -48,19 +48,19 @@ export async function loginTotp(
   passphrase: string,
   otp: string
 ): Promise<void> {
-  const api = new StoredSafe({ host, apikey })
+  const api = new StoredSafe({ host, apikey });
   try {
-    const response = await api.loginTotp(username, passphrase, otp)
+    const response = await api.loginTotp(username, passphrase, otp);
     if (response.status === 200 && response.data) {
-      await afterLogin(host, parseLogin(response.data))
+      await afterLogin(host, parseLogin(response.data));
     } else if ([401, 403].includes(response.status)) {
-      throw new StoredSafeAuthLoginError()
+      throw new StoredSafeAuthLoginError();
     } else {
-      throw new Error(`Unexpected response status: ${response.status}`)
+      throw new Error(`Unexpected response status: ${response.status}`);
     }
   } catch (error) {
-    if (error instanceof StoredSafeBaseError) throw error
-    throw error
+    if (error instanceof StoredSafeBaseError) throw error;
+    throw error;
   }
 }
 
@@ -78,19 +78,19 @@ export async function loginYubikey(
   passphrase: string,
   otp: string
 ): Promise<void> {
-  const api = new StoredSafe({ host, apikey })
+  const api = new StoredSafe({ host, apikey });
   try {
-    const response = await api.loginYubikey(username, passphrase, otp)
+    const response = await api.loginYubikey(username, passphrase, otp);
     if (response.status === 200 && response.data) {
-      await afterLogin(host, parseLogin(response.data))
+      await afterLogin(host, parseLogin(response.data));
     } else if ([401, 403].includes(response.status)) {
-      throw new StoredSafeAuthLoginError()
+      throw new StoredSafeAuthLoginError();
     } else {
-      throw new Error(`Unexpected response status: ${response.status}`)
+      throw new Error(`Unexpected response status: ${response.status}`);
     }
   } catch (error) {
-    if (error instanceof StoredSafeBaseError) throw error
-    throw error
+    if (error instanceof StoredSafeBaseError) throw error;
+    throw error;
   }
 }
 
@@ -106,24 +106,24 @@ export async function loginSmartcard(
   passphrase: string,
   otp: string
 ): Promise<void> {
-  const api = new StoredSafe({ host, apikey })
+  const api = new StoredSafe({ host, apikey });
   try {
-    const response = await api.loginSmartCard(username, passphrase)
+    const response = await api.loginSmartCard(username, passphrase);
     if (response.status === 200 && response.data) {
-      await afterLogin(host, parseLogin(response.data))
+      await afterLogin(host, parseLogin(response.data));
     } else if ([401, 403].includes(response.status)) {
-      throw new StoredSafeAuthLoginError()
+      throw new StoredSafeAuthLoginError();
     } else {
-      throw new Error(`Unexpected response status: ${response.status}`)
+      throw new Error(`Unexpected response status: ${response.status}`);
     }
   } catch (error) {
-    if (error instanceof StoredSafeBaseError) throw error
-    throw error
+    if (error instanceof StoredSafeBaseError) throw error;
+    throw error;
   }
 }
 
 async function afterLogout(host: string): Promise<void> {
-  await sessions.remove(host)
+  await sessions.remove(host);
   // TODO: After logout tasks (purge results, etc)
 }
 
@@ -134,17 +134,17 @@ async function afterLogout(host: string): Promise<void> {
  * @param token Token associated with session for `host`.
  */
 export async function check(host: string, token: string): Promise<void> {
-  const api = new StoredSafe({ host, token })
+  const api = new StoredSafe({ host, token });
   try {
-    const response = await api.check()
+    const response = await api.check();
     if ([401, 403].includes(response.status)) {
-      await afterLogout(host)
+      await afterLogout(host);
     } else if (response.status !== 200) {
-      throw new Error(`Unexpected response status: ${response.status}`)
+      throw new Error(`Unexpected response status: ${response.status}`);
     }
   } catch (error) {
-    if (error instanceof StoredSafeBaseError) throw error
-    throw error
+    if (error instanceof StoredSafeBaseError) throw error;
+    throw error;
   }
 }
 
@@ -155,17 +155,17 @@ export async function check(host: string, token: string): Promise<void> {
  * @param token Token associated with session for `host`.
  */
 export async function logout(host: string, token: string): Promise<void> {
-  const api = new StoredSafe({ host, token })
+  const api = new StoredSafe({ host, token });
   try {
-    const response = await api.logout()
+    const response = await api.logout();
     if (response.status !== 200) {
-      throw new StoredSafeAuthLogoutError(response.status)
+      throw new StoredSafeAuthLogoutError(response.status);
     }
     // Defer success actions to finally block
   } catch (error) {
-    if (error instanceof StoredSafeBaseError) throw error
-    throw error
+    if (error instanceof StoredSafeBaseError) throw error;
+    throw error;
   } finally {
-    await afterLogout(host)
+    await afterLogout(host);
   }
 }
