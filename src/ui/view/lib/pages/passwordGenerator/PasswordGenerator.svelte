@@ -144,7 +144,7 @@
   };
 
   let values: Record<string, any> = $state({});
-  let policyid: number | null = $state(null);
+  let policyid: number | undefined = $state();
 
   /**
    * Update the password type and optionally generate a new password.
@@ -206,6 +206,7 @@
   }
 
   function onSubmitFromPolicy(e: SubmitEvent) {
+    e.preventDefault()
     if (policyid) generate({ policyid });
     else generate()
   }
