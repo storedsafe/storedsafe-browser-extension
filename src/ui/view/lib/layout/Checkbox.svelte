@@ -1,8 +1,22 @@
+<script lang="ts" module>
+  import type { HTMLAttributes } from "svelte/elements";
+
+  export interface Props extends HTMLAttributes<HTMLInputElement> {
+    size?: string;
+    altered?: boolean;
+    disabled?: boolean;
+    checked?: boolean;
+  }
+</script>
+
 <script lang="ts">
-  export let size = "1em";
-  export let altered = false;
-  export let disabled = false;
-  export let checked;
+  let {
+    size = "1em",
+    altered = false,
+    disabled = false,
+    checked = $bindable(),
+    ...restProps
+  }: Props = $props();
 
   const style = [`--checkbox-size: ${size}`].join(";");
 </script>
@@ -10,13 +24,12 @@
 <span class="checkbox-container">
   <input
     bind:checked
-    on:change
     {disabled}
     type="checkbox"
     class="checkbox-hidden"
-    {...$$restProps}
+    {...restProps}
   />
-  <span class="checkbox custom-input" class:altered {style} />
+  <span class="checkbox custom-input" class:altered {style}></span>
 </span>
 
 <style>

@@ -1,9 +1,15 @@
+<script lang="ts" module>
+  export interface Props {
+    result: StoredSafeObject;
+  }
+</script>
+
 <script lang="ts">
   import EditResult from "./result/EditResult.svelte";
   import ViewResult from "./result/ViewResult.svelte";
 
-  export let result: StoredSafeObject;
-  let edit: boolean = false;
+  let { result }: Props = $props();
+  let edit: boolean = $state(false);
 
   function setEdit(value: boolean): void {
     edit = value;

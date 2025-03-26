@@ -1,19 +1,26 @@
+<script lang="ts" module>
+  export interface Props {
+    items: Record<string, any>;
+    component: Snippet<[string, any]>;
+  }
+</script>
+
 <script lang="ts">
-  export let items: Record<string, any>;
+  // type: ignore
+  import RecursiveList from "./RecursiveList.svelte";
+  import type { Snippet } from "svelte";
+
+  let { items, component }: Props = $props();
 </script>
 
 <section class="grid">
   {#each Object.keys(items) as key}
-    <slot {key} item={items[key]} />
-    {#if items[key].children}
+    {@const item = items[key]}
+    {@render component(key, item)}
+
+    {#if item.children}
       <div class="indent">
-        <svelte:self
-          items={items[key].children}
-          let:key={subkey}
-          let:item={subitem}
-        >
-          <slot key={subkey} item={subitem} />
-        </svelte:self>
+        <RecursiveList items={item.children} {component}></RecursiveList>
       </div>
     {/if}
   {/each}

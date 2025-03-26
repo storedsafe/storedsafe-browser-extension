@@ -2,6 +2,7 @@
   import type { Snippet } from "svelte";
 
   export interface Props {
+    /** Background css color */
     backgroundColor?: string;
     color?: string;
     children?: Snippet;

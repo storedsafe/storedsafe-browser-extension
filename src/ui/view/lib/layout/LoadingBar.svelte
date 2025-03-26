@@ -1,7 +1,13 @@
+<script lang="ts" module>
+  export interface Props {
+    isLoading: boolean;
+  }
+</script>
+
 <script lang="ts">
   import { getMessage, LocalizedMessage } from "@/global/i18n";
 
-  export let isLoading: boolean = false;
+  let { isLoading = false }: Props = $props();
 </script>
 
 {#if isLoading}

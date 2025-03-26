@@ -14,7 +14,13 @@
   import { vault } from "@/global/api";
   import { getMessage, LocalizedMessage } from "@/global/i18n";
   import { isMessage, type Message } from "@/global/messages";
-  import { sessions, loading, messages, MessageType } from "@/ui/stores";
+  import {
+    sessions,
+    loading,
+    messages,
+    MessageType,
+    ignoreURLs,
+  } from "@/ui/stores";
 
   import Card from "@/ui/view/lib/layout/Card.svelte";
   import LoadingBar from "@/ui/view/lib/layout/LoadingBar.svelte";
@@ -32,14 +38,14 @@
   let data: Record<string, string> = $state({
     parentid: "0",
     templateid: "20",
-    name: "Foo",
-    username: "foobar",
-    url: "foo.bar",
+    name: "",
+    username: "",
+    url: "",
   });
   let edit: boolean = $state(false);
   let success: boolean = $state(false);
   let isValid: boolean = $state(true);
-  let host: string | null = $state(null);
+  let host: string | undefined = $state();
 
   let frame: HTMLElement;
   let height: number;
@@ -81,33 +87,35 @@
     edit = !edit;
   };
 
-  function save() {
-    loading.add(
-      `Save.add`,
-      vault.addObject(host, $sessions.get(host).token, data),
-      {
-        onError(error) {
-          messages.add(error.message, MessageType.ERROR);
-        },
-        onSuccess() {
-          success = true;
-          messages.add(
-            getMessage(LocalizedMessage.ADD_SUCCESS),
-            MessageType.INFO
-          );
-          window.setTimeout(close, 1000);
-        },
-      }
-    );
-  }
-
-  function addToIgnore() {
-    loading.add(`Save.ignore`, ignore.add(data.url), {
+  function save(e: SubmitEvent) {
+    e.preventDefault();
+    const hostData = sessions.data.get(host ?? "");
+    if (!host || !hostData) {
+      messages.add("Host not set, invalid state.", MessageType.ERROR);
+      return;
+    }
+    loading.add(`Save.add`, vault.addObject(host, hostData.token, data), {
       onError(error) {
         messages.add(error.message, MessageType.ERROR);
       },
       onSuccess() {
-        close();
+        success = true;
+        messages.add(
+          getMessage(LocalizedMessage.ADD_SUCCESS),
+          MessageType.INFO
+        );
+        window.setTimeout(onClose, 1000);
+      },
+    });
+  }
+
+  function addToIgnore() {
+    loading.add(`Save.ignore`, ignoreURLs.add(data.url), {
+      onError(error) {
+        messages.add(error.message, MessageType.ERROR);
+      },
+      onSuccess() {
+        onClose();
       },
     });
   }
@@ -116,9 +124,9 @@
 <article class="save grid" bind:this={frame}>
   <Logo />
   <MessageViewer {messages} />
-  <LoadingBar isLoading={$loading.isLoading} />
+  <LoadingBar isLoading={loading.isLoading} />
   {#if !success}
-    <form class="grid" use:followFocus on:submit|preventDefault={save}>
+    <form class="grid" use:followFocus onsubmit={save}>
       <Card>
         {#if !edit}
           <!-- Quick save -->
@@ -126,7 +134,7 @@
         {:else}
           <!-- Full add editor -->
           <SelectHost bind:host />
-          {#if host !== null}
+          {#if host}
             <SelectVault {host} bind:vaultid={data.groupid} />
             <SelectTemplate {host} bind:templateid={data.templateid} />
             {#if data.groupid !== undefined && data.templateid !== undefined}
@@ -147,16 +155,20 @@
             {getMessage(LocalizedMessage.ADD_CREATE)}
           </button>
           {#if !edit}
-            <button type="button" class="warning" on:click={toggleEdit}>
+            <button type="button" class="warning" onclick={() => toggleEdit}>
               {getMessage(LocalizedMessage.SEARCH_RESULT_EDIT)}
             </button>
           {/if}
         </div>
-        <button type="button" class="danger" on:click={close}>
+        <button type="button" class="danger" onclick={() => onClose}>
           {getMessage(LocalizedMessage.IFRAME_CLOSE)}
         </button>
         {#if !edit}
-          <button type="button" class="danger ignore" on:click={addToIgnore}>
+          <button
+            type="button"
+            class="danger ignore"
+            onclick={() => addToIgnore}
+          >
             {getMessage(LocalizedMessage.SAVE_IGNORE)}
           </button>
         {/if}

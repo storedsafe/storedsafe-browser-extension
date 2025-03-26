@@ -1,6 +1,13 @@
+<script lang="ts" module>
+  export interface Props {
+    host: string;
+    session: Session;
+  }
+</script>
+
 <script lang="ts">
-  import { getMessage, LocalizedMessage } from "../../../../../global/i18n";
-  import { goto } from "../../../../../global/utils";
+  import { getMessage, LocalizedMessage } from "@/global/i18n";
+  import { goto } from "@/global/utils";
   import {
     Duration,
     loading,
@@ -8,15 +15,14 @@
     MessageType,
     sessions,
     SESSIONS_LOGOUT_LOADING_ID,
-  } from "../../../../stores";
+  } from "@/ui/stores";
 
-  import Card from "../../layout/Card.svelte";
+  import Card from "@/ui/view/lib/layout/Card.svelte";
   import SessionStatus from "./siteinfo/SessionStatus.svelte";
   import Violations from "./siteinfo/Violations.svelte";
   import Warnings from "./siteinfo/Warnings.svelte";
 
-  export let host: string;
-  export let session: Session;
+  let { host, session }: Props = $props();
 
   const { createdAt, violations, warnings, token } = session;
   const url = `https://${host}/`;
@@ -34,10 +40,6 @@
   }
 </script>
 
-<style>
-
-</style>
-
 <Card>
   <SessionStatus {createdAt} />
   {#if violations.length > 0}
@@ -48,13 +50,13 @@
   {/if}
 </Card>
 <div class="sticky-buttons">
-  <button
-    type="button"
-    class="primary"
-    on:click={() => goto(url)}
-    title={url}>{getMessage(LocalizedMessage.SESSIONS_GOTO, host)}</button>
-  <button
-    type="button"
-    class="danger"
-    on:click={logout}>{getMessage(LocalizedMessage.SESSIONS_LOGOUT)}</button>
+  <button type="button" class="primary" onclick={() => goto(url)} title={url}
+    >{getMessage(LocalizedMessage.SESSIONS_GOTO, host)}</button
+  >
+  <button type="button" class="danger" onclick={logout}
+    >{getMessage(LocalizedMessage.SESSIONS_LOGOUT)}</button
+  >
 </div>
+
+<style>
+</style>

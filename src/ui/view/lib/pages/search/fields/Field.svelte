@@ -1,19 +1,26 @@
-<script lang="ts">
-  import { getMessage, LocalizedMessage } from "../../../../../../global/i18n";
-  import { copyText, goto } from "../../../../../../global/utils";
-  import { loading } from "../../../../../stores";
+<script lang="ts" module>
+  export interface Props {
+    /* Decrypt if result is not already decrypted. */
+    decrypt: () => Promise<string>;
+    /* Field to be displayed. */
+    field: StoredSafeField;
+  }
+</script>
 
-  import Card from "../../../layout/Card.svelte";
+<script lang="ts">
+  import { getMessage, LocalizedMessage } from "@/global/i18n";
+  import { copyText, goto } from "@/global/utils";
+  import { loading } from "@/ui/stores";
+
+  import Card from "@/ui/view/lib/layout/Card.svelte";
   import Encrypted from "./Encrypted.svelte";
   import Password from "./Password.svelte";
 
-  /* Decrypt if result is not already decrypted. */
-  export let decrypt: () => Promise<string>;
-  /* Field to be displayed. */
-  export let field: StoredSafeField;
+  let { decrypt, field }: Props = $props();
 
-  let show: boolean = false;
-  let large: boolean = false;
+  let show: boolean = $state(false);
+  let large: boolean = $state(false);
+  let value = field.value;
 
   /**
    * Toggle show state of field.
@@ -38,7 +45,7 @@
    * */
   async function copy() {
     const exec = async (value: string) => await copyText(value);
-    let promise = Promise.resolve(field.value);
+    let promise = Promise.resolve(field.value ?? "");
     if (field.isEncrypted) promise = decrypt();
     loading.add(
       `Field.copy`,
@@ -53,15 +60,15 @@
     {field.title}
     {#if field.isEncrypted}
       {#if !show}
-        <button class="danger" on:click={toggleShow}>
+        <button class="danger" onclick={toggleShow}>
           {getMessage(LocalizedMessage.RESULT_SHOW)}
         </button>
       {:else}
-        <button class="danger" on:click={toggleShow}>
+        <button class="danger" onclick={toggleShow}>
           {getMessage(LocalizedMessage.RESULT_HIDE)}
         </button>
         {#if field.isPassword}
-          <button class="warning" on:click={toggleLarge}>
+          <button class="warning" onclick={toggleLarge}>
             {#if !large}
               {getMessage(LocalizedMessage.RESULT_LARGE)}
             {:else}{getMessage(LocalizedMessage.RESULT_SMALL)}{/if}
@@ -70,11 +77,11 @@
       {/if}
     {/if}
     {#if field.name === "url" || field.name === "host"}
-      <button class="warning" on:click={() => goto(field.value)}>
+      <button class="warning" onclick={() => goto(field.value ?? "#")}>
         {getMessage(LocalizedMessage.RESULT_LOGIN)}
       </button>
     {/if}
-    <button on:click={copy}>
+    <button onclick={copy}>
       {getMessage(LocalizedMessage.RESULT_COPY)}
     </button>
   </span>
@@ -82,7 +89,7 @@
   {#if field.type === "textarea"}
     {#if field.isPassword}
       <!-- Large Password field, uses color coded characters -->
-      <Password password={field.value} {show} {large} />
+      <Password password={field.value ?? ""} {show} {large} />
     {:else if field.isEncrypted}
       <!-- Large encrypted field -->
       <Encrypted {show}>{field.value}</Encrypted>
@@ -95,14 +102,14 @@
     <p title={field.value}>
       {#if field.isPassword}
         <!-- Password field, uses color coded characters -->
-        <Password password={field.value} {show} {large} />
+        <Password password={field.value ?? ""} {show} {large} />
       {:else if field.isEncrypted}
         <!-- Regular encrypted field -->
         <Encrypted {show}>{field.value}</Encrypted>
       {:else if field.type === "progress"}
         <!-- Progress bar -->
         <span class="progress">
-          <progress value={field.value} max="100" />
+          <progress value={field.value} max="100"></progress>
           {field.value}%
         </span>
       {:else if field.name === "url" || field.name === "host"}

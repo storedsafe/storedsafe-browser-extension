@@ -1,34 +1,36 @@
-<script lang="ts">
-  import { afterUpdate } from "svelte";
+<script lang="ts" module>
+  export interface Props {
+    field: StoredSafeField;
+    value: string;
+    host: string;
+    policy: StoredSafePasswordPolicy;
+    changed: boolean;
+  }
+</script>
 
-  import { vault } from "../../../../global/api";
-  import { getMessage, LocalizedMessage } from "../../../../global/i18n";
-  import { pwgenIcon } from "../../../../global/icons";
-  import { isPolicyMatch } from "../../../../global/utils";
+<script lang="ts">
+  import { vault } from "@/global/api";
+  import { getMessage, LocalizedMessage } from "@/global/i18n";
+  import { pwgenIcon } from "@/global/icons";
+  import { isPolicyMatch } from "@/global/utils";
   import {
     Duration,
     loading,
     messages,
     MessageType,
     sessions,
-  } from "../../../stores";
+  } from "@/ui/stores";
 
   import Icon from "./Icon.svelte";
+  import { StoredSafeExtensionError } from "@/global/errors";
 
-  export let field: StoredSafeField;
-  export let value: string;
-  export let host: string;
-  let prevPolicy: StoredSafePasswordPolicy = null;
-  export let policy: StoredSafePasswordPolicy;
-  export let changed: boolean = false;
-  let inputType = "password";
+  let { field, value = $bindable(), host, policy, changed }: Props = $props();
 
-  if (value === undefined) {
-    value = "";
-  }
+  let inputType = $state("password");
+  let isValidated: boolean = $state(false);
+  let errors: string[] = $state([]);
 
-  let isValidated: boolean = false,
-    errors: string[] = [];
+  $effect(validate);
 
   function clearValidate() {
     isValidated = false;
@@ -44,9 +46,13 @@
   }
 
   function generatePassword() {
+    const token: string | undefined = sessions.data.get(host)?.token;
+    if (!token) {
+      throw new StoredSafeExtensionError("Token is undefined.");
+    }
     loading.add(
       `Add.generatePassword`,
-      vault.generatePassword(host, $sessions.get(host).token, {
+      vault.generatePassword(host, token, {
         policyid: policy.id,
       }),
       {
@@ -65,15 +71,10 @@
     inputType = show ? "text" : "password";
   }
 
-  afterUpdate(() => {
-    if (prevPolicy !== policy) {
-      prevPolicy = policy;
-      validate();
-    }
-  });
-
-  function handleInput(e) {
-    value = e.target.value ?? "";
+  function handleInput(
+    e: Event & { currentTarget: EventTarget & HTMLInputElement }
+  ) {
+    value = (e.target as HTMLInputElement).value ?? "";
     validate();
   }
 </script>
@@ -85,11 +86,11 @@
     class:changed
     type={inputType}
     {value}
-    on:focus={() => show(true)}
-    on:blur={() => show(false)}
-    on:input={handleInput}
+    onfocus={() => show(true)}
+    onblur={() => show(false)}
+    oninput={handleInput}
   />
-  <button type="button" class="pwgen" on:click={generatePassword}>
+  <button type="button" class="pwgen" onclick={() => generatePassword()}>
     <Icon d={pwgenIcon} size="1.4em" />
   </button>
   <p class="grid">

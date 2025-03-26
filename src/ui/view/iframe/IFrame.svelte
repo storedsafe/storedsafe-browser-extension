@@ -1,13 +1,18 @@
+<script lang="ts" module>
+  export interface Props {
+    page: string;
+  }
+</script>
+
 <script lang="ts">
-  import { sendMessage } from "../../../global/messages";
+  import { sendMessage } from "@/global/messages";
 
   import Fill from "./Fill.svelte";
   import Save from "./Save.svelte";
 
-  export let page: string;
+  let { page }: Props = $props();
 
-  function resize(e: CustomEvent<{ height: string; width: string }>) {
-    const { height, width } = e.detail;
+  function resize(height: number, width: number) {
     // sendMessage({
     //   context: "iframe",
     //   action: "resize",
@@ -19,8 +24,7 @@
     // });
   }
 
-  function close(e: CustomEvent<browser.runtime.Port>) {
-    const port = e.detail;
+  function close(port?: browser.runtime.Port) {
     // sendMessage(
     //   {
     //     context: "iframe",
@@ -33,6 +37,16 @@
     // );
   }
 </script>
+
+<div class="iframe">
+  <section class="container">
+    {#if page === "save"}
+      <Save onResize={resize} onClose={close} />
+    {:else if page === "fill"}
+      <Fill onResize={resize} onClose={close} />
+    {/if}
+  </section>
+</div>
 
 <style>
   .iframe,
@@ -73,13 +87,3 @@
     }
   }
 </style>
-
-<div class="iframe">
-  <section class="container">
-    {#if page === 'save'}
-      <Save onResize={resize} onClose={close} />
-    {:else if page === 'fill'}
-      <Fill on:resize={resize} on:close={close} />
-    {/if}
-  </section>
-</div>

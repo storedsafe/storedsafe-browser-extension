@@ -1,20 +1,37 @@
-<script lang="ts">
-  import { createEventDispatcher } from "svelte";
+<script lang="ts" module>
+  export interface Props {
+    id: number;
+    messageType: MessageType;
+    onClose: () => void;
+    children?: Snippet;
+  }
+</script>
 
-  import type { MessageType } from "../../../stores";
-  import { addIcon } from "../../../../global/icons";
+<script lang="ts">
+  import type { MessageType } from "@/ui/stores";
+  import { addIcon } from "@/global/icons";
 
   import Icon from "./Icon.svelte";
+  import type { Snippet } from "svelte";
 
-  const dispatch = createEventDispatcher();
-  export let id: number;
-
-  function handleClose() {
-    dispatch("close", id);
-  }
-
-  export let messageType: MessageType;
+  let { id, messageType, onClose, children }: Props = $props();
 </script>
+
+<!--
+  @component
+  Notification box for presenting information that requires extra attention.
+-->
+<article class={`grid ${messageType}`}>
+  {#if children}
+    {@render children()}
+  {:else}
+    {messageType}
+  {/if}
+  <!-- Show type if there is no message -->
+  <button type="button" onclick={() => onClose()} class="input-reset close">
+    <Icon d={addIcon} size="0.8em" />
+  </button>
+</article>
 
 <style>
   article {
@@ -72,15 +89,3 @@
     background: transparent;
   }
 </style>
-
-<!--
-  @component
-  Notification box for presenting information that requires extra attention.
--->
-<article class={`grid ${messageType}`}>
-  <slot>{messageType}</slot>
-  <!-- Show type if there is no message -->
-  <button type="button" on:click={handleClose} class="input-reset close">
-    <Icon d={addIcon} size="0.8em" />
-  </button>
-</article>

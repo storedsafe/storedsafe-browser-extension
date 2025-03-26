@@ -10,7 +10,7 @@
   } from "@/ui/stores";
   import { getMessage, LocalizedMessage } from "@/global/i18n";
 
-  import ConfirmDialog from "@/ui/view/lib/layout/ConfirmDialog.svelte";
+  import ConfirmDialog from "@/ui/view/lib/layout/ConfirmDeleteDialog.svelte";
   import Field from "@/ui/view/lib/pages/search/fields/Field.svelte";
 
   interface Props {
@@ -113,12 +113,7 @@
     </div>
   {/if}
 
-  {#if confirmDelete}
-    <ConfirmDialog
-      on:close={() => setConfirmDelete(false)}
-      on:confirm={deleteObject}
-    >
-      {getMessage(LocalizedMessage.SEARCH_RESULT_CONFIRM_DELETE)}
-    </ConfirmDialog>
-  {/if}
+  <ConfirmDialog onConfirm={deleteObject} bind:showModal={confirmDelete}>
+    {getMessage(LocalizedMessage.SEARCH_RESULT_CONFIRM_DELETE)}
+  </ConfirmDialog>
 {/if}

@@ -1,9 +1,15 @@
+<script lang="ts" module>
+  export interface Props {
+    show: boolean;
+    large: boolean;
+    password: string;
+  }
+</script>
+
 <script lang="ts">
   import Encrypted from "./Encrypted.svelte";
 
-  export let show: boolean;
-  export let large: boolean;
-  export let password: string;
+  let { show, large, password }: Props = $props();
 
   function isLower(c: string): boolean {
     return /\p{Ll}/u.test(c);
@@ -21,6 +27,20 @@
     return !(isLower(c) || isUpper(c) || isNumber(c));
   }
 </script>
+
+<Encrypted {show}>
+  <div class="password" class:large>
+    {#each password.split("") as c, i}
+      <span
+        class:lower={isLower(c)}
+        class:upper={isUpper(c)}
+        class:number={isNumber(c)}
+        class:nonalphanumeric={isNonAlphanumeric(c)}
+        ><span class="char">{c}</span><span class="count">{i + 1}</span></span
+      >
+    {/each}
+  </div>
+</Encrypted>
 
 <style>
   .password {
@@ -84,16 +104,3 @@
     background-color: var(--color-input-bg-light);
   }
 </style>
-
-<Encrypted {show}>
-  <div class="password" class:large>
-    {#each password.split('') as c, i}
-      <span
-        class:lower={isLower(c)}
-        class:upper={isUpper(c)}
-        class:number={isNumber(c)}
-        class:nonalphanumeric={isNonAlphanumeric(c)}><span
-          class="char">{c}</span><span class="count">{i + 1}</span></span>
-    {/each}
-  </div>
-</Encrypted>

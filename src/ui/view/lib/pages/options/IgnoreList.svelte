@@ -8,7 +8,8 @@
 
   import Card from "@/ui/view/lib/layout/Card.svelte";
 
-  function removeUrl(url: string) {
+  function removeUrl(e: Event, url: string) {
+    e.preventDefault();
     loading.add(IGNORE_REMOVE_LOADING_ID, ignoreURLs.remove(url), {
       onError(error) {
         messages.add(error.message, MessageType.ERROR, Duration.SHORT);
@@ -29,7 +30,7 @@
     {getMessage(LocalizedMessage.OPTIONS_IGNORE_EMPTY)}
   {/if}
   {#each ignoreURLs.data as url (url)}
-    <form class="site-entry" on:submit|preventDefault={() => removeUrl(url)}>
+    <form class="site-entry" onsubmit={(e) => removeUrl(e, url)}>
       <span>{url}</span>
       <button type="submit" class="danger">
         {getMessage(LocalizedMessage.OPTIONS_IGNORE_DELETE)}
