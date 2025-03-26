@@ -183,15 +183,15 @@ export enum LocalizedMessage {
 /**
  * Get localized version of string, based on the browser language.
  * @param messageName Message identifier, see _locales and `LocalizedMessage`.
- * @param subsitutions Dynamic string substitutions, see _locales.
+ * @param substitutions Dynamic string substitutions, see _locales.
  * @returns Localized message.
  */
 export function getMessage(
   messageName: LocalizedMessage,
-  ...subsitutions: any[]
+  ...substitutions: any[]
 ) {
-  subsitutions = subsitutions.map(substitution => substitution + '')
-  let message = browser.i18n.getMessage(messageName, subsitutions)
+  substitutions = substitutions.map(substitution => substitution + '')
+  let message = browser.i18n.getMessage(messageName, substitutions)
   if (!message) console.warn(`Missing translation for ${messageName}`)
   return message
 }
