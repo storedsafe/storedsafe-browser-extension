@@ -8,7 +8,11 @@ import {
 } from "./matchers";
 import type { Input } from "./inputs";
 
-export type Form = [HTMLElement, FormType, Input[]];
+export interface Form {
+  root: HTMLElement;
+  type: FormType;
+  inputs: Input[];
+}
 
 const logger = new Logger("forms", true);
 
@@ -75,7 +79,11 @@ function parseContext(form: [HTMLElement, Input[]]): Form {
 
   // Helper function to return form in proper format
   function createForm(formType: FormType, formInputs: Input[] = inputs): Form {
-    return [parent, formType, formInputs];
+    return {
+      root: parent,
+      type: formType,
+      inputs: formInputs,
+    };
   }
 
   // Helper function to return form with the correct submit elements
@@ -140,18 +148,18 @@ export function getForms(inputs: Input[]): Form[] {
   logger.group("Form identification", LogLevel.DEBUG);
   for (const context of contexts) {
     const form = parseContext(context);
-    if (form[1] !== FormType.INCOMPLETE) {
+    if (form.type !== FormType.INCOMPLETE) {
       let shouldAdd = true;
       for (let i = 0; i < forms.length; i++) {
         // If the form is the child of another form, replace the parent form
         // Generally parent forms should only occur when multiple different
         // forms are present on the page.
-        if (forms[i][0].contains(form[0])) {
+        if (forms[i].root.contains(form.root)) {
           // Insert to replace parent form, no need to add below
           forms[i] = form;
           shouldAdd = false;
           break;
-        } else if (form[0].contains(forms[i][0])) {
+        } else if (form.root.contains(forms[i].root)) {
           // Skip if form is a parent form
           shouldAdd = false;
           break;

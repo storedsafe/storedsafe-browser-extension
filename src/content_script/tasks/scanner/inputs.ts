@@ -1,4 +1,4 @@
-import { Logger, LogLevel } from "../../../global/logger";
+import { Logger, LogLevel } from "@/global/logger";
 import { InputType } from "./constants";
 import type { Matcher } from "./matchers";
 import { matchAttributes, matchers, matchName } from "./matchers";
