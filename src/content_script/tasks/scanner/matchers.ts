@@ -1,4 +1,4 @@
-import { Logger } from "../../../global/logger";
+import { Logger } from "@/global/logger";
 import { InputType, FormType } from "./constants";
 import type { Input } from "./inputs";
 const logger = new Logger("matchers");
@@ -190,8 +190,7 @@ export function matchAttributes(
   if (!attributes) return false;
   for (const attribute in attributes) {
     const attributeMatcher = new RegExp(attributes[attribute], "i");
-    if (!attributeMatcher.test(element.getAttribute(attribute) ?? ""))
-      return false;
+    if (!attributeMatcher.test((element as any)[attribute] ?? "")) return false;
   }
   return true;
 }
@@ -207,8 +206,8 @@ export function matchName(
 ): boolean {
   if (!name) return false;
   const nameRegExp = new RegExp(name, "i");
-  for (const attr of element.attributes) {
-    if (nameRegExp.test(attr.value)) return true;
+  for (const attribute of element.attributes) {
+    if (nameRegExp.test(attribute.value)) return true;
   }
   return false;
 }
