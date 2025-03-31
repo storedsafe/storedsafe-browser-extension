@@ -4,17 +4,17 @@ import {
   StoredSafeSessionsClearError,
   StoredSafeSessionsGetError,
   StoredSafeSessionsRemoveError,
-  StoredSafeSessionsRemoveNotFoundError
-} from '../errors'
-import type { OnAreaChanged } from './StorageArea'
+  StoredSafeSessionsRemoveNotFoundError,
+} from "../errors";
+import type { OnAreaChanged } from "./StorageArea";
 
-const STORAGE_KEY = 'sessions'
-const EMPTY_STATE: [string, Session][] = []
+const STORAGE_KEY = "sessions";
+const EMPTY_STATE: [string, Session][] = [];
 
-let listeners: OnAreaChanged<Map<string, Session>>[] = []
+let listeners: OnAreaChanged<Map<string, Session>>[] = [];
 
 function parse(sessions?: [string, Session][]) {
-  return new Map(structuredClone(sessions ?? EMPTY_STATE))
+  return new Map(structuredClone(sessions ?? EMPTY_STATE));
 }
 
 /**
@@ -24,12 +24,12 @@ function parse(sessions?: [string, Session][]) {
  */
 export async function get(): Promise<Map<string, Session>> {
   try {
-    const { sessions } = await browser.storage.local.get(STORAGE_KEY)
+    const { sessions } = await browser.storage.local.get(STORAGE_KEY);
     // Convert to Map from serializable format. Map objects are not serializable
     // and will result as an empty object if put in storage.
-    return parse(sessions)
+    return parse(sessions);
   } catch (error) {
-    throw new StoredSafeSessionsGetError(error as Error)
+    throw new StoredSafeSessionsGetError(error as Error);
   }
 }
 
@@ -37,8 +37,8 @@ async function set(sessions: Map<string, Session>) {
   // Convert to serializable format, using null coalescing before converting
   // to array to ensure values are not undefined (causes TypeError).
   await browser.storage.local.set({
-    [STORAGE_KEY]: [...(sessions ?? [])]
-  })
+    [STORAGE_KEY]: [...(sessions ?? [])],
+  });
 }
 
 /**
@@ -50,8 +50,8 @@ async function set(sessions: Map<string, Session>) {
 export async function subscribe(
   cb: OnAreaChanged<Map<string, Session>>
 ): Promise<Map<string, Session>> {
-  listeners.push(cb)
-  return await get()
+  listeners.push(cb);
+  return await get();
 }
 
 /**
@@ -59,7 +59,7 @@ export async function subscribe(
  * @param cb Callback function to be called when storage area is updated.
  */
 export function unsubscribe(cb: OnAreaChanged<Map<string, Session>>): void {
-  listeners = listeners.filter(listener => listener !== cb)
+  listeners = listeners.filter((listener) => listener !== cb);
 }
 
 /**
@@ -73,21 +73,21 @@ export function unsubscribe(cb: OnAreaChanged<Map<string, Session>>): void {
 export async function add(host: string, session: Session): Promise<void> {
   try {
     // Get current state
-    const sessions = await get()
+    const sessions = await get();
     // Make sure no session already exists for `host`.
-    if (sessions.has(host)) throw new StoredSafeSessionsAddDuplicateError(host)
+    if (sessions.has(host)) throw new StoredSafeSessionsAddDuplicateError(host);
     // Update sessions in storage
-    sessions.set(host, session)
-    await set(sessions)
+    sessions.set(host, session);
+    await set(sessions);
   } catch (error) {
     // If error is already processed, throw the processed error
     if (
       error instanceof StoredSafeSessionsGetError ||
       error instanceof StoredSafeSessionsAddDuplicateError
     )
-      throw error
+      throw error;
     // Else throw new error
-    throw new StoredSafeSessionsAddError(host, error as Error)
+    throw new StoredSafeSessionsAddError(host, error as Error);
   }
 }
 
@@ -101,22 +101,22 @@ export async function add(host: string, session: Session): Promise<void> {
 export async function remove(host: string): Promise<void> {
   try {
     // Get current state
-    const sessions = await get()
+    const sessions = await get();
     // Make sure the URL exists in the list
     if (!sessions.has(host))
-      throw new StoredSafeSessionsRemoveNotFoundError(host)
+      throw new StoredSafeSessionsRemoveNotFoundError(host);
     // Update sessions in storage
-    sessions.delete(host)
-    await set(sessions)
+    sessions.delete(host);
+    await set(sessions);
   } catch (error) {
     // If error is already processed, throw the processed error
     if (
       error instanceof StoredSafeSessionsGetError ||
       error instanceof StoredSafeSessionsRemoveNotFoundError
     )
-      throw error
+      throw error;
     // Else throw new error
-    throw new StoredSafeSessionsRemoveError(host, error as Error)
+    throw new StoredSafeSessionsRemoveError(host, error as Error);
   }
 }
 
@@ -126,20 +126,33 @@ export async function remove(host: string): Promise<void> {
  */
 export async function clear(): Promise<void> {
   try {
-    await browser.storage.local.remove(STORAGE_KEY)
+    await browser.storage.local.remove(STORAGE_KEY);
   } catch (error) {
-    throw new StoredSafeSessionsClearError(error as Error)
+    throw new StoredSafeSessionsClearError(error as Error);
   }
+}
+
+function notify(
+  newValues: Map<string, Session>,
+  oldValues: Map<string, Session>
+): void {
+  for (const listener of listeners) {
+    listener(newValues, oldValues);
+  }
+}
+
+export function onSessionsChanged(
+  cb: (newValues: Map<string, Session>, oldValues: Map<string, Session>) => void
+) {
+  return (changes: { [key: string]: browser.storage.StorageChange }) => {
+    if (!!changes[STORAGE_KEY]) {
+      const { oldValue, newValue } = changes[STORAGE_KEY];
+      cb(parse(newValue), parse(oldValue));
+    }
+  };
 }
 
 /**
  * When sessions update in storage, notify listeners.
  */
-browser.storage.onChanged.addListener(changes => {
-  if (!!changes[STORAGE_KEY]) {
-    const { oldValue, newValue } = changes[STORAGE_KEY]
-    for (const listener of listeners) {
-      listener(parse(newValue), parse(oldValue))
-    }
-  }
-})
+browser.storage.onChanged.addListener(onSessionsChanged(notify));

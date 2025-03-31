@@ -258,28 +258,37 @@ function notify(
   }
 }
 
+export function onSettingsChanged(
+  cb: (newValues: Map<string, Setting>, oldValues: Map<string, Setting>) => void
+) {
+  return (
+    changes: { [key: string]: browser.storage.StorageChange },
+    area: string
+  ) => {
+    if (!!changes[STORAGE_KEY]) {
+      const { oldValue, newValue } = changes[STORAGE_KEY];
+      if (area === "sync") {
+        // Changes include sync, but not managed; fetch managed
+        getManagedSettings().then(([enforced, managedDefaults]) => {
+          cb(
+            merge(enforced, managedDefaults, parse(newValue)),
+            merge(enforced, managedDefaults, parse(oldValue))
+          );
+        });
+      } else if (area === "managed") {
+        // Changes include managed, but not sync; fetch sync
+        getSyncSettings().then((sync) => {
+          cb(
+            merge(parse(newValue.enforced), parse(newValue.defaults), sync),
+            merge(parse(oldValue.enforced), parse(oldValue.defaults), sync)
+          );
+        });
+      }
+    }
+  };
+}
+
 /**
  * When settings updates in storage, notify listeners.
  */
-browser.storage.onChanged.addListener((changes, area) => {
-  if (!!changes[STORAGE_KEY]) {
-    const { oldValue, newValue } = changes[STORAGE_KEY];
-    if (area === "sync") {
-      // Changes include sync, but not managed; fetch managed
-      getManagedSettings().then(([enforced, managedDefaults]) => {
-        notify(
-          merge(enforced, managedDefaults, parse(newValue)),
-          merge(enforced, managedDefaults, parse(oldValue))
-        );
-      });
-    } else if (area === "managed") {
-      // Changes include managed, but not sync; fetch sync
-      getSyncSettings().then((sync) => {
-        notify(
-          merge(parse(newValue.enforced), parse(newValue.defaults), sync),
-          merge(parse(oldValue.enforced), parse(oldValue.defaults), sync)
-        );
-      });
-    }
-  }
-});
+browser.storage.onChanged.addListener(onSettingsChanged(notify));

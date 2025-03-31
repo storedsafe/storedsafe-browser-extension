@@ -11,13 +11,18 @@ export enum LogLevel {
   ALL = 6,
 }
 
+export async function getLogger(name: string, enabled = true) {
+  await Logger.Init();
+  return new Logger(name, enabled);
+}
+
 export class Logger {
   public static level: LogLevel = LogLevel.ERROR;
   private readonly prefix: string;
 
   public static async Init() {
     const storage = await browser.storage.local.get("loglevel");
-    const loglevel = storage?.loglevel
+    const loglevel = storage?.loglevel;
     if (loglevel !== undefined) Logger.SetLogLevel(loglevel);
   }
 
