@@ -9,6 +9,8 @@ import {
 import * as sessions from "../storage/sessions";
 
 // TODO: Improved error handling
+// ^ fetch doesn't return errors with network status codes as the previous axios
+//   library did. So the error handling needs to be refactored.
 
 function parseMessages(obj: [] | { [key: string]: string }) {
   if (Array.isArray(obj)) return obj;
