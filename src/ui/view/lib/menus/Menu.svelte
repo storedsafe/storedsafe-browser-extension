@@ -69,7 +69,7 @@
   <section
     class="icons"
     class:has-selected={!!menuItem}
-    onmouseleave={() => clearHovered}
+    onmouseleave={() => clearHovered()}
     role="button"
     tabindex="0"
   >
@@ -88,17 +88,15 @@
       </button>
     {/each}
   </section>
-  {#if !!menuItem}
-    <section
-      class:selected={selected === menuItem.route}
-      class:focused={focused === menuItem.route}
-      class:hovered={hovered === menuItem.route}
-      class="menu-title shadow"
-      title={menuItem.title}
-    >
-      {menuItem.title}
-    </section>
-  {/if}
+  <section
+    class:selected={selected === menuItem?.route}
+    class:focused={focused === menuItem?.route}
+    class:hovered={hovered === menuItem?.route}
+    class="menu-title shadow"
+    title={menuItem?.title}
+  >
+    {menuItem?.title}
+  </section>
 </nav>
 
 <style>
@@ -171,5 +169,10 @@
     padding: calc(var(--spacing) / 2);
     transition: background-color 0.2s;
     user-select: none;
+  }
+
+  .menu-title:not(.selected):not(.hovered):not(.focused) {
+    padding: 0;
+    transition: background-color 0.2s, padding 0.2s;
   }
 </style>
