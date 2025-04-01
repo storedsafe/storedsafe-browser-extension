@@ -77,6 +77,10 @@ class Loading {
     this.finished = this.finished.bind(this);
   }
 
+  #updateLoading() {
+    this.isLoading = this.promises.size !== 0;
+  }
+
   /**
    * @param searchIDs IDs associated with the promises that progress should be checked for.
    * @returns `true` if any of the searched promises are still in progress.
@@ -108,6 +112,7 @@ class Loading {
       this.finished(id)
     );
     this.promises.set(id, loadingPromise);
+    this.#updateLoading();
   }
 
   /**
@@ -117,6 +122,7 @@ class Loading {
   cancel(id: string) {
     this.promises.get(id)?.cancel();
     this.promises.delete(id);
+    this.#updateLoading();
   }
 
   /**
@@ -127,6 +133,7 @@ class Loading {
   finished(id: string) {
     return () => {
       this.promises.delete(id);
+      this.#updateLoading();
     };
   }
 }
