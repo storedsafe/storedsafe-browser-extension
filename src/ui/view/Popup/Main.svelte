@@ -55,6 +55,11 @@
     const scrollTop = offset;
     if (content) content.scrollTop = scrollTop;
   }
+
+  function navigate(page: Page) {
+    debug = false;
+    router.goto(page);
+  }
 </script>
 
 <!--
@@ -67,17 +72,13 @@
     {#if isOnline}
       <SearchBar
         autoFocus={router.route === Page.SEARCH}
-        onFocus={() => router.goto(Page.SEARCH)}
+        onFocus={() => navigate(Page.SEARCH)}
       />
     {:else}
       <Logo />
     {/if}
     {#if hasSites}
-      <Menu
-        onNavigate={(page) => router.goto(page)}
-        selected={router.route}
-        {menuItems}
-      />
+      <Menu onNavigate={navigate} selected={router.route} {menuItems} />
     {/if}
     <LoadingBar isLoading={loading.isLoading} />
     <MessageViewer {messages} />
