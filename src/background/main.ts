@@ -10,8 +10,10 @@
  *      is slightly different from how the server timeout for the token is.
  *    - This serves as a way to counter the risks of the keepalive feature in the
  *      browser extension.
- *  - [ ] Pass information between popup and content script to fill forms
- *  - [ ] Pass information between iframe and content script to fill forms/save items
+ *  - [ ] Pass information between popup/iframe and content script
+*     - [ ] autofill
+*     - [ ] fill
+*     - [ ] save
  *  - [x] Set badge icon when user goes online/offline
  *  - [ ] Set badge label when search results are found
  */
@@ -47,7 +49,7 @@ getSessions().then(onSessionsChanged);
  */
 browser.tabs.onActivated.addListener(async (activeInfo) => {
   const logger = await getBackgroundLogger();
-  logger.log("Changed tab to %o", activeInfo.tabId);
+  logger.debug("Changed tab to %o", activeInfo.tabId);
 });
 
 /**
@@ -56,7 +58,7 @@ browser.tabs.onActivated.addListener(async (activeInfo) => {
  */
 browser.runtime.onMessage.addListener(async (message, sender, respond) => {
   const logger = await getBackgroundLogger();
-  logger.log("Incoming message: %o", message?.msg);
+  logger.debug("Incoming message: %o", message?.msg);
 });
 
 /**
@@ -65,7 +67,7 @@ browser.runtime.onMessage.addListener(async (message, sender, respond) => {
  */
 browser.runtime.onConnect.addListener(async (port) => {
   const logger = await getBackgroundLogger();
-  logger.log("Connected to %o", port.name);
+  logger.debug("Connected to %o", port.name);
 });
 
 /**
@@ -183,7 +185,7 @@ async function onMaxTokenLifeChanged(maxTokenLifeHours: number): Promise<void> {
  */
 async function onAlarmTriggered(alarm: browser.alarms.Alarm): Promise<void> {
   const logger = await getBackgroundLogger();
-  logger.log(`Alarm triggered: ${alarm.name}`);
+  logger.debug(`Alarm triggered: ${alarm.name}`);
   const [name, ...parts] = splitAlarmName(alarm.name);
   switch (name) {
     case ALARM_KEEP_ALIVE: {
