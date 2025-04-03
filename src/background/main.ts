@@ -191,7 +191,7 @@ async function onAlarmTriggered(alarm: browser.alarms.Alarm): Promise<void> {
     case ALARM_KEEP_ALIVE: {
       const [host, token] = parts;
       logger.info("Keepalive triggered for %s", host);
-      auth.check(host, token).catch(logger.error);
+      auth.check(host, token).catch(console.warn);
       break;
     }
     case ALARM_HARD_TIMEOUT: {
