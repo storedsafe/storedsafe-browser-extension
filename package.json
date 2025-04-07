@@ -53,6 +53,7 @@
     "web-ext": "^8.4.0"
   },
   "dependencies": {
+    "psl": "github:lupomontero/psl",
     "webextension-polyfill": "^0.12.0"
   }
 }

@@ -1,5 +1,14 @@
+export enum Context {
+  CONTENT_SCRIPT = "content_script",
+  BACKGROUND = "background",
+  SAVE = "save",
+  FILL = "fill",
+  IFRAME = "iframe",
+  AUTO_SEARCH = "autosearch",
+}
+
 export interface Message {
-  context: string;
+  context: Context;
   action: string;
   data?: any;
 }
@@ -16,15 +25,12 @@ export function sendMessage(
   }
 }
 
-export function addMessageListener(
-  port: browser.runtime.Port,
-  cb: (message: Message) => void
-) {
-  port.onMessage.addListener((response) => {
+export function messageListener(cb: (message: Message) => void) {
+  return (response: object) => {
     if (isMessage(response)) {
       cb(response as Message);
     }
-  });
+  };
 }
 
 export function isMessage(response: object): response is Message {

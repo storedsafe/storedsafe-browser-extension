@@ -1,5 +1,5 @@
 import { vault } from "@/global/api";
-import { addMessageListener, type Message } from "@/global/messages";
+import { messageListener, type Message } from "@/global/messages";
 import { sessions } from "@/global/storage";
 import { loading } from "./loading.svelte";
 import { Duration, messages, MessageType } from "./messages.svelte";
@@ -27,7 +27,7 @@ class Search {
     this.decrypt = this.decrypt.bind(this);
 
     const port = browser.runtime.connect({ name: "search" });
-    addMessageListener(port, this.onMessage);
+    port.onMessage.addListener(messageListener(this.onMessage));
 
     const promise = sessions.subscribe(
       (data) => (this.sessions = new SvelteMap(data))

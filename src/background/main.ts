@@ -11,9 +11,47 @@
  *    - This serves as a way to counter the risks of the keepalive feature in the
  *      browser extension.
  *  - [ ] Pass information between popup/iframe and content script
-*     - [ ] autofill
-*     - [ ] fill
-*     - [ ] save
+ *    - [ ] on connection:
+ *            - [ ] content script connects to background script
+ *            - [ ] background script checks if user is logged in (if not, do nothing)
+ *            - [ ] background script tells content script to scan for forms
+ *            - [ ] content script returns found forms to background script (if no forms, do nothing)
+ *            - [ ] background script checks for relevant results in StoredSafe (if none, do nothing)
+ *            - [ ] results are stored in session storage (for fill and popup)
+ *            - [ ] background script checks if autofill is enabled (if not, do nothing)
+ *            - [ ] start fill
+ *     - [ ] fill (hotkey/auto)
+ *            AUTO
+ *            - see on connection
+ *            HOTKEY
+ *            - [ ] background script detects hotkey pressed
+ *            - [ ] background script checks if results exist for current tab (if not, do nothing)
+ *            BOTH
+ *            - [ ] if multiple results exist, check preferences
+ *            - [ ] if no preferences are found, tell content script to open iframe for selection
+ *            SELECTION
+ *            - [ ] content script receives message to open iframe
+ *            - [ ] content script opens iframe for fill preferences
+ *            - [ ] background script receives connection from iframe
+ *            - [ ] background script sends suggested results to iframe
+ *            - [ ] iframe displays results and waits for user selection
+ *            - [ ] iframe sends selection to background script
+ *            - [ ] background script tells content script to fill form
+ *     - [ ] fill (from popup)
+ *            - [ ] popup tells background script to fill with chosen storedsafe object
+ *            - [ ] background script tells content script to fill with chosen storedsafe object
+ *            - [ ] content script scans for forms to fill, fills if found
+ *     - [ ] save
+ *            - [ ] user submits form
+ *            - [ ] content script sends message to background script with login info
+ *            - [ ] background script checks for active sessions and save/ignore preferences (if no save, do nothing)
+ *            REPEAT UNTIL TIMEOUT/COMPLETE (accounting for page redirects)
+ *            - [ ] background script tells content script to open iframe
+ *            - [ ] content script opens iframe for saving object
+ *            - [ ] background script receives connection from iframe
+ *            - [ ] background script sends save data to iframe
+ *            - [ ] iframe displays results and waits for user selection
+ *            - [ ] iframe saves object in storedsafe
  *  - [x] Set badge icon when user goes online/offline
  *  - [ ] Set badge label when search results are found
  */
@@ -26,7 +64,10 @@ import {
   genAlarmName,
   splitAlarmName,
 } from "./constants";
+import { Context, messageListener, sendMessage } from "@/global/messages";
+import * as psl from 'psl'
 
+const context = Context.BACKGROUND;
 const getBackgroundLogger = async () => getLogger("background");
 
 ////////////////////////////// ON STARTUP //////////////////////////////
@@ -37,7 +78,7 @@ getBackgroundLogger().then((logger) => {
 
 // These functions will only apply the newValues field,
 // and the 2nd parameter will default to the empty version.
-// This way everything will be deteced as a change.
+// This way everything will be detected as a change.
 getSettings().then(onSettingsChanged);
 getSessions().then(onSessionsChanged);
 
@@ -54,20 +95,32 @@ browser.tabs.onActivated.addListener(async (activeInfo) => {
 
 /**
  * Listen for incoming messages from content script and popup.
- *  - ... TODO: Document incoming messages
+ *  - Content script returns found forms, check for autofill and populate search
+ *    context: content_script
+ *    action: scan
+ *    data: forms
+ *  - Tab iframe notifies that a form on the page should be filled
+ *    context: iframe
+ *    action: fill
+ *    data: form, storedsafe object
  */
 browser.runtime.onMessage.addListener(async (message, sender, respond) => {
   const logger = await getBackgroundLogger();
-  logger.debug("Incoming message: %o", message?.msg);
+  logger.debug("Incoming message: %o", message);
 });
 
 /**
- * Listen for incoming connections from content script and popup.
- *  - ... TODO: Document incoming connections
+ * Listen for incoming connections from content script.
+ *  - Start scan if there are active sessions:
+ *      context: background
+ *      action: scan
  */
 browser.runtime.onConnect.addListener(async (port) => {
   const logger = await getBackgroundLogger();
   logger.debug("Connected to %o", port.name);
+  if (port.name === Context.CONTENT_SCRIPT) {
+    onContentScriptConnect(port);
+  }
 });
 
 /**
@@ -348,5 +401,31 @@ function setIcon(isOnline: boolean): void {
       48: `assets/${icon}_48.png`,
       96: `assets/${icon}_96.png`,
     },
+  });
+}
+
+/**
+ * If the user is online and scanning is turned on (not yet implemented),
+ * tell the content script to scan for forms.
+ * @param port
+ */
+async function onContentScriptConnect(port: browser.runtime.Port) {
+  if (!port.sender || !port.sender.url) return;
+  const url = new URL(port.sender.url);
+  const host = psl.parse(url.hostname)
+
+  const logger = await getBackgroundLogger();
+  sendMessage({ context, action: "scan" }, port);
+  const onMessage = messageListener((message) => {
+    if (message.context === Context.CONTENT_SCRIPT) {
+      if (message.action === "forms") {
+        logger.log("%o\n%o", port.sender, message.data);
+      }
+    }
+  });
+
+  port.onMessage.addListener(onMessage);
+  port.onDisconnect.addListener(() => {
+    port.onMessage.removeListener(onMessage);
   });
 }

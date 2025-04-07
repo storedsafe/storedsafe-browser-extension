@@ -10,12 +10,12 @@ import fileutils, { copy } from "./buildtools/lib/fileutils";
 import { rm } from "./buildtools/lib/clean";
 
 import type { InlineConfig, PluginOption } from "vite";
-import browserPolyfillPlugin from "./plugins/vite-plugin-browser-polyfill";
+import browserIncludeExternalPlugin from "./plugins/vite-plugin-browser-polyfill";
 import viteCustomLogging from "./plugins/vite-plugin-custom-logging";
 import merge from "lodash.merge";
 
 const OUT_DIR = path.join("dist", "build");
-const BROWSER_POLYFILL = "/externals/browser-polyfill.min.js";
+const BROWSER_POLYFILL_LIB = "/externals/browser-polyfill.min.js";
 const opts = global.buildtools?.opts;
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -46,12 +46,17 @@ function makeViteConfig(platform: string): InlineConfig | InlineConfig[] {
     logLevel: "silent",
     plugins: [
       svelte(),
-      browserPolyfillPlugin(platform, BROWSER_POLYFILL),
+      browserIncludeExternalPlugin(platform, BROWSER_POLYFILL_LIB),
       viteCustomLogging(),
     ],
     build: {
       rollupOptions: {
-        external: [BROWSER_POLYFILL],
+        external: [/externals/, "psl"],
+        output: {
+          paths: {
+            'psl': '/externals/psl.mjs'
+          }
+        }
       },
       outDir: `${OUT_DIR}/${platform}`,
       sourcemap: opts.dev,
@@ -150,12 +155,15 @@ export function copyDepsChrome() {
   const inFiles: string[] = [
     "node_modules/webextension-polyfill/dist/browser-polyfill.min.js",
     "node_modules/webextension-polyfill/dist/browser-polyfill.min.js.map",
+    "node_modules/psl/dist/psl.mjs",
   ];
   copyDependencies("chrome", inFiles);
 }
 export function copyDepsFirefox() {
-  const inFiles: string[] = [];
-  copyDependencies("chrome", inFiles);
+  const inFiles: string[] = [
+    "node_modules/psl/dist/psl.mjs",
+  ];
+  copyDependencies("firefox", inFiles);
 }
 export const copyDeps = parallel(copyDepsChrome, copyDepsFirefox);
 
