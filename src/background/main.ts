@@ -57,7 +57,7 @@
  */
 import { auth } from "@/global/api";
 import { getLogger } from "../global/logger";
-import { sessions, settings } from "../global/storage";
+import { sessions, settings, tabresults } from "../global/storage";
 import {
   ALARM_HARD_TIMEOUT,
   ALARM_KEEP_ALIVE,
@@ -65,7 +65,9 @@ import {
   splitAlarmName,
 } from "./constants";
 import { Context, messageListener, sendMessage } from "@/global/messages";
-import * as psl from 'psl'
+import * as psl from "psl";
+import type { FormType } from "@/content_script/tasks/scanner";
+import { autoSearch } from "./tasks/autoSearch";
 
 const context = Context.BACKGROUND;
 const getBackgroundLogger = async () => getLogger("background");
@@ -175,7 +177,10 @@ async function onSettingsChanged(
 }
 
 /**
- * Set up alarms for new sessions and delete alarms for removed sessions.
+ * Perform tasks for new and deleted sessions:
+ *   - Handle alarms for session timeouts
+ *   - Perform autosearch on login
+ *   - Clean up tabresults on logout
  */
 async function onSessionsChanged(
   newSessions: Map<string, Session>,
@@ -194,6 +199,16 @@ async function onSessionsChanged(
     isOnline = true; // at least one session exists
     if (!oldSessions.has(host)) {
       logger.info(`New session found for ${host}, updating session alarms...`);
+      const activeTabs = await browser.tabs.query({
+        currentWindow: true,
+        active: true,
+      });
+      if (activeTabs.length > 0) {
+        const tab = activeTabs[0];
+        if (tab.id) {
+          browser.tabs.sendMessage(tab.id, { context, action: "scan" });
+        }
+      }
       setHardtimeoutAlarm(maxTokenLifeHours, host, session);
       setKeepAliveAlarm(host, session);
     }
@@ -204,7 +219,8 @@ async function onSessionsChanged(
     wasOnline = true; // at least one session existed
     const hostAlarmName = genAlarmName(ALARM_HARD_TIMEOUT, host, session.token);
     if (!newSessions.has(host)) {
-      logger.info(`Session removed for ${host}, updating session alarms...`);
+      logger.info(`Session removed for ${host}, cleaning up...`);
+      await tabresults.removeHostResults(host);
       clearHardTimeoutAlarm(host, session);
       clearKeepAliveAlarm(host, session);
     }
@@ -218,16 +234,24 @@ async function onSessionsChanged(
 }
 
 /**
+ * @returns true if there are any active sessions.
+ */
+async function isOnline(): Promise<number> {
+  const currentSessions = await sessions.get();
+  return currentSessions.size;
+}
+
+/**
  * Set up alarms for invalidating sessions after the hard lifetime limit.
  * If maxTokenLife is 0, clear all session alarms.
  * @param maxTokenLifeHours The max amount of hours a token is allowed to be active.
  */
 async function onMaxTokenLifeChanged(maxTokenLifeHours: number): Promise<void> {
   const logger = await getBackgroundLogger();
-  const current_sessions = await getSessions();
+  const currentSessions = await getSessions();
 
   logger.log("maxTokenLife changed, updating session alarms...");
-  for (let [host, session] of current_sessions) {
+  for (let [host, session] of currentSessions) {
     setHardtimeoutAlarm(maxTokenLifeHours, host, session);
   }
 }
@@ -410,16 +434,21 @@ function setIcon(isOnline: boolean): void {
  * @param port
  */
 async function onContentScriptConnect(port: browser.runtime.Port) {
-  if (!port.sender || !port.sender.url) return;
-  const url = new URL(port.sender.url);
-  const host = psl.parse(url.hostname)
+  console.log(port);
+  if (!port.sender?.url) return;
+  if (!port.sender?.tab?.id) return;
+  if (!(await isOnline())) return;
 
   const logger = await getBackgroundLogger();
+  const url = new URL(port.sender.url);
+  const tabId = port.sender.tab.id;
+
   sendMessage({ context, action: "scan" }, port);
   const onMessage = messageListener((message) => {
     if (message.context === Context.CONTENT_SCRIPT) {
       if (message.action === "forms") {
-        logger.log("%o\n%o", port.sender, message.data);
+        logger.debug("%o\n%o", port.sender, message.data);
+        onFormsFound(tabId, url.toString(), message.data);
       }
     }
   });
@@ -427,5 +456,11 @@ async function onContentScriptConnect(port: browser.runtime.Port) {
   port.onMessage.addListener(onMessage);
   port.onDisconnect.addListener(() => {
     port.onMessage.removeListener(onMessage);
+  });
+}
+
+async function onFormsFound(tabId: number, url: string, formTypes: FormType[]) {
+  autoSearch(url, formTypes, (results) => {
+    tabresults.add(tabId, results);
   });
 }
