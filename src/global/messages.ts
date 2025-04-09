@@ -13,22 +13,38 @@ export interface Message {
   data?: any;
 }
 
-export function sendMessage(
+export async function sendTabMessage(
+  tabId: number,
+  message: Message
+): Promise<any> {
+  return await browser.tabs.sendMessage(tabId, message);
+}
+
+export async function sendMessage(
   message: Message,
   port?: browser.runtime.Port
-): Promise<Message | void> {
-  if (!!port) {
-    port.postMessage(message);
-    return Promise.resolve();
+): Promise<any> {
+  if (port) {
+    return port.postMessage(message);
   } else {
-    return browser.runtime.sendMessage(message);
+    return await browser.runtime.sendMessage(message);
   }
 }
 
-export function messageListener(cb: (message: Message) => void) {
-  return (response: object) => {
+export function messageListener(
+  cb: (
+    message: Message,
+    sender: browser.runtime.MessageSender,
+    respond: (response?: any) => void
+  ) => void
+) {
+  return async function onResponse(
+    response: object,
+    sender: browser.runtime.MessageSender,
+    respond: (response?: any) => void
+  ) {
     if (isMessage(response)) {
-      cb(response as Message);
+      return cb(response as Message, sender, respond);
     }
   };
 }

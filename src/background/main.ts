@@ -64,13 +64,33 @@ import {
   genAlarmName,
   splitAlarmName,
 } from "./constants";
-import { Context, messageListener, sendMessage } from "@/global/messages";
-import * as psl from "psl";
+import {
+  Context,
+  messageListener,
+  sendTabMessage,
+  type Message,
+} from "@/global/messages";
 import type { FormType } from "@/content_script/tasks/scanner";
 import { autoSearch } from "./tasks/autoSearch";
 
 const context = Context.BACKGROUND;
 const getBackgroundLogger = async () => getLogger("background");
+
+type MessageHandler = (
+  message: Message,
+  sender: browser.runtime.MessageSender
+) => void;
+
+const MESSAGE_HANDLERS: {
+  [context: string]: {
+    [action: string]: MessageHandler;
+  };
+} = {
+  [Context.CONTENT_SCRIPT]: {
+    connect: onContentScriptConnect,
+    forms: onContentScriptForms,
+  },
+};
 
 ////////////////////////////// ON STARTUP //////////////////////////////
 
@@ -87,15 +107,6 @@ getSessions().then(onSessionsChanged);
 ////////////////////////////// EVENT HANDLERS //////////////////////////////
 
 /**
- * Search for result related to the current tab when the tab changes.
- * Skip search if results already exist for the tab.
- */
-browser.tabs.onActivated.addListener(async (activeInfo) => {
-  const logger = await getBackgroundLogger();
-  logger.debug("Changed tab to %o", activeInfo.tabId);
-});
-
-/**
  * Listen for incoming messages from content script and popup.
  *  - Content script returns found forms, check for autofill and populate search
  *    context: content_script
@@ -106,24 +117,14 @@ browser.tabs.onActivated.addListener(async (activeInfo) => {
  *    action: fill
  *    data: form, storedsafe object
  */
-browser.runtime.onMessage.addListener(async (message, sender, respond) => {
-  const logger = await getBackgroundLogger();
-  logger.debug("Incoming message: %o", message);
-});
-
-/**
- * Listen for incoming connections from content script.
- *  - Start scan if there are active sessions:
- *      context: background
- *      action: scan
- */
-browser.runtime.onConnect.addListener(async (port) => {
-  const logger = await getBackgroundLogger();
-  logger.debug("Connected to %o", port.name);
-  if (port.name === Context.CONTENT_SCRIPT) {
-    onContentScriptConnect(port);
-  }
-});
+browser.runtime.onMessage.addListener(
+  messageListener(async (message, sender) => {
+    const logger = await getBackgroundLogger();
+    logger.debug("Incoming message: %o", message);
+    const messageHandler = MESSAGE_HANDLERS[message.context]?.[message.action];
+    if (messageHandler) return messageHandler(message, sender);
+  })
+);
 
 /**
  * Log out users when browser becomes idle.
@@ -157,7 +158,52 @@ browser.storage.onChanged.addListener(
 
 browser.alarms.onAlarm.addListener(onAlarmTriggered);
 
-////////////////////////////// HELPER FUNCTIONS //////////////////////////////
+////////////////////////////// MESSAGE HANDLERS //////////////////////////////
+
+/**
+ * If the user is online and scanning is turned on (not yet implemented),
+ * tell the content script to scan for forms.
+ */
+async function onContentScriptConnect(
+  _message: Message,
+  sender: browser.runtime.MessageSender
+) {
+  const logger = await getBackgroundLogger();
+  if (!sender?.url) return;
+  if (!sender?.tab?.id) return;
+  if (!(await isOnline())) return;
+  logger.debug("Start scan");
+  return {
+    context,
+    action: "scan",
+  };
+}
+
+/**
+ * If the content script finds any forms after scanning, perform a search
+ * in StoredSafe for potentially related objects.
+ *
+ * These results will be put into the extension session storage where they can
+ * be fetched by the popup to pre-populate the search window.
+ */
+async function onContentScriptForms(
+  message: Message,
+  sender: browser.runtime.MessageSender
+) {
+  if (!message.data) return;
+  if (!sender?.url) return;
+  if (!sender?.tab?.id) return;
+  if (!(await isOnline())) return;
+  const logger = await getBackgroundLogger();
+  const formTypes: FormType[] = message.data?.formTypes;
+  const searchHosts: string[] | null = message.data?.hosts ?? null;
+  const tabId = sender.tab.id;
+  const results = await autoSearch(sender.url, formTypes, searchHosts);
+  logger.debug(`Found ${results.length} results for tab`);
+  await tabresults.add(tabId, results);
+}
+
+////////////////////////////// STORAGE HANDLERS //////////////////////////////
 
 /**
  * Delegate tasks for handling with updated settings.
@@ -199,15 +245,13 @@ async function onSessionsChanged(
     isOnline = true; // at least one session exists
     if (!oldSessions.has(host)) {
       logger.info(`New session found for ${host}, updating session alarms...`);
-      const activeTabs = await browser.tabs.query({
-        currentWindow: true,
-        active: true,
-      });
-      if (activeTabs.length > 0) {
-        const tab = activeTabs[0];
-        if (tab.id) {
-          browser.tabs.sendMessage(tab.id, { context, action: "scan" });
-        }
+      const activeTab = await getActiveTab();
+      if (activeTab && activeTab.id) {
+        sendTabMessage(activeTab.id, {
+          context,
+          action: "scan",
+          data: { hosts: [host] },
+        });
       }
       setHardtimeoutAlarm(maxTokenLifeHours, host, session);
       setKeepAliveAlarm(host, session);
@@ -232,6 +276,8 @@ async function onSessionsChanged(
     logger.info(`Online status changed to ${isOnline}`);
   }
 }
+
+////////////////////////////// HELPER FUNCTIONS //////////////////////////////
 
 /**
  * @returns true if there are any active sessions.
@@ -429,38 +475,18 @@ function setIcon(isOnline: boolean): void {
 }
 
 /**
- * If the user is online and scanning is turned on (not yet implemented),
- * tell the content script to scan for forms.
- * @param port
+ * Returns active tab if it is within the scope of the browser extension,
+ * otherwise null.
  */
-async function onContentScriptConnect(port: browser.runtime.Port) {
-  console.log(port);
-  if (!port.sender?.url) return;
-  if (!port.sender?.tab?.id) return;
-  if (!(await isOnline())) return;
-
-  const logger = await getBackgroundLogger();
-  const url = new URL(port.sender.url);
-  const tabId = port.sender.tab.id;
-
-  sendMessage({ context, action: "scan" }, port);
-  const onMessage = messageListener((message) => {
-    if (message.context === Context.CONTENT_SCRIPT) {
-      if (message.action === "forms") {
-        logger.debug("%o\n%o", port.sender, message.data);
-        onFormsFound(tabId, url.toString(), message.data);
-      }
-    }
+async function getActiveTab() {
+  const activeTabs = await browser.tabs.query({
+    currentWindow: true,
+    active: true,
   });
-
-  port.onMessage.addListener(onMessage);
-  port.onDisconnect.addListener(() => {
-    port.onMessage.removeListener(onMessage);
-  });
-}
-
-async function onFormsFound(tabId: number, url: string, formTypes: FormType[]) {
-  autoSearch(url, formTypes, (results) => {
-    tabresults.add(tabId, results);
-  });
+  if (activeTabs.length <= 0) return null;
+  const tab = activeTabs[0];
+  if (!tab.id || !tab.url) return null;
+  if (await browser.permissions.contains({ origins: [tab.url] })) return tab;
+  // No permissions on tab url
+  return null;
 }

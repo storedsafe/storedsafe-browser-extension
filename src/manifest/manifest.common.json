@@ -7,5 +7,5 @@
     "48": "assets/icon_48.png",
     "96": "assets/icon_96.png"
   },
-  "permissions": ["storage", "idle", "activeTab", "tabs", "alarms"]
+  "permissions": ["storage", "idle", "activeTab", "alarms"]
 }

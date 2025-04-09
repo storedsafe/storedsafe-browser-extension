@@ -70,6 +70,22 @@ function getParts(urlString: string): URLParts {
   return { protocol, subdomain, domain, tld, port, path, params };
 }
 
+function calculateScore(url: string, other: string) {
+  let [partsUrl, partsOther] = [url, other].map(getParts);
+  let score = 0;
+  for (const prop in partsUrl) {
+    // If url part is undefined but compare part is not
+    if (partsUrl[prop].length === 0 && partsOther[prop].length > 0) {
+      score -= 0.9;
+      continue;
+    }
+    // If url part is defined, add if match, subtract if not
+    if (partsOther[prop] === partsUrl[prop]) score += 1;
+    else if (partsOther[prop].length > 0) score -= 0.9;
+  }
+  return score;
+}
+
 /**
  * Create a comparator function to match against a given URL.
  *
@@ -81,23 +97,8 @@ function getParts(urlString: string): URLParts {
  */
 function urlComparator(url: string): (a: string, b: string) => number {
   return function (a: string, b: string): number {
-    let [partsA, partsB, partsUrl] = [a, b, url].map(getParts);
-    let scoreA = 0,
-      scoreB = 0;
-
-    for (const prop in partsUrl) {
-      // If url part is undefined but compare part is not
-      if (partsUrl[prop].length === 0) {
-        if (partsA[prop].length > 0) scoreA -= 0.9;
-        if (partsB[prop].length > 0) scoreB -= 0.9;
-        continue;
-      }
-      // If url part is defined, add if match, subtract if not
-      if (partsA[prop] === partsUrl[prop]) scoreA++;
-      else if (partsA[prop].length > 0) scoreA -= 0.9;
-      if (partsB[prop] === partsUrl[prop]) scoreB++;
-      else if (partsB[prop].length > 0) scoreB -= 0.9;
-    }
+    const scoreA = calculateScore(url, a);
+    const scoreB = calculateScore(url, b);
     return scoreB - scoreA;
   };
 }
@@ -108,6 +109,7 @@ function urlComparator(url: string): (a: string, b: string) => number {
  * @param needle The needle that was used for the search.
  */
 function getURL(fields: StoredSafeField[], url: string): string {
+  const protocol = new URL(url).protocol;
   const needle = urlToNeedle(url);
   const comparator = urlComparator(url);
   const values: string[] = [];
@@ -131,7 +133,13 @@ function getURL(fields: StoredSafeField[], url: string): string {
     const urls: string[] = [];
     for (const match of matches) {
       const urlMatch = match.match(urlMatcher);
-      if (urlMatch !== null) urls.push(urlMatch[0]);
+      if (urlMatch !== null) {
+        let matchedUrl = urlMatch[0];
+        if (!matchedUrl.match(/^\w+:\/\//)) {
+          matchedUrl = protocol + matchedUrl;
+        }
+        urls.push(matchedUrl);
+      }
     }
     // Push the URL-like elements that match the needle
     values.push(...urls.filter((url) => url.match(needle) !== null));
@@ -169,10 +177,23 @@ function filterOtherSubdomain(results: StoredSafeObject[], url: string) {
   });
 }
 
+/**
+ * Perform a search in StoredSafe for objects that may be relevant
+ * to the current tab.
+ *
+ * Will rank and sort the results by most likely to be relevant
+ * depending on how well they match the current tab URL.
+ *
+ * Will ignore StoredSafe fields with emails containing the domain in them.
+ *
+ * @param url The URL of the current tab.
+ * @param formTypes The types of forms that were detected on the current tab.
+ * @param hosts The StoredSafe hosts to search. Will search all if null.
+ * @returns List of probably relevant StoredSafe objects.
+ */
 export async function autoSearch(
   url: string,
   formTypes: FormType[],
-  onSearchResults: (results: StoredSafeObject[]) => void,
   hosts: string[] | null = null
 ): Promise<StoredSafeObject[]> {
   if (!url.match(/^http/)) return [];

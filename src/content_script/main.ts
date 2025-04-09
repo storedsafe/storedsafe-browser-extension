@@ -1,5 +1,6 @@
 import {
   Context,
+  isMessage,
   messageListener,
   sendMessage,
   type Message,
@@ -13,30 +14,33 @@ Logger.Init().then(async () => {
   const logger = new Logger("content_script");
   logger.log("Content Script Loaded");
 
+  browser.runtime.onMessage.addListener(
+    messageListener((message) => {
+      if (message.action === "scan") onScan(message);
+    })
+  );
+
   try {
-    const port = browser.runtime.connect({ name: context });
-    const onMessage = messageListener((message) => {
-      if (message.context == Context.BACKGROUND) {
-        onBackgroundMessage(port, message);
-      }
-    });
-    port.onMessage.addListener(onMessage);
-    port.onDisconnect.addListener(() => {
-      port.onMessage.removeListener(onMessage);
-    });
+    const res = await sendMessage({ context, action: "connect" });
+    if (isMessage(res) && res.action == "scan") onScan(res);
   } catch (e) {
-    logger.warn("No listeners for sendMessage");
+    logger.warn("No listeners for sendMessage %o", e);
   }
 
-  function onBackgroundMessage(port: browser.runtime.Port, message: Message) {
-    if (message.action === "scan") {
-      scanner((forms) => {
-        if (forms.length > 0) {
-          logger.log("Detected forms: %o", forms);
-          const formTypes = forms.map((form) => form.type);
-          sendMessage({ context, action: "forms", data: formTypes }, port);
-        }
-      });
-    }
+  function onScan(message: Message) {
+    scanner((forms) => {
+      if (forms.length > 0) {
+        logger.log("Detected forms: %o", forms);
+        const formTypes = [...new Set(forms.map((form) => form.type))];
+        sendMessage({
+          context,
+          action: "forms",
+          data: {
+            formTypes,
+            hosts: message.data?.hosts,
+          },
+        });
+      }
+    });
   }
 });
