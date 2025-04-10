@@ -109,6 +109,12 @@ getSessions().then(onSessionsChanged);
 
 ////////////////////////////// EVENT HANDLERS //////////////////////////////
 
+browser.tabs.onActivated.addListener(
+  async (activeInfo: browser.tabs._OnActivatedActiveInfo) => {
+    setTabResultsCount(activeInfo.tabId);
+  }
+);
+
 /**
  * Listen for incoming messages from content script and popup.
  *  - Content script returns found forms, check for autofill and populate search
@@ -204,6 +210,7 @@ async function onContentScriptForms(
   const results = await autoSearch(sender.url, formTypes, searchHosts);
   logger.debug(`Found ${results.length} results for tab`);
   await tabresults.add(tabId, results);
+  setTabResultsCount(tabId);
 }
 
 /**
@@ -213,7 +220,7 @@ async function onContentScriptForms(
  * These results will be put into the extension session storage where they can
  * be fetched by the popup to pre-populate the search window.
  */
-async function onGetTabResults(message: Message) {
+async function onGetTabResults() {
   if (!(await isOnline())) return [];
   const tabId = (await getActiveTab())?.id;
   if (!tabId) return [];
@@ -489,6 +496,21 @@ function setIcon(isOnline: boolean): void {
       96: `assets/${icon}_96.png`,
     },
   });
+}
+
+async function setTabResultsCount(tabId: number) {
+  const count = (await tabresults.getTabResults(tabId)).length;
+  if (count > 0) {
+    await browser.action.setBadgeText({
+      text: count.toString(),
+      tabId,
+    });
+  } else {
+    await browser.action.setBadgeText({
+      text: "",
+      tabId,
+    });
+  }
 }
 
 /**
