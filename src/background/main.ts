@@ -2,7 +2,7 @@
  * Background script for StoredSafe browser extension.
  *
  * Takes case of the following:
- *  - [ ] Perform searches in StoredSafe on new tabs
+ *  - [x] Perform searches in StoredSafe on new tabs
  *  - [x] Keep storedsafe token alive while the browser is active
  *  - [x] Log out when the browser turns idle
  *  - [x] Log out after the token reaches its maximum lifespan
@@ -12,12 +12,12 @@
  *      browser extension.
  *  - [ ] Pass information between popup/iframe and content script
  *    - [ ] on connection:
- *            - [ ] content script connects to background script
- *            - [ ] background script checks if user is logged in (if not, do nothing)
- *            - [ ] background script tells content script to scan for forms
- *            - [ ] content script returns found forms to background script (if no forms, do nothing)
- *            - [ ] background script checks for relevant results in StoredSafe (if none, do nothing)
- *            - [ ] results are stored in session storage (for fill and popup)
+ *            - [x] content script connects to background script
+ *            - [x] background script checks if user is logged in (if not, do nothing)
+ *            - [x] background script tells content script to scan for forms
+ *            - [x] content script returns found forms to background script (if no forms, do nothing)
+ *            - [x] background script checks for relevant results in StoredSafe (if none, do nothing)
+ *            - [x] results are stored in session storage (for fill and popup)
  *            - [ ] background script checks if autofill is enabled (if not, do nothing)
  *            - [ ] start fill
  *     - [ ] fill (hotkey/auto)
@@ -53,7 +53,7 @@
  *            - [ ] iframe displays results and waits for user selection
  *            - [ ] iframe saves object in storedsafe
  *  - [x] Set badge icon when user goes online/offline
- *  - [ ] Set badge label when search results are found
+ *  - [x] Set badge label when search results are found
  */
 import { auth } from "@/global/api";
 import { getLogger } from "../global/logger";
