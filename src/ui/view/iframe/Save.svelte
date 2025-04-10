@@ -155,19 +155,19 @@
             {getMessage(LocalizedMessage.ADD_CREATE)}
           </button>
           {#if !edit}
-            <button type="button" class="warning" onclick={() => toggleEdit}>
+            <button type="button" class="warning" onclick={() => toggleEdit()}>
               {getMessage(LocalizedMessage.SEARCH_RESULT_EDIT)}
             </button>
           {/if}
         </div>
-        <button type="button" class="danger" onclick={() => onClose}>
+        <button type="button" class="danger" onclick={() => onClose()}>
           {getMessage(LocalizedMessage.IFRAME_CLOSE)}
         </button>
         {#if !edit}
           <button
             type="button"
             class="danger ignore"
-            onclick={() => addToIgnore}
+            onclick={() => addToIgnore()}
           >
             {getMessage(LocalizedMessage.SAVE_IGNORE)}
           </button>

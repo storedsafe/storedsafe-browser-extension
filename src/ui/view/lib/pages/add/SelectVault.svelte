@@ -50,7 +50,11 @@
 {#if !!host && !!vaults}
   <label for="vault">
     <span>{getMessage(LocalizedMessage.ADD_VAULT)}</span>
-    <select id="vault" bind:value={vaultid} onchange={() => updatePreferences}>
+    <select
+      id="vault"
+      bind:value={vaultid}
+      onchange={() => updatePreferences()}
+    >
       {#each vaults as vault (vault.id)}
         {#if vault.permissions >= 2}
           <option value={vault.id}>{vault.name}</option>

@@ -82,7 +82,7 @@
 
 <section class="grid">
   {#if isFillable}
-    <button type="button" onclick={() => fill}>
+    <button type="button" onclick={() => fill()}>
       {getMessage(LocalizedMessage.SEARCH_RESULT_FILL)}
     </button>
   {/if}
@@ -98,7 +98,7 @@
         disabled={vault.permissions < 2}
         type="button"
         class="warning"
-        onclick={() => setEdit}
+        onclick={() => setEdit()}
       >
         {getMessage(LocalizedMessage.SEARCH_RESULT_EDIT)}
       </button>
