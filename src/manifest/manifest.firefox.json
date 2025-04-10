@@ -1,14 +1,13 @@
 {
-  "manifest_version": 2,
   "browser_specific_settings": {
     "gecko": {
       "id": "{5a110dee-fb42-44a1-b64d-d0444a199f96}",
       "update_url": "https://storedsafe.com/addons/firefox/updates.json",
-      "strict_min_version": "79.0"
+      "strict_min_version": "109.0"
     }
   },
   "commands": {
-    "_execute_browser_action": {
+    "_execute_action": {
       "suggested_key": {
         "default": "Ctrl+Alt+S"
       },
@@ -24,14 +23,6 @@
   "background": {
     "scripts": ["background.storedsafe.js"],
     "type": "module"
-  },
-  "browser_action": {
-    "default_title": "StoredSafe",
-    "default_popup": "popup.html",
-    "default_icon": {
-      "48": "assets/icon-inactive_48.png",
-      "96": "assets/icon-inactive_96.png"
-    }
   },
   "content_scripts": [
     {

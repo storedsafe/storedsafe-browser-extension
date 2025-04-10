@@ -1,5 +1,6 @@
 {
   "manifest_version": 3,
+  "minimum_chrome_version": "88",
   "storage": {
     "managed_schema": "schema.json"
   },
@@ -7,24 +8,16 @@
     "service_worker": "background.storedsafe.js",
     "type": "module"
   },
-  "action": {
-    "default_title": "StoredSafe",
-    "default_popup": "popup.html",
-    "default_icon": {
-      "48": "assets/icon-inactive_48.png",
-      "96": "assets/icon-inactive_96.png"
-    }
-  },
   "commands": {
     "_execute_action": {
       "suggested_key": {
-        "default": "Alt+Shift+S"
+        "default": "Ctrl+Shift+S"
       },
       "description": "Open StoredSafe Popup"
     },
     "fill": {
       "suggested_key": {
-        "default": "Alt+Shift+F"
+        "default": "Ctrl+Shift+F"
       },
       "description": "Fill form on page if data is available"
     }
@@ -32,7 +25,10 @@
   "content_scripts": [
     {
       "matches": ["http://*/*", "https://*/*"],
-      "js": ["externals/browser-polyfill.min.js", "content_script.storedsafe.js"]
+      "js": [
+        "externals/browser-polyfill.min.js",
+        "content_script.storedsafe.js"
+      ]
     }
   ]
 }

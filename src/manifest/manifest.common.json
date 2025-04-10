@@ -2,10 +2,19 @@
   "name": "StoredSafe",
   "version": "1.0.0",
   "description": "StoredSafe browser integration",
+  "manifest_version": 3,
   "default_locale": "en",
   "icons": {
     "48": "assets/icon_48.png",
     "96": "assets/icon_96.png"
   },
-  "permissions": ["storage", "idle", "activeTab", "alarms"]
+  "permissions": ["storage", "idle", "activeTab", "alarms"],
+  "action": {
+    "default_title": "StoredSafe",
+    "default_popup": "popup.html",
+    "default_icon": {
+      "48": "assets/icon-inactive_48.png",
+      "96": "assets/icon-inactive_96.png"
+    }
+  }
 }
