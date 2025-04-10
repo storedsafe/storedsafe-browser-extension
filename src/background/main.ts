@@ -269,14 +269,11 @@ async function onSessionsChanged(
     isOnline = true; // at least one session exists
     if (!oldSessions.has(host)) {
       logger.info(`New session found for ${host}, updating session alarms...`);
-      const activeTab = await getActiveTab();
-      if (activeTab && activeTab.id) {
-        sendTabMessage(activeTab.id, {
-          context,
-          action: "scan",
-          data: { hosts: [host] },
-        });
-      }
+      sendTabMessage({
+        context,
+        action: "scan",
+        data: { hosts: [host] },
+      });
       setHardtimeoutAlarm(maxTokenLifeHours, host, session);
       setKeepAliveAlarm(host, session);
     }

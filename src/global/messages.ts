@@ -1,10 +1,12 @@
+import { Logger } from "./logger";
+
 export enum Context {
   CONTENT_SCRIPT = "content_script",
   BACKGROUND = "background",
   SAVE = "save",
   FILL = "fill",
   IFRAME = "iframe",
-  POPUP = "popup"
+  POPUP = "popup",
 }
 
 export interface Message {
@@ -13,11 +15,36 @@ export interface Message {
   data?: any;
 }
 
-export async function sendTabMessage(
-  tabId: number,
-  message: Message
-): Promise<any> {
-  return await browser.tabs.sendMessage(tabId, message);
+async function getMessageLogger() {
+  await Logger.Init();
+  return new Logger("messages");
+}
+
+/**
+ * Returns active tab if it is within the scope of the browser extension,
+ * otherwise null.
+ */
+async function getActiveTab() {
+  const activeTabs = await browser.tabs.query({
+    currentWindow: true,
+    active: true,
+  });
+  if (activeTabs.length <= 0) return null;
+  const tab = activeTabs[0];
+  if (!tab.id || !tab.url) return null;
+  if (await browser.permissions.contains({ origins: [tab.url] })) return tab;
+  // No permissions on tab url
+  return null;
+}
+
+export async function sendTabMessage(message: Message): Promise<any> {
+  const logger = await getMessageLogger();
+  const activeTab = await getActiveTab();
+  if (!activeTab || !activeTab.id) {
+    logger.warn("Tried to send message to unavailable tab.");
+    return;
+  }
+  return await browser.tabs.sendMessage(activeTab.id, message);
 }
 
 export async function sendMessage(
