@@ -1,4 +1,4 @@
-import { Logger, LogLevel } from "../../../global/logger";
+import { Logger, LogLevel } from "@/global/logger";
 import { FormType, InputType } from "./constants";
 import {
   formMatchers,
@@ -35,7 +35,7 @@ function mapInputContexts(
   for (let i = 0; i < inputs.length - 1; i++) {
     let matchedElements: Input[] = [];
     let unmatchedElements: Input[];
-    const current: HTMLElement = inputs[i][0];
+    const current: HTMLElement = inputs[i].element;
     let others = inputs.slice(i + 1);
     let parent = current.parentElement;
     while (
@@ -46,7 +46,7 @@ function mapInputContexts(
       if (!!forms.get(parent)) break;
       unmatchedElements = [];
       for (const other of others) {
-        if (parent.contains(other[0])) matchedElements.push(other);
+        if (parent.contains(other.element)) matchedElements.push(other);
         else unmatchedElements.push(other);
       }
       if (matchedElements.length > 0)
@@ -69,7 +69,7 @@ function parseContext(form: [HTMLElement, Input[]]): Form {
 
   // Group inputs first to reduce required number of iterations
   for (const input of inputs) {
-    const inputType = input[1];
+    const inputType = input.type;
     if (inputType === InputType.UNKNOWN) continue;
     else if (inputType === InputType.HIDDEN) hidden.push(input);
     else if (inputType === InputType.SUBMIT) submits.push(input);

@@ -3,7 +3,10 @@ import { InputType } from "./constants";
 import type { Matcher } from "./matchers";
 import { matchAttributes, matchers, matchName } from "./matchers";
 
-export type Input = [HTMLElement, InputType];
+export interface Input {
+  element: HTMLElement;
+  type: InputType;
+}
 
 const logger = new Logger("input", true);
 
@@ -117,8 +120,8 @@ export function getInputs(root: HTMLElement = document.body): Input[] {
   // Classify all relevant elements under the root node.
   const elements = root.querySelectorAll<HTMLElement>(INPUT_SELECTORS);
   for (const element of elements) {
-    inputs.push([element, getElementType(element)]);
+    inputs.push({ element, type: getElementType(element) });
   }
   logger.groupEnd(LogLevel.DEBUG);
-  return inputs.filter((input) => input[1] !== InputType.DISCARD);
+  return inputs.filter((input) => input.type !== InputType.DISCARD);
 }

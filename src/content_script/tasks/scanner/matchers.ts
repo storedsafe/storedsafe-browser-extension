@@ -224,7 +224,7 @@ export function matchName(
 export function matchFields(inputs: Input[], matchers: Map<InputType, number>) {
   if (!matchers) return false;
   const matches: Map<InputType, number> = new Map();
-  for (const [_input, inputType] of inputs) {
+  for (const { type: inputType } of inputs) {
     matches.set(inputType, (matches.get(inputType) ?? 0) + 1);
   }
   for (const [matcherType, matcherCount] of matchers) {

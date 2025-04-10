@@ -23,10 +23,10 @@ function printForms(forms: Form[]) {
     }
     logger.group(type + " form", LogLevel.DEBUG);
     logger.debug("%o", root);
-    for (const [input, inputType] of inputs) {
+    for (const { element: inputElement, type: inputType } of inputs) {
       if (inputType === InputType.HIDDEN) {
       }
-      logger.debug("%s %o", inputType, input);
+      logger.debug("%s %o", inputType, inputElement);
     }
     logger.groupEnd(LogLevel.DEBUG);
   }
@@ -39,7 +39,7 @@ function filterForms(forms: Form[]): Form[] {
   );
 }
 
-export function scanner(cb: (forms: Form[]) => void) {
+export function scanner(cb: (forms: Form[]) => void, oneshot = false) {
   let forms: Form[] = [];
 
   function updateForms(newForms: Form[]) {
@@ -48,6 +48,10 @@ export function scanner(cb: (forms: Form[]) => void) {
     cb(forms);
   }
   updateForms(getForms(getInputs()));
+
+  // Don't scan for updates to the page.
+  // Use oneshot if the scan is done after the page is loaded.
+  if (oneshot) return;
 
   let rescanTimeoutId: null | number = null;
   let firstTimeoutTimestamp: null | number;
