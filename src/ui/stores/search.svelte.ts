@@ -1,9 +1,10 @@
 import { vault } from "@/global/api";
-import { messageListener, type Message } from "@/global/messages";
+import { Context, sendMessage } from "@/global/messages";
 import { sessions } from "@/global/storage";
 import { loading } from "./loading.svelte";
 import { Duration, messages, MessageType } from "./messages.svelte";
 import { SvelteMap } from "svelte/reactivity";
+import { Logger } from "@/global/logger";
 
 export const SEARCH_INIT_LOADING_ID = "search.initializing";
 export const SEARCH_LOADING_ID = "search.find";
@@ -12,6 +13,10 @@ export const SEARCH_DELETE_LOADING_ID = "search.delete";
 export const SEARCH_REMOVE_LOADING_ID = "search.remove";
 export const SEARCH_DECRYPT_LOADING_ID = "search.remove";
 
+const logger = new Logger("instances");
+
+const context = Context.POPUP;
+
 class Search {
   isInitialized: boolean = $state(false);
   tabResults: StoredSafeObject[] = $state([]);
@@ -19,31 +24,32 @@ class Search {
   sessions: Map<string, Session> = $state(new SvelteMap());
 
   constructor() {
-    this.onMessage = this.onMessage.bind(this);
     this.onSessionsChanged = this.onSessionsChanged.bind(this);
     this.search = this.search.bind(this);
     this.edit = this.edit.bind(this);
     this.delete = this.delete.bind(this);
     this.decrypt = this.decrypt.bind(this);
 
-    const port = browser.runtime.connect({ name: "search" });
-    port.onMessage.addListener(messageListener(this.onMessage));
-
-    const promise = sessions.subscribe(
+    const tabResultsPromise = sendMessage({
+      context,
+      action: "tabresults.get",
+    });
+    const sessionsPromise = sessions.subscribe(
       (data) => (this.sessions = new SvelteMap(data))
     );
-    loading.add(SEARCH_INIT_LOADING_ID, promise, {
-      onSuccess: (data) => {
-        this.isInitialized = true;
-        this.sessions = new SvelteMap(data);
-      },
-    });
-  }
-
-  onMessage(message: Message) {
-    if (message.context === "autosearch" && message.action === "populate") {
-      this.tabResults = message.data;
-    }
+    loading.add(
+      SEARCH_INIT_LOADING_ID,
+      Promise.all([tabResultsPromise, sessionsPromise]),
+      {
+        onSuccess: ([tabResults, sessionsData]) => {
+          this.isInitialized = true;
+          this.tabResults = tabResults;
+          this.results = tabResults;
+          logger.info(`Found ${tabResults.length} results for current tab.`);
+          this.sessions = new SvelteMap(sessionsData);
+        },
+      }
+    );
   }
 
   onSessionsChanged(

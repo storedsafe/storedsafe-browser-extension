@@ -31,6 +31,18 @@ export async function get(): Promise<Map<number, StoredSafeObject[]>> {
   }
 }
 
+/**
+ * Get and parse tab results from session storage.
+ * @returns Current tab results.
+ * @throws {StoredSafeExtensionError}
+ */
+export async function getTabResults(
+  tabId: number
+): Promise<StoredSafeObject[]> {
+  const results = await get();
+  return results.get(tabId) ?? [];
+}
+
 async function set(tabresults: Map<number, StoredSafeObject[]>) {
   // Convert to serializable format, using null coalescing before converting
   // to array to ensure values are not undefined (causes TypeError).

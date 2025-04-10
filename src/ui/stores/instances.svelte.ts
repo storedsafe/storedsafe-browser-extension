@@ -4,7 +4,7 @@ import { Logger } from "@/global/logger";
 import { loading } from "./loading.svelte";
 import { SvelteMap } from "svelte/reactivity";
 
-const logger = new Logger("structure");
+const logger = new Logger("instances");
 
 export const INSTANCES_LOADING_ID = "instances.loading";
 export const INSTANCES_REFRESH_LOADING_ID = "instances.refresh";
@@ -26,7 +26,6 @@ class StoredSafeInstances {
     const promise = sessions.subscribe(this.onSessionsChanged);
     loading.add(INSTANCES_LOADING_ID, promise, {
       onSuccess: (data) => {
-        this.isInitialized = true;
         this.onSessionsChanged(data, new Map());
       },
     });
@@ -71,6 +70,7 @@ class StoredSafeInstances {
         this.instances = new SvelteMap(
           instances.entries().toArray().sort(this.#sortInstances)
         );
+        this.isInitialized = true;
       };
       const onError = logger.error;
       loading.add(loadingId, promises, { onSuccess, onError });

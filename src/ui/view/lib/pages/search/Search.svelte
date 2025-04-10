@@ -24,7 +24,6 @@
     instances,
     sites,
     Messages,
-    MessageType,
   } from "@/ui/stores";
   import { getMessage, LocalizedMessage } from "@/global/i18n";
 
@@ -68,9 +67,10 @@
 
   let selected: string | null = $state(null);
   let result: StoredSafeObject | null = $state(null);
-  let items: ListItem<SearchItemProps>[] = $derived(
-    search.results.map(parseSearchItem)
-  );
+  let items: ListItem<SearchItemProps>[] = $derived.by(() => {
+    if (!sites.isInitialized || !instances.isInitialized) return [];
+    return search.results.map(parseSearchItem);
+  });
 
   $effect(() => {
     const newResult =

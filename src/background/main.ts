@@ -90,6 +90,9 @@ const MESSAGE_HANDLERS: {
     connect: onContentScriptConnect,
     forms: onContentScriptForms,
   },
+  [Context.POPUP]: {
+    "tabresults.get": onGetTabResults,
+  },
 };
 
 ////////////////////////////// ON STARTUP //////////////////////////////
@@ -201,6 +204,20 @@ async function onContentScriptForms(
   const results = await autoSearch(sender.url, formTypes, searchHosts);
   logger.debug(`Found ${results.length} results for tab`);
   await tabresults.add(tabId, results);
+}
+
+/**
+ * If the content script finds any forms after scanning, perform a search
+ * in StoredSafe for potentially related objects.
+ *
+ * These results will be put into the extension session storage where they can
+ * be fetched by the popup to pre-populate the search window.
+ */
+async function onGetTabResults(message: Message) {
+  if (!(await isOnline())) return [];
+  const tabId = (await getActiveTab())?.id;
+  if (!tabId) return [];
+  return await tabresults.getTabResults(tabId);
 }
 
 ////////////////////////////// STORAGE HANDLERS //////////////////////////////

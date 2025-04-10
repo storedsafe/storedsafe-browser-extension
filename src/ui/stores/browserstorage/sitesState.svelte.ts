@@ -14,8 +14,8 @@ class SitesStore {
     const promise = sitesStorage.subscribe(this.#update.bind(this));
     loading.add(SITES_LOADING_ID, promise, {
       onSuccess: (data) => {
-        this.isInitialized = true;
         this.#update(data, this.data);
+        this.isInitialized = true;
       },
     });
   }

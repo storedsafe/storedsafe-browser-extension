@@ -4,7 +4,7 @@ export enum Context {
   SAVE = "save",
   FILL = "fill",
   IFRAME = "iframe",
-  AUTO_SEARCH = "autosearch",
+  POPUP = "popup"
 }
 
 export interface Message {
@@ -50,5 +50,6 @@ export function messageListener(
 }
 
 export function isMessage(response: object): response is Message {
+  if (!response) return false;
   return "context" in response && "action" in response;
 }
