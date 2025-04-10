@@ -6,7 +6,7 @@ export const SITES_ADD_LOADING_ID = "sites.add";
 export const SITES_REMOVE_LOADING_ID = "sites.remove";
 export const SITES_CLEAR_LOADING_ID = "sites.clear";
 
-class SitesStore {
+class SitesState {
   isInitialized: boolean = $state(false);
   data: Site[] = $state([]);
 
@@ -29,4 +29,4 @@ class SitesStore {
   }
 }
 
-export const sites = new SitesStore();
+export const sites = new SitesState();
