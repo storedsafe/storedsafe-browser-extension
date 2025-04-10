@@ -46,6 +46,7 @@ class StoredSafeInstances {
       }
     }
 
+    let allPromises: Promise<any>[] = [];
     for (const [host, session] of sessions.entries()) {
       const loadingId = `${INSTANCES_REFRESH_LOADING_ID}.${host}`;
       logger.debug("Loading instance data for %s...", host);
@@ -70,11 +71,12 @@ class StoredSafeInstances {
         this.instances = new SvelteMap(
           instances.entries().toArray().sort(this.#sortInstances)
         );
-        this.isInitialized = true;
       };
       const onError = logger.error;
+      allPromises.push(promises);
       loading.add(loadingId, promises, { onSuccess, onError });
     }
+    Promise.all(allPromises).then(() => (this.isInitialized = true));
   }
 
   #sortInstances(
