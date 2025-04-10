@@ -36,11 +36,13 @@
  *            - [ ] background script sends suggested results to iframe
  *            - [ ] iframe displays results and waits for user selection
  *            - [ ] iframe sends selection to background script
+ *            - [ ] background script saves item to preferences for current site
  *            - [ ] background script tells content script to fill form
  *     - [ ] fill (from popup)
- *            - [ ] popup tells background script to fill with chosen storedsafe object
- *            - [ ] background script tells content script to fill with chosen storedsafe object
- *            - [ ] content script scans for forms to fill, fills if found
+ *            - [x] popup tells background script to fill with chosen storedsafe object
+ *            - [x] background script saves item to preferences for current site
+ *            - [x] background script tells content script to fill with chosen storedsafe object
+ *            - [x] content script scans for forms to fill, fills if found
  *     - [ ] save
  *            - [ ] user submits form
  *            - [ ] content script sends message to background script with login info
@@ -55,9 +57,9 @@
  *  - [x] Set badge icon when user goes online/offline
  *  - [x] Set badge label when search results are found
  */
-import { auth } from "@/global/api";
+import { auth, vault } from "@/global/api";
 import { getLogger } from "../global/logger";
-import { sessions, settings, tabresults } from "../global/storage";
+import { preferences, sessions, settings, tabresults } from "../global/storage";
 import {
   ALARM_HARD_TIMEOUT,
   ALARM_KEEP_ALIVE,
@@ -72,6 +74,8 @@ import {
 } from "@/global/messages";
 import type { FormType } from "@/content_script/tasks/scanner";
 import { autoSearch } from "./tasks/autoSearch";
+import { stripURL } from "@/global/storage/preferences";
+import { StoredSafeExtensionError } from "@/global/errors";
 
 const context = Context.BACKGROUND;
 const getBackgroundLogger = async () => getLogger("background");
@@ -92,6 +96,7 @@ const MESSAGE_HANDLERS: {
   },
   [Context.POPUP]: {
     "tabresults.get": onGetTabResults,
+    fill: onFill,
   },
 };
 
@@ -225,6 +230,15 @@ async function onGetTabResults() {
   const tabId = (await getActiveTab())?.id;
   if (!tabId) return [];
   return await tabresults.getTabResults(tabId);
+}
+
+async function onFill(message: Message) {
+  const logger = await getBackgroundLogger();
+  if (!(await isOnline())) return;
+  if (!message.data) {
+    logger.warn("Requested fill without any data.");
+  }
+  fill(message.data);
 }
 
 ////////////////////////////// STORAGE HANDLERS //////////////////////////////
@@ -511,18 +525,69 @@ async function setTabResultsCount(tabId: number) {
 }
 
 /**
+ * Get the decrypted version of the StoredSafe object.
+ * If the object is already decrypted, it will return as is.
+ *
+ * If the object contains no encrypted fields, it will return without
+ * calling the decrypt API.
+ * @param result StoredSafe object.
+ * @returns Decrypted StoredSafe object.
+ */
+async function getDecryptedObject(result: StoredSafeObject) {
+  // If the object is already decrypted, return it.
+  if (result.isDecrypted) return result;
+  for (const field of result.fields) {
+    // Decrypt and return if an encrypted field is found.
+    if (field.isEncrypted) {
+      const currentSessions = await sessions.get();
+      const token = currentSessions.get(result.host)?.token;
+      if (!token)
+        throw new StoredSafeExtensionError("Session for result is offline.");
+      return await vault.decryptObject(result.host, token, result);
+    }
+  }
+  // There were no fields to decrypt.
+  return result;
+}
+
+/**
+ * Ensure the StoredSafe object is decrypted and formatted to be filled
+ * by the content script. Then send the result to the content script.
+ * @param result StoredSafe Object.
+ */
+async function fill(result: StoredSafeObject): Promise<any> {
+  const logger = await getBackgroundLogger();
+  const tab = await getActiveTab();
+  if (!tab || !tab.url) {
+    logger.warn("Trying to fill forms on invalid tab.");
+    return;
+  }
+  const url = stripURL(tab.url);
+  await preferences.setAutoFillPreferences(url, {
+    host: result.host,
+    objectId: result.id,
+  });
+  result = await getDecryptedObject(result);
+  const values: Record<string, string> = {};
+  for (const field of result.fields) {
+    values[field.name] = field.value ?? "";
+  }
+  return sendTabMessage({ context, action: "fill", data: values });
+}
+
+/**
  * Returns active tab if it is within the scope of the browser extension,
  * otherwise null.
  */
-async function getActiveTab() {
+async function getActiveTab(): Promise<browser.tabs.Tab | undefined> {
   const activeTabs = await browser.tabs.query({
     currentWindow: true,
     active: true,
   });
-  if (activeTabs.length <= 0) return null;
+  if (activeTabs.length <= 0) return undefined;
   const tab = activeTabs[0];
-  if (!tab.id || !tab.url) return null;
+  if (!tab.id || !tab.url) return undefined;
   if (await browser.permissions.contains({ origins: [tab.url] })) return tab;
   // No permissions on tab url
-  return null;
+  return undefined;
 }

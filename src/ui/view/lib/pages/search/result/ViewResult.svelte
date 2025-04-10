@@ -12,6 +12,7 @@
 
   import ConfirmDialog from "@/ui/view/lib/layout/ConfirmDeleteDialog.svelte";
   import Field from "@/ui/view/lib/pages/search/fields/Field.svelte";
+  import { Context, sendMessage } from "@/global/messages";
 
   interface Props {
     result: StoredSafeObject;
@@ -45,11 +46,11 @@
   }
 
   function fill() {
-    // browser.runtime.sendMessage({
-    //   context: "fill",
-    //   action: "fill",
-    //   data: result,
-    // });
+    sendMessage({
+      context: Context.POPUP,
+      action: "fill",
+      data: result,
+    });
     window.close();
   }
 

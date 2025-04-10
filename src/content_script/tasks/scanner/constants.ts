@@ -53,3 +53,9 @@ export const INPUT_FILL_TYPES = [
 
 export const FORM_FILL_TYPES = [FormType.LOGIN];
 export const FORM_SAVE_TYPES = [FormType.LOGIN, FormType.REGISTER];
+
+export function getStrippedType(type: InputType) {
+  const splitIndex = type.indexOf(".");
+  if (splitIndex === -1) return type;
+  return type.slice(0, splitIndex);
+}
