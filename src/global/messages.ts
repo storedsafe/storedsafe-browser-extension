@@ -10,7 +10,8 @@ export enum Context {
 }
 
 export interface Message {
-  context: Context;
+  from: Context;
+  to: Context;
   action: string;
   data?: any;
 }
@@ -78,5 +79,5 @@ export function messageListener(
 
 export function isMessage(response: object): response is Message {
   if (!response) return false;
-  return "context" in response && "action" in response;
+  return "from" in response && "to" in response && "action" in response;
 }

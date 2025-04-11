@@ -14,7 +14,6 @@ import {
   type Form,
 } from "./tasks/scanner";
 
-const context = Context.CONTENT_SCRIPT;
 let currentForms: Form[] = [];
 
 Logger.Init().then(async () => {
@@ -30,7 +29,11 @@ Logger.Init().then(async () => {
   );
 
   try {
-    const res = await sendMessage({ context, action: "connect" });
+    const res = await sendMessage({
+      from: Context.CONTENT_SCRIPT,
+      to: Context.BACKGROUND,
+      action: "connect",
+    });
     if (isMessage(res) && res.action == "scan") onScan(res);
   } catch (e) {
     logger.warn("No listeners for sendMessage %o", e);
@@ -48,7 +51,8 @@ Logger.Init().then(async () => {
         logger.debug("Detected forms: %o", forms);
         const formTypes = [...new Set(forms.map((form) => form.type))];
         sendMessage({
-          context,
+          from: Context.CONTENT_SCRIPT,
+          to: Context.BACKGROUND,
           action: "forms",
           data: {
             formTypes,

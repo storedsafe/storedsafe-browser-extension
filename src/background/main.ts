@@ -78,7 +78,6 @@ import { autoSearch } from "./tasks/autoSearch";
 import { stripURL } from "@/global/storage/preferences";
 import { StoredSafeExtensionError } from "@/global/errors";
 
-const context = Context.BACKGROUND;
 const getBackgroundLogger = async () => getLogger("background");
 
 type MessageHandler = (
@@ -87,7 +86,7 @@ type MessageHandler = (
 ) => void;
 
 const MESSAGE_HANDLERS: {
-  [context: string]: {
+  [from: string]: {
     [action: string]: MessageHandler;
   };
 } = {
@@ -123,20 +122,13 @@ browser.tabs.onActivated.addListener(
 
 /**
  * Listen for incoming messages from content script and popup.
- *  - Content script returns found forms, check for autofill and populate search
- *    context: content_script
- *    action: scan
- *    data: forms
- *  - Tab iframe notifies that a form on the page should be filled
- *    context: iframe
- *    action: fill
- *    data: form, storedsafe object
  */
 browser.runtime.onMessage.addListener(
   messageListener(async (message, sender) => {
+    if (message.to !== Context.BACKGROUND) return;
     const logger = await getBackgroundLogger();
     logger.debug("Incoming message: %o", message);
-    const messageHandler = MESSAGE_HANDLERS[message.context]?.[message.action];
+    const messageHandler = MESSAGE_HANDLERS[message.from]?.[message.action];
     if (messageHandler) return messageHandler(message, sender);
   })
 );
@@ -189,7 +181,8 @@ async function onContentScriptConnect(
   if (!(await isOnline())) return;
   logger.debug("Start scan");
   return {
-    context,
+    from: Context.BACKGROUND,
+    to: Context.CONTENT_SCRIPT,
     action: "scan",
   };
 }
@@ -285,7 +278,8 @@ async function onSessionsChanged(
     if (!oldSessions.has(host)) {
       logger.info(`New session found for ${host}, updating session alarms...`);
       sendTabMessage({
-        context,
+        from: Context.BACKGROUND,
+        to: Context.CONTENT_SCRIPT,
         action: "scan",
         data: { hosts: [host] },
       });
@@ -590,7 +584,12 @@ async function fill(result: StoredSafeObject): Promise<any> {
   for (const field of result.fields) {
     values[field.name] = field.value ?? "";
   }
-  return sendTabMessage({ context, action: "fill", data: values });
+  return sendTabMessage({
+    from: Context.BACKGROUND,
+    to: Context.CONTENT_SCRIPT,
+    action: "fill",
+    data: values,
+  });
 }
 
 /**

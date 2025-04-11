@@ -47,7 +47,8 @@
 
   function fill() {
     sendMessage({
-      context: Context.POPUP,
+      from: Context.POPUP,
+      to: Context.BACKGROUND,
       action: "fill",
       data: result,
     });

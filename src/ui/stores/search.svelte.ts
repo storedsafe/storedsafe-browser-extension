@@ -15,8 +15,6 @@ export const SEARCH_DECRYPT_LOADING_ID = "search.remove";
 
 const logger = new Logger("instances");
 
-const context = Context.POPUP;
-
 class Search {
   isInitialized: boolean = $state(false);
   tabResults: StoredSafeObject[] = $state([]);
@@ -31,7 +29,8 @@ class Search {
     this.decrypt = this.decrypt.bind(this);
 
     const tabResultsPromise = sendMessage({
-      context,
+      from: Context.POPUP,
+      to: Context.BACKGROUND,
       action: "tabresults.get",
     });
     const sessionsPromise = sessions.subscribe(
