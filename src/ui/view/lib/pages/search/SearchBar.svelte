@@ -40,7 +40,8 @@
    **/
   function handleChange() {
     if (timerId) window.clearTimeout(timerId);
-    timerId = window.setTimeout(find, searchDelay);
+    if (needle === "") find();
+    else timerId = window.setTimeout(find, searchDelay);
   }
 
   /**
