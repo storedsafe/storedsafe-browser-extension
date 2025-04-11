@@ -1,8 +1,9 @@
 import * as psl from "psl";
-import { vault } from "../../global/api";
-import { Logger } from "../../global/logger";
-import { sessions } from "../../global/storage";
+import { vault } from "@/global/api";
+import { Logger } from "@/global/logger";
+import { sessions } from "@/global/storage";
 import type { FormType } from "@/content_script/tasks/scanner";
+import { StoredSafeInvalidTokenError } from "@/global/errors";
 
 const logger = new Logger("autosearch");
 
@@ -185,6 +186,8 @@ function filterOtherSubdomain(results: StoredSafeObject[], url: string) {
  * depending on how well they match the current tab URL.
  *
  * Will ignore StoredSafe fields with emails containing the domain in them.
+ * 
+ * TODO: Filter searches based on form types
  *
  * @param url The URL of the current tab.
  * @param formTypes The types of forms that were detected on the current tab.
@@ -213,7 +216,11 @@ export async function autoSearch(
     try {
       results = [...results, ...(await vault.search(host, token, needle))];
     } catch (error) {
-      logger.error("Unable to perform search on %s, %o", host, error);
+      if (error instanceof StoredSafeInvalidTokenError) {
+        logger.warn(`Session for ${host} is no longer valid, skipping search.`);
+      } else {
+        logger.error("Unable to perform search on %s, %o", host, error);
+      }
     }
   }
 
