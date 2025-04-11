@@ -44,6 +44,7 @@
  *            - [x] background script tells content script to fill with chosen storedsafe object
  *            - [x] content script scans for forms to fill, fills if found
  *     - [ ] save
+ *            - [ ] content script sets up listeners for submit events
  *            - [ ] user submits form
  *            - [ ] content script sends message to background script with login info
  *            - [ ] background script checks for active sessions and save/ignore preferences (if no save, do nothing)
