@@ -1,4 +1,4 @@
-<script lang="ts" context="module">
+<script lang="ts" module>
   import { Logger } from "@/global/logger";
   const logger = new Logger("debug");
 </script>
