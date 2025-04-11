@@ -346,17 +346,34 @@ async function onAlarmTriggered(alarm: browser.alarms.Alarm): Promise<void> {
   logger.debug(`Alarm triggered: ${alarm.name}`);
   const [name, ...parts] = splitAlarmName(alarm.name);
   switch (name) {
-    case ALARM_KEEP_ALIVE: {
-      const [host, token] = parts;
-      logger.info("Keepalive triggered for %s", host);
-      auth.check(host, token).catch(console.warn);
+    case ALARM_KEEP_ALIVE:
+      {
+        const [host, token] = parts;
+        const currentSessions = await sessions.get();
+        if (!(host in currentSessions)) {
+          // Clean up lingering alarms from unintended states
+          browser.alarms.clear(alarm.name);
+          logger.debug("Cleaning up lingering keepalive alarm.");
+        } else {
+          logger.info("Keepalive triggered for %s", host);
+          auth.check(host, token).catch(console.warn);
+        }
+      }
       break;
-    }
-    case ALARM_HARD_TIMEOUT: {
-      const [host, token] = parts;
-      logger.info(`Hard timeout, invalidating session for ${host}`);
-      auth.logout(host, token).catch(logger.warn);
-    }
+    case ALARM_HARD_TIMEOUT:
+      {
+        const [host, token] = parts;
+        const currentSessions = await sessions.get();
+        if (!(host in currentSessions)) {
+          // Clean up lingering alarms from unintended states
+          browser.alarms.clear(alarm.name);
+          logger.debug("Cleaning up lingering hard timeout alarm.");
+        } else {
+          logger.info(`Hard timeout, invalidating session for ${host}`);
+          auth.logout(host, token).catch(logger.warn);
+        }
+      }
+      break;
   }
 }
 
@@ -393,8 +410,8 @@ async function getSettings(): Promise<Map<string, Setting>> {
  */
 async function logoutAll(): Promise<void> {
   const logger = await getBackgroundLogger();
-  const current_sessions = await getSessions();
-  for (let [host, session] of current_sessions) {
+  const currentSessions = await getSessions();
+  for (let [host, session] of currentSessions) {
     auth.logout(host, session.token).catch(logger.warn);
   }
 }
