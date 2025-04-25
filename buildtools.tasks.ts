@@ -54,9 +54,9 @@ function makeViteConfig(platform: string): InlineConfig | InlineConfig[] {
         external: [/externals/, "psl"],
         output: {
           paths: {
-            'psl': '/externals/psl.mjs'
-          }
-        }
+            psl: "/externals/psl.mjs",
+          },
+        },
       },
       outDir: `${OUT_DIR}/${platform}`,
       sourcemap: opts.dev,
@@ -160,9 +160,7 @@ export function copyDepsChrome() {
   copyDependencies("chrome", inFiles);
 }
 export function copyDepsFirefox() {
-  const inFiles: string[] = [
-    "node_modules/psl/dist/psl.mjs",
-  ];
+  const inFiles: string[] = ["node_modules/psl/dist/psl.mjs"];
   copyDependencies("firefox", inFiles);
 }
 export const copyDeps = parallel(copyDepsChrome, copyDepsFirefox);
@@ -170,11 +168,11 @@ export const copyDeps = parallel(copyDepsChrome, copyDepsFirefox);
 /* Public files */
 export function copyPublicChrome() {
   const inFiles: string[] = ["public"];
-  copyPublicFiles("chrome", ["public"]);
+  copyPublicFiles("chrome", inFiles);
 }
 export function copyPublicFirefox() {
   const inFiles: string[] = ["public"];
-  copyPublicFiles("firefox", ["public"]);
+  copyPublicFiles("firefox", inFiles);
 }
 export const copyPublic = parallel(copyPublicChrome, copyPublicFirefox);
 
