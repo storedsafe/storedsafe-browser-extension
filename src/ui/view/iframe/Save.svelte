@@ -13,7 +13,7 @@
 
   import { vault } from "@/global/api";
   import { getMessage, LocalizedMessage } from "@/global/i18n";
-  import { isMessage, type Message } from "@/global/messages";
+  import { Context, sendMessage } from "@/global/messages";
   import {
     sessions,
     loading,
@@ -50,10 +50,17 @@
   let frame: HTMLElement;
   let height: number;
 
-  let port: browser.runtime.Port;
-
   function resize(height: number, width: number = 300) {
     onResize(height, width);
+  }
+
+  function close() {
+    sendMessage({
+      from: Context.SAVE,
+      to: Context.BACKGROUND,
+      action: "submitdata.delete",
+    });
+    onClose();
   }
 
   $effect(() => {
@@ -63,16 +70,13 @@
     }
   });
 
-  onMount(() => {
-    port = browser.runtime.connect({ name: "save" });
-    port.onMessage.addListener((message: object) => {
-      if (isMessage(message)) {
-        logger.debug("Message Received: %o", message);
-        if (message.to === "save" && message.action === "populate") {
-          data = { ...data, ...message.data };
-        }
-      }
+  onMount(async () => {
+    const submitData = await sendMessage({
+      from: Context.SAVE,
+      to: Context.BACKGROUND,
+      action: "submitdata.get",
     });
+    data = { ...data, ...submitData };
 
     // Ensure iframe gets resized (afterUpdate unreliable)
     for (let delay = 200; delay <= 1000; delay += 200) {
@@ -104,7 +108,7 @@
           getMessage(LocalizedMessage.ADD_SUCCESS),
           MessageType.INFO
         );
-        window.setTimeout(onClose, 1000);
+        window.setTimeout(close, 1000);
       },
     });
   }
@@ -115,7 +119,7 @@
         messages.add(error.message, MessageType.ERROR);
       },
       onSuccess() {
-        onClose();
+        close();
       },
     });
   }
@@ -160,7 +164,7 @@
             </button>
           {/if}
         </div>
-        <button type="button" class="danger" onclick={() => onClose()}>
+        <button type="button" class="danger" onclick={() => close()}>
           {getMessage(LocalizedMessage.IFRAME_CLOSE)}
         </button>
         {#if !edit}

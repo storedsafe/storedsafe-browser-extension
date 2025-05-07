@@ -8,14 +8,18 @@ import {
 import { Logger } from "../global/logger";
 import {
   FORM_FILL_TYPES,
+  FORM_SAVE_TYPES,
   getStrippedType,
   INPUT_FILL_TYPES,
+  InputType,
   scanner,
   type Form,
 } from "./tasks/scanner";
 import { onIframeMessage } from "./tasks/createIframe";
 
 let currentForms: Form[] = [];
+let submitListeners: Map<HTMLElement, [string, () => void]> = new Map();
+let isOriginalForms: boolean = true;
 
 Logger.Init().then(async () => {
   const logger = new Logger("content_script");
@@ -26,7 +30,9 @@ Logger.Init().then(async () => {
       logger.debug("Incoming message: %o", message);
       if (message.action === "scan") onScan(message);
       if (message.action === "fill") onFill(message);
-      if (message.action.startsWith("iframe")) onIframeMessage(message);
+      if (message.action.startsWith("iframe")) {
+        onIframeMessage(message);
+      }
     })
   );
 
@@ -39,6 +45,33 @@ Logger.Init().then(async () => {
     if (isMessage(res) && res.action == "scan") onScan(res);
   } catch (e) {
     logger.warn("No listeners for sendMessage %o", e);
+  }
+
+  let submitLock = false;
+  function onSubmit(form: Form) {
+    if (!submitLock) {
+      submitLock = true;
+
+      let data: Record<string, string> = {};
+      data["name"] = document.title.substring(0, 128);
+      data["url"] = document.location.origin + document.location.pathname;
+      for (const { element, type } of form.inputs) {
+        if (INPUT_FILL_TYPES.includes(type)) {
+          data[type] = (element as HTMLInputElement).value;
+        }
+      }
+
+      logger.debug("Submitted form: %o %o", form, data);
+
+      sendMessage({
+        from: Context.CONTENT_SCRIPT,
+        to: Context.BACKGROUND,
+        action: "submit",
+        data,
+      });
+
+      window.setTimeout(() => (submitLock = false), 100);
+    }
   }
 
   /**
@@ -59,8 +92,31 @@ Logger.Init().then(async () => {
           data: {
             formTypes,
             hosts: message.data?.hosts,
+            isOriginalForms,
           },
         });
+        // Stop from repeating events such as autofill when the page changes.
+        if (isOriginalForms) isOriginalForms = false;
+      }
+
+      for (const [element, [type, cb]] of submitListeners) {
+        element.removeEventListener(type, cb);
+      }
+
+      for (const form of forms) {
+        if (FORM_SAVE_TYPES.includes(form.type)) {
+          const cb = () => onSubmit(form);
+          if (form.root instanceof HTMLFormElement) {
+            submitListeners.set(form.root, ["submit", cb]);
+            form.root.addEventListener("submit", cb);
+          }
+          for (const { element, type } of form.inputs) {
+            if (type === InputType.SUBMIT) {
+              submitListeners.set(element, ["click", cb]);
+              element.addEventListener("click", cb);
+            }
+          }
+        }
       }
     });
   }

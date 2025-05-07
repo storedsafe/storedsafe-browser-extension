@@ -10,7 +10,7 @@
 
 <script lang="ts">
   import { getMessage, LocalizedMessage } from "@/global/i18n";
-  import { Context, isMessage, sendMessage } from "@/global/messages";
+  import { Context, sendMessage } from "@/global/messages";
   import {
     instances,
     loading,

@@ -10,7 +10,7 @@
  *      is slightly different from how the server timeout for the token is.
  *    - This serves as a way to counter the risks of the keepalive feature in the
  *      browser extension.
- *  - [ ] Pass information between popup/iframe and content script
+ *  - [x] Pass information between popup/iframe and content script
  *    - [x] on connection:
  *            - [x] content script connects to background script
  *            - [x] background script checks if user is logged in (if not, do nothing)
@@ -43,24 +43,31 @@
  *            - [x] background script saves item to preferences for current site
  *            - [x] background script tells content script to fill with chosen storedsafe object
  *            - [x] content script scans for forms to fill, fills if found
- *     - [ ] save
- *            - [ ] content script sets up listeners for submit events
- *            - [ ] user submits form
- *            - [ ] content script sends message to background script with login info
- *            - [ ] background script checks for active sessions and save/ignore preferences (if no save, do nothing)
+ *     - [x] save
+ *            - [x] content script sets up listeners for submit events
+ *            - [x] user submits form
+ *            - [x] content script sends message to background script with login info
+ *            - [x] background script checks for active sessions and save/ignore preferences (if no save, do nothing)
  *            REPEAT UNTIL TIMEOUT/COMPLETE (accounting for page redirects)
- *            - [ ] background script tells content script to open iframe
- *            - [ ] content script opens iframe for saving object
- *            - [ ] background script receives connection from iframe
- *            - [ ] background script sends save data to iframe
- *            - [ ] iframe displays results and waits for user selection
- *            - [ ] iframe saves object in storedsafe
+ *            - [x] background script tells content script to open iframe
+ *            - [x] content script opens iframe for saving object
+ *            - [x] background script receives connection from iframe
+ *            - [x] background script sends save data to iframe
+ *            - [x] iframe displays results and waits for user selection
+ *            - [x] iframe saves object in storedsafe
+ *            - [x] iframe notifies background it's done to cancel retries
  *  - [x] Set badge icon when user goes online/offline
  *  - [x] Set badge label when search results are found
  */
 import { auth, vault } from "@/global/api";
-import { getLogger } from "../global/logger";
-import { preferences, sessions, settings, tabresults } from "../global/storage";
+import { getLogger } from "@/global/logger";
+import {
+  ignore,
+  preferences,
+  sessions,
+  settings,
+  tabresults,
+} from "@/global/storage";
 import {
   ALARM_HARD_TIMEOUT,
   ALARM_KEEP_ALIVE,
@@ -77,9 +84,17 @@ import { autoSearch } from "./tasks/autoSearch";
 import { stripURL } from "@/global/storage/preferences";
 import { StoredSafeExtensionError } from "@/global/errors";
 import { getTabResults } from "@/global/storage/tabresults";
+import { SettingsFields } from "@/global/storage/settings";
+
+// Stop presenting save popup after this many seconds
+const MAX_SAVE_SESSION_DURATION = 15;
 
 const getBackgroundLogger = async () => getLogger("background");
 const tabResultsPromises: Map<number, Promise<StoredSafeObject[]>> = new Map();
+const saveSessions: Map<
+  number,
+  { startTime: number; data: Record<string, string> }
+> = new Map();
 
 type MessageHandler = (
   message: Message,
@@ -94,6 +109,7 @@ const MESSAGE_HANDLERS: {
   [Context.CONTENT_SCRIPT]: {
     connect: onContentScriptConnect,
     forms: onContentScriptForms,
+    submit: onContentScriptSubmit,
   },
   [Context.POPUP]: {
     "tabresults.get": onGetTabResults,
@@ -102,6 +118,10 @@ const MESSAGE_HANDLERS: {
   [Context.FILL]: {
     "tabresults.get": onGetTabResults,
     fill: onFill,
+  },
+  [Context.SAVE]: {
+    "submitdata.get": onGetSubmitData,
+    "submitdata.delete": onDeleteSubmitData,
   },
 };
 
@@ -200,8 +220,30 @@ async function onContentScriptConnect(
   if (!sender?.url) return;
   if (!sender?.tab?.id) return;
   if (!(await isOnline())) return;
-  logger.debug("Start scan");
-  updateTabResults(sender.tab);
+
+  // Perform auto search
+  await updateTabResults(sender.tab);
+
+  // Check if a submit event is currently going on and the page reloaded
+  const saveSession = saveSessions.get(sender.tab.id);
+  if (saveSession) {
+    // If the submit event started too long ago, stop trying
+    if (+new Date() - saveSession.startTime < MAX_SAVE_SESSION_DURATION * 1e3) {
+      saveSessions.delete(sender.tab.id);
+    }
+
+    // Tell content script to open an iframe for saving a login
+    else {
+      sendTabMessage({
+        from: Context.BACKGROUND,
+        to: Context.CONTENT_SCRIPT,
+        action: "iframe.create",
+        data: { id: "save" },
+      });
+    }
+  }
+
+  // Tell the content script to scan for forms
   return {
     from: Context.BACKGROUND,
     to: Context.CONTENT_SCRIPT,
@@ -227,7 +269,7 @@ async function onContentScriptForms(
 
   // If auto fill is enabled, fill forms immediately.
   const currentSettings = await settings.get();
-  if (currentSettings.get("autoFill")?.value) {
+  if (message.data.isOriginalForms && currentSettings.get(SettingsFields.AUTO_FILL)?.value) {
     // If search results are currently pending, wait for search to complete
     if (tabResultsPromises.get(sender.tab.id)) {
       await tabResultsPromises.get(sender.tab.id);
@@ -241,13 +283,63 @@ async function onContentScriptForms(
 }
 
 /**
+ * If the content script detects a submit event, see if the user should be
+ * prompted to save the
+ */
+async function onContentScriptSubmit(
+  message: Message,
+  sender: browser.runtime.MessageSender
+) {
+  if (!message.data) return;
+  if (!sender?.url || !sender?.tab?.id) return;
+  if (!(await isOnline())) return;
+  // If the user settings are set to not save logins, exit
+  const currentSettings = await settings.get();
+  if (!currentSettings.get(SettingsFields.OFFER_SAVE)) return;
+  // If the user settings are set to ignore this url, exit
+  const ignoreList = await ignore.get();
+  if (ignoreList.includes(sender.url)) return;
+  // If the submitted login already exists, exit
+  const tabResults = await updateTabResults(sender.tab);
+  if (matchingObjectExists(tabResults, message.data.url, message.data.username))
+    return;
+
+  // Open iframe to offer to save the login
+  sendTabMessage({
+    from: Context.BACKGROUND,
+    to: Context.CONTENT_SCRIPT,
+    action: "iframe.create",
+    data: { id: "save" },
+  });
+
+  // Register the submit event to still show the submit popup
+  // if the page reloads (may happen multiple times).
+  saveSessions.set(sender.tab.id, {
+    startTime: +new Date(),
+    data: message.data,
+  });
+}
+
+/**
  * Get cached search results related to the current tab from session storage.
  */
-async function onGetTabResults() {
+async function onGetTabResults(): Promise<StoredSafeObject[]> {
   if (!(await isOnline())) return [];
   const tabId = (await getActiveTab())?.id;
   if (!tabId) return [];
   return await tabresults.getTabResults(tabId);
+}
+
+async function onGetSubmitData(): Promise<Record<string, string>> {
+  if (!(await isOnline())) return {};
+  const tabId = (await getActiveTab())?.id;
+  if (!tabId) return {};
+  return saveSessions.get(tabId)?.data ?? {};
+}
+
+async function onDeleteSubmitData() {
+  const tabId = (await getActiveTab())?.id;
+  if (tabId) saveSessions.delete(tabId);
 }
 
 /**
@@ -273,9 +365,9 @@ async function onSettingsChanged(
 ) {
   for (const [key, setting] of newSettings) {
     if (setting.value === oldSettings.get(key)?.value) continue;
-    if (key === "idleMax") {
+    if (key === SettingsFields.IDLE_MAX) {
       onIdleMaxChanged(setting.value as number | undefined);
-    } else if (key === "maxTokenLife") {
+    } else if (key === SettingsFields.MAX_TOKEN_LIFE) {
       onMaxTokenLifeChanged(setting.value as number);
     }
   }
@@ -292,7 +384,7 @@ async function onSessionsChanged(
   oldSessions: Map<string, Session> = new Map()
 ) {
   const logger = await getBackgroundLogger();
-  const setting = (await getSettings()).get("maxTokenLife");
+  const setting = (await getSettings()).get(SettingsFields.MAX_TOKEN_LIFE);
   let maxTokenLifeHours = 0;
   if (setting) maxTokenLifeHours = setting.value as number;
 
@@ -680,13 +772,19 @@ async function quickFill() {
   });
 }
 
+/**
+ * Search the currently active StoredSafe hosts for results related
+ * to the current tab.
+ * @param tab The active tab
+ * @param searchHosts Optionally limit search to specific hosts (for new logins)
+ */
 async function updateTabResults(
   tab: browser.tabs.Tab,
   searchHosts: string[] | null = null
-): Promise<StoredSafeObject[] | undefined> {
+): Promise<StoredSafeObject[]> {
   const logger = await getBackgroundLogger();
   // Invalid tab for search, exit
-  if (!tab.id || !tab.url) return;
+  if (!tab.id || !tab.url) return [];
 
   // Store promise to indicate a search is in progress (used for auto fill)
   const promise = autoSearch(tab.url, searchHosts);
@@ -701,4 +799,44 @@ async function updateTabResults(
   // Update the extension badge to indicate found results
   setTabResultsCount(tab.id);
   return results;
+}
+
+/**
+ * Helper function to find out whether or not a StoredSafe object already
+ * exists with the provided values.
+ * @param tabResults Results from auto search, related to current tab.
+ * @param url Formatted URL of current tab.
+ * @param username Username in the form that started this flow.
+ * @returns true if matching results are found.
+ */
+export function matchingObjectExists(
+  tabResults: StoredSafeObject[],
+  url: string,
+  username: string
+) {
+  /**
+   * Check if there is an existing StoredSafe object matching the provided result.
+   * @param result Result currently being compared.
+   * @returns true if both username and URL match the result
+   */
+  function matchResult(result: StoredSafeObject): boolean {
+    let matchUsername = false;
+    let matchURL = false;
+    for (const field of result.fields) {
+      // Check for username matches
+      if (field.name === "username" && field.value === username) {
+        matchUsername = true;
+      }
+      // Check for URL matches
+      if (
+        (field.name === "url" || field.name === "host") &&
+        field.value?.split("?")[0] === url.split("?")[0]
+      ) {
+        matchURL = true;
+      }
+    }
+    return matchUsername && matchURL;
+  }
+
+  return tabResults.findIndex(matchResult) !== -1;
 }
