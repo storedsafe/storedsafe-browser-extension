@@ -202,7 +202,6 @@ function filterOtherSubdomain(results: StoredSafeObject[], url: string) {
  */
 export async function autoSearch(
   url: string,
-  formTypes: FormType[],
   hosts: string[] | null = null
 ): Promise<StoredSafeObject[]> {
   if (!url.match(/^http/)) return [];

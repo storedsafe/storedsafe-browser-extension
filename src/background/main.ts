@@ -73,13 +73,13 @@ import {
   sendTabMessage,
   type Message,
 } from "@/global/messages";
-import type { FormType } from "@/content_script/tasks/scanner";
 import { autoSearch } from "./tasks/autoSearch";
 import { stripURL } from "@/global/storage/preferences";
 import { StoredSafeExtensionError } from "@/global/errors";
 import { getTabResults } from "@/global/storage/tabresults";
 
 const getBackgroundLogger = async () => getLogger("background");
+const tabResultsPromises: Map<number, Promise<StoredSafeObject[]>> = new Map();
 
 type MessageHandler = (
   message: Message,
@@ -201,6 +201,7 @@ async function onContentScriptConnect(
   if (!sender?.tab?.id) return;
   if (!(await isOnline())) return;
   logger.debug("Start scan");
+  updateTabResults(sender.tab);
   return {
     from: Context.BACKGROUND,
     to: Context.CONTENT_SCRIPT,
@@ -223,18 +224,20 @@ async function onContentScriptForms(
   if (!sender?.url) return;
   if (!sender?.tab?.id) return;
   if (!(await isOnline())) return;
-  const logger = await getBackgroundLogger();
-  const formTypes: FormType[] = message.data?.formTypes;
-  const searchHosts: string[] | null = message.data?.hosts ?? null;
-  const tabId = sender.tab.id;
-  const results = await autoSearch(sender.url, formTypes, searchHosts);
-  const currentSettings = await settings.get();
-  logger.debug(`Found ${results.length} results for tab`);
-  await tabresults.add(tabId, results);
-  setTabResultsCount(tabId);
 
   // If auto fill is enabled, fill forms immediately.
-  if (currentSettings.get("autoFill")?.value) quickFill();
+  const currentSettings = await settings.get();
+  if (currentSettings.get("autoFill")?.value) {
+    // If search results are currently pending, wait for search to complete
+    if (tabResultsPromises.get(sender.tab.id)) {
+      await tabResultsPromises.get(sender.tab.id);
+    }
+
+    // Perform auto fill
+    const logger = await getBackgroundLogger();
+    logger.debug("Auto fill on %s", sender.tab.url);
+    quickFill();
+  }
 }
 
 /**
@@ -301,12 +304,8 @@ async function onSessionsChanged(
     isOnline = true; // at least one session exists
     if (!oldSessions.has(host)) {
       logger.info(`New session found for ${host}, updating session alarms...`);
-      sendTabMessage({
-        from: Context.BACKGROUND,
-        to: Context.CONTENT_SCRIPT,
-        action: "scan",
-        data: { hosts: [host] },
-      });
+      const activeTab = await getActiveTab();
+      if (activeTab) await updateTabResults(activeTab);
       setHardtimeoutAlarm(maxTokenLifeHours, host, session);
       setKeepAliveAlarm(host, session);
     }
@@ -679,4 +678,27 @@ async function quickFill() {
     action: "iframe.create",
     data: { id: "fill" },
   });
+}
+
+async function updateTabResults(
+  tab: browser.tabs.Tab,
+  searchHosts: string[] | null = null
+): Promise<StoredSafeObject[] | undefined> {
+  const logger = await getBackgroundLogger();
+  // Invalid tab for search, exit
+  if (!tab.id || !tab.url) return;
+
+  // Store promise to indicate a search is in progress (used for auto fill)
+  const promise = autoSearch(tab.url, searchHosts);
+  tabResultsPromises.set(tab.id, promise);
+
+  const results = await promise;
+  logger.debug(`Found ${results.length} results for tab`);
+  tabResultsPromises.delete(tab.id);
+
+  // Update tab results in the extension session storage
+  await tabresults.add(tab.id, results);
+  // Update the extension badge to indicate found results
+  setTabResultsCount(tab.id);
+  return results;
 }
