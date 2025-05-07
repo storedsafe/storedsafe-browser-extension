@@ -11,34 +11,40 @@ const logger = new Logger("autosearch");
  * Extract a search string from the url so that relevant results can be
  * searched for in StoredSafe.
  *
- * Uses special hardcoded case for two two-part TLDs.
- * For potential refactor in the future, take a look at https://github.com/lupomontero/psl
- *
  * Returns the original URL if no match was found.
  * @param url Full URL
  */
 export function urlToNeedle(urlString: string): string {
   const url = new URL(urlString);
-  // If it's not a valid global domain, return hostname.
-  // This includes for example IP-addresses and localhost.
-  if (!psl.isValid(url.hostname)) return url.hostname;
-
-  // Extract parts based on Mozilla's Public Suffix List
-  const parts = psl.parse(url.hostname);
-  if ("error" in parts) return url.hostname;
-
-  // Remove www from FQDN (TODO: Consider this behavior instead of removing all subdomains)
-  // if (parts.subdomain === "www" && parts.domain) {
-  //   return parts.domain;
-  // }
-
-  // Remove subdomain from FQDN
-  if (parts.subdomain && parts.domain) {
-    return parts.domain;
-  }
 
   // Default, return the whole FQDN
-  return url.hostname;
+  let hostname = url.hostname;
+
+  // If it's not a valid global domain, return hostname.
+  // This includes for example IP-addresses and localhost.
+  if (!psl.isValid(url.hostname)) hostname = url.hostname;
+  else {
+    // Extract parts based on Mozilla's Public Suffix List
+    const parts = psl.parse(url.hostname);
+    if ("error" in parts) {
+      hostname = url.hostname;
+    }
+
+    // Approach 1: Only remove www from FQDN
+    // else if (parts.subdomain === "www" && parts.domain) {
+    //   hostname = parts.domain;
+    // }
+
+    // Approach 2: Remove all subdomains from FQDN
+    // else if (parts.subdomain && parts.domain) {
+    //   hostname = parts.domain;
+    // }
+  }
+
+  // if (url.port) {
+  //   return `${hostname}:${url.port}`;
+  // }
+  return hostname;
 }
 
 interface URLParts extends Record<string, string> {
@@ -186,7 +192,7 @@ function filterOtherSubdomain(results: StoredSafeObject[], url: string) {
  * depending on how well they match the current tab URL.
  *
  * Will ignore StoredSafe fields with emails containing the domain in them.
- * 
+ *
  * TODO: Filter searches based on form types
  *
  * @param url The URL of the current tab.
