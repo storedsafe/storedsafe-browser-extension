@@ -42,7 +42,10 @@
 
   $effect(() => {
     untrack(() => router).setRoutes(routes);
-    untrack(() => router).goto(getDefaultPage(router.route));
+    const defaultPage = getDefaultPage(router.route);
+    if (router.route !== defaultPage) {
+      untrack(() => router).goto(defaultPage);
+    }
   });
 
   ////////////////////////////////////////////////////////////
@@ -60,6 +63,7 @@
     debug = false;
     router.goto(page);
   }
+  $inspect(router.route === Page.SEARCH);
 </script>
 
 <!--
