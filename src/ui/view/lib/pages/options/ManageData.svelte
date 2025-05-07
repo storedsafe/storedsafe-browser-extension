@@ -67,8 +67,8 @@
       title: "Sites",
       method: sites.clear,
       description: sites.data
-        .map(({ host, apikey, managed }) =>
-          managed ? "" : `${host}: apikey <b>${apikey}</b>`
+        .map(({ host, managed }) =>
+          managed ? "" : host
         )
         .filter((v) => v !== "")
         .join("<br>"),
