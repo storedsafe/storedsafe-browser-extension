@@ -10,7 +10,7 @@
 
 <script lang="ts">
   import { getMessage, LocalizedMessage } from "@/global/i18n";
-  import { isMessage } from "@/global/messages";
+  import { Context, isMessage, sendMessage } from "@/global/messages";
   import {
     instances,
     loading,
@@ -32,7 +32,6 @@
 
   let { onClose, onResize }: Props = $props();
 
-  // let url: string;
   let results: StoredSafeObject[] = $state([]);
 
   let frame: HTMLElement;
@@ -49,14 +48,11 @@
     }
   });
 
-  onMount(() => {
-    const port = browser.runtime.connect({ name: "fill" });
-    port.onMessage.addListener((message: object) => {
-      if (isMessage(message)) {
-        logger.debug("Message Received: %o", message);
-        results = message.data.results;
-        // url = message.data.url;
-      }
+  onMount(async () => {
+    results = await sendMessage({
+      from: Context.FILL,
+      to: Context.BACKGROUND,
+      action: "tabresults.get",
     });
 
     // Ensure iframe gets resized (afterUpdate unreliable)
@@ -100,17 +96,18 @@
         messages.add(error.message, MessageType.ERROR, Duration.LONG);
       },
       onSuccess() {
-        close();
+        onClose();
       },
     });
   }
 
   async function fill(result: StoredSafeObject): Promise<void> {
-    // browser.runtime.sendMessage({
-    //   context: "fill",
-    //   action: "fill",
-    //   data: result,
-    // });
+    sendMessage({
+      from: Context.FILL,
+      to: Context.BACKGROUND,
+      action: "fill",
+      data: result,
+    });
   }
 </script>
 
@@ -121,7 +118,7 @@
     <LoadingBar isLoading={loading.isLoading} />
     <ListView {items} {onSelect} />
     <div class="sticky-buttons">
-      <button type="button" class="danger" onclick={() => close()}
+      <button type="button" class="danger" onclick={() => onClose()}
         >{getMessage(LocalizedMessage.IFRAME_CLOSE)}</button
       >
     </div>

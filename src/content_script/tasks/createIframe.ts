@@ -76,29 +76,27 @@ export function createIframe(id: string, style: Record<string, string> = {}) {
     ...BASE_STYLE,
     ...(style ?? {}),
   });
-  iframe.src = browser.runtime.getURL("index.html") + `#${id}`;
+  iframe.src = browser.runtime.getURL("content_script.html") + `#${id}`;
 }
 
 export function onIframeMessage(message: Message) {
-  if (message.to === Context.IFRAME) {
-    switch (message.action) {
-      case "resize": {
-        const { id, width, height } = message.data;
-        const frame = getFrame(id);
-        if (height !== undefined) frame.style.setProperty("height", height);
-        if (width !== undefined) frame.style.setProperty("width", width);
-        break;
-      }
-      case "create": {
-        const { id, style } = message.data;
-        createIframe(id, style);
-        break;
-      }
-      case "close": {
-        const { id } = message.data;
-        closeFrame(id);
-        break;
-      }
+  switch (message.action) {
+    case "iframe.resize": {
+      const { id, width, height } = message.data;
+      const frame = getFrame(id);
+      if (height !== undefined) frame.style.setProperty("height", height);
+      if (width !== undefined) frame.style.setProperty("width", width);
+      break;
+    }
+    case "iframe.create": {
+      const { id, style } = message.data;
+      createIframe(id, style);
+      break;
+    }
+    case "iframe.close": {
+      const { id } = message.data;
+      closeFrame(id);
+      break;
     }
   }
 }

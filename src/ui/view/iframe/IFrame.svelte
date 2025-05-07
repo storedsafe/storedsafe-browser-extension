@@ -5,47 +5,65 @@
 </script>
 
 <script lang="ts">
-  import { sendMessage } from "@/global/messages";
+  import { Context, sendMessage } from "@/global/messages";
 
   import Fill from "./Fill.svelte";
   import Save from "./Save.svelte";
+  import {
+    ignoreURLs,
+    preferences,
+    sessions,
+    settings,
+    sites,
+    instances,
+  } from "@/ui/stores";
+
+  let isInitialized = $derived(
+    ignoreURLs.isInitialized &&
+      preferences.isInitialized &&
+      sessions.isInitialized &&
+      settings.isInitialized &&
+      sites.isInitialized &&
+      instances.isInitialized
+  );
 
   let { page }: Props = $props();
 
   function resize(height: number, width: number) {
-    // sendMessage({
-    //   context: "iframe",
-    //   action: "resize",
-    //   data: {
-    //     id: page,
-    //     height: `${height + 20}px`,
-    //     width: `${width + 20}px`,
-    //   },
-    // });
+    sendMessage({
+      from: Context.IFRAME,
+      to: Context.CONTENT_SCRIPT,
+      action: "iframe.resize",
+      data: {
+        id: page,
+        height: `${height + 20}px`,
+        width: `${width + 20}px`,
+      },
+    });
   }
 
-  function close(port?: browser.runtime.Port) {
-    // sendMessage(
-    //   {
-    //     context: "iframe",
-    //     action: "close",
-    //     data: {
-    //       id: page,
-    //     },
-    //   },
-    //   port
-    // );
+  function close() {
+    sendMessage({
+      from: Context.IFRAME,
+      to: Context.CONTENT_SCRIPT,
+      action: "iframe.close",
+      data: {
+        id: page,
+      },
+    });
   }
 </script>
 
 <div class="iframe">
-  <section class="container">
-    {#if page === "save"}
-      <Save onResize={resize} onClose={close} />
-    {:else if page === "fill"}
-      <Fill onResize={resize} onClose={close} />
-    {/if}
-  </section>
+  {#if isInitialized}
+    <section class="container">
+      {#if page === "save"}
+        <Save onResize={resize} onClose={close} />
+      {:else if page === "fill"}
+        <Fill onResize={resize} onClose={close} />
+      {/if}
+    </section>
+  {/if}
 </div>
 
 <style>

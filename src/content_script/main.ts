@@ -13,6 +13,7 @@ import {
   scanner,
   type Form,
 } from "./tasks/scanner";
+import { onIframeMessage } from "./tasks/createIframe";
 
 let currentForms: Form[] = [];
 
@@ -25,6 +26,7 @@ Logger.Init().then(async () => {
       logger.debug("Incoming message: %o", message);
       if (message.action === "scan") onScan(message);
       if (message.action === "fill") onFill(message);
+      if (message.action.startsWith("iframe")) onIframeMessage(message);
     })
   );
 

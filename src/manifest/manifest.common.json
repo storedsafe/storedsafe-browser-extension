@@ -8,7 +8,7 @@
     "48": "assets/icon_48.png",
     "96": "assets/icon_96.png"
   },
-  "permissions": ["storage", "idle", "activeTab", "alarms"],
+  "permissions": ["storage", "idle", "activeTab", "tabs", "alarms"],
   "action": {
     "default_title": "StoredSafe",
     "default_popup": "popup.html",
@@ -16,5 +16,11 @@
       "48": "assets/icon-inactive_48.png",
       "96": "assets/icon-inactive_96.png"
     }
-  }
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["content_script.html"],
+      "matches": ["http://*/*", "https://*/*"]
+    }
+  ]
 }

@@ -11,34 +11,34 @@
  *    - This serves as a way to counter the risks of the keepalive feature in the
  *      browser extension.
  *  - [ ] Pass information between popup/iframe and content script
- *    - [ ] on connection:
+ *    - [x] on connection:
  *            - [x] content script connects to background script
  *            - [x] background script checks if user is logged in (if not, do nothing)
  *            - [x] background script tells content script to scan for forms
  *            - [x] content script returns found forms to background script (if no forms, do nothing)
  *            - [x] background script checks for relevant results in StoredSafe (if none, do nothing)
  *            - [x] results are stored in session storage (for fill and popup)
- *            - [ ] background script checks if autofill is enabled (if not, do nothing)
- *            - [ ] start fill
+ *            - [x] background script checks if autofill is enabled (if not, do nothing)
+ *            - [x] start fill
  *     - [ ] fill (hotkey/auto)
  *            AUTO
  *            - see on connection
  *            HOTKEY
- *            - [ ] background script detects hotkey pressed
- *            - [ ] background script checks if results exist for current tab (if not, do nothing)
+ *            - [x] background script detects hotkey pressed
+ *            - [x] background script checks if results exist for current tab (if not, do nothing)
  *            BOTH
- *            - [ ] if multiple results exist, check preferences
- *            - [ ] if no preferences are found, tell content script to open iframe for selection
+ *            - [x] if multiple results exist, check preferences
+ *            - [x] if no preferences are found, tell content script to open iframe for selection
  *            SELECTION
- *            - [ ] content script receives message to open iframe
- *            - [ ] content script opens iframe for fill preferences
- *            - [ ] background script receives connection from iframe
- *            - [ ] background script sends suggested results to iframe
- *            - [ ] iframe displays results and waits for user selection
- *            - [ ] iframe sends selection to background script
- *            - [ ] background script saves item to preferences for current site
- *            - [ ] background script tells content script to fill form
- *     - [ ] fill (from popup)
+ *            - [x] content script receives message to open iframe
+ *            - [x] content script opens iframe for fill preferences
+ *            - [x] background script receives connection from iframe
+ *            - [x] background script sends suggested results to iframe
+ *            - [x] iframe displays results and waits for user selection
+ *            - [x] iframe sends selection to background script
+ *            - [x] background script saves item to preferences for current site
+ *            - [x] background script tells content script to fill form
+ *     - [x] fill (from popup)
  *            - [x] popup tells background script to fill with chosen storedsafe object
  *            - [x] background script saves item to preferences for current site
  *            - [x] background script tells content script to fill with chosen storedsafe object
@@ -77,6 +77,7 @@ import type { FormType } from "@/content_script/tasks/scanner";
 import { autoSearch } from "./tasks/autoSearch";
 import { stripURL } from "@/global/storage/preferences";
 import { StoredSafeExtensionError } from "@/global/errors";
+import { getTabResults } from "@/global/storage/tabresults";
 
 const getBackgroundLogger = async () => getLogger("background");
 
@@ -95,6 +96,10 @@ const MESSAGE_HANDLERS: {
     forms: onContentScriptForms,
   },
   [Context.POPUP]: {
+    "tabresults.get": onGetTabResults,
+    fill: onFill,
+  },
+  [Context.FILL]: {
     "tabresults.get": onGetTabResults,
     fill: onFill,
   },
@@ -125,8 +130,12 @@ browser.tabs.onActivated.addListener(
  */
 browser.runtime.onMessage.addListener(
   messageListener(async (message, sender) => {
-    if (message.to !== Context.BACKGROUND) return;
     const logger = await getBackgroundLogger();
+    if (message.to === Context.CONTENT_SCRIPT) {
+      logger.debug("Forwarding message to content script: %o", message);
+      return await sendTabMessage(message);
+    }
+    if (message.to !== Context.BACKGROUND) return;
     logger.debug("Incoming message: %o", message);
     const messageHandler = MESSAGE_HANDLERS[message.from]?.[message.action];
     if (messageHandler) return messageHandler(message, sender);
@@ -163,7 +172,19 @@ browser.storage.onChanged.addListener(
   sessions.onSessionsChanged(onSessionsChanged)
 );
 
+/**
+ * Listen for timed events such as automatic logout or keepalive.
+ */
 browser.alarms.onAlarm.addListener(onAlarmTriggered);
+
+/**
+ * Listen for user keyboard shortcuts.
+ */
+browser.commands.onCommand.addListener(async (command) => {
+  if (command === "fill") {
+    quickFill();
+  }
+});
 
 ////////////////////////////// MESSAGE HANDLERS //////////////////////////////
 
@@ -207,17 +228,17 @@ async function onContentScriptForms(
   const searchHosts: string[] | null = message.data?.hosts ?? null;
   const tabId = sender.tab.id;
   const results = await autoSearch(sender.url, formTypes, searchHosts);
+  const currentSettings = await settings.get();
   logger.debug(`Found ${results.length} results for tab`);
   await tabresults.add(tabId, results);
   setTabResultsCount(tabId);
+
+  // If auto fill is enabled, fill forms immediately.
+  if (currentSettings.get("autoFill")?.value) quickFill();
 }
 
 /**
- * If the content script finds any forms after scanning, perform a search
- * in StoredSafe for potentially related objects.
- *
- * These results will be put into the extension session storage where they can
- * be fetched by the popup to pre-populate the search window.
+ * Get cached search results related to the current tab from session storage.
  */
 async function onGetTabResults() {
   if (!(await isOnline())) return [];
@@ -226,6 +247,9 @@ async function onGetTabResults() {
   return await tabresults.getTabResults(tabId);
 }
 
+/**
+ * Send the selected result to the content script to fill any available forms.
+ */
 async function onFill(message: Message) {
   const logger = await getBackgroundLogger();
   if (!(await isOnline())) return;
@@ -607,4 +631,52 @@ async function getActiveTab(): Promise<browser.tabs.Tab | undefined> {
   if (await browser.permissions.contains({ origins: [tab.url] })) return tab;
   // No permissions on tab url
   return undefined;
+}
+
+/**
+ * Fill forms on the active tab based on related search results.
+ *
+ * If there are no search results, do nothing.
+ * If there is one search result, fill that result.
+ * If there are multiple results, fill the most recently used, or prompt the user.
+ */
+async function quickFill() {
+  const activeTab = await getActiveTab();
+
+  // Invalid tab for fill, exit
+  if (!activeTab?.id || !activeTab?.url) return;
+  const tabResults = await getTabResults(activeTab.id);
+
+  // No results for the current page, exit
+  if (tabResults.length === 0) return;
+
+  // If there is only one result, fill and exit
+  if (tabResults.length === 1) {
+    fill(tabResults[0]);
+    return;
+  }
+
+  // Check if the user has a last used object among the results for this page
+  // If yes, fill and exit
+  const autoFillPreference = (await preferences.get()).autoFill.get(
+    stripURL(activeTab.url)
+  );
+  if (autoFillPreference) {
+    const tabResult = tabResults.find(
+      ({ host, id }) =>
+        id === autoFillPreference.objectId && host === autoFillPreference.host
+    );
+    if (tabResult) {
+      fill(tabResult);
+      return;
+    }
+  }
+
+  // Open iframe to ask user to select a result
+  sendTabMessage({
+    from: Context.BACKGROUND,
+    to: Context.CONTENT_SCRIPT,
+    action: "iframe.create",
+    data: { id: "fill" },
+  });
 }

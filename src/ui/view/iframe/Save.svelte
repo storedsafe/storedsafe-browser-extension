@@ -68,7 +68,7 @@
     port.onMessage.addListener((message: object) => {
       if (isMessage(message)) {
         logger.debug("Message Received: %o", message);
-        if (message.context === "save" && message.action === "populate") {
+        if (message.to === "save" && message.action === "populate") {
           data = { ...data, ...message.data };
         }
       }
