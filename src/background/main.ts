@@ -20,7 +20,7 @@
  *            - [x] results are stored in session storage (for fill and popup)
  *            - [x] background script checks if autofill is enabled (if not, do nothing)
  *            - [x] start fill
- *     - [ ] fill (hotkey/auto)
+ *     - [x] fill (hotkey/auto)
  *            AUTO
  *            - see on connection
  *            HOTKEY

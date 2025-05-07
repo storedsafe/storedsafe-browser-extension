@@ -1,5 +1,8 @@
 import type { Component } from "svelte";
 import { messages } from "./messages.svelte";
+import { Logger } from "@/global/logger";
+
+const logger = new Logger("router");
 
 type RouteParams = Record<string, string>;
 
@@ -35,6 +38,7 @@ class Router {
       this.route = this.route.split("/").slice(0, -1).join("/") || "/";
     }
     this.route = route;
+    logger.debug("goto: ", this.route);
   }
 
   public get route() {
