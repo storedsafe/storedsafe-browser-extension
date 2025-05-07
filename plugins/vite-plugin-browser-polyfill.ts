@@ -18,7 +18,7 @@ export default function browserIncludeExternalPlugin(
             map: s.generateMap(),
           };
         }
-        if (id.includes("popup.html")) {
+        if (id.includes(".html")) {
           const moduleIndex = code.indexOf('<script type="module"');
           for (let importName of importNames) {
             s.prependLeft(moduleIndex, `<script src="${importName}"></script>\n`);
