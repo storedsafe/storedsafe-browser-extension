@@ -63,7 +63,6 @@
     debug = false;
     router.goto(page);
   }
-  $inspect(router.route === Page.SEARCH);
 </script>
 
 <!--
@@ -74,10 +73,11 @@
   <nav class="grid shadow">
     <DebugButton toggleDebug={() => (debug = !debug)} />
     {#if isOnline}
-      <SearchBar
-        autoFocus={router.route === Page.SEARCH}
-        onFocus={() => navigate(Page.SEARCH)}
-      />
+      {#if router.route === Page.SEARCH}
+        <SearchBar autoFocus={true} onFocus={() => navigate(Page.SEARCH)} />
+      {:else}
+        <SearchBar autoFocus={false} onFocus={() => navigate(Page.SEARCH)} />
+      {/if}
     {:else}
       <Logo />
     {/if}
