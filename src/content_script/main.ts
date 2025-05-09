@@ -82,9 +82,12 @@ Logger.Init().then(async () => {
   function onScan(message: Message) {
     scanner((forms) => {
       currentForms = forms;
-      if (forms.length > 0) {
-        logger.debug("Detected forms: %o", forms);
-        const formTypes = [...new Set(forms.map((form) => form.type))];
+      logger.debug("Detected forms: %o", forms);
+      const fillForms = forms.filter((form) =>
+        FORM_FILL_TYPES.includes(form.type)
+      );
+      if (fillForms.length > 0) {
+        const formTypes = [...new Set(fillForms.map((form) => form.type))];
         sendMessage({
           from: Context.CONTENT_SCRIPT,
           to: Context.BACKGROUND,
