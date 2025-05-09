@@ -3,9 +3,8 @@ import { getMessage, LocalizedMessage } from "./i18n";
 /**
  * Open a URL in the browser window.
  * @param url URL to visit.
- * // TODO: Real implementation?
  */
-export async function goto(url: string): Promise<void> {
+export async function openURL(url: string): Promise<void> {
   // Force external url to HTTPS if not defined
   if (!url.match(/^\w+:\/\/.*/)) url = `https://${url}`;
   window.open(url, url);

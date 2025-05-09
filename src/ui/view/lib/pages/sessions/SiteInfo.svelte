@@ -7,7 +7,7 @@
 
 <script lang="ts">
   import { getMessage, LocalizedMessage } from "@/global/i18n";
-  import { goto } from "@/global/utils";
+  import { openURL } from "@/global/utils";
   import {
     Duration,
     loading,
@@ -50,7 +50,7 @@
   {/if}
 </Card>
 <div class="sticky-buttons">
-  <button type="button" class="primary" onclick={() => goto(url)} title={url}
+  <button type="button" class="primary" onclick={() => openURL(url)} title={url}
     >{getMessage(LocalizedMessage.SESSIONS_GOTO, host)}</button
   >
   <button type="button" class="danger" onclick={logout}

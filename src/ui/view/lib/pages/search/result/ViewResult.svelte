@@ -89,7 +89,7 @@
     </button>
   {/if}
   {#each result.fields as field (field.name)}
-    <Field {field} decrypt={() => decryptField(field.name)} />
+    <Field {field} {result} decrypt={() => decryptField(field.name)} />
   {/each}
 </section>
 

@@ -4,23 +4,25 @@
     decrypt: () => Promise<string>;
     /* Field to be displayed. */
     field: StoredSafeField;
+    /* The StoredSafe object. */
+    result: StoredSafeObject;
   }
 </script>
 
 <script lang="ts">
   import { getMessage, LocalizedMessage } from "@/global/i18n";
-  import { copyText, goto } from "@/global/utils";
+  import { copyText, openURL } from "@/global/utils";
   import { loading } from "@/ui/stores";
 
   import Card from "@/ui/view/lib/layout/Card.svelte";
   import Encrypted from "./Encrypted.svelte";
   import Password from "./Password.svelte";
+  import { Context, sendMessage } from "@/global/messages";
 
-  let { decrypt, field }: Props = $props();
+  let { decrypt, result, field }: Props = $props();
 
   let show: boolean = $state(false);
   let large: boolean = $state(false);
-  let value = field.value;
 
   /**
    * Toggle show state of field.
@@ -52,6 +54,23 @@
       promise.then(async (value) => await exec(value))
     );
   }
+
+  /**
+   * Open the url and fill login forms automatically when the page loads.
+   * @param url
+   */
+  async function login(url: string) {
+    await sendMessage({
+      from: Context.POPUP,
+      to: Context.BACKGROUND,
+      action: "fill.pending",
+      data: {
+        url: url,
+        result,
+      },
+    });
+    await openURL(field.value ?? "#");
+  }
 </script>
 
 <Card>
@@ -76,8 +95,8 @@
         {/if}
       {/if}
     {/if}
-    {#if field.name === "url" || field.name === "host"}
-      <button class="warning" onclick={() => goto(field.value ?? "#")}>
+    {#if (field.name === "url" || field.name === "host") && field.value}
+      <button class="warning" onclick={() => login(field.value ?? "#")}>
         {getMessage(LocalizedMessage.RESULT_LOGIN)}
       </button>
     {/if}
