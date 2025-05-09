@@ -754,7 +754,7 @@ async function getActiveTab(): Promise<browser.tabs.Tab | undefined> {
   });
   if (activeTabs.length <= 0) return undefined;
   const tab = activeTabs[0];
-  if (!tab.id || !tab.url) return undefined;
+  if (!tab.id || !tab.url || !tab.url.match(/https?:\/\//)) return undefined;
   if (await browser.permissions.contains({ origins: [tab.url] })) return tab;
   // No permissions on tab url
   return undefined;
