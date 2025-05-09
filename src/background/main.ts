@@ -136,8 +136,16 @@ getBackgroundLogger().then((logger) => {
 // These functions will only apply the newValues field,
 // and the 2nd parameter will default to the empty version.
 // This way everything will be detected as a change.
-getSettings().then(onSettingsChanged);
-getSessions().then(onSessionsChanged);
+getSettings()
+  .then(onSettingsChanged)
+  .catch(async (e) =>
+    (await getBackgroundLogger()).error("Get settings error: %o", e)
+  );
+getSessions()
+  .then(onSessionsChanged)
+  .catch(async (e) =>
+    (await getBackgroundLogger()).error("Get sessions error: %o", e)
+  );
 
 ////////////////////////////// EVENT HANDLERS //////////////////////////////
 
