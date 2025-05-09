@@ -18,34 +18,33 @@
   import Checkbox from "@/ui/view/lib/layout/Checkbox.svelte";
 
   const {
-    site
+    site,
   }: {
-    site: Site
-  } = $props()
+    site: Site;
+  } = $props();
 
   const loginMessages = new Messages();
 
-  let sitesPreferences = preferences.data.sites ?? new Map()
-  let loginType: LoginType = $state(sitesPreferences.get(site.host)?.loginType ?? "totp");
-  let username: string = $state(sitesPreferences.get(site.host)?.username ?? "");
+  let sitesPreferences = preferences.data.sites ?? new Map();
+  let loginType: LoginType = $state(
+    sitesPreferences.get(site.host)?.loginType ?? "totp"
+  );
+  let username: string = $state(
+    sitesPreferences.get(site.host)?.username ?? ""
+  );
   let passphrase: string = $state("");
   let otp: string = $state("");
-  let keys: string = $state("");
   let remember: boolean = $state(!!sitesPreferences.get(site.host)?.username);
-
-  $effect(() => {
-    keys = passphrase
-  })
 
   let isValidated = $derived.by(() => {
     if (loginType === "totp") {
-      return username.length > 0 && passphrase.length > 0 && otp.length > 0
+      return username.length > 0 && passphrase.length > 0 && otp.length > 0;
     }
     if (loginType === "yubikey") {
-      return username.length > 0 && keys.length > 44 // (keys = passphrase + yubico otp)
+      return username.length > 0 && passphrase.length > 0 && otp.length === 44;
     }
-    return false
-  })
+    return false;
+  });
 
   function handleLogin(e: SubmitEvent) {
     e.preventDefault();
@@ -58,12 +57,7 @@
     if (loginType === "totp") {
       promise = sessions.loginTotp(site, username, passphrase, otp);
     } else if (loginType === "yubikey") {
-      promise = sessions.loginYubikey(
-        site,
-        username,
-        keys.slice(0, -44),
-        keys.slice(-44)
-      );
+      promise = sessions.loginYubikey(site, username, passphrase, otp);
     } else {
       promise = Promise.reject(
         new StoredSafeExtensionError(`Invalid login type: ${loginType}`)
@@ -137,13 +131,23 @@
         <input id="otp" autocomplete="off" bind:value={otp} required />
       </label>
     {:else if loginType == "yubikey"}
-      <label for="keys">
-        {getMessage(LocalizedMessage.SESSIONS_KEYS)}
+      <label for="passphrase">
+        {getMessage(LocalizedMessage.SESSIONS_PASSPHRASE)}
         <input
           type="password"
-          id="keys"
+          id="passphrase"
           autocomplete="current-password"
-          bind:value={keys}
+          bind:value={passphrase}
+          required
+        />
+      </label>
+      <label for="otp">
+        {getMessage(LocalizedMessage.SESSIONS_OTP)}
+        <input
+          type="password"
+          id="otp"
+          autocomplete="off"
+          bind:value={otp}
           required
         />
       </label>
