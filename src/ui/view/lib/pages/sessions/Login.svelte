@@ -49,6 +49,11 @@
   function handleLogin(e: SubmitEvent) {
     e.preventDefault();
 
+    // Update username selection
+    preferences.setSitePreferences(site.host, {
+      username: remember ? username : "",
+    });
+
     // Clear old messages since they're related to previous login attempt
     loginMessages.clear();
 
@@ -66,25 +71,18 @@
 
     // Wait for result
     loading.add(SESSIONS_LOGIN_LOADING_ID, promise, {
-      onSuccess() {
-        // Update preferences to default to current site on successful login
-        loading.add(
-          PREFERENCES_SET_SITE_LOADING_ID,
-          preferences.setSitePreferences(site.host, {
-            username: remember ? username : "",
-            loginType,
-          }),
-          {
-            onError(error) {
-              messages.add(error.message, MessageType.ERROR);
-            },
-          }
-        );
-      },
       onError(error) {
         loginMessages.add(error.message, MessageType.ERROR);
       },
     });
+  }
+
+  // Clear otp after login type changes
+  function onLoginTypeChanged() {
+    otp = "";
+
+    // Update preferred login type
+    preferences.setSitePreferences(site.host, { loginType });
   }
 </script>
 
@@ -96,7 +94,11 @@
   <Card>
     <label for="loginType">
       {getMessage(LocalizedMessage.SESSIONS_LOGIN_TYPE)}
-      <select id="loginType" bind:value={loginType}>
+      <select
+        id="loginType"
+        bind:value={loginType}
+        onchange={() => onLoginTypeChanged()}
+      >
         <option value={"totp"}>
           {getMessage(LocalizedMessage.SESSIONS_LOGIN_TYPE_TOTP)}
         </option>

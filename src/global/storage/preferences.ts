@@ -1,3 +1,4 @@
+import { LoginType } from "storedsafe";
 import {
   StoredSafeClearAddPreferencesError,
   StoredSafeClearAutoFillPreferencesError,
@@ -165,7 +166,6 @@ export async function clearAddPreferences() {
 
 /**
  * Update preferences for `host`.
- * Will overwrite any previous site preferences for `host`.
  * @param host StoredSafe host name.
  * @param sitePreferences New preferences associated with `host`.
  * @throws {StoredSafeGetPreferencesError}
@@ -173,11 +173,15 @@ export async function clearAddPreferences() {
  */
 export async function setSitePreferences(
   host: string,
-  sitePreferences: SitePreferences
+  sitePreferences: Partial<SitePreferences>
 ) {
   try {
     const { sites, ...preferences } = await get();
-    sites.set(host, sitePreferences);
+    sites.set(host, {
+      ...{ loginType: LoginType.TOTP, username: "" }, // Default values
+      ...(sites.get(host) ?? {}), // Current values
+      ...sitePreferences, // New values
+    });
     await set({ ...preferences, sites });
   } catch (error) {
     if (error instanceof StoredSafeGetPreferencesError) throw error;
