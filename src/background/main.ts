@@ -204,7 +204,8 @@ browser.alarms.onAlarm.addListener(onAlarmTriggered);
  */
 browser.commands.onCommand.addListener(async (command) => {
   if (command === "fill") {
-    quickFill(await getActiveTab());
+    const activeTab = await getActiveTab();
+    quickFill(activeTab, activeTab?.url);
   }
 });
 
@@ -224,7 +225,7 @@ async function onContentScriptConnect(
   if (!(await isOnline())) return;
 
   // Perform auto search
-  await updateTabResults(sender.tab);
+  await updateTabResults(sender.tab, sender.url);
 
   // Check if a submit event is currently going on and the page reloaded
   const saveSession = saveSessions.get(sender.tab.id);
@@ -280,7 +281,7 @@ async function onContentScriptForms(
     // If the user clicked the login button from a result in the popup, automatically fill the page
     if (pendingFill && stripURL(tabURL) === stripURL(pendingFill.url)) {
       logger.debug("Performing pending fill on %s", tabURL);
-      fill(sender.tab, pendingFill.result);
+      fill(sender.tab, sender.url, pendingFill.result);
     }
 
     // If auto fill is enabled, fill forms immediately
@@ -290,7 +291,7 @@ async function onContentScriptForms(
         await tabResultsPromises.get(tabID);
       }
       logger.debug("Auto fill on %s", tabURL);
-      quickFill(sender.tab);
+      quickFill(sender.tab, sender.url);
     }
 
     // Clear pending fill once the site has loaded
@@ -316,7 +317,7 @@ async function onContentScriptSubmit(
   const ignoreList = await ignore.get();
   if (ignoreList.includes(sender.url)) return;
   // If the submitted login already exists, exit
-  const tabResults = await updateTabResults(sender.tab);
+  const tabResults = await updateTabResults(sender.tab, sender.url);
   if (matchingObjectExists(tabResults, message.data.url, message.data.username))
     return;
 
@@ -368,7 +369,8 @@ async function onFill(message: Message) {
     logger.warn("Requested fill without any data.");
     return;
   }
-  fill(await getActiveTab(), message.data);
+  const activeTab = await getActiveTab();
+  fill(activeTab, activeTab?.url, message.data);
 }
 
 /**
@@ -428,7 +430,7 @@ async function onSessionsChanged(
     if (!oldSessions.has(host)) {
       logger.info(`New session found for ${host}, updating session alarms...`);
       const activeTab = await getActiveTab();
-      if (activeTab) await updateTabResults(activeTab);
+      if (activeTab) await updateTabResults(activeTab, activeTab.url);
       setHardtimeoutAlarm(maxTokenLifeHours, host, session);
       setKeepAliveAlarm(host, session);
     }
@@ -715,14 +717,15 @@ async function getDecryptedObject(result: StoredSafeObject) {
  */
 async function fill(
   tab: browser.tabs.Tab | undefined,
+  url: string | undefined,
   result: StoredSafeObject
 ): Promise<any> {
   const logger = await getBackgroundLogger();
-  if (!tab || !tab.url) {
+  if (!tab || !url) {
     logger.warn("Trying to fill forms on invalid tab.");
     return;
   }
-  const url = stripURL(tab.url);
+  url = stripURL(url);
   await preferences.setAutoFillPreferences(url, {
     host: result.host,
     objectId: result.id,
@@ -764,9 +767,12 @@ async function getActiveTab(): Promise<browser.tabs.Tab | undefined> {
  * If there is one search result, fill that result.
  * If there are multiple results, fill the most recently used, or prompt the user.
  */
-async function quickFill(tab: browser.tabs.Tab | undefined) {
+async function quickFill(
+  tab: browser.tabs.Tab | undefined,
+  url: string | undefined
+) {
   // Invalid tab for fill, exit
-  if (!tab?.id || !tab?.url) return;
+  if (!tab?.id || !url) return;
   const tabResults = await getTabResults(tab.id);
 
   // No results for the current page, exit
@@ -774,14 +780,14 @@ async function quickFill(tab: browser.tabs.Tab | undefined) {
 
   // If there is only one result, fill and exit
   if (tabResults.length === 1) {
-    fill(tab, tabResults[0]);
+    fill(tab, url, tabResults[0]);
     return;
   }
 
   // Check if the user has a last used object among the results for this page
   // If yes, fill and exit
   const autoFillPreference = (await preferences.get()).autoFill.get(
-    stripURL(tab.url)
+    stripURL(url)
   );
   if (autoFillPreference) {
     const tabResult = tabResults.find(
@@ -789,7 +795,7 @@ async function quickFill(tab: browser.tabs.Tab | undefined) {
         id === autoFillPreference.objectId && host === autoFillPreference.host
     );
     if (tabResult) {
-      fill(tab, tabResult);
+      fill(tab, url, tabResult);
       return;
     }
   }
@@ -810,15 +816,17 @@ async function quickFill(tab: browser.tabs.Tab | undefined) {
  * @param searchHosts Optionally limit search to specific hosts (for new logins)
  */
 async function updateTabResults(
-  tab: browser.tabs.Tab,
+  tab: browser.tabs.Tab | undefined,
+  url: string | undefined,
   searchHosts: string[] | null = null
 ): Promise<StoredSafeObject[]> {
   const logger = await getBackgroundLogger();
+  console.log(tab, url);
   // Invalid tab for search, exit
-  if (!tab.id || !tab.url) return [];
+  if (!tab?.id || !url) return [];
 
   // Store promise to indicate a search is in progress (used for auto fill)
-  const promise = autoSearch(tab.url, searchHosts);
+  const promise = autoSearch(url, searchHosts);
   tabResultsPromises.set(tab.id, promise);
 
   const results = await promise;
