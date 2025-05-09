@@ -130,7 +130,7 @@ const MESSAGE_HANDLERS: {
 ////////////////////////////// ON STARTUP //////////////////////////////
 
 getBackgroundLogger().then((logger) => {
-  logger.log("Background script loaded.");
+  logger.info("Background script loaded.");
 });
 
 // These functions will only apply the newValues field,
@@ -482,7 +482,7 @@ async function onMaxTokenLifeChanged(maxTokenLifeHours: number): Promise<void> {
   const logger = await getBackgroundLogger();
   const currentSessions = await getSessions();
 
-  logger.log("maxTokenLife changed, updating session alarms...");
+  logger.debug("maxTokenLife changed, updating session alarms...");
   for (let [host, session] of currentSessions) {
     setHardtimeoutAlarm(maxTokenLifeHours, host, session);
   }
@@ -624,7 +624,7 @@ async function clearKeepAliveAlarm(host: string, session: Session) {
  */
 async function clearHardTimeoutAlarm(host: string, session: Session) {
   const logger = await getBackgroundLogger();
-  logger.log(`Clearing hard timeout for ${host}.`);
+  logger.debug(`Clearing hard timeout for ${host}.`);
   browser.alarms.clear(genAlarmName(ALARM_HARD_TIMEOUT, host, session.token));
 }
 
@@ -829,7 +829,6 @@ async function updateTabResults(
   searchHosts: string[] | null = null
 ): Promise<StoredSafeObject[]> {
   const logger = await getBackgroundLogger();
-  console.log(tab, url);
   // Invalid tab for search, exit
   if (!tab?.id || !url) return [];
 

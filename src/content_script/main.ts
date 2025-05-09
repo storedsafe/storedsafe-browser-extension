@@ -23,7 +23,7 @@ let isOriginalForms: boolean = true;
 
 Logger.Init().then(async () => {
   const logger = new Logger("content_script");
-  logger.log("Content Script Loaded");
+  logger.info("Content Script Loaded");
 
   browser.runtime.onMessage.addListener(
     messageListener((message) => {
