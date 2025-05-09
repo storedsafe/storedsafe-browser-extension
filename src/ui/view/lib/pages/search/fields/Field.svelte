@@ -66,7 +66,7 @@
       action: "fill.pending",
       data: {
         url: url,
-        result,
+        result: $state.snapshot(result),
       },
     });
     await openURL(field.value ?? "#");
