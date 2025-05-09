@@ -15,7 +15,6 @@
     search,
     SEARCH_EDIT_LOADING_ID,
   } from "@/ui/stores";
-  import { followFocus } from "@/ui/view/use/followFocus";
   import Card from "@/ui/view/lib/layout/Card.svelte";
   import TemplateFields from "@/ui/view/lib/pages/add/TemplateFields.svelte";
 
@@ -48,7 +47,7 @@
   }
 </script>
 
-<form class="grid" use:followFocus onsubmit={editObject}>
+<form class="grid" onsubmit={editObject}>
   <Card>
     <TemplateFields
       host={result.host}

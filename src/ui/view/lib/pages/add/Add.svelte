@@ -28,7 +28,6 @@
   import SelectVault from "./SelectVault.svelte";
   import SelectTemplate from "./SelectTemplate.svelte";
   import TemplateFields from "./TemplateFields.svelte";
-  import { followFocus } from "@/ui/view/use/followFocus";
 
   const MANDATORY_FIELDS = ["parentid", "groupid", "templateid"];
   const EMPTY_STATE = { parentid: "0" };
@@ -86,7 +85,7 @@
 </script>
 
 <section>
-  <form class="grid" use:followFocus onsubmit={add}>
+  <form class="grid" onsubmit={add}>
     <Card>
       <SelectHost bind:host />
     </Card>

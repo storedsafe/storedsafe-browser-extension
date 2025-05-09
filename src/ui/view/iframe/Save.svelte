@@ -31,7 +31,6 @@
   import TemplateFields from "@/ui/view/lib/pages/add/TemplateFields.svelte";
   import QuickSave from "./QuickSave.svelte";
   import Logo from "@/ui/view/lib/layout/Logo.svelte";
-  import { followFocus } from "@/ui/view/use/followFocus";
 
   let { onResize, onClose }: Props = $props();
 
@@ -130,7 +129,7 @@
   <MessageViewer {messages} />
   <LoadingBar isLoading={loading.isLoading} />
   {#if !success}
-    <form class="grid" use:followFocus onsubmit={save}>
+    <form class="grid" onsubmit={save}>
       <Card>
         {#if !edit}
           <!-- Quick save -->
