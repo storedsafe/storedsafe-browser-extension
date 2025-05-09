@@ -7,6 +7,9 @@ import {
   StoredSafeNetworkError,
 } from "../errors";
 import * as sessions from "../storage/sessions";
+import { Logger } from "../logger";
+
+const logger = new Logger("auth");
 
 // TODO: Improved error handling
 // ^ fetch doesn't return errors with network status codes as the previous axios
@@ -62,6 +65,7 @@ export async function loginTotp(
     }
   } catch (error) {
     if (error instanceof StoredSafeBaseError) throw error;
+    logger.error("TOTP login error: %o", error);
     throw error;
   }
 }
@@ -92,6 +96,7 @@ export async function loginYubikey(
     }
   } catch (error) {
     if (error instanceof StoredSafeBaseError) throw error;
+    logger.error("Yubikey login error: %o", error);
     throw error;
   }
 }
@@ -120,6 +125,7 @@ export async function loginSmartcard(
     }
   } catch (error) {
     if (error instanceof StoredSafeBaseError) throw error;
+    logger.error("Smartcard login error: %o", error);
     throw error;
   }
 }
@@ -146,6 +152,7 @@ export async function check(host: string, token: string): Promise<void> {
     }
   } catch (error) {
     if (error instanceof StoredSafeBaseError) throw error;
+    logger.error("Token check error: %o", error);
     throw error;
   }
 }
@@ -166,6 +173,7 @@ export async function logout(host: string, token: string): Promise<void> {
     // Defer success actions to finally block
   } catch (error) {
     if (error instanceof StoredSafeBaseError) throw error;
+    logger.error("Logout error: %o", error);
     throw error;
   } finally {
     await afterLogout(host);
