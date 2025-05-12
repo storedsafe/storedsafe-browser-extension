@@ -1,4 +1,10 @@
 {
+  "1.0.0": [
+    "Upgraded to Manifest V3",
+    "Upgraded to Svelte 5",
+    "Fixed bugs and freezing issues with form scanning",
+    "Replaced build tools with more modern variants"
+  ],
   "0.6.11": [
     "Upgraded vulnurable dependencies"
   ],
