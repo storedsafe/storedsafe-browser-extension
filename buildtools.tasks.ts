@@ -6,7 +6,7 @@ import pkg from "./package.json" assert { type: "json" };
 import * as vite from "./buildtools/lib/vite";
 import { series, parallel } from "./buildtools/lib/buildtools";
 import { mergeAndCopyJsonFiles } from "./buildtools/lib/merge";
-import fileutils, { copy } from "./buildtools/lib/fileutils";
+import fileutils, { copy, zipDir } from "./buildtools/lib/fileutils";
 import { rm } from "./buildtools/lib/clean";
 
 import type { InlineConfig, PluginOption } from "vite";
@@ -15,6 +15,7 @@ import viteCustomLogging from "./plugins/vite-plugin-custom-logging";
 import merge from "lodash.merge";
 
 const OUT_DIR = path.join("dist", "build");
+const ZIP_DIR = path.join("dist", "zip");
 const BROWSER_POLYFILL_LIB = "/externals/browser-polyfill.min.js";
 const opts = global.buildtools?.opts;
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -186,15 +187,28 @@ export async function buildSvelteFirefox() {
   return vite.build(config);
 }
 
+/* Zip build output */
+export async function zipChrome() {
+  return zipDir(path.join(OUT_DIR, "chrome"), path.join(ZIP_DIR, "chrome.zip"));
+}
+export async function zipFirefox() {
+  return zipDir(
+    path.join(OUT_DIR, "firefox"),
+    path.join(ZIP_DIR, "firefox.zip")
+  );
+}
+
 /* Final builds */
 export const buildChrome = series(
   cleanChrome,
   buildSvelteChrome,
-  parallel(manifestChrome, copyDepsChrome)
+  parallel(manifestChrome, copyDepsChrome),
+  zipChrome
 );
 export const buildFirefox = series(
   cleanFirefox,
   buildSvelteFirefox,
-  parallel(manifestFirefox, copyDepsFirefox)
+  parallel(manifestFirefox, copyDepsFirefox),
+  zipFirefox
 );
 export const build = parallel(buildChrome, buildFirefox);

@@ -1,6 +1,7 @@
 import * as fs from "fs";
 import * as path from "path";
 import * as chokidar from "chokidar";
+import archiver from "archiver";
 import { Logger } from "./logger";
 
 const logger = new Logger("fileutils");
@@ -164,6 +165,20 @@ export function copy(sources: string[], outPath: string) {
   });
 }
 
+export function zipDir(source: string, dest: string) {
+  const archive = archiver("zip", { zlib: { level: 9 } });
+  const stream = fs.createWriteStream(dest);
+
+  return new Promise<void>((resolve, reject) => {
+    archive.directory(source, false);
+    archive.on("error", reject);
+    archive.pipe(stream);
+
+    stream.on("close", resolve);
+    archive.finalize();
+  });
+}
+
 export default {
   copyFile,
   writeFile,
@@ -177,4 +192,5 @@ export default {
   isFile,
   watch,
   copy,
+  zipDir,
 };
