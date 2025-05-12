@@ -1,16 +1,39 @@
+<script lang="ts" module>
+  export interface Props {
+    page: string;
+  }
+</script>
+
 <script lang="ts">
-  import { sendMessage } from "../../../global/messages";
+  import { Context, sendMessage } from "@/global/messages";
 
   import Fill from "./Fill.svelte";
   import Save from "./Save.svelte";
+  import {
+    ignoreURLs,
+    preferences,
+    sessions,
+    settings,
+    sites,
+    instances,
+  } from "@/ui/stores";
 
-  export let page: string;
+  let isInitialized = $derived(
+    ignoreURLs.isInitialized &&
+      preferences.isInitialized &&
+      sessions.isInitialized &&
+      settings.isInitialized &&
+      sites.isInitialized &&
+      instances.isInitialized
+  );
 
-  function resize(e: CustomEvent<{ height: string; width: string }>) {
-    const { height, width } = e.detail;
+  let { page }: Props = $props();
+
+  function resize(height: number, width: number) {
     sendMessage({
-      context: "iframe",
-      action: "resize",
+      from: Context.IFRAME,
+      to: Context.CONTENT_SCRIPT,
+      action: "iframe.resize",
       data: {
         id: page,
         height: `${height + 20}px`,
@@ -19,20 +42,29 @@
     });
   }
 
-  function close(e: CustomEvent<browser.runtime.Port>) {
-    const port = e.detail;
-    sendMessage(
-      {
-        context: "iframe",
-        action: "close",
-        data: {
-          id: page,
-        },
+  function close() {
+    sendMessage({
+      from: Context.IFRAME,
+      to: Context.CONTENT_SCRIPT,
+      action: "iframe.close",
+      data: {
+        id: page,
       },
-      port
-    );
+    });
   }
 </script>
+
+<div class="iframe">
+  {#if isInitialized}
+    <section class="container">
+      {#if page === "save"}
+        <Save onResize={resize} onClose={close} />
+      {:else if page === "fill"}
+        <Fill onResize={resize} onClose={close} />
+      {/if}
+    </section>
+  {/if}
+</div>
 
 <style>
   .iframe,
@@ -73,13 +105,3 @@
     }
   }
 </style>
-
-<div class="iframe">
-  <section class="container">
-    {#if page === 'save'}
-      <Save on:resize={resize} on:close={close} />
-    {:else if page === 'fill'}
-      <Fill on:resize={resize} on:close={close} />
-    {/if}
-  </section>
-</div>

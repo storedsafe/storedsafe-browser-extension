@@ -1,18 +1,18 @@
 <script lang="ts">
-  import { getMessage, LocalizedMessage } from "../../../../../global/i18n";
+  import { getMessage, LocalizedMessage } from "@/global/i18n";
 
-  import { Duration, loading, messages, MessageType } from "../../../../stores";
+  import { Duration, loading, messages, MessageType } from "@/ui/stores";
   import {
     sessions,
     settings,
     sites,
     preferences,
-    ignore,
-  } from "../../../../stores/browserstorage";
+    ignoreURLs,
+  } from "@/ui/stores/browserstorage";
 
-  import Card from "../../layout/Card.svelte";
-  import Checkbox from "../../layout/Checkbox.svelte";
-  import Dropdown from "../../layout/Dropdown.svelte";
+  import Card from "@/ui/view/lib/layout/Card.svelte";
+  import Checkbox from "@/ui/view/lib/layout/Checkbox.svelte";
+  import Dropdown from "@/ui/view/lib/layout/Dropdown.svelte";
   import RecursiveList from "./RecursiveList.svelte";
 
   interface DataSource {
@@ -22,112 +22,126 @@
     children?: Record<string, DataSource>;
   }
 
-  let dataSourceList: Record<string, DataSource>;
-  $: dataSourceList = {
-    all: {
+  let dataSourceList: Record<string, DataSource> = $derived.by(() => {
+    const newDataSourceList: Record<string, DataSource> = {};
+
+    newDataSourceList.all = {
       title: "All",
       method: () =>
         Promise.all([
           browser.storage.local.clear(),
           browser.storage.sync.clear(),
         ]),
+    };
+    newDataSourceList.all.children = {};
+
+    // Add sessions section
+    newDataSourceList.all.children.sessions = {
+      title: "Sessions",
+      method: () =>
+        Promise.all(
+          [...sessions.data].map(([host, session]) =>
+            sessions.logout(host, session.token)
+          )
+        ),
+      description:
+        sessions.data.size === 0
+          ? ""
+          : "<b>" + sessions.data.size + "</b> active sessions",
+    };
+
+    // Add settings section
+    newDataSourceList.all.children.settings = {
+      title: "Settings",
+      method: settings.clear,
+      description: [...settings.data]
+        .map(([key, { value, managed }]) =>
+          managed ? "" : `${key}: <b>${value}</b>`
+        )
+        .filter((v) => v !== "")
+        .join("<br/>"),
+    };
+
+    // Add sites section
+    newDataSourceList.all.children.sites = {
+      title: "Sites",
+      method: sites.clear,
+      description: sites.data
+        .map(({ host, managed }) =>
+          managed ? "" : host
+        )
+        .filter((v) => v !== "")
+        .join("<br>"),
+    };
+
+    // Add preferences section
+    newDataSourceList.all.children.preferences = {
+      title: "Preferences",
+      method: preferences.clear,
       children: {
-        sessions: {
-          title: "Sessions",
-          method: () =>
-            Promise.all(
-              [...$sessions].map(([host, session]) =>
-                sessions.logout(host, session.token)
-              )
-            ),
+        addPreferences: {
+          title: "Add Preferences",
+          method: preferences.clearAddPreferences,
           description:
-            $sessions.size === 0
-              ? ""
-              : "<b>" + $sessions.size + "</b> active sessions",
+            (preferences.data.add?.host
+              ? "Host preference: <b>" + preferences.data.add.host + "</b><br/>"
+              : "") +
+            (preferences.data.add?.vaults
+              ? Object.keys(preferences.data.add?.vaults)
+                  .map(
+                    (key) =>
+                      `${key}: Vault <b>` +
+                      preferences.data.add?.vaults[key] +
+                      "</b>"
+                  )
+                  .join("<br/>")
+              : ""),
         },
-        settings: {
-          title: "Settings",
-          method: settings.clear,
-          description: [...$settings]
-            .map(([key, { value, managed }]) =>
-              managed ? "" : key + `${key}: <b>${value}</b>`
+        sitePreferences: {
+          title: "Site Preferences",
+          method: preferences.clearSitePreferences,
+          description: [...(preferences.data.sites ?? [])]
+            .map(
+              ([key, { username, loginType }]) =>
+                `${key}: <b>${username}</b> <b>${loginType}</b>`
             )
-            .filter((v) => v !== "")
             .join("<br/>"),
         },
-        sites: {
-          title: "Sites",
-          method: sites.clear,
-          description: $sites
-            .map(({ host, apikey, managed }) =>
-              managed ? "" : `${host}: apikey <b>${apikey}</b>`
+        autoFillPreferences: {
+          title: "Auto Fill Preferences",
+          method: preferences.clearAutoFillPreferences,
+          description: [...(preferences.data.autoFill ?? [])]
+            .map(
+              ([key, { host, objectId }]) =>
+                `${host}: ${key} <b>${objectId}</b>`
             )
-            .filter((v) => v !== "")
-            .join("<br>"),
-        },
-        preferences: {
-          title: "Preferences",
-          method: preferences.clear,
-          children: {
-            addPreferences: {
-              title: "Add Preferences",
-              method: preferences.clearAddPreferences,
-              description:
-                ($preferences.add?.host
-                  ? "Host preference: <b>" + $preferences.add.host + "</b><br/>"
-                  : "") +
-                ($preferences.add?.vaults
-                  ? Object.keys($preferences.add?.vaults)
-                      .map(
-                        (key) =>
-                          `${key}: Vault <b>` +
-                          $preferences.add.vaults[key] +
-                          "</b>"
-                      )
-                      .join("<br/>")
-                  : ""),
-            },
-            sitePreferences: {
-              title: "Site Preferences",
-              method: preferences.clearSitePreferences,
-              description: [...$preferences.sites]
-                .map(
-                  ([key, { username, loginType }]) =>
-                    `${key}: <b>${username}</b> <b>${loginType}</b>`
-                )
-                .join("<br/>"),
-            },
-            autoFillPreferences: {
-              title: "Auto Fill Preferences",
-              method: preferences.clearAutoFillPreferences,
-              description: [...$preferences.autoFill]
-                .map(
-                  ([key, { host, objectId }]) =>
-                    `${host}: ${key} <b>${objectId}</b>`
-                )
-                .join("<br/>"),
-            },
-          },
-        },
-        ignore: {
-          title: "Ignore",
-          method: ignore.clear,
-          description:
-            $ignore.length === 0
-              ? ""
-              : "<b>" + $ignore.length + "</b> sites ignored",
+            .join("<br/>"),
         },
       },
-    },
-  };
-
-  let checked: Record<string, boolean> = {};
-
-  function onChange(e: Event, obj: Record<string, DataSource>) {
-    checked = {
-      ...checked,
-      ...getCascadeState((e.target as HTMLInputElement).checked, obj),
     };
+
+    // Add ignore section
+    newDataSourceList.all.children.ignore = {
+      title: "Ignore",
+      method: ignoreURLs.clear,
+      description:
+        ignoreURLs.data.length === 0
+          ? ""
+          : "<b>" + ignoreURLs.data.length + "</b> sites ignored",
+    };
+
+    return newDataSourceList;
+  });
+
+  let checked: Record<string, boolean> = $state({});
+
+  function onChange(e: Event, children?: Record<string, DataSource>) {
+    if (children) {
+      checked = {
+        ...checked,
+        ...getCascadeState((e.target as HTMLInputElement).checked, children),
+      };
+    }
     checked = {
       ...checked,
       ...getBubbledState(),
@@ -138,23 +152,22 @@
     obj: Record<string, DataSource> = dataSourceList
   ): Record<string, boolean> {
     let newChecked = {};
-    if (obj && Object.keys(obj).length > 0) {
-      Object.keys(obj).forEach((key) => {
-        const children = obj[key].children;
-        if (!!children && Object.keys(children).length > 0) {
-          const keyChecked =
-            Object.keys(children).reduce(
-              (acc, key) => checked[key] && acc,
-              true
-            ) ?? false;
-          newChecked = {
-            ...newChecked,
-            ...getBubbledState(children),
-            [key]: keyChecked,
-          };
-        }
-      });
-    }
+    // If we have any child objects
+    Object.keys(obj).forEach((key) => {
+      const children = obj[key].children;
+      if (!!children && Object.keys(children).length > 0) {
+        const keyChecked =
+          Object.keys(children).reduce(
+            (acc, key) => checked[key] && acc,
+            true
+          ) ?? false;
+        newChecked = {
+          ...newChecked,
+          ...getBubbledState(children),
+          [key]: keyChecked,
+        };
+      }
+    });
     return newChecked;
   }
 
@@ -185,7 +198,11 @@
     checked = Object.fromEntries(Object.keys(obj).map((key) => [key, value]));
   }
 
-  function clearChecked(source: Record<string, DataSource> = dataSourceList) {
+  function clearChecked(
+    e: Event,
+    source: Record<string, DataSource> = dataSourceList
+  ) {
+    e.preventDefault();
     Object.keys(source).forEach((key) => {
       if (checked[key]) {
         loading.add(`Data.clear.${key}`, source[key].method(), {
@@ -203,7 +220,7 @@
         });
       } else {
         const children = source[key].children;
-        if (!!children) clearChecked(children);
+        if (!!children) clearChecked(e, children);
       }
     });
   }
@@ -211,30 +228,32 @@
 
 <section class="grid">
   <Card>
-    <RecursiveList items={dataSourceList} let:key let:item>
-      <Dropdown showing={false} enabled={!!item.description}>
-        <label slot="title" for={key}>
-          <Checkbox
-            id={key}
-            bind:checked={checked[key]}
-            on:change={(e) => onChange(e, item.children)}
-          />
-          <h2>{item.title}</h2>
-        </label>
-        <div slot="content">
-          {#if item.description}
-            <p class="description">{@html item.description}</p>
-          {/if}
-        </div>
-      </Dropdown>
+    <RecursiveList items={dataSourceList}>
+      {#snippet component(key: string, item: DataSource)}
+        <Dropdown showing={false} enabled={!!item.description}>
+          {#snippet title()}
+            <label for={key}>
+              <Checkbox
+                id={key}
+                bind:checked={checked[key]}
+                onchange={(e) => onChange(e, item.children)}
+              />
+              <h2>{item.title}</h2>
+            </label>
+          {/snippet}
+          {#snippet content()}
+            <div>
+              {#if item.description}
+                <p class="description">{@html item.description}</p>
+              {/if}
+            </div>
+          {/snippet}
+        </Dropdown>
+      {/snippet}
     </RecursiveList>
   </Card>
   <div class="sticky-buttons">
-    <button
-      type="button"
-      class="danger"
-      on:click|preventDefault={() => clearChecked()}
-    >
+    <button type="button" class="danger" onclick={(e) => clearChecked(e)}>
       {getMessage(LocalizedMessage.CLEAR_DATA)}
     </button>
   </div>

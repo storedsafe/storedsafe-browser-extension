@@ -1,12 +1,14 @@
-import StoredSafe, { StoredSafeObject } from 'storedsafe';
-import webext from 'web-ext'
-import { readFile, writeFile } from 'fs';
-import { homedir } from 'os';
-import { config, exit } from 'process';
-import * as path from 'path';
-import * as readline from 'readline';
+import { StoredSafe, StoredSafeObject } from "storedsafe";
+import webext from "web-ext";
+import { readFile, writeFile } from "fs";
+import { homedir } from "os";
+import { config, exit } from "process";
+import * as path from "path";
+import * as readline from "readline";
+import { fileURLToPath } from "url";
 
-const PUBLISH_CONFIG_PATH = path.join(__dirname, 'publish.json');
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const PUBLISH_CONFIG_PATH = path.join(__dirname, "publish.json");
 
 interface PublishConfig {
   rc: string;
@@ -20,47 +22,54 @@ interface FirefoxConfig {
   secret: string;
 }
 
-const args = process.argv.slice(2).map(x => x.toLowerCase());
+const args = process.argv.slice(2).map((x) => x.toLowerCase());
 publish(args);
 
 async function publish(args: string[] = []) {
-  const dryRun: boolean = args.indexOf('--dry-run') !== -1;
+  const dryRun: boolean = args.indexOf("--dry-run") !== -1;
   if (dryRun) {
-    console.log("Dry run, no changes performed.")
-    args.splice(args.indexOf('--dry-run'), 1);
+    console.log("Dry run, no changes performed.");
+    args.splice(args.indexOf("--dry-run"), 1);
   }
   const publishConfig = await get_config(args);
   let api: StoredSafe;
   try {
     api = await get_api(publishConfig.rc);
   } catch (err) {
-    console.log(err)
+    console.log(err);
     exit(1);
   }
-  if (args.length === 0 || args.indexOf('firefox') !== -1) {
-    const firefox_conf = await get_conf_object(api, publishConfig.firefox).then(parse_firefox_conf)
-    console.log("Signing firefox addon...")
-    if (!dryRun) sign_firefox(firefox_conf);
+  if (args.length === 0 || args.indexOf("firefox") !== -1) {
+    if (!publishConfig.firefox) {
+      console.error("Missing config for firefox.");
+    } else {
+      const firefox_conf = await get_conf_object(
+        api,
+        publishConfig.firefox
+      ).then(parse_firefox_conf);
+      console.log("Signing firefox addon...");
+      if (!dryRun) sign_firefox(firefox_conf);
+    }
   }
-  if (args.length === 0 || args.indexOf('chrome') !== -1) {
-    console.log("Chrome publish not yet implemented.")
+  if (args.length === 0 || args.indexOf("chrome") !== -1) {
+    console.log("Chrome publish not yet implemented.");
     // const chrome_conf = get_conf_object(api, publishConfig.chrome).then(parse_chrome_conf)
     // if (!dryRun) publish_chrome(chrome_conf);
   }
-  if (args.length === 0 || args.indexOf('edge') !== -1) {
-    console.log("Edge publish not yet implemented.")
+  if (args.length === 0 || args.indexOf("edge") !== -1) {
+    console.log("Edge publish not yet implemented.");
     // const edge_conf = get_conf_object(api, publishConfig.edge).then(parse_edge_conf)
     // if (!dryRun) publish_edge(chrome_conf);
   }
-  console.log("Done.")
+  console.log("Done.");
 }
 
 async function get_api(rcPath: string): Promise<StoredSafe> {
   const conf = await read_file_promise(rcPath).then(parse_rc);
   return new StoredSafe({
-    host: conf['mysite'],
-    apikey: conf['apikey'],
-    token: conf['token']
+    host: conf["mysite"],
+    apikey: conf["apikey"],
+    token: conf["token"],
   });
 }
 
@@ -69,17 +78,24 @@ async function get_api(rcPath: string): Promise<StoredSafe> {
  * @param id StoredSafe Object ID to fetch.
  * @returns StoredSafe Object data.
  */
-async function get_conf_object(api: StoredSafe, id: string): Promise<StoredSafeObject> {
+async function get_conf_object(
+  api: StoredSafe,
+  id: string
+): Promise<StoredSafeObject> {
   try {
-    const res = await api.decryptObject(id)
+    const res = await api.decryptObject(id);
     if (res.status === 200) {
-      return res.data['OBJECT'][0]
-    } else if (res.status === 403) {
-      throw new Error("Must be logged into StoredSafe")
+      const obj = res.data?.["OBJECT"]?.[0];
+      if (obj) return obj;
+      throw new Error(`No object found with ID ${id}`);
+    } else if (res.status === 401 || res.status === 403) {
+      throw new Error("Must be logged into StoredSafe");
     }
     throw new Error(res.status.toString());
   } catch (err) {
-    throw new Error(`Error fetching data for id: ${id} (${err?.status ?? err})`);
+    throw new Error(
+      `Error fetching data for id: ${id} (${err?.status ?? err})`
+    );
   }
 }
 
@@ -90,9 +106,9 @@ async function get_conf_object(api: StoredSafe, id: string): Promise<StoredSafeO
 function parse_rc(rcData: string): object {
   return rcData
     .trim()
-    .split('\n')
-    .map<string[]>((x: string) => x.split(':'))
-    .reduce((acc: object, x: string[]) => ({ ...acc, [x[0]]: x[1] }), {})
+    .split("\n")
+    .map<string[]>((x: string) => x.split(":"))
+    .reduce((acc: object, x: string[]) => ({ ...acc, [x[0]]: x[1] }), {});
 }
 
 /**
@@ -112,14 +128,14 @@ async function read_file_promise(path): Promise<string> {
 async function read_stdin_promise(question: string): Promise<string> {
   const rl = readline.createInterface({
     input: process.stdin,
-    output: process.stdout
+    output: process.stdout,
   });
 
   return new Promise((resolve, reject) => {
     rl.question(question, (answer) => {
       resolve(answer);
-    })
-  })
+    });
+  });
 }
 
 /**
@@ -127,7 +143,11 @@ async function read_stdin_promise(question: string): Promise<string> {
  * @returns Firefox API credentials
  */
 function parse_firefox_conf(data: StoredSafeObject): FirefoxConfig {
-  return JSON.parse(data.crypted['note'])
+  const noteData = data.crypted?.["note"];
+  if (noteData) {
+    return JSON.parse(noteData);
+  }
+  throw new Error("Data was not a valid, decrypted, StoredSafe object");
 }
 
 /**
@@ -135,13 +155,16 @@ function parse_firefox_conf(data: StoredSafeObject): FirefoxConfig {
  * @param conf Credentials required for signing with the Firefox API.
  */
 function sign_firefox(conf: FirefoxConfig) {
-  webext.cmd.sign({
-    sourceDir: path.join(__dirname, '/../dist/build/firefox/'),
-    artifactsDir: path.join(__dirname + '/../dist/pkg/'),
-    apiKey: conf.issuer,
-    apiSecret: conf.secret,
-    channel: 'unlisted',
-  }).catch(console.error)
+  webext.cmd
+    .sign({
+      sourceDir: path.join(__dirname, "/../dist/build/firefox/"),
+      artifactsDir: path.join(__dirname + "/../dist/pkg/"),
+      apiKey: conf.issuer,
+      apiSecret: conf.secret,
+      channel: "unlisted",
+      amoBaseUrl: "https://addons.mozilla.org/api/v5/",
+    })
+    .catch(console.error);
 }
 
 /**
@@ -152,29 +175,29 @@ function sign_firefox(conf: FirefoxConfig) {
  */
 async function get_config(args: string[] = []): Promise<PublishConfig> {
   // Set default rc file location
-  let conf: PublishConfig = { rc: homedir() + '/.storedsafe-client.rc' };
+  let conf: PublishConfig = { rc: homedir() + "/.storedsafe-client.rc" };
 
   try {
     // Try to read the config from file
     conf = {
       ...conf,
-      ...JSON.parse(await read_file_promise(PUBLISH_CONFIG_PATH))
+      ...JSON.parse(await read_file_promise(PUBLISH_CONFIG_PATH)),
     };
   } catch {
     // Set rc file path (empty for default)
     const question = `Location to rc file (${conf.rc}): `;
-    conf.rc = await read_stdin_promise(question) || conf.rc;
+    conf.rc = (await read_stdin_promise(question)) || conf.rc;
   }
   // Set StoredSafe Object IDs where the configs for each browser can be obtained
-  if ((args.length === 0 || args.indexOf('firefox') !== -1) && !conf.firefox) {
+  if ((args.length === 0 || args.indexOf("firefox") !== -1) && !conf.firefox) {
     const question = `StoredSafe Object ID for Firefox credentials: `;
     conf.firefox = await read_stdin_promise(question);
   }
-  if ((args.length === 0 || args.indexOf('chrome') !== -1) && !conf.chrome) {
+  if ((args.length === 0 || args.indexOf("chrome") !== -1) && !conf.chrome) {
     const question = `StoredSafe Object ID for Chrome credentials: `;
     conf.chrome = await read_stdin_promise(question);
   }
-  if ((args.length === 0 || args.indexOf('edge') !== -1) && !conf.edge) {
+  if ((args.length === 0 || args.indexOf("edge") !== -1) && !conf.edge) {
     const question = `StoredSafe Object ID for Edge credentials: `;
     conf.edge = await read_stdin_promise(question);
   }
@@ -185,6 +208,6 @@ async function get_config(args: string[] = []): Promise<PublishConfig> {
       console.log(err);
       exit(1);
     }
-  })
+  });
   return conf;
 }

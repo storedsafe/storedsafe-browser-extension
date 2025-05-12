@@ -1,37 +1,28 @@
 <script lang="ts">
-  import { createEventDispatcher } from "svelte";
-
-  import { getMessage, LocalizedMessage } from "../../../../../global/i18n";
+  import { getMessage, LocalizedMessage } from "@/global/i18n";
   import {
     errorIcon,
     optionsIcon,
     storedSafeIcon,
     warningIcon,
     // infoIcon,
-  } from "../../../../../global/icons";
-  import { messages } from "../../../../stores";
+  } from "@/global/icons";
+  import { messages } from "@/ui/stores";
 
-  import type { ListItem } from "../../menus/ListView";
+  import type { ListItem } from "@/ui/view/lib/menus/ListView";
 
-  import ListView from "../../menus/ListView.svelte";
+  import ListView from "@/ui/view/lib/menus/ListView.svelte";
   // import About from "./About.svelte";
   import GeneralSettings from "./GeneralSettings.svelte";
   import IgnoreList from "./IgnoreList.svelte";
   import ManageData from "./ManageData.svelte";
   import ManageSites from "./ManageSites.svelte";
   import OptionsItem from "./OptionsItem.svelte";
-
-  const dispatch = createEventDispatcher();
-
-  interface OptionsItemProps {
-    title: string;
-    subtitle: string;
-    icon: string;
-  }
+  import type { Props as OptionsItemProps } from "./OptionsItem.svelte";
 
   let items: ListItem<OptionsItemProps>[] = [
     {
-      component: OptionsItem,
+      Component: OptionsItem,
       name: "general",
       props: {
         title: getMessage(LocalizedMessage.OPTIONS_GENERAL_TITLE),
@@ -40,7 +31,7 @@
       },
     },
     {
-      component: OptionsItem,
+      Component: OptionsItem,
       name: "sites",
       props: {
         title: getMessage(LocalizedMessage.OPTIONS_SITES_TITLE),
@@ -49,7 +40,7 @@
       },
     },
     {
-      component: OptionsItem,
+      Component: OptionsItem,
       name: "ignore",
       props: {
         title: getMessage(LocalizedMessage.OPTIONS_IGNORE_TITLE),
@@ -58,7 +49,7 @@
       },
     },
     {
-      component: OptionsItem,
+      Component: OptionsItem,
       name: "data",
       props: {
         title: getMessage(LocalizedMessage.OPTIONS_DATA_TITLE),
@@ -77,13 +68,19 @@
     // },
   ];
 
-  let selected: string = null;
-  $: selectedItem = items.find(({ name }) => name === selected);
+  interface Props {
+    scrollTo?: (offset: number) => void;
+  }
 
-  function handleSelectOptions(e: CustomEvent<string>) {
+  let { scrollTo }: Props = $props();
+
+  let selected: string | null = $state(null);
+  let selectedItem = $derived(items.find(({ name }) => name === selected));
+
+  function handleSelectOptions(name: any) {
     messages.clear();
-    selected = e.detail;
-    if (selected !== null) dispatch("scrollTo", 0);
+    selected = name;
+    if (selected !== null) scrollTo?.(0);
   }
 
   const manifest = browser.runtime.getManifest();
@@ -91,7 +88,7 @@
 
 <section class="grid">
   <div class="list">
-    <ListView on:select={handleSelectOptions} {selected} {items} />
+    <ListView onSelect={handleSelectOptions} {selected} {items} />
   </div>
   {#if !!selectedItem}
     {#if selected === "general"}
@@ -102,7 +99,7 @@
       <IgnoreList />
     {:else if selected === "sites"}
       <ManageSites />
-    <!-- {:else if selected === "about"}
+      <!-- {:else if selected === "about"}
       <About /> -->
     {/if}
   {:else if !!manifest}

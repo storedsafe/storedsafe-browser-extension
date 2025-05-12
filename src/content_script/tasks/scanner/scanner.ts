@@ -1,138 +1,112 @@
-import { Logger, LogLevel } from '../../../global/logger'
+import { Logger, LogLevel } from "@/global/logger";
 import {
   FormType,
   FORM_FILL_TYPES,
   FORM_SAVE_TYPES,
-  InputType
-} from './constants'
-import { Form, getForms } from './forms'
-import { getInputs, INPUT_SELECTORS } from './inputs'
+  InputType,
+} from "./constants";
+import type { Form } from "./forms";
+import { getForms } from "./forms";
+import { getInputs, INPUT_SELECTORS } from "./inputs";
 
-const logger = new Logger('scanner', true)
+const logger = new Logger("scanner", true);
 
 function printForms(forms: Form[]) {
-  for (const [form, formType, inputs] of forms) {
-    if (formType === FormType.UNKNOWN) {
-      logger.debug('Unknown form %o', form)
-      continue
+  for (const { root, type, inputs } of forms) {
+    if (type === FormType.UNKNOWN) {
+      logger.debug("Unknown form %o", root);
+      continue;
     }
-    if (formType === FormType.HIDDEN) {
-      logger.debug('Hidden form %o', form)
-      continue
+    if (type === FormType.HIDDEN) {
+      logger.debug("Hidden form %o", root);
+      continue;
     }
-    logger.group(formType + " form", LogLevel.DEBUG)
-    logger.debug('%o', form)
-    for (const [input, inputType] of inputs) {
+    logger.group(type + " form", LogLevel.DEBUG);
+    logger.debug("%o", root);
+    for (const { element: inputElement, type: inputType } of inputs) {
       if (inputType === InputType.HIDDEN) {
       }
-      logger.debug('%s %o', inputType, input)
+      logger.debug("%s %o", inputType, inputElement);
     }
-    logger.groupEnd(LogLevel.DEBUG)
+    logger.groupEnd(LogLevel.DEBUG);
   }
 }
 
 function filterForms(forms: Form[]): Form[] {
-  return forms.filter(([_form, formType]) => (
-    FORM_FILL_TYPES.includes(formType) || FORM_SAVE_TYPES.includes(formType)
-  ))
+  return forms.filter(
+    ({ type }) =>
+      FORM_FILL_TYPES.includes(type) || FORM_SAVE_TYPES.includes(type)
+  );
 }
 
-export function scanner(cb: (forms: Form[]) => void) {
-  let forms: Form[] = []
+export function scanner(cb: (forms: Form[]) => void, oneshot = false) {
+  let forms: Form[] = [];
 
   function updateForms(newForms: Form[]) {
-    printForms(newForms)
-    forms = filterForms(newForms)
-    cb(forms)
+    printForms(newForms);
+    forms = filterForms(newForms);
+    cb(forms);
   }
-  updateForms(getForms(getInputs()))
+  updateForms(getForms(getInputs()));
 
-  const observer = new MutationObserver(mutations => {
-    const newForms: Map<HTMLElement, Form> = new Map()
-    const scanQueue: Set<HTMLElement> = new Set()
+  // Don't scan for updates to the page.
+  // Use oneshot if the scan is done after the page is loaded.
+  if (oneshot) return;
+
+  let rescanTimeoutId: null | number = null;
+  let firstTimeoutTimestamp: null | number;
+  const observer = new MutationObserver((mutations) => {
+    let shouldRescan = false;
     for (const mutation of mutations) {
+      if (shouldRescan) break;
       // Added nodes
-      for (const node of mutation.addedNodes) {
+      for (const node of [...mutation.addedNodes, ...mutation.removedNodes]) {
         if (node instanceof HTMLElement) {
           // Skip if node has no relevant elements
           if (
-            !(
-              INPUT_SELECTORS.includes(node.nodeName.toLowerCase()) ||
-              node.querySelector(INPUT_SELECTORS)
-            )
-          )
-            continue
-          let isChildNode = false
-          for (const form of forms) {
-            if (form[0].contains(node)) {
-              // If form contains node, rescan form
-              scanQueue.add(form[0])
-              isChildNode = true
-            } else if (!node.contains(form[0])) {
-              // If the form is unrelated to the change, leave it as is
-              newForms.set(form[0], form)
-            }
-          }
-          // Add the node to the scan queue if it's not part of another form or element
-          for (const element of scanQueue) {
-            if (node.contains(element)) {
-              // Delete any elements that contain this node
-              scanQueue.delete(element)
-            } else if (element.contains(node)) {
-              isChildNode = true
-            }
-          }
-          if (!isChildNode) scanQueue.add(node)
-        }
-      }
-
-      // Removed nodes
-      for (const node of mutation.removedNodes) {
-        if (node instanceof HTMLElement) {
-          for (const form of forms) {
-            if (form[0].contains(node)) {
-              // If the form contains the node, rescan then form
-              scanQueue.add(form[0])
-            } else if (!node.contains(form[0])) {
-              // If the form is not inside the removed node, leave it as is
-              newForms.set(form[0], form)
-            }
+            INPUT_SELECTORS.includes(node.nodeName.toLowerCase()) ||
+            node.querySelector(INPUT_SELECTORS) ||
+            node.parentElement === null
+          ) {
+            shouldRescan = true;
+            break;
           }
         }
       }
     }
-
-    console.log(scanQueue)
-    if (scanQueue.size > 0) {
-      logger.debug('Mutations observed, rescanning %d nodes', scanQueue.size)
-      let parent = scanQueue[0].parentElement;
-      let i = 0;
-      while (i < scanQueue.size && parent && parent !== document.body) {
-        if (parent.contains(scanQueue[i])) {
-          i++
-        } else if (scanQueue[i] === parent || scanQueue[i].contains(parent)) {
-          parent = scanQueue[i++].parentElement
-        } else {
-          parent = parent.parentElement
+    if (shouldRescan) {
+      // Only rescan after 500ms of no changes to avoid unnecessary scans
+      let now = +new Date();
+      if (rescanTimeoutId) {
+        if (!firstTimeoutTimestamp) {
+          firstTimeoutTimestamp = now;
         }
+        window.clearTimeout(rescanTimeoutId);
       }
-      const elementForms = getForms(getInputs(parent))
-      console.log("PARENT %o\nFORMS %o", parent, elementForms)
-      // for (const form of elementForms) {
-      //   newForms.set(form[0], form)
-      // }
-      // updateForms([...newForms.values()])
+      if (firstTimeoutTimestamp && now - firstTimeoutTimestamp > 5000) {
+        // Avoid getting caught in endless loop if the page keeps updating.
+        // Will update at least every 5th second.
+        logger.info("Rescanning forms (after 5 second timeout)...");
+        updateForms(getForms(getInputs()));
+        firstTimeoutTimestamp = null;
+      } else {
+        rescanTimeoutId = window.setTimeout(() => {
+          logger.info("Rescanning forms...");
+          updateForms(getForms(getInputs()));
+          firstTimeoutTimestamp = null;
+        }, 500);
+      }
     }
-  })
+  });
 
   observer.observe(document.body, {
     childList: true,
-    subtree: true
-  })
+    subtree: true,
+  });
 
   return {
     stop() {
-      observer.disconnect()
-    }
-  }
+      observer.disconnect();
+    },
+  };
 }

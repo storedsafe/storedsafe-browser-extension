@@ -1,9 +1,15 @@
+<script lang="ts" module>
+  export interface Props {
+    field: StoredSafeField;
+    value: any;
+    changed: boolean;
+  }
+</script>
+
 <script lang="ts">
   import { countries } from "./countries";
 
-  export let field: StoredSafeField;
-  export let value: any;
-  export let changed: boolean = false;
+  let { field, value = $bindable(), changed = false }: Props = $props();
 
   if (value === undefined && field.options_default === undefined) {
     if (field.type === "progress") {
@@ -13,7 +19,7 @@
     }
   }
 
-  const props = {
+  const commonProps = {
     id: field.name,
     required: field.required,
     placeholder: field.placeholder,
@@ -21,19 +27,19 @@
   };
 
   const textProps = {
-    ...props,
+    ...commonProps,
     type: "text",
     max: 128,
   };
 
   const textareaProps = {
-    ...props,
+    ...commonProps,
     max: 512,
   };
 </script>
 
 {#if field.type === "textarea"}
-  <textarea {...textareaProps} bind:value class:changed />
+  <textarea {...textareaProps} bind:value class:changed></textarea>
 {:else if field.type === "dropdown"}
   <select id={field.name} bind:value class:changed>
     {#each field.options as opt}

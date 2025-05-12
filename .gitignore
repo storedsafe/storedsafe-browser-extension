@@ -1,4 +1,4 @@
-build
 node_modules
 coverage
 scripts/publish.json
+dist/build

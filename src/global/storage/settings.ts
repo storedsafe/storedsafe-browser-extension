@@ -4,29 +4,30 @@ import {
   StoredSafeSettingsClearError,
   StoredSafeSettingsClearValueError,
   StoredSafeSettingsSetValueNotFoundError,
-  StoredSafeSettingsSetManagedValueError
-} from '../errors'
-import { getMessage, LocalizedMessage } from '../i18n'
-import { Logger } from '../logger'
-import type { OnAreaChanged } from './StorageArea'
+  StoredSafeSettingsSetManagedValueError,
+  StoredSafeExtensionError,
+} from "../errors";
+import { getMessage, LocalizedMessage } from "../i18n";
+import { Logger } from "../logger";
+import type { OnAreaChanged } from "./StorageArea";
 
-const logger = new Logger('settings')
+const logger = new Logger("settings");
 
 export enum SettingsFields {
-  IDLE_MAX = 'idleMax',
-  AUTO_FILL = 'autoFill',
-  MAX_TOKEN_LIFE = 'maxTokenLife',
-  OFFER_SAVE = 'offerSave'
+  IDLE_MAX = "idleMax",
+  AUTO_FILL = "autoFill",
+  MAX_TOKEN_LIFE = "maxTokenLife",
+  OFFER_SAVE = "offerSave",
 }
 
 export interface SettingsField {
-  label: string
-  title?: string
-  unit?: string
-  isCheckbox?: boolean
+  label: string;
+  title?: string;
+  unit?: string;
+  isCheckbox?: boolean;
   attributes: {
-    [attr: string]: string | number | boolean
-  }
+    [attr: string]: string | number | boolean;
+  };
 }
 
 export const FIELDS = new Map<SettingsFields, SettingsField>([
@@ -36,8 +37,8 @@ export const FIELDS = new Map<SettingsFields, SettingsField>([
       label: getMessage(LocalizedMessage.SETTINGS_AUTO_FILL_LABEL),
       title: getMessage(LocalizedMessage.SETTINGS_AUTO_FILL_TITLE),
       isCheckbox: true,
-      attributes: {}
-    }
+      attributes: {},
+    },
   ],
   [
     SettingsFields.OFFER_SAVE,
@@ -45,8 +46,8 @@ export const FIELDS = new Map<SettingsFields, SettingsField>([
       label: getMessage(LocalizedMessage.SETTINGS_OFFER_SAVE_LABEL),
       title: getMessage(LocalizedMessage.SETTINGS_OFFER_SAVE_TITLE),
       isCheckbox: true,
-      attributes: {}
-    }
+      attributes: {},
+    },
   ],
   [
     SettingsFields.IDLE_MAX,
@@ -55,9 +56,9 @@ export const FIELDS = new Map<SettingsFields, SettingsField>([
       unit: getMessage(LocalizedMessage.SETTINGS_UNIT_MINUTES),
       attributes: {
         min: 1,
-        max: 120
-      }
-    }
+        max: 120,
+      },
+    },
   ],
   [
     SettingsFields.MAX_TOKEN_LIFE,
@@ -66,34 +67,34 @@ export const FIELDS = new Map<SettingsFields, SettingsField>([
       unit: getMessage(LocalizedMessage.SETTINGS_UNIT_HOURS),
       attributes: {
         min: 1,
-        max: 30
-      }
-    }
-  ]
-])
+        max: 30,
+      },
+    },
+  ],
+]);
 
 const DEFAULT_SETTINGS = parse({
   idleMax: 20,
   autoFill: false,
   maxTokenLife: 8,
-  offerSave: true
-})
+  offerSave: true,
+});
 
-const STORAGE_KEY = 'settings'
-const EMPTY_STATE: Record<string, any> = {}
+const STORAGE_KEY = "settings";
+const EMPTY_STATE: Record<string, any> = {};
 
-let listeners: OnAreaChanged<Map<string, Setting>>[] = []
+let listeners: OnAreaChanged<Map<string, Setting>>[] = [];
 
 function parse(
-  values: Record<string, any>,
+  values?: Record<string, any>,
   managed: boolean = false
 ): Map<string, Setting> {
-  values = values ?? EMPTY_STATE
-  const settings: Map<string, Setting> = new Map()
+  values = values ?? EMPTY_STATE;
+  const settings: Map<string, Setting> = new Map();
   for (const key of Object.keys(values)) {
-    settings.set(key, { value: values[key], managed })
+    settings.set(key, { value: values[key], managed });
   }
-  return settings
+  return settings;
 }
 
 function merge(
@@ -102,12 +103,12 @@ function merge(
   sync: Map<string, Setting>
 ): Map<string, Setting> {
   const merged = new Map([
-    ...DEFAULT_SETTINGS,
-    ...managedDefaults,
-    ...sync,
-    ...enforced
-  ])
-  return merged
+    ...structuredClone(DEFAULT_SETTINGS),
+    ...structuredClone(managedDefaults),
+    ...structuredClone(sync),
+    ...structuredClone(enforced),
+  ]);
+  return merged;
 }
 
 /**
@@ -117,20 +118,20 @@ async function getManagedSettings(): Promise<
   [Map<string, Setting>, Map<string, Setting>]
 > {
   try {
-    const { settings } = await browser.storage.managed.get(STORAGE_KEY)
-    return [parse(settings?.enforced, true), parse(settings?.defaults)]
+    const { settings } = await browser.storage.managed.get(STORAGE_KEY);
+    return [parse(settings?.enforced, true), parse(settings?.defaults)];
   } catch (error) {
     // Log debug message if managed storage fails because of missing manifest.
-    if (error.toString().includes('storage manifest')) {
-      logger.debug('No managed storage manifest found.')
-      return [new Map(), new Map()]
-    } else throw error
+    if ((error as any).toString().includes("storage manifest")) {
+      logger.debug("No managed storage manifest found.");
+      return [new Map(), new Map()];
+    } else throw error;
   }
 }
 
 async function getSyncSettings() {
-  const { settings } = await browser.storage.sync.get(STORAGE_KEY)
-  return parse(settings)
+  const { settings } = await browser.storage.sync.get(STORAGE_KEY);
+  return parse(settings);
 }
 
 /**
@@ -144,11 +145,11 @@ export async function get(): Promise<Map<string, Setting>> {
     // and will result as an empty object if put in storage.
     // Parse settings from different areas and merge with priority order fromt the
     // top lowest to highest.
-    let sync = await getSyncSettings()
-    let [enforced, managedDefaults] = await getManagedSettings()
-    return merge(enforced, managedDefaults, sync)
+    let sync = await getSyncSettings();
+    let [enforced, managedDefaults] = await getManagedSettings();
+    return merge(enforced, managedDefaults, sync);
   } catch (error) {
-    throw new StoredSafeSettingsGetError(error)
+    throw new StoredSafeSettingsGetError(error as Error);
   }
 }
 
@@ -156,13 +157,13 @@ async function set(settings: Map<string, Setting>): Promise<void> {
   // Convert to serializable format, using null coalescing before converting
   // to array to ensure values are not undefined (causes TypeError).
   // Filter out managed fields.
-  const newSettings: Record<string, any> = {}
+  const newSettings: Record<string, any> = {};
   for (const [key, { managed, value }] of settings) {
     if (!managed) {
-      newSettings[key] = value
+      newSettings[key] = value;
     }
   }
-  await browser.storage.sync.set({ [STORAGE_KEY]: newSettings })
+  await browser.storage.sync.set({ [STORAGE_KEY]: newSettings });
 }
 
 /**
@@ -174,8 +175,8 @@ async function set(settings: Map<string, Setting>): Promise<void> {
 export async function subscribe(
   cb: OnAreaChanged<Map<string, Setting>>
 ): Promise<Map<string, Setting>> {
-  listeners.push(cb)
-  return await get()
+  listeners.push(cb);
+  return await get();
 }
 
 /**
@@ -183,7 +184,7 @@ export async function subscribe(
  * @param cb Callback function to be called when storage area is updated.
  */
 export function unsubscribe(cb: OnAreaChanged<Map<string, Setting>>): void {
-  listeners = listeners.filter(listener => listener !== cb)
+  listeners = listeners.filter((listener) => listener !== cb);
 }
 
 /**
@@ -197,23 +198,23 @@ export async function setValues(
   ...values: [string, number | boolean][]
 ): Promise<void> {
   try {
-    const settings = await get()
+    const settings = await get();
     for (const [key, value] of values) {
-      if (!settings.has(key))
-        throw new StoredSafeSettingsSetValueNotFoundError(key)
-      else if (settings.get(key).managed)
-        throw new StoredSafeSettingsSetManagedValueError(key)
-      settings.get(key).value = value
+      let setting = settings.get(key);
+      if (!setting) throw new StoredSafeSettingsSetValueNotFoundError(key);
+      else if (setting.managed)
+        throw new StoredSafeSettingsSetManagedValueError(key);
+      setting.value = value;
     }
-    await set(settings)
+    await set(settings);
   } catch (error) {
     if (
       error instanceof StoredSafeSettingsGetError ||
       error instanceof StoredSafeSettingsSetValueNotFoundError ||
       error instanceof StoredSafeSettingsSetManagedValueError
     )
-      throw error
-    throw new StoredSafeSettingsSetValuesError(error)
+      throw error;
+    throw new StoredSafeSettingsSetValuesError(error as Error);
   }
 }
 
@@ -225,12 +226,12 @@ export async function setValues(
  */
 export async function clearValue(key: string) {
   try {
-    const settings = await get()
-    settings.delete(key)
-    await set(settings)
+    const settings = await get();
+    settings.delete(key);
+    await set(settings);
   } catch (error) {
-    if (error instanceof StoredSafeSettingsGetError) throw error
-    throw new StoredSafeSettingsClearValueError(key, error)
+    if (error instanceof StoredSafeSettingsGetError) throw error;
+    throw new StoredSafeSettingsClearValueError(key, error as Error);
   }
 }
 
@@ -240,9 +241,9 @@ export async function clearValue(key: string) {
  */
 export async function clear() {
   try {
-    await browser.storage.sync.remove(STORAGE_KEY)
+    await browser.storage.sync.remove(STORAGE_KEY);
   } catch (error) {
-    throw new StoredSafeSettingsClearError(error)
+    throw new StoredSafeSettingsClearError(error as Error);
   }
 }
 
@@ -251,32 +252,41 @@ function notify(
   oldValues: Map<string, Setting>
 ): void {
   for (const listener of listeners) {
-    listener(newValues, oldValues)
+    listener(newValues, oldValues);
   }
+}
+
+export function onSettingsChanged(
+  cb: (newValues: Map<string, Setting>, oldValues: Map<string, Setting>) => void
+) {
+  return (
+    changes: { [key: string]: browser.storage.StorageChange },
+    area: string
+  ) => {
+    if (!!changes[STORAGE_KEY]) {
+      const { oldValue, newValue } = changes[STORAGE_KEY];
+      if (area === "sync") {
+        // Changes include sync, but not managed; fetch managed
+        getManagedSettings().then(([enforced, managedDefaults]) => {
+          cb(
+            merge(enforced, managedDefaults, parse(newValue)),
+            merge(enforced, managedDefaults, parse(oldValue))
+          );
+        });
+      } else if (area === "managed") {
+        // Changes include managed, but not sync; fetch sync
+        getSyncSettings().then((sync) => {
+          cb(
+            merge(parse(newValue.enforced), parse(newValue.defaults), sync),
+            merge(parse(oldValue.enforced), parse(oldValue.defaults), sync)
+          );
+        });
+      }
+    }
+  };
 }
 
 /**
  * When settings updates in storage, notify listeners.
  */
-browser.storage.onChanged.addListener((changes, area) => {
-  if (!!changes[STORAGE_KEY]) {
-    const { oldValue, newValue } = changes[STORAGE_KEY]
-    if (area === 'sync') {
-      // Changes include sync, but not managed; fetch managed
-      getManagedSettings().then(([enforced, managedDefaults]) => {
-        notify(
-          merge(enforced, managedDefaults, parse(newValue)),
-          merge(enforced, managedDefaults, parse(oldValue))
-        )
-      })
-    } else if (area === 'managed') {
-      // Changes include managed, but not sync; fetch sync
-      getSyncSettings().then(sync => {
-        notify(
-          merge(parse(newValue.enforced), parse(newValue.defaults), sync),
-          merge(parse(oldValue.enforced), parse(oldValue.defaults), sync)
-        )
-      })
-    }
-  }
-})
+browser.storage.onChanged.addListener(onSettingsChanged(notify));

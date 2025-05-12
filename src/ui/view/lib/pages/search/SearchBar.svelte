@@ -1,30 +1,32 @@
 <script lang="ts">
-  import { createEventDispatcher } from "svelte";
-  import { searchIcon } from "../../../../../global/icons";
-  import { getMessage, LocalizedMessage } from "../../../../../global/i18n";
+  import { searchIcon } from "@/global/icons";
+  import { getMessage, LocalizedMessage } from "@/global/i18n";
 
-  import Icon from "../../layout/Icon.svelte";
+  import Icon from "@/ui/view/lib/layout/Icon.svelte";
   import {
     loading,
     messages,
     MessageType,
     search,
     SEARCH_LOADING_ID,
-  } from "../../../../stores";
+  } from "@/ui/stores";
 
-  // Submit search form automatically after `searchDelay` ms.
-  export let searchDelay: number = 500;
-  // Automatically focus search input
-  export let focus: boolean = true;
+  interface Props {
+    searchDelay?: number;
+    autoFocus?: boolean;
+    onFocus?: () => void;
+  }
 
-  // Reference to form height for button size adjustment
-  let formHeight: number;
-  // Reference to timer to perform automatic search
-  let timerId: number = null;
+  let { searchDelay = 500, autoFocus = true, onFocus }: Props = $props();
+
   // Set a fallback default button size until input reference is loaded
   const DEFAULT_BUTTON_SIZE = 36;
+  // Reference to form height for button size adjustment
+  let formHeight: number = $state(DEFAULT_BUTTON_SIZE);
+  // Reference to timer to perform automatic search
+  let timerId: number | null = null;
   // Search term (needle to find in the StoredSafe haystack)
-  let needle: string = "";
+  let needle: string = $state("");
   // Set up icon for search button
   const searchIconProps = {
     color: "#ebeef0",
@@ -38,13 +40,15 @@
    **/
   function handleChange() {
     if (timerId) window.clearTimeout(timerId);
-    timerId = window.setTimeout(find, searchDelay);
+    if (needle === "") find();
+    else timerId = window.setTimeout(find, searchDelay);
   }
 
   /**
    * Dispatch a search event when the search form is submitted.
    * */
-  function handleSearch() {
+  function handleSubmit(e: SubmitEvent) {
+    e.preventDefault();
     find();
   }
 
@@ -67,17 +71,17 @@
 -->
 <form
   class="grid"
-  style={`--button-size: ${formHeight ?? DEFAULT_BUTTON_SIZE}px`}
+  style={`--button-size: ${formHeight}px`}
   role="search"
   bind:offsetHeight={formHeight}
-  on:submit|preventDefault={handleSearch}
+  onsubmit={handleSubmit}
 >
-  <!-- svelte-ignore a11y-autofocus -->
+  <!-- svelte-ignore a11y_autofocus -->
   <input
-    on:focus
-    on:input={handleChange}
+    onfocus={() => onFocus?.()}
+    oninput={() => handleChange()}
     bind:value={needle}
-    autofocus={focus}
+    autofocus={autoFocus}
     placeholder={getMessage(LocalizedMessage.SEARCH_PLACEHOLDER)}
     aria-label={getMessage(LocalizedMessage.SEARCH_ARIA_LABEL_NEEDLE)}
     type="search"

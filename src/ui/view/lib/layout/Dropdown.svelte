@@ -1,15 +1,22 @@
-<script type="ts">
-  export let showing: boolean = false;
-  export let enabled: boolean = true;
+<script lang="ts">
+  import type { Snippet } from "svelte";
+
+  interface Props {
+    title: Snippet;
+    content: Snippet;
+    showing: boolean;
+    enabled: boolean;
+  }
+  let { title, content, showing = false, enabled = true }: Props = $props();
 </script>
 
 <section>
   <button
     disabled={!enabled}
     type="button"
-    on:click={() => (showing = !showing)}
+    onclick={() => (showing = !showing)}
   >
-    <slot name="title" />
+    {@render title()}
     {#if enabled}
       <b>
         {#if showing}-{:else}+{/if}
@@ -17,7 +24,7 @@
     {/if}
   </button>
   <div class="content" class:hidden={!showing}>
-    <slot name="content" />
+    {@render content()}
   </div>
 </section>
 

@@ -1,12 +1,16 @@
 <script lang="ts">
-  import { getMessage, LocalizedMessage } from "../../../../../global/i18n";
-  import { Duration, loading, messages, MessageType } from "../../../../stores";
-  import { ignore, IGNORE_REMOVE_LOADING_ID } from "../../../../stores/browserstorage";
+  import { getMessage, LocalizedMessage } from "@/global/i18n";
+  import { Duration, loading, messages, MessageType } from "@/ui/stores";
+  import {
+    ignoreURLs,
+    IGNORE_REMOVE_LOADING_ID,
+  } from "@/ui/stores/browserstorage";
 
-  import Card from "../../layout/Card.svelte";
+  import Card from "@/ui/view/lib/layout/Card.svelte";
 
-  function removeUrl(url: string) {
-    loading.add(IGNORE_REMOVE_LOADING_ID, ignore.remove(url), {
+  function removeUrl(e: Event, url: string) {
+    e.preventDefault();
+    loading.add(IGNORE_REMOVE_LOADING_ID, ignoreURLs.remove(url), {
       onError(error) {
         messages.add(error.message, MessageType.ERROR, Duration.SHORT);
       },
@@ -20,6 +24,20 @@
     });
   }
 </script>
+
+<Card>
+  {#if ignoreURLs.data.length === 0}
+    {getMessage(LocalizedMessage.OPTIONS_IGNORE_EMPTY)}
+  {/if}
+  {#each ignoreURLs.data as url (url)}
+    <form class="site-entry" onsubmit={(e) => removeUrl(e, url)}>
+      <span>{url}</span>
+      <button type="submit" class="danger">
+        {getMessage(LocalizedMessage.OPTIONS_IGNORE_DELETE)}
+      </button>
+    </form>
+  {/each}
+</Card>
 
 <style>
   .site-entry {
@@ -35,17 +53,3 @@
     padding: var(--spacing);
   }
 </style>
-
-<Card>
-  {#if $ignore.length === 0}
-    {getMessage(LocalizedMessage.OPTIONS_IGNORE_EMPTY)}
-  {/if}
-  {#each $ignore as url (url)}
-    <form class="site-entry" on:submit|preventDefault={() => removeUrl(url)}>
-      <span>{url}</span>
-      <button type="submit" class="danger">
-        {getMessage(LocalizedMessage.OPTIONS_IGNORE_DELETE)}
-      </button>
-    </form>
-  {/each}
-</Card>

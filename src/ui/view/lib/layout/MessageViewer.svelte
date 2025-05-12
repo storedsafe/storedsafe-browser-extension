@@ -1,25 +1,54 @@
-<script lang="ts">
-  import type { MessageStore } from "../../../stores";
-  import { getMessage, LocalizedMessage } from "../../../../global/i18n";
+<script lang="ts" module>
+  interface Props {
+    messages: Messages;
+    shownMessages?: number;
+  }
+</script>
 
+<script lang="ts">
+  import { Messages } from "@/ui/stores";
+  import { getMessage, LocalizedMessage } from "@/global/i18n";
   import MessageBox from "./MessageBox.svelte";
 
-  const NUM_MESSAGES = 2;
-
-  export let messages: MessageStore;
-
-  /**
-   * Get the last `amount` messages.
-   * */
-  $: getLatestMessages = function (amount: number) {
-    if (amount > $messages.length) {
-      return $messages.reverse();
+  let { messages, shownMessages = 2 }: Props = $props();
+  let latestMessages = $derived.by(() => {
+    if (shownMessages > messages.count) {
+      return messages.messages.reverse();
     }
-    return $messages
-      .slice($messages.length - amount, $messages.length)
+    return messages.messages
+      .slice(messages.count - shownMessages, messages.count)
       .reverse();
-  };
+  });
 </script>
+
+{#if messages.count > 0}
+  <article class="grid messages">
+    {#each latestMessages as { message, messageType, id } (id)}
+      <MessageBox on:close={messages.remove} {messageType} {id}
+        >{message}</MessageBox
+      >
+    {/each}
+    {#if messages.count > shownMessages}
+      <span class="more-messages subtitle">
+        <span>
+          {messages.count - shownMessages === 1
+            ? getMessage(LocalizedMessage.MESSAGES_ONE_MORE)
+            : getMessage(
+                LocalizedMessage.MESSAGES_MORE,
+                messages.count - shownMessages
+              )}
+        </span>
+        <button
+          type="button"
+          onclick={() => messages.clear()}
+          class="input-reset clear"
+        >
+          {getMessage(LocalizedMessage.MESSAGES_CLEAR)}
+        </button>
+      </span>
+    {/if}
+  </article>
+{/if}
 
 <style>
   .more-messages {
@@ -44,24 +73,3 @@
     border-bottom: 2px solid var(--color-danger);
   }
 </style>
-
-{#if $messages.length > 0}
-  <article class="grid messages">
-    {#each getLatestMessages(2) as { message, messageType, id } (id)}
-      <MessageBox on:close={messages.remove} {messageType} {id}>{message}</MessageBox>
-    {/each}
-    {#if $messages.length > NUM_MESSAGES}
-      <span class="more-messages subtitle">
-        <span>
-          {$messages.length - NUM_MESSAGES === 1 ? getMessage(LocalizedMessage.MESSAGES_ONE_MORE) : getMessage(LocalizedMessage.MESSAGES_MORE, $messages.length - NUM_MESSAGES)}
-        </span>
-        <button
-          type="button"
-          on:click={messages.clear}
-          class="input-reset clear">
-          {getMessage(LocalizedMessage.MESSAGES_CLEAR)}
-        </button>
-      </span>
-    {/if}
-  </article>
-{/if}

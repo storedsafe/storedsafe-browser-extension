@@ -1,50 +1,54 @@
-import * as sessionsStorage from './sessions'
-import { auth } from '../api'
+import * as sessionsStorage from "./sessions";
+import { auth } from "../api";
 import {
+  StoredSafeExtensionError,
   StoredSafeSitesAddDuplicateError,
   StoredSafeSitesAddError,
   StoredSafeSitesClearError,
   StoredSafeSitesGetError,
   StoredSafeSitesRemoveError,
-  StoredSafeSitesRemoveNotFoundError
-} from '../errors'
-import type { OnAreaChanged } from './StorageArea'
-import { Logger } from '../logger'
+  StoredSafeSitesRemoveNotFoundError,
+} from "../errors";
+import type { OnAreaChanged } from "./StorageArea";
+import { Logger } from "../logger";
 
-const logger = new Logger('sites')
+const logger = new Logger("sites");
 
-const STORAGE_KEY = 'sites'
-const EMPTY_STATE: Site[] = []
+const STORAGE_KEY = "sites";
+const EMPTY_STATE: Site[] = [];
 
-let listeners: OnAreaChanged<Site[]>[] = []
+let listeners: OnAreaChanged<Site[]>[] = [];
 
 function parse(
-  sites: Pick<Site, 'host' | 'apikey'>[],
+  sites?: Pick<Site, "host" | "apikey">[],
   managed: boolean = false
 ): Site[] {
-  return (sites ?? EMPTY_STATE).map(site => ({ managed, ...site }))
+  return structuredClone(sites ?? EMPTY_STATE).map((site) => ({
+    managed,
+    ...site,
+  }));
 }
 
 function merge(managed: Site[], sync: Site[]) {
-  return [...sync, ...managed]
+  return [...sync, ...managed];
 }
 
 async function getManagedSites(): Promise<Site[]> {
   try {
-    const { sites } = await browser.storage.managed.get(STORAGE_KEY)
-    return parse(sites, true)
+    const { sites } = await browser.storage.managed.get(STORAGE_KEY);
+    return parse(sites, true);
   } catch (error) {
     // Log debug message if managed storage fails because of missing manifest.
-    if (error.toString().includes('storage manifest')) {
-      logger.debug('No managed storage manifest found.')
-      return []
-    } else throw error
+    if ((error as any).toString().includes("storage manifest")) {
+      logger.debug("No managed storage manifest found.");
+      return [];
+    } else throw error;
   }
 }
 
 async function getSyncSites() {
-  const { sites } = await browser.storage.sync.get(STORAGE_KEY)
-  return parse(sites ?? EMPTY_STATE)
+  const { sites } = await browser.storage.sync.get(STORAGE_KEY);
+  return parse(sites);
 }
 /**
  * Get and parse sites from storage.
@@ -53,13 +57,11 @@ async function getSyncSites() {
  */
 export async function get(): Promise<Site[]> {
   try {
-    const sync = await getSyncSites()
-    const managed = await getManagedSites()
-    // Convert to Map from serializable format. Map objects are not serializable
-    // and will result as an empty object if put in storage.
-    return merge(managed, sync)
+    const sync = (await getSyncSites()) ?? [];
+    const managed = (await getManagedSites()) ?? [];
+    return merge(managed, sync);
   } catch (error) {
-    throw new StoredSafeSitesGetError(error)
+    throw new StoredSafeSitesGetError(error as Error);
   }
 }
 
@@ -68,8 +70,8 @@ async function set(sites: Site[]) {
   // to array to ensure values are not undefined (causes TypeError).
   // Filter out managed sites.
   await browser.storage.sync.set({
-    [STORAGE_KEY]: (sites ?? []).filter(({ managed }) => !managed)
-  })
+    [STORAGE_KEY]: (sites ?? []).filter(({ managed }) => !managed),
+  });
 }
 
 /**
@@ -79,8 +81,8 @@ async function set(sites: Site[]) {
  * @throws {StoredSafeSitesGetError} if get of current state fails.
  */
 export async function subscribe(cb: OnAreaChanged<Site[]>): Promise<Site[]> {
-  listeners.push(cb)
-  return await get()
+  listeners.push(cb);
+  return await get();
 }
 
 /**
@@ -88,7 +90,7 @@ export async function subscribe(cb: OnAreaChanged<Site[]>): Promise<Site[]> {
  * @param cb Callback function to be called when storage area is updated.
  */
 export function unsubscribe(cb: OnAreaChanged<Site[]>): void {
-  listeners = listeners.filter(listener => listener !== cb)
+  listeners = listeners.filter((listener) => listener !== cb);
 }
 
 /**
@@ -102,22 +104,22 @@ export function unsubscribe(cb: OnAreaChanged<Site[]>): void {
 export async function add(host: string, apikey: string): Promise<void> {
   try {
     // Get current state
-    const sites = await get()
+    const sites = await get();
     // Make sure no site already exists for `host`.
     if (sites.findIndex(({ host: siteHost }) => siteHost === host) !== -1)
-      throw new StoredSafeSitesAddDuplicateError(host)
+      throw new StoredSafeSitesAddDuplicateError(host);
     // Update sites in storage
-    sites.push({ host, apikey, managed: false })
-    await set(sites)
+    sites.push({ host, apikey, managed: false });
+    await set(sites);
   } catch (error) {
     // If error is already processed, throw the processed error
     if (
       error instanceof StoredSafeSitesGetError ||
       error instanceof StoredSafeSitesAddDuplicateError
     )
-      throw error
+      throw error;
     // Else throw new error
-    throw new StoredSafeSitesAddError(host, error)
+    throw new StoredSafeSitesAddError(host, error as Error);
   }
 }
 
@@ -131,25 +133,26 @@ export async function add(host: string, apikey: string): Promise<void> {
 export async function remove(host: string): Promise<void> {
   try {
     // Get current state
-    let sites = await get()
+    let sites = await get();
     // Make sure the URL exists in the list
     if (sites.findIndex(({ host }) => host === host) === -1)
-      throw new StoredSafeSitesRemoveNotFoundError(host)
+      throw new StoredSafeSitesRemoveNotFoundError(host);
     // Invalidate any existing sessions for site.
-    const sessions = await sessionsStorage.get()
-    if (sessions.has(host)) await auth.logout(host, sessions.get(host).token)
+    const sessions = await sessionsStorage.get();
+    const session = sessions.get(host);
+    if (session) await auth.logout(host, session.token);
     // Update sites in storage
-    sites = sites.filter(({ host: siteHost }) => siteHost !== host)
-    await set(sites)
+    sites = sites.filter(({ host: siteHost }) => siteHost !== host);
+    await set(sites);
   } catch (error) {
     // If error is already processed, throw the processed error
     if (
       error instanceof StoredSafeSitesGetError ||
       error instanceof StoredSafeSitesRemoveNotFoundError
     )
-      throw error
+      throw error;
     // Else throw new error
-    throw new StoredSafeSitesRemoveError(host, error)
+    throw new StoredSafeSitesRemoveError(host, error as Error);
   }
 }
 
@@ -159,22 +162,22 @@ export async function remove(host: string): Promise<void> {
  */
 export async function clear(): Promise<void> {
   try {
-    const sites = await get()
-    const sessions = await sessionsStorage.get()
+    const sites = await get();
+    const sessions = await sessionsStorage.get();
     // Invalidate out related sessions
     for (const site of sites) {
-      if (!site.managed && sessions.has(site.host))
-        await auth.logout(site.host, sessions.get(site.host).token)
+      const session = sessions.get(site.host);
+      if (!site.managed && session) await auth.logout(site.host, session.token);
     }
-    await browser.storage.sync.remove(STORAGE_KEY)
+    await browser.storage.sync.remove(STORAGE_KEY);
   } catch (error) {
-    throw new StoredSafeSitesClearError(error)
+    throw new StoredSafeSitesClearError(error as Error);
   }
 }
 
 function notify(newValues: Site[], oldValues: Site[]): void {
   for (const listener of listeners) {
-    listener(newValues, oldValues)
+    listener(newValues, oldValues);
   }
 }
 
@@ -183,17 +186,20 @@ function notify(newValues: Site[], oldValues: Site[]): void {
  */
 browser.storage.onChanged.addListener((changes, area) => {
   if (!!changes[STORAGE_KEY]) {
-    const { oldValue, newValue } = changes[STORAGE_KEY]
-    if (area === 'sync') {
+    const { oldValue, newValue } = changes[STORAGE_KEY];
+    if (area === "sync") {
       // Changes include sync, but not managed; fetch managed
-      getManagedSites().then(managed => {
-        notify(merge(managed, parse(newValue)), merge(managed, parse(oldValue)))
-      })
-    } else if (area === 'managed') {
+      getManagedSites().then((managed) => {
+        notify(
+          merge(managed, parse(newValue)),
+          merge(managed, parse(oldValue))
+        );
+      });
+    } else if (area === "managed") {
       // Changes include managed, but not sync; fetch sync
-      getSyncSites().then(sync => {
-        notify(merge(parse(newValue), sync), merge(parse(oldValue), sync))
-      })
+      getSyncSites().then((sync) => {
+        notify(merge(parse(newValue), sync), merge(parse(oldValue), sync));
+      });
     }
   }
-})
+});

@@ -1,15 +1,59 @@
-<script lang="ts">
-  import { getMessage, LocalizedMessage } from "../../../../../global/i18n";
-  import { errorIcon, warningIcon } from "../../../../../global/icons";
-  import Icon from "../../layout/Icon.svelte";
-
-  export let selected: boolean;
-
-  export let host: string;
-  export let isOnline: boolean;
-  export let hasWarnings: boolean;
-  export let hasViolations: boolean;
+<script lang="ts" module>
+  export interface Props {
+    selected?: boolean;
+    host: string;
+    isOnline: boolean;
+    hasWarnings: boolean;
+    hasViolations: boolean;
+  }
 </script>
+
+<script lang="ts">
+  import { getMessage, LocalizedMessage } from "@/global/i18n";
+  import { errorIcon, warningIcon } from "@/global/icons";
+  import Icon from "@/ui/view/lib/layout/Icon.svelte";
+
+  let {
+    selected = false,
+    host,
+    isOnline,
+    hasWarnings,
+    hasViolations,
+  }: Props = $props();
+</script>
+
+<section class:selected>
+  <article class="text">
+    <span class="title" title={host}>{host}</span>
+    {#if isOnline}
+      <span class="subtitle online">
+        {getMessage(LocalizedMessage.SESSIONS_ONLINE)}
+      </span>
+    {:else}
+      <span class="subtitle offline">
+        {getMessage(LocalizedMessage.SESSIONS_OFFLINE)}
+      </span>
+    {/if}
+  </article>
+  <article class="icons">
+    {#if hasWarnings}
+      <div
+        class="icon"
+        title={getMessage(LocalizedMessage.SESSIONS_WARNINGS_ICON_TITLE)}
+      >
+        <Icon d={warningIcon} color="var(--color-warning)" />
+      </div>
+    {/if}
+    {#if hasViolations}
+      <div
+        class="icon"
+        title={getMessage(LocalizedMessage.SESSIONS_VIOLATIONS_ICON_TITLE)}
+      >
+        <Icon d={errorIcon} color="var(--color-danger)" />
+      </div>
+    {/if}
+  </article>
+</section>
 
 <style>
   section {
@@ -52,34 +96,3 @@
     color: var(--color-danger);
   }
 </style>
-
-<section class:selected>
-  <article class="text">
-    <span class="title" title={host}>{host}</span>
-    {#if isOnline}
-      <span class="subtitle online">
-        {getMessage(LocalizedMessage.SESSIONS_ONLINE)}
-      </span>
-    {:else}
-      <span class="subtitle offline">
-        {getMessage(LocalizedMessage.SESSIONS_OFFLINE)}
-      </span>
-    {/if}
-  </article>
-  <article class="icons">
-    {#if hasWarnings}
-      <div
-        class="icon"
-        title={getMessage(LocalizedMessage.SESSIONS_WARNINGS_ICON_TITLE)}>
-        <Icon d={warningIcon} color="var(--color-warning)" />
-      </div>
-    {/if}
-    {#if hasViolations}
-      <div
-        class="icon"
-        title={getMessage(LocalizedMessage.SESSIONS_VIOLATIONS_ICON_TITLE)}>
-        <Icon d={errorIcon} color="var(--color-danger)" />
-      </div>
-    {/if}
-  </article>
-</section>

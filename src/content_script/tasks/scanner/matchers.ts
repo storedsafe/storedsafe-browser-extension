@@ -1,7 +1,7 @@
-import { Logger } from '../../../global/logger'
-import { InputType, FormType } from './constants'
-import type { Input } from './inputs'
-const logger = new Logger('matchers')
+import { Logger } from "@/global/logger";
+import { InputType, FormType } from "./constants";
+import type { Input } from "./inputs";
+const logger = new Logger("matchers");
 
 /**
  * Matcher for an input field.
@@ -9,8 +9,8 @@ const logger = new Logger('matchers')
  * @param name - Regular expression matching the input name or id attribute.
  * */
 export interface Matcher {
-  attributes: Record<string, RegExp>
-  name: RegExp
+  attributes: Record<string, RegExp>;
+  name: RegExp;
 }
 
 /**
@@ -20,9 +20,9 @@ export interface Matcher {
  * @param fields - Mapping of matchers to number of matched elements (-1 = any)
  * */
 export interface FormMatcher {
-  name?: RegExp
-  attributes?: Record<string, RegExp>
-  fields?: Map<InputType, number>
+  name?: RegExp;
+  attributes?: Record<string, RegExp>;
+  fields?: Map<InputType, number>;
 }
 
 /**
@@ -36,74 +36,74 @@ export const matchers: Map<InputType, Matcher[]> = new Map([
     [
       {
         attributes: { type: /text|email/ },
-        name: /user|name|mail|login|namn|id|session_key/
-      }
-    ]
+        name: /user|name|mail|login|namn|id|session_key/,
+      },
+    ],
   ],
   [
     InputType.PASSWORD_RETYPE,
     [
       {
         attributes: { type: /password/ },
-        name: /confirm|register|retype/
-      }
-    ]
+        name: /confirm|register|retype/,
+      },
+    ],
   ],
   [
     InputType.PASSWORD,
     [
       {
         attributes: { type: /password/ },
-        name: /.*/
-      }
-    ]
+        name: /.*/,
+      },
+    ],
   ],
   [
     InputType.PINCODE,
     [
       {
         attributes: { type: /password/ },
-        name: /.*/
-      }
-    ]
+        name: /.*/,
+      },
+    ],
   ],
   [
     InputType.CARDNO,
     [
       {
         attributes: { type: /text|tel/ },
-        name: /card/
-      }
-    ]
+        name: /card/,
+      },
+    ],
   ],
   [
     InputType.EXPIRES,
     [
       {
         attributes: { type: /text|tel/ },
-        name: /exp/
-      }
-    ]
+        name: /exp/,
+      },
+    ],
   ],
   [
     InputType.CVC,
     [
       {
         attributes: { type: /text|tel/ },
-        name: /sec|code|cvv|cvc/
-      }
-    ]
+        name: /sec|code|cvv|cvc/,
+      },
+    ],
   ],
   [
     InputType.SEARCH,
     [
       {
         attributes: { type: /text|search/ },
-        name: /search/
-      }
-    ]
-  ]
-])
+        name: /search/,
+      },
+    ],
+  ],
+]);
 
 /**
  * Matching should be implemented in the order as follows:
@@ -122,81 +122,77 @@ export const formMatchers: [FormType, FormMatcher][] = [
     {
       name: /search/,
       attributes: { role: /search/ },
-      fields: new Map([[InputType.SEARCH, -1]])
-    }
+      fields: new Map([[InputType.SEARCH, -1]]),
+    },
   ],
   [
     FormType.LOGIN,
     {
-      name: /signin|sign-in/
-    }
+      name: /signin|sign-in/,
+    },
   ],
   [
     FormType.REGISTER,
     {
       name: /createaccount|reg|signup/,
-      fields: new Map([
-        [InputType.PASSWORD, 2],
-      ])
-    }
+      fields: new Map([[InputType.PASSWORD, 2]]),
+    },
   ],
   [
     FormType.REGISTER,
     {
       name: /createaccount|reg|signup/,
-      fields: new Map([
-        [InputType.PASSWORD_RETYPE, -1]
-      ])
-    }
+      fields: new Map([[InputType.PASSWORD_RETYPE, -1]]),
+    },
   ],
   [
     FormType.LOGIN,
     {
       fields: new Map([
         [InputType.USERNAME, -1],
-        [InputType.PASSWORD, 1]
-      ])
-    }
+        [InputType.PASSWORD, 1],
+      ]),
+    },
   ],
   [
     FormType.LOGIN,
     {
       fields: new Map([
         [InputType.USERNAME, -1],
-        [InputType.PINCODE, 1]
-      ])
-    }
+        [InputType.PINCODE, 1],
+      ]),
+    },
   ],
   [
     FormType.NEWSLETTER,
     {
-      name: /news|letter/
-    }
+      name: /news|letter/,
+    },
   ],
   [
     FormType.MENU,
     {
-      name: /nav|menu/
-    }
+      name: /nav|menu/,
+    },
   ],
-  [FormType.UNKNOWN, {}]
-]
+  [FormType.UNKNOWN, {}],
+];
 
 /**
  * Match an element against expected attribute names.
  * @param element Input element to test attributes on.
  * @param attributes HTML attributes mapped to expected values.
  */
-export function matchAttributes (
+export function matchAttributes(
   element: HTMLElement,
   attributes: Record<string, string | RegExp>
 ): boolean {
-  if (!attributes) return false
+  if (!attributes) return false;
   for (const attribute in attributes) {
-    const attributeMatcher = new RegExp(attributes[attribute], 'i')
-    if (!attributeMatcher.test(element.getAttribute(attribute))) return false
+    const attributeMatcher = new RegExp(attributes[attribute], "i");
+    if (!attributeMatcher.test((element as any)[attribute] ?? "")) return false;
   }
-  return true
+  return true;
 }
 
 /**
@@ -204,16 +200,16 @@ export function matchAttributes (
  * @param element HTML element to test name on.
  * @param name Name to search for in the HTML attributes of the `input`.
  */
-export function matchName (
+export function matchName(
   element: HTMLElement,
   name: string | RegExp
 ): boolean {
-  if (!name) return false
-  const nameRegExp = new RegExp(name, 'i')
-  for (const attr of element.attributes) {
-    if (nameRegExp.test(attr.value)) return true
+  if (!name) return false;
+  const nameRegExp = new RegExp(name, "i");
+  for (const attribute of element.attributes) {
+    if (nameRegExp.test(attribute.value)) return true;
   }
-  return false
+  return false;
 }
 
 /**
@@ -225,17 +221,17 @@ export function matchName (
  * @param inputs Elements within a form-like structure.
  * @param matchers Types of elements expected to be found in `inputs`.
  */
-export function matchFields (inputs: Input[], matchers: Map<InputType, number>) {
-  if (!matchers) return false
-  const matches: Map<InputType, number> = new Map()
-  for (const [_input, inputType] of inputs) {
-    matches.set(inputType, (matches.get(inputType) ?? 0) + 1)
+export function matchFields(inputs: Input[], matchers: Map<InputType, number>) {
+  if (!matchers) return false;
+  const matches: Map<InputType, number> = new Map();
+  for (const { type: inputType } of inputs) {
+    matches.set(inputType, (matches.get(inputType) ?? 0) + 1);
   }
   for (const [matcherType, matcherCount] of matchers) {
-    let count = matches.get(matcherType) ?? 0
-    if (matcherCount === -2 && count !== inputs.length) return false
-    if (matcherCount === -1 && count <= 0) return false
-    if (matcherCount >= 0 && count !== matcherCount) return false
+    let count = matches.get(matcherType) ?? 0;
+    if (matcherCount === -2 && count !== inputs.length) return false;
+    if (matcherCount === -1 && count <= 0) return false;
+    if (matcherCount >= 0 && count !== matcherCount) return false;
   }
-  return true
+  return true;
 }

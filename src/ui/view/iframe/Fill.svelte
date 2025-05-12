@@ -1,125 +1,129 @@
-<script lang="ts" context="module">
-  import { Logger } from "../../../global/logger";
+<script lang="ts" module>
+  export interface Props {
+    onClose: () => void;
+    onResize: (height: number, width: number) => void;
+  }
+
+  import { Logger } from "@/global/logger";
   const logger = new Logger("fill");
 </script>
 
 <script lang="ts">
-  import { afterUpdate, createEventDispatcher, onMount } from "svelte";
-
-  import { getMessage, LocalizedMessage } from "../../../global/i18n";
-  import type { Message } from "../../../global/messages";
+  import { getMessage, LocalizedMessage } from "@/global/i18n";
+  import { Context, sendMessage } from "@/global/messages";
   import {
-    preferences,
-    sessions,
-    structure,
+    instances,
     loading,
     messages,
     MessageType,
     Duration,
-  } from "../../stores";
+  } from "@/ui/stores";
 
-  import LoadingBar from "../lib/layout/LoadingBar.svelte";
-  import MessageViewer from "../lib/layout/MessageViewer.svelte";
-  import Initializing from "../Popup/Initializing.svelte";
-  import Logo from "../lib/layout/Logo.svelte";
-  import ListView from "../lib/menus/ListView.svelte";
-  import type { ListItem } from "../lib/menus/ListView";
-  import FillPreview from "./FillPreview.svelte";
+  import LoadingBar from "@/ui/view/lib/layout/LoadingBar.svelte";
+  import MessageViewer from "@/ui/view/lib/layout/MessageViewer.svelte";
+  import Logo from "@/ui/view/lib/layout/Logo.svelte";
+  import ListView from "@/ui/view/lib/menus/ListView.svelte";
+  import type { ListItem } from "@/ui/view/lib/menus/ListView";
+  import FillPreview, {
+    type Props as FillPreviewProps,
+  } from "./FillPreview.svelte";
+  import { onMount } from "svelte";
+  import { StoredSafeExtensionError } from "@/global/errors";
 
-  const dispatch = createEventDispatcher();
-  // let url: string;
-  let results: StoredSafeObject[] = [];
+  let { onClose, onResize }: Props = $props();
+
+  let results: StoredSafeObject[] = $state([]);
 
   let frame: HTMLElement;
   let height: number;
 
-  $: isInitialized =
-    $preferences !== null && $sessions !== null && $structure !== null;
-
-  function close() {
-    dispatch("close");
-  }
-
   function resize(height: number, width: number = 300) {
-    dispatch("resize", {
-      height,
-      width,
-    });
+    onResize(height, width);
   }
 
-  afterUpdate(() => {
+  $effect(() => {
     if (!!frame && height !== frame.clientHeight) {
       height = frame?.clientHeight;
       resize(height);
     }
   });
 
-  onMount(() => {
-    const port = browser.runtime.connect({ name: "fill" });
-    port.onMessage.addListener((message: Message) => {
-      if (message.context === "fill" && message.action === "populate") {
-        logger.debug('Message Received: %o', message)
-        results = message.data.results;
-        // url = message.data.url;
-      }
+  onMount(async () => {
+    results = await sendMessage({
+      from: Context.FILL,
+      to: Context.BACKGROUND,
+      action: "tabresults.get",
     });
 
     // Ensure iframe gets resized (afterUpdate unreliable)
     for (let delay = 200; delay <= 1000; delay += 200) {
       setTimeout(() => {
-        height = frame?.clientHeight
-        resize(height)
-      }, delay)
+        height = frame?.clientHeight;
+        resize(height);
+      }, delay);
     }
   });
 
-  interface FillPreviewProps {
-    icon: string;
-    template: string;
-    title: string;
-    username: string;
-    host: string;
-    vault: StoredSafeVault;
-    id: string;
-  }
+  let items: ListItem<FillPreviewProps>[] = $derived.by(() => {
+    let newItems: ListItem<FillPreviewProps>[] = [];
+    for (let i = 0; i < results.length; i++) {
+      const result = results[i];
+      const vault = instances.instances
+        .get(result.host)
+        ?.vaults?.find(({ id }) => id === result.vaultId);
+      if (!vault) throw new StoredSafeExtensionError("Vault not found.");
+      newItems.push({
+        Component: FillPreview,
+        name: i,
+        props: {
+          icon: result.icon,
+          template: result.type,
+          title: result.name,
+          username: result.fields.find(({ name }) => name === "username")
+            ?.value,
+          host: result.host,
+          vault: vault,
+          id: result.id,
+        },
+      });
+    }
+    return newItems;
+  });
 
-  let items: ListItem<FillPreviewProps>[];
-  $: items = results.map((result, i) => ({
-    component: FillPreview,
-    name: i,
-    props: {
-      icon: result.icon,
-      template: result.type,
-      title: result.name,
-      username: result.fields.find(({ name }) => name === "username").value,
-      host: result.host,
-      vault: $structure
-        ?.get(result.host)
-        ?.vaults?.find(({ id }) => id === result.vaultId),
-      id: result.id,
-    },
-  }));
-
-  function onSelect(event: CustomEvent<any>): void {
-    const id = event.detail;
-    loading.add(`Fill.fill`, fill(results[id]), {
+  function onSelect(name: any): void {
+    loading.add(`Fill.fill`, fill(results[name]), {
       onError(error) {
         messages.add(error.message, MessageType.ERROR, Duration.LONG);
       },
       onSuccess() {
-        close();
+        onClose();
       },
     });
   }
 
   async function fill(result: StoredSafeObject): Promise<void> {
-    browser.runtime.sendMessage({
-      context: "fill",
+    sendMessage({
+      from: Context.FILL,
+      to: Context.BACKGROUND,
       action: "fill",
       data: result,
     });
   }
 </script>
+
+<article class="save" bind:this={frame}>
+  <article class="grid">
+    <Logo />
+    <MessageViewer {messages} />
+    <LoadingBar isLoading={loading.isLoading} />
+    <ListView {items} {onSelect} />
+    <div class="sticky-buttons">
+      <button type="button" class="danger" onclick={() => onClose()}
+        >{getMessage(LocalizedMessage.IFRAME_CLOSE)}</button
+      >
+    </div>
+  </article>
+</article>
 
 <style>
   .save {
@@ -128,23 +132,3 @@
     overflow: auto auto;
   }
 </style>
-
-<article class="save" bind:this={frame}>
-  <article class="grid">
-    <Logo />
-    <MessageViewer {messages} />
-    <LoadingBar isLoading={$loading.isLoading} />
-    {#if !isInitialized}
-      <!-- Still loading -->
-      <Initializing />
-    {:else}
-      <ListView {items} on:select={onSelect} />
-    {/if}
-    <div class="sticky-buttons">
-      <button
-        type="button"
-        class="danger"
-        on:click={close}>{getMessage(LocalizedMessage.IFRAME_CLOSE)}</button>
-    </div>
-  </article>
-</article>

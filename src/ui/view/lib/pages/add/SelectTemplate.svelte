@@ -1,28 +1,39 @@
+<script lang="ts" module>
+  export interface Props {
+    host: string;
+    templateid: string;
+  }
+</script>
+
 <script lang="ts">
-  import { afterUpdate } from "svelte";
-  import { getMessage, LocalizedMessage } from "../../../../../global/i18n";
-  import { structure } from "../../../../stores";
+  import { getMessage, LocalizedMessage } from "@/global/i18n";
+  import { Duration, instances, messages, MessageType } from "@/ui/stores";
 
-  let oldHost: string = null;
-  export let host: string;
-  export let templateid: string;
+  let { host, templateid = $bindable() }: Props = $props();
 
-  let templates: StoredSafeTemplate[];
+  let templates: StoredSafeTemplate[] = $derived(
+    instances.instances.get(host)?.templates ?? []
+  );
 
   function getDefaultTemplate(): string {
-    if (!templates) return undefined;
+    if (!templates) {
+      messages.add(
+        "Templates are not set, invalid state.",
+        MessageType.ERROR,
+        Duration.MEDIUM
+      );
+      return "";
+    }
+    // Default template #20 (Login Info), best adapted for browser extension
     const loginInfo = templates.find(({ id }) => id === "20");
     if (!!loginInfo) return loginInfo.id;
-    return templates[0]?.id;
+    return templates[0]?.id ?? "";
   }
 
-  afterUpdate(() => {
-    if (oldHost !== host) {
-      oldHost = host;
-      let hostStructure = $structure.get(host);
-      templates = hostStructure?.templates;
-      templateid = getDefaultTemplate();
-    }
+  $effect(() => {
+    // Reselect the vault when the vault list changes.
+    // Depends on the `vaults` derived store.
+    templateid = getDefaultTemplate();
   });
 </script>
 

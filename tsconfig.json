@@ -1,10 +1,26 @@
 {
   "extends": "@tsconfig/svelte/tsconfig.json",
-  "include": ["src/**/*"],
-  "exclude": ["node_modules/*", "__sapper__/*", "public/*"],
-  "module": "es2015",
   "compilerOptions": {
-    "types": ["node", "firefox-webext-browser", "jest"],
-    "resolveJsonModule": true
-  }
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+    "target": "ESNext",
+    "module": "ESNext",
+    "resolveJsonModule": true,
+    "moduleDetection": "force",
+    "esModuleInterop": true,
+    "useDefineForClassFields": true,
+    "types": [
+      "node",
+      "firefox-webext-browser",
+      "@vitest/browser/providers/playwright"
+    ]
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.js",
+    "src/**/*.svelte",
+    "buildtools/**/*.ts"
+  ],
+  "exclude": ["node_modules"]
 }

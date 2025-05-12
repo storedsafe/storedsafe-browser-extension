@@ -1,7 +1,7 @@
-import type { SvelteComponent } from "svelte";
+import type { Component } from "svelte";
 
-export interface ListItem<T> {
-  component: typeof SvelteComponent
-  name: any
-  props: T
+export interface ListItem<T extends Record<string, any>> {
+  Component: Component<T, any, any>;
+  name: any;
+  props: T;
 }

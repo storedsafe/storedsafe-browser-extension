@@ -1,11 +1,34 @@
 <script lang="ts">
-  import { sites, sessions } from "../../stores";
-  import Initializing from "./Initializing.svelte";
+  import {
+    ignoreURLs,
+    preferences,
+    sessions,
+    settings,
+    sites,
+    instances,
+    search,
+  } from "@/ui/stores";
   import Main from "./Main.svelte";
+  import Initializing from "./Initializing.svelte";
 
-  let isInitialized: boolean = false
-  $: isInitialized = !!$sites && !!$sessions;
+  let isInitialized = $derived(
+    ignoreURLs.isInitialized &&
+      preferences.isInitialized &&
+      sessions.isInitialized &&
+      settings.isInitialized &&
+      sites.isInitialized &&
+      instances.isInitialized &&
+      search.isInitialized
+  );
 </script>
+
+<section>
+  {#if isInitialized}
+    <Main />
+  {:else}
+    <Initializing />
+  {/if}
+</section>
 
 <style>
   section {
@@ -19,11 +42,3 @@
     box-sizing: border-box;
   }
 </style>
-
-<section>
-  {#if isInitialized}
-    <Main />
-  {:else}
-    <Initializing />
-  {/if}
-</section>

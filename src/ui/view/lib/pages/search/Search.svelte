@@ -1,56 +1,54 @@
-<script lang="ts" context="module">
+<script lang="ts" module>
+  interface Props {
+    scrollTo?: (offset: number) => void;
+  }
+
   export const searchRequirements = [
     SITES_ADD_LOADING_ID,
     SITES_REMOVE_LOADING_ID,
     SESSIONS_LOGIN_LOADING_ID,
     SESSIONS_LOGOUT_LOADING_ID,
-    STRUCTURE_REFRESH_LOADING_ID,
+    INSTANCES_REFRESH_LOADING_ID,
   ];
 </script>
 
 <script lang="ts">
-  import { beforeUpdate, createEventDispatcher } from "svelte";
-
-  import type { ListItem } from "../../menus/ListView";
+  import type { ListItem } from "@/ui/view/lib/menus/ListView";
   import {
-    search,
-    structure,
-    sites,
     SESSIONS_LOGIN_LOADING_ID,
-    STRUCTURE_REFRESH_LOADING_ID,
+    INSTANCES_REFRESH_LOADING_ID,
     SESSIONS_LOGOUT_LOADING_ID,
     SITES_ADD_LOADING_ID,
     SITES_REMOVE_LOADING_ID,
-    messageStore
-  } from "../../../../stores";
-  import { getMessage, LocalizedMessage } from "../../../../../global/i18n";
+    search,
+    instances,
+    sites,
+    Messages,
+  } from "@/ui/stores";
+  import { getMessage, LocalizedMessage } from "@/global/i18n";
 
-  import ListView from "../../menus/ListView.svelte";
+  import ListView from "@/ui/view/lib/menus/ListView.svelte";
+  import MessageViewer from "@/ui/view/lib/layout/MessageViewer.svelte";
+
   import SearchItem from "./SearchItem.svelte";
+  import type { Props as SearchItemProps } from "./SearchItem.svelte";
   import Result from "./Result.svelte";
-  import MessageViewer from "../../layout/MessageViewer.svelte";
+  import { StoredSafeExtensionError } from "@/global/errors";
 
-  const dispatch = createEventDispatcher();
-
-  interface SearchItemProps {
-    icon: string;
-    template: string;
-    title: string;
-    username?: string;
-    host?: string;
-    vault: StoredSafeVault;
-    id: string;
-  }
+  let { scrollTo }: Props = $props();
 
   function parseSearchItem(
     result: StoredSafeObject
   ): ListItem<SearchItemProps> {
-    const showHost = $sites.length > 1;
-    const vault = $structure
+    const showHost = sites.data.length > 1;
+    const vault = instances.instances
       .get(result.host)
-      .vaults.find(({ id }) => id === result.vaultId);
+      ?.vaults.find(({ id }) => id === result.vaultId);
+    if (!vault) {
+      throw new StoredSafeExtensionError("Vault is not set, invalid state.");
+    }
     return {
-      component: SearchItem,
+      Component: SearchItem,
       name: result.host + result.id,
       props: {
         icon: result.icon,
@@ -58,47 +56,39 @@
         title: result.name,
         username: result.fields.find((field) => field.name === "username")
           ?.value,
-        host: showHost ? result.host : null,
+        host: showHost ? result.host : "",
         vault,
         id: result.id,
       },
     };
   }
 
-  const searchMessages = messageStore();
+  const searchMessages = new Messages();
 
-  let selected: string = null;
-  let result: StoredSafeObject;
-  let items: ListItem<SearchItemProps>[]
-
-  $: {
-    items = $search.map(parseSearchItem);
-    result = $search.find(({ host, id }) => selected === host + id);
-    selected = !!result ? selected : null;
-  }
-
-  function selectResult(value: string): void {
-    selected = value;
-    dispatch("scrollTo", 0);
-  }
-
-  beforeUpdate(() => {
-    if (result === undefined) selected = null;
+  let selected: string | null = $state(null);
+  let result: StoredSafeObject | null = $state(null);
+  let items: ListItem<SearchItemProps>[] = $derived.by(() => {
+    if (!sites.isInitialized || !instances.isInitialized) return [];
+    return search.results.map(parseSearchItem);
   });
 
-  const handleSelectResult = (e: CustomEvent<string>) => selectResult(e.detail);
-</script>
+  $effect(() => {
+    const newResult =
+      search.results.find(({ host, id }) => selected === host + id) ?? null;
+    selected = !!newResult ? selected : null;
+    result = newResult;
+  });
 
-<style>
-  .empty {
-    text-align: center;
+  function selectResult(value: string | null): void {
+    selected = value;
+    scrollTo?.(0);
   }
-</style>
+</script>
 
 <section class="grid">
   <MessageViewer messages={searchMessages} />
   {#if items.length > 0}
-    <ListView on:select={handleSelectResult} {selected} {items} />
+    <ListView onSelect={selectResult} {selected} {items} />
   {:else}
     <p class="empty">{getMessage(LocalizedMessage.SEARCH_EMPTY)}</p>
   {/if}
@@ -106,3 +96,9 @@
     <Result {result} />
   {/if}
 </section>
+
+<style>
+  .empty {
+    text-align: center;
+  }
+</style>

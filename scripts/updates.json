@@ -1,0 +1,40 @@
+{
+  "addons": {
+    "{5a110dee-fb42-44a1-b64d-d0444a199f96}": {
+      "updates": [
+        {
+          "version": "0.6.5",
+          "update_link": "https://storedsafe.com/addons/firefox/pkg/storedsafe-0.6.5-an+fx.xpi"
+        },
+        {
+          "version": "0.6.6",
+          "update_link": "https://storedsafe.com/addons/firefox/pkg/storedsafe-0.6.6-an+fx.xpi"
+        },
+        {
+          "version": "0.6.7",
+          "update_link": "https://storedsafe.com/addons/firefox/pkg/storedsafe-0.6.7-an+fx.xpi"
+        },
+        {
+          "version": "0.6.8",
+          "update_link": "https://storedsafe.com/addons/firefox/pkg/storedsafe-0.6.8-an+fx.xpi"
+        },
+        {
+          "version": "0.6.9",
+          "update_link": "https://storedsafe.com/addons/firefox/pkg/storedsafe-0.6.9-an+fx.xpi"
+        },
+        {
+          "version": "0.6.10",
+          "update_link": "https://storedsafe.com/addons/firefox/pkg/storedsafe-0.6.10-an+fx.xpi"
+        },
+        {
+          "version": "0.6.11",
+          "update_link": "https://storedsafe.com/addons/firefox/pkg/storedsafe-0.6.11-an+fx.xpi"
+        },
+        {
+          "version": "1.0.0",
+          "update_link": "https://storedsafe.com/addons/firefox/pkg/9d00af40f3244e0e9448-1.0.0.xpi"
+        }
+      ]
+    }
+  }
+}

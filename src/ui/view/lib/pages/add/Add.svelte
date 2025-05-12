@@ -1,80 +1,91 @@
-<script lang="ts" context="module">
-  import { Logger } from "../../../../../global/logger";
-  const logger = new Logger("add");
+<script lang="ts" module>
+  import { Logger } from "@/global/logger";
 
   export const addRequirements = [
     SESSIONS_LOGIN_LOADING_ID,
     SESSIONS_LOGOUT_LOADING_ID,
-    STRUCTURE_REFRESH_LOADING_ID,
+    INSTANCES_REFRESH_LOADING_ID,
   ];
 </script>
 
 <script lang="ts">
-  import { vault } from "../../../../../global/api";
-  import { getMessage, LocalizedMessage } from "../../../../../global/i18n";
+  import { vault } from "@/global/api";
+  import { getMessage, LocalizedMessage } from "@/global/i18n";
   import {
-    preferences,
     sessions,
-    structure,
+    instances,
     SESSIONS_LOGIN_LOADING_ID,
     SESSIONS_LOGOUT_LOADING_ID,
-    STRUCTURE_REFRESH_LOADING_ID,
+    INSTANCES_REFRESH_LOADING_ID,
     loading,
     MessageType,
     Duration,
     messages,
-  } from "../../../../stores";
+  } from "@/ui/stores";
 
-  import Card from "../../layout/Card.svelte";
+  import Card from "@/ui/view/lib/layout/Card.svelte";
   import SelectHost from "./SelectHost.svelte";
   import SelectVault from "./SelectVault.svelte";
   import SelectTemplate from "./SelectTemplate.svelte";
   import TemplateFields from "./TemplateFields.svelte";
-  import { followFocus } from "../../../use/followFocus";
 
   const MANDATORY_FIELDS = ["parentid", "groupid", "templateid"];
   const EMPTY_STATE = { parentid: "0" };
 
-  let host: string = undefined;
-  let isValid: boolean = false;
-  let values: Record<string, any> = { ...EMPTY_STATE };
+  let host: string = $state("");
+  let isValid: boolean = $state(false);
+  let values: Record<string, any> = $state({ ...EMPTY_STATE });
 
-  $: template = $structure
-    .get(host)
-    ?.templates?.find(({ id }) => id === values.templateid);
+  let template = $derived(
+    instances.instances
+      .get(host)
+      ?.templates?.find(({ id }) => id === values.templateid)
+  );
 
-  function add() {
+  function isTemplateField(key: string) {
+    return (
+      MANDATORY_FIELDS.includes(key) ||
+      template?.structure.findIndex(({ name }) => name === key) !== -1
+    );
+  }
+
+  function add(e: SubmitEvent) {
+    e.preventDefault();
+    if (!template) {
+      messages.add("Template is not set, invalid state.", MessageType.ERROR);
+      return;
+    }
+
+    const session = sessions.data.get(host);
+    if (!session) {
+      messages.add("Session is not set, invalid state.", MessageType.ERROR);
+      return;
+    }
+
     const addValues: Record<string, any> = {};
     for (const key of Object.keys(values)) {
-      if (
-        MANDATORY_FIELDS.includes(key) ||
-        template.structure.findIndex(({ name }) => name === key) !== -1
-      ) {
+      if (isTemplateField(key)) {
         addValues[key] = values[key];
       }
     }
-    loading.add(
-      `Add.add`,
-      vault.addObject(host, $sessions.get(host).token, addValues),
-      {
-        onError(error) {
-          messages.add(error.message, MessageType.ERROR);
-        },
-        onSuccess() {
-          values = { ...EMPTY_STATE };
-          messages.add(
-            getMessage(LocalizedMessage.ADD_SUCCESS),
-            MessageType.INFO,
-            Duration.MEDIUM
-          );
-        },
-      }
-    );
+    loading.add(`Add.add`, vault.addObject(host, session.token, addValues), {
+      onError(error) {
+        messages.add(error.message, MessageType.ERROR);
+      },
+      onSuccess() {
+        values = { ...EMPTY_STATE };
+        messages.add(
+          getMessage(LocalizedMessage.ADD_SUCCESS),
+          MessageType.INFO,
+          Duration.MEDIUM
+        );
+      },
+    });
   }
 </script>
 
 <section>
-  <form class="grid" use:followFocus on:submit|preventDefault={add}>
+  <form class="grid" onsubmit={add}>
     <Card>
       <SelectHost bind:host />
     </Card>
@@ -90,7 +101,7 @@
             bind:groupid={values.groupid}
             bind:templateid={values.templateid}
             bind:values
-            on:validate={(e) => (isValid = e.detail)}
+            onValidate={(value) => (isValid = value)}
           />
         </Card>
       {/if}

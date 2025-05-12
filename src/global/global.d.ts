@@ -6,8 +6,8 @@
  * @param managed True if readonly (from managed storage).
  * */
 interface Setting {
-  value: number | boolean
-  managed: boolean
+  value: number | boolean;
+  managed: boolean;
 }
 
 /**
@@ -17,9 +17,9 @@ interface Setting {
  * @param managed True if readonly (from managed storage).
  * */
 interface Site {
-  host: string
-  apikey: string
-  managed: boolean
+  host: string;
+  apikey: string;
+  managed: boolean;
 }
 
 /**
@@ -31,14 +31,14 @@ interface Site {
  * @param timeout StoredSafe server timeout, used for keepalive timer.
  * */
 interface Session {
-  token: string
-  createdAt: number
-  warnings: string[]
-  violations: string[]
-  timeout: number
+  token: string;
+  createdAt: number;
+  warnings: string[];
+  violations: string[];
+  timeout: number;
 }
 
-type LoginType = 'totp' | 'yubikey'
+type LoginType = "totp" | "yubikey";
 
 /**
  * Preferences for adding new objects to StoredSafe.
@@ -46,10 +46,10 @@ type LoginType = 'totp' | 'yubikey'
  * @param vaults Mapping of hosts to preferred vault IDs.
  * */
 interface AddPreferences {
-  host: string,
+  host: string | null;
   vaults: {
-    [host: string]: string // vaultId
-  }
+    [host: string]: string; // vaultId
+  };
 }
 
 /**
@@ -58,8 +58,8 @@ interface AddPreferences {
  * @param loginType Last used login type.
  * */
 interface SitePreferences {
-  username?: string
-  loginType?: LoginType
+  username: string | null;
+  loginType: LoginType | null;
 }
 
 /**
@@ -68,21 +68,25 @@ interface SitePreferences {
  * @param objectId ID of StoredSafe object on `host` to use for auto fill.
  * */
 interface AutoFillPreferences {
-  host?: string
-  objectId?: string
+  host: string | null;
+  objectId: string | null;
 }
 
 /**
  * Preferences based on user interaction.
- * @param add (optional) Preferences for adding object to StoredSafe.
- * @param sites (optional) Preferences per host.
- * @param autoFill (optional) Preferences for auto fill.
+ * @param add Preferences for adding object to StoredSafe.
+ * @param sites Preferences per host.
+ * @param autoFill Preferences for auto fill.
  * */
 interface Preferences {
-  add?: AddPreferences
-  sites?: Map<string, SitePreferences>
-  autoFill?: Map<string, AutoFillPreferences>
+  add: AddPreferences;
+  sites: Map<string, SitePreferences>;
+  autoFill: Map<string, AutoFillPreferences>;
 }
+
+type IgnoreURLs = string[];
+type SessionsMap = Map<string, Session>;
+type SettingsMap = Map<string, Setting>;
 
 /**
  * All fields in storage.
@@ -93,11 +97,11 @@ interface Preferences {
  * @param sites StoredSafe hosts and API keys added by user or by organization.
  */
 interface ExtensionStorage {
-  ignore: string[] // Local
-  preferences: Preferences // Local
-  sessions: Map<string, Session> // Local
-  settings: Map<string, Setting> // Sync and Managed
-  sites: Site[] // Sync and Managed
+  ignore: IgnoreURLs; // Local
+  preferences: Preferences; // Local
+  sessions: SessionsMap; // Local
+  settings: SettingsMap; // Sync and Managed
+  sites: Site[]; // Sync and Managed
 }
 
 ////////////////////////////////////////////////////////////
@@ -119,17 +123,17 @@ interface ExtensionStorage {
  * @param pwgen (optional) True if the field should have a password generator.
  * */
 interface StoredSafeField {
-  name: string
-  title: string
-  type: string
-  isEncrypted: boolean
-  required: boolean
-  options?: string[]
-  options_default?: string
-  placeholder?: string
-  value?: string
-  isPassword?: boolean
-  pwgen?: boolean
+  name: string;
+  title: string;
+  type: string;
+  isEncrypted: boolean;
+  required: boolean;
+  options: string[];
+  options_default?: string;
+  placeholder?: string;
+  value?: string;
+  isPassword?: boolean;
+  pwgen?: boolean;
 }
 
 /**
@@ -144,15 +148,15 @@ interface StoredSafeField {
  * @param fields Associated fields and values.
  * */
 interface StoredSafeObject {
-  host: string
-  id: string
-  templateId: string
-  vaultId: string
-  name: string
-  type: string
-  icon: string
-  isDecrypted: boolean
-  fields: StoredSafeField[]
+  host: string;
+  id: string;
+  templateId: string;
+  vaultId: string;
+  name: string;
+  type: string;
+  icon: string;
+  isDecrypted: boolean;
+  fields: StoredSafeField[];
 }
 
 /**
@@ -162,26 +166,26 @@ interface StoredSafeObject {
  * @param ...rules
  */
 interface StoredSafePasswordPolicy {
-  id: number
-  name: string
+  id: number;
+  name: string;
   rules: {
-    min_length?: number
-    max_length?: number
-    min_lowercase_chars?: number
-    max_lowercase_chars?: number
-    min_uppercase_chars?: number
-    max_uppercase_chars?: number
-    disallow_numeric_chars?: boolean
-    disallow_numeric_first?: boolean
-    disallow_numeric_last?: boolean
-    min_numeric_chars?: number
-    max_numeric_chars?: number
-    disallow_nonalphanumeric_chars?: boolean
-    disallow_nonalphanumeric_first?: boolean
-    disallow_nonalphanumeric_last?: boolean
-    min_nonalphanumeric_chars?: number
-    max_nonalphanumeric_chars?: number
-  }
+    min_length?: number;
+    max_length?: number;
+    min_lowercase_chars?: number;
+    max_lowercase_chars?: number;
+    min_uppercase_chars?: number;
+    max_uppercase_chars?: number;
+    disallow_numeric_chars?: boolean;
+    disallow_numeric_first?: boolean;
+    disallow_numeric_last?: boolean;
+    min_numeric_chars?: number;
+    max_numeric_chars?: number;
+    disallow_nonalphanumeric_chars?: boolean;
+    disallow_nonalphanumeric_first?: boolean;
+    disallow_nonalphanumeric_last?: boolean;
+    min_nonalphanumeric_chars?: number;
+    max_nonalphanumeric_chars?: number;
+  };
 }
 
 /**
@@ -191,10 +195,10 @@ interface StoredSafePasswordPolicy {
  * @param policyId ID of password policy for vault.
  * */
 interface StoredSafeVault {
-  id: string
-  name: string
-  permissions: number
-  policyId: number
+  id: string;
+  name: string;
+  permissions: number;
+  policyId: number;
 }
 
 /**
@@ -204,8 +208,8 @@ interface StoredSafeVault {
  * @param structure Fields associated with template.
  * */
 interface StoredSafeTemplate {
-  id: string
-  name: string
-  icon: string
-  structure: StoredSafeField[]
+  id: string;
+  name: string;
+  icon: string;
+  structure: StoredSafeField[];
 }

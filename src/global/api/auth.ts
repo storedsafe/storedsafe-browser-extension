@@ -1,17 +1,23 @@
-import StoredSafe, { StoredSafeLoginData, StoredSafeError } from 'storedsafe'
+import type { StoredSafeLoginData } from "storedsafe";
+import { StoredSafe } from "storedsafe";
 import {
   StoredSafeAuthLoginError,
   StoredSafeAuthLogoutError,
   StoredSafeBaseError,
-  StoredSafeNetworkError
-} from '../errors'
-import * as sessions from '../storage/sessions'
+  StoredSafeNetworkError,
+} from "../errors";
+import * as sessions from "../storage/sessions";
+import { Logger } from "../logger";
+
+const logger = new Logger("auth");
 
 // TODO: Improved error handling
+// ^ fetch doesn't return errors with network status codes as the previous axios
+//   library did. So the error handling needs to be refactored.
 
 function parseMessages(obj: [] | { [key: string]: string }) {
-  if (Array.isArray(obj)) return obj
-  return [...Object.values(obj)]
+  if (Array.isArray(obj)) return obj;
+  return [...Object.values(obj)];
 }
 
 function parseLogin(data: StoredSafeLoginData): Session {
@@ -20,8 +26,8 @@ function parseLogin(data: StoredSafeLoginData): Session {
     createdAt: Date.now(),
     warnings: parseMessages(data.CALLINFO.audit.warnings),
     violations: parseMessages(data.CALLINFO.audit.violations),
-    timeout: data.CALLINFO.timeout
-  }
+    timeout: data.CALLINFO.timeout,
+  };
 }
 
 /**
@@ -30,7 +36,7 @@ function parseLogin(data: StoredSafeLoginData): Session {
  * @param session Newly created session.
  */
 async function afterLogin(host: string, session: Session) {
-  await sessions.add(host, session)
+  await sessions.add(host, session);
 }
 
 /**
@@ -47,19 +53,20 @@ export async function loginTotp(
   passphrase: string,
   otp: string
 ): Promise<void> {
-  const api = new StoredSafe({ host, apikey })
+  const api = new StoredSafe({ host, apikey });
   try {
-    const response = await api.loginTotp(username, passphrase, otp)
-    if (response.status === 200) {
-      await afterLogin(host, parseLogin(response.data))
-    } else if (response.status === 403) {
-      throw new StoredSafeAuthLoginError()
+    const response = await api.loginTotp(username, passphrase, otp);
+    if (response.status === 200 && response.data) {
+      await afterLogin(host, parseLogin(response.data));
+    } else if ([401, 403].includes(response.status)) {
+      throw new StoredSafeAuthLoginError();
     } else {
-      throw new Error(`Unknown response status: ${response.status}`)
+      throw new Error(`Unexpected response status: ${response.status}`);
     }
   } catch (error) {
-    if (error instanceof StoredSafeBaseError) throw error
-    throw new StoredSafeNetworkError(error, error.status)
+    if (error instanceof StoredSafeBaseError) throw error;
+    logger.error("TOTP login error: %o", error);
+    throw error;
   }
 }
 
@@ -77,19 +84,20 @@ export async function loginYubikey(
   passphrase: string,
   otp: string
 ): Promise<void> {
-  const api = new StoredSafe({ host, apikey })
+  const api = new StoredSafe({ host, apikey });
   try {
-    const response = await api.loginYubikey(username, passphrase, otp)
-    if (response.status === 200) {
-      await afterLogin(host, parseLogin(response.data))
-    } else if (response.status === 403) {
-      throw new StoredSafeAuthLoginError()
+    const response = await api.loginYubikey(username, passphrase, otp);
+    if (response.status === 200 && response.data) {
+      await afterLogin(host, parseLogin(response.data));
+    } else if ([401, 403].includes(response.status)) {
+      throw new StoredSafeAuthLoginError();
     } else {
-      throw new Error(`Unknown response status: ${response.status}`)
+      throw new Error(`Unexpected response status: ${response.status}`);
     }
   } catch (error) {
-    if (error instanceof StoredSafeBaseError) throw error
-    throw new StoredSafeNetworkError(error, error.status)
+    if (error instanceof StoredSafeBaseError) throw error;
+    logger.error("Yubikey login error: %o", error);
+    throw error;
   }
 }
 
@@ -105,24 +113,25 @@ export async function loginSmartcard(
   passphrase: string,
   otp: string
 ): Promise<void> {
-  const api = new StoredSafe({ host, apikey })
+  const api = new StoredSafe({ host, apikey });
   try {
-    const response = await api.loginSmartCard(username, passphrase)
-    if (response.status === 200) {
-      await afterLogin(host, parseLogin(response.data))
-    } else if (response.status === 403) {
-      throw new StoredSafeAuthLoginError()
+    const response = await api.loginSmartCard(username, passphrase);
+    if (response.status === 200 && response.data) {
+      await afterLogin(host, parseLogin(response.data));
+    } else if ([401, 403].includes(response.status)) {
+      throw new StoredSafeAuthLoginError();
     } else {
-      throw new Error(`Unknown response status: ${response.status}`)
+      throw new Error(`Unexpected response status: ${response.status}`);
     }
   } catch (error) {
-    if (error instanceof StoredSafeBaseError) throw error
-    throw new StoredSafeNetworkError(error, error.status)
+    if (error instanceof StoredSafeBaseError) throw error;
+    logger.error("Smartcard login error: %o", error);
+    throw error;
   }
 }
 
 async function afterLogout(host: string): Promise<void> {
-  await sessions.remove(host)
+  await sessions.remove(host);
   // TODO: After logout tasks (purge results, etc)
 }
 
@@ -133,17 +142,18 @@ async function afterLogout(host: string): Promise<void> {
  * @param token Token associated with session for `host`.
  */
 export async function check(host: string, token: string): Promise<void> {
-  const api = new StoredSafe({ host, token })
+  const api = new StoredSafe({ host, token });
   try {
-    const response = await api.check()
-    if (response.status === 403) {
-      await afterLogout(host)
+    const response = await api.check();
+    if ([401, 403].includes(response.status)) {
+      await afterLogout(host);
     } else if (response.status !== 200) {
-      throw new Error(`Unknown response status: ${response.status}`)
+      throw new Error(`Unexpected response status: ${response.status}`);
     }
   } catch (error) {
-    if (error instanceof StoredSafeBaseError) throw error
-    throw new StoredSafeNetworkError(error, error.status)
+    if (error instanceof StoredSafeBaseError) throw error;
+    logger.error("Token check error: %o", error);
+    throw error;
   }
 }
 
@@ -154,17 +164,18 @@ export async function check(host: string, token: string): Promise<void> {
  * @param token Token associated with session for `host`.
  */
 export async function logout(host: string, token: string): Promise<void> {
-  const api = new StoredSafe({ host, token })
+  const api = new StoredSafe({ host, token });
   try {
-    const response = await api.logout()
+    const response = await api.logout();
     if (response.status !== 200) {
-      throw new StoredSafeAuthLogoutError(response.status)
+      throw new StoredSafeAuthLogoutError(response.status);
     }
     // Defer success actions to finally block
   } catch (error) {
-    if (error instanceof StoredSafeBaseError) throw error
-    throw new StoredSafeNetworkError(error, error.status)
+    if (error instanceof StoredSafeBaseError) throw error;
+    logger.error("Logout error: %o", error);
+    throw error;
   } finally {
-    await afterLogout(host)
+    await afterLogout(host);
   }
 }

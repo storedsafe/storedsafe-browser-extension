@@ -1,16 +1,18 @@
-import StoredSafe, {
+import type {
   StoredSafeObjectData,
   StoredSafeObject as ResponseObject,
   StoredSafeTemplate as ResponseTemplate,
   StoredSafeVaultsData,
   StoredSafeTemplateData,
-  StoredSafePoliciesData
-} from 'storedsafe'
+  StoredSafePoliciesData,
+} from "storedsafe";
+import { StoredSafe } from "storedsafe";
 import {
   StoredSafeAddObjectError,
   StoredSafeBaseError,
   StoredSafeDecryptError,
   StoredSafeEditError,
+  StoredSafeExtensionError,
   StoredSafeGeneratePasswordError,
   StoredSafeGetPoliciesError,
   StoredSafeGetTemplatesError,
@@ -18,9 +20,9 @@ import {
   StoredSafeInvalidTokenError,
   StoredSafeNetworkError,
   StoredSafeParseObjectError,
-  StoredSafeSearchError
-} from '../errors'
-import * as sessions from '../storage/sessions'
+  StoredSafeSearchError,
+} from "../errors";
+import * as sessions from "../storage/sessions";
 
 /**
  * Parse a single StoredSafe object into a format which is easier to work with
@@ -47,15 +49,15 @@ function parseResult(
       type,
       placeholder,
       options,
-      options_default
+      options_default,
     }) => {
-      const pwgen = type === 'text-passwdgen'
-      const fieldType = pwgen ? 'text' : type
+      const pwgen = type === "text-passwdgen";
+      const fieldType = pwgen ? "text" : type;
       const value = isEncrypted
-        ? isDecrypted
+        ? obj.crypted
           ? obj.crypted[name]
           : undefined
-        : obj.public[name]
+        : obj.public[name];
       return {
         name,
         title,
@@ -66,11 +68,11 @@ function parseResult(
         isPassword,
         pwgen,
         placeholder,
-        options,
-        options_default
-      }
+        options: options ?? [],
+        options_default,
+      };
     }
-  )
+  );
 
   // The parsed version of the StoredSafe object.
   return {
@@ -80,10 +82,10 @@ function parseResult(
     vaultId: obj.groupid,
     name: obj.objectname,
     type: template.info.name,
-    icon: template.info.ico.replace(/^ico_/, ''),
+    icon: template.info.ico.replace(/^ico_/, ""),
     isDecrypted,
-    fields
-  }
+    fields,
+  };
 }
 
 /**
@@ -95,16 +97,21 @@ function parseResults(
   host: string,
   data: StoredSafeObjectData
 ): StoredSafeObject[] {
-  const objects: StoredSafeObject[] = []
+  const objects: StoredSafeObject[] = [];
   for (const obj of data.OBJECT) {
-    const template = data.TEMPLATES.find(({ id }) => id === obj.templateid)
+    const template = data.TEMPLATES.find(({ id }) => id === obj.templateid);
+    if (!template) {
+      throw new StoredSafeExtensionError(
+        "Template for object not found, invalid state."
+      );
+    }
     // Skip objects with files
-    if (!!obj.fileinfo) continue
+    if (!!obj.fileinfo) continue;
     // Skip folders (2)
-    if (template.info.id === '2') continue
-    objects.push(parseResult(host, obj, template))
+    if (template.info.id === "2") continue;
+    objects.push(parseResult(host, obj, template));
   }
-  return objects
+  return objects;
 }
 
 /**
@@ -118,24 +125,28 @@ export async function search(
   token: string,
   needle: string
 ): Promise<StoredSafeObject[]> {
-  if (needle.length === 0) return []
-  const api = new StoredSafe({ host, token })
+  if (needle.length === 0) return [];
+  const api = new StoredSafe<Response, RequestInit>({ host, token });
   try {
-    const response = await api.find(needle)
-    if (response.status === 403) {
+    const response = await api.find(needle);
+    if ([401, 403].includes(response.status)) {
       sessions.remove(host);
       throw new StoredSafeInvalidTokenError();
     } else if (response.status !== 200) {
-      throw new StoredSafeSearchError(response.status)
+      throw new StoredSafeSearchError(response.status);
+    } else if (!response.data) {
+      throw new StoredSafeExtensionError(
+        "Request returned no data, invalid state."
+      );
     }
     try {
-      return parseResults(host, response.data)
+      return parseResults(host, response.data);
     } catch (error) {
-      throw new StoredSafeParseObjectError()
+      throw new StoredSafeParseObjectError();
     }
   } catch (error) {
-    if (error instanceof StoredSafeBaseError) throw error
-    throw new StoredSafeNetworkError(error, error.status)
+    if (error instanceof StoredSafeBaseError) throw error;
+    throw error;
   }
 }
 
@@ -150,27 +161,36 @@ export async function decryptObject(
   token: string,
   obj: StoredSafeObject
 ): Promise<StoredSafeObject> {
-  const api = new StoredSafe({ host, token })
+  const api = new StoredSafe<Response, RequestInit>({ host, token });
   try {
-    const response = await api.decryptObject(obj.id)
-    if (response.status === 403) {
+    const response = await api.decryptObject(obj.id);
+    if ([401, 403].includes(response.status)) {
       sessions.remove(host);
       throw new StoredSafeInvalidTokenError();
     } else if (response.status !== 200) {
-      throw new StoredSafeDecryptError(response.status)
+      throw new StoredSafeDecryptError(response.status);
+    } else if (!response.data) {
+      throw new StoredSafeExtensionError(
+        "Request returned no data, invalid state."
+      );
     }
     try {
-      const obj = response.data.OBJECT[0]
+      const obj = response.data.OBJECT[0];
       const template = response.data.TEMPLATES.find(
         ({ id }) => id === obj.templateid
-      )
-      return parseResult(host, obj, template, true)
+      );
+      if (!template) {
+        throw new StoredSafeExtensionError(
+          "Template for object not found, invalid state."
+        );
+      }
+      return parseResult(host, obj, template, true);
     } catch (error) {
-      throw new StoredSafeParseObjectError()
+      throw new StoredSafeParseObjectError();
     }
   } catch (error) {
-    if (error instanceof StoredSafeBaseError) throw error
-    throw new StoredSafeNetworkError(error, error.status)
+    if (error instanceof StoredSafeBaseError) throw error;
+    throw error;
   }
 }
 
@@ -187,23 +207,23 @@ export async function editObject(
   obj: StoredSafeObject,
   values: Record<string, string>
 ): Promise<StoredSafeObject> {
-  const api = new StoredSafe({ host, token })
+  const api = new StoredSafe<Response, RequestInit>({ host, token });
   try {
-    const response = await api.editObject(obj.id, values)
-    if (response.status === 403) {
+    const response = await api.editObject(obj.id, values);
+    if ([401, 403].includes(response.status)) {
       sessions.remove(host);
       throw new StoredSafeInvalidTokenError();
     } else if (response.status !== 200) {
-      throw new StoredSafeEditError(response.status)
+      throw new StoredSafeEditError(response.status);
     }
   } catch (error) {
-    if (error instanceof StoredSafeBaseError) throw error
-    throw new StoredSafeNetworkError(error, error.status)
+    if (error instanceof StoredSafeBaseError) throw error;
+    throw error;
   }
-  obj.fields.forEach(field => {
-    if (!!values[field.name]) field.value = values[field.name]
-  })
-  return obj
+  obj.fields.forEach((field) => {
+    if (!!values[field.name]) field.value = values[field.name];
+  });
+  return obj;
 }
 
 /**
@@ -217,29 +237,29 @@ export async function deleteObject(
   token: string,
   obj: StoredSafeObject
 ): Promise<StoredSafeObject> {
-  const api = new StoredSafe({ host, token })
+  const api = new StoredSafe<Response, RequestInit>({ host, token });
   try {
-    const response = await api.deleteObject(obj.id)
-    if (response.status === 403) {
+    const response = await api.deleteObject(obj.id);
+    if ([401, 403].includes(response.status)) {
       sessions.remove(host);
       throw new StoredSafeInvalidTokenError();
     } else if (response.status !== 200) {
-      throw new StoredSafeEditError(response.status)
+      throw new StoredSafeEditError(response.status);
     }
   } catch (error) {
-    if (error instanceof StoredSafeBaseError) throw error
-    throw new StoredSafeNetworkError(error, error.status)
+    if (error instanceof StoredSafeBaseError) throw error;
+    throw error;
   }
-  return obj
+  return obj;
 }
 
 function parseVaults(data: StoredSafeVaultsData): StoredSafeVault[] {
-  return data.VAULTS.map(vault => ({
+  return data.VAULTS.map((vault) => ({
     id: vault.id,
     name: vault.groupname,
     permissions: Number(vault.status),
-    policyId: Number(vault.policy)
-  }))
+    policyId: Number(vault.policy),
+  }));
 }
 
 /**
@@ -248,51 +268,55 @@ function parseVaults(data: StoredSafeVaultsData): StoredSafeVault[] {
  * @param token Token associated with session for `host`.
  */
 export async function getVaults(host: string, token: string) {
-  const api = new StoredSafe({ host, token })
+  const api = new StoredSafe<Response, RequestInit>({ host, token });
   try {
-    const response = await api.listVaults()
-    if (response.status === 403) {
+    const response = await api.listVaults();
+    if ([401, 403].includes(response.status)) {
       sessions.remove(host);
       throw new StoredSafeInvalidTokenError();
     } else if (response.status !== 200) {
-      throw new StoredSafeGetVaultsError(response.status)
+      throw new StoredSafeGetVaultsError(response.status);
+    } else if (!response.data) {
+      throw new StoredSafeExtensionError(
+        "Request returned no data, invalid state."
+      );
     }
-    return parseVaults(response.data)
+    return parseVaults(response.data);
   } catch (error) {
-    if (error instanceof StoredSafeBaseError) throw error
-    throw new StoredSafeNetworkError(error, error.status)
+    if (error instanceof StoredSafeBaseError) throw error;
+    throw error;
   }
 }
 
 function parseTemplates(data: StoredSafeTemplateData): StoredSafeTemplate[] {
-  const templates = data.TEMPLATE.filter(template => {
+  const templates = data.TEMPLATE.filter((template) => {
     // Filter out file-type objects
-    if (Object.keys(template.STRUCTURE).includes('file1')) return false
+    if (Object.keys(template.STRUCTURE).includes("file1")) return false;
     // Filter out folders
-    if (template.INFO.id === '2') return false
-    return true
-  })
-  return templates.map(template => ({
+    if (template.INFO.id === "2") return false;
+    return true;
+  });
+  return templates.map((template) => ({
     id: template.INFO.id,
     name: template.INFO.name,
-    icon: template.INFO.ico.replace(/^ico_/, ''),
-    structure: Object.keys(template.STRUCTURE).map(field => {
-      const pwgen = template.STRUCTURE[field].type === 'text-passwdgen'
-      let fieldType: string = template.STRUCTURE[field].type
-      if (pwgen) fieldType = 'text'
+    icon: template.INFO.ico.replace(/^ico_/, ""),
+    structure: Object.keys(template.STRUCTURE).map((field) => {
+      const pwgen = template.STRUCTURE[field].type === "text-passwdgen";
+      let fieldType: string = template.STRUCTURE[field].type;
+      if (pwgen) fieldType = "text";
       return {
         name: field,
         title: template.STRUCTURE[field].translation,
         type: fieldType,
         isEncrypted: template.STRUCTURE[field].encrypted,
         required: !template.STRUCTURE[field].opt,
-        options: template.STRUCTURE[field].options,
+        options: template.STRUCTURE[field].options ?? [],
         options_default: template.STRUCTURE[field].options_default,
         placeholder: template.STRUCTURE[field].placeholder,
-        pwgen
-      }
-    })
-  }))
+        pwgen,
+      };
+    }),
+  }));
 }
 
 /**
@@ -301,26 +325,30 @@ function parseTemplates(data: StoredSafeTemplateData): StoredSafeTemplate[] {
  * @param token Token associated with session for `host`.
  */
 export async function getTemplates(host: string, token: string) {
-  const api = new StoredSafe({ host, token })
+  const api = new StoredSafe<Response, RequestInit>({ host, token });
   try {
-    const response = await api.listTemplates()
-    if (response.status === 403) {
+    const response = await api.listTemplates();
+    if ([401, 403].includes(response.status)) {
       sessions.remove(host);
       throw new StoredSafeInvalidTokenError();
     } else if (response.status !== 200) {
-      throw new StoredSafeGetTemplatesError(response.status)
+      throw new StoredSafeGetTemplatesError(response.status);
+    } else if (!response.data) {
+      throw new StoredSafeExtensionError(
+        "Request returned no data, invalid state."
+      );
     }
-    return parseTemplates(response.data)
+    return parseTemplates(response.data);
   } catch (error) {
-    if (error instanceof StoredSafeBaseError) throw error
-    throw new StoredSafeNetworkError(error, error.status)
+    if (error instanceof StoredSafeBaseError) throw error;
+    throw error;
   }
 }
 
 function parsePolicies(
   data: StoredSafePoliciesData
 ): StoredSafePasswordPolicy[] {
-  return data.CALLINFO.policies
+  return data.CALLINFO.policies;
 }
 
 /**
@@ -329,19 +357,23 @@ function parsePolicies(
  * @param token Token associated with session for `host`.
  */
 export async function getPolicies(host: string, token: string) {
-  const api = new StoredSafe({ host, token })
+  const api = new StoredSafe<Response, RequestInit>({ host, token });
   try {
-    const response = await api.passwordPolicies()
-    if (response.status === 403) {
+    const response = await api.passwordPolicies();
+    if ([401, 403].includes(response.status)) {
       sessions.remove(host);
       throw new StoredSafeInvalidTokenError();
     } else if (response.status !== 200) {
-      throw new StoredSafeGetPoliciesError(response.status)
+      throw new StoredSafeGetPoliciesError(response.status);
+    } else if (!response.data) {
+      throw new StoredSafeExtensionError(
+        "Request returned no data, invalid state."
+      );
     }
-    return parsePolicies(response.data)
+    return parsePolicies(response.data);
   } catch (error) {
-    if (error instanceof StoredSafeBaseError) throw error
-    throw new StoredSafeNetworkError(error, error.status)
+    if (error instanceof StoredSafeBaseError) throw error;
+    throw error;
   }
 }
 
@@ -353,18 +385,18 @@ export async function getPolicies(host: string, token: string) {
  * @see https://developer.storedsafe.com/objects/create_object.html
  */
 export async function addObject(host: string, token: string, params: object) {
-  const api = new StoredSafe({ host, token })
+  const api = new StoredSafe<Response, RequestInit>({ host, token });
   try {
-    const response = await api.createObject(params)
-    if (response.status === 403) {
+    const response = await api.createObject(params);
+    if ([401, 403].includes(response.status)) {
       sessions.remove(host);
       throw new StoredSafeInvalidTokenError();
     } else if (response.status !== 200) {
-      throw new StoredSafeAddObjectError(response.status)
+      throw new StoredSafeAddObjectError(response.status);
     }
   } catch (error) {
-    if (error instanceof StoredSafeBaseError) throw error
-    throw new StoredSafeNetworkError(error, error.status)
+    if (error instanceof StoredSafeBaseError) throw error;
+    throw error;
   }
 }
 
@@ -377,28 +409,32 @@ export async function generatePassword(
   host: string,
   token: string,
   properties?: {
-    type?: 'pronouncable' | 'diceword' | 'opie' | 'secure' | 'pin'
-    length?: number
-    language?: 'en_US' | 'sv_SE'
-    delimiter?: 'dash' | 'space' | 'default'
-    words?: number
-    min_char?: number
-    max_char?: number
-    policyid?: number
+    type?: "pronouncable" | "diceword" | "opie" | "secure" | "pin";
+    length?: number;
+    language?: "en_US" | "sv_SE";
+    delimiter?: "dash" | "space" | "default";
+    words?: number;
+    min_char?: number;
+    max_char?: number;
+    policyid?: number;
   }
 ) {
-  const api = new StoredSafe({ host, token })
+  const api = new StoredSafe<Response, RequestInit>({ host, token });
   try {
-    const response = await api.generatePassword(properties)
-    if (response.status === 403) {
+    const response = await api.generatePassword(properties);
+    if ([401, 403].includes(response.status)) {
       sessions.remove(host);
       throw new StoredSafeInvalidTokenError();
     } else if (response.status !== 200) {
-      throw new StoredSafeGeneratePasswordError(response.status)
+      throw new StoredSafeGeneratePasswordError(response.status);
+    } else if (!response.data) {
+      throw new StoredSafeExtensionError(
+        "Request returned no data, invalid state."
+      );
     }
-    return response.data.CALLINFO.passphrase
+    return response.data.CALLINFO.passphrase;
   } catch (error) {
-    if (error instanceof StoredSafeBaseError) throw error
-    throw new StoredSafeNetworkError(error, error.status)
+    if (error instanceof StoredSafeBaseError) throw error;
+    throw error;
   }
 }

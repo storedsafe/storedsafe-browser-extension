@@ -1,41 +1,39 @@
 <script lang="ts">
-  import { getMessage, LocalizedMessage } from "../../../../../global/i18n";
+  import { getMessage, LocalizedMessage } from "@/global/i18n";
   import {
     loading,
-    messageStore,
+    Messages,
     MessageType,
     sites,
-SITES_ADD_LOADING_ID,
-SITES_REMOVE_LOADING_ID,
-  } from "../../../../stores";
+    SITES_ADD_LOADING_ID,
+    SITES_REMOVE_LOADING_ID,
+  } from "@/ui/stores";
 
-  import Card from "../../layout/Card.svelte";
-  import MessageViewer from "../../layout/MessageViewer.svelte";
+  import Card from "@/ui/view/lib/layout/Card.svelte";
+  import MessageViewer from "@/ui/view/lib/layout/MessageViewer.svelte";
 
-  let addHost: HTMLInputElement;
+  let addHost: HTMLInputElement | undefined = $state();
 
-  let addInitialState = { host: "", apikey: "" };
-  let addValues: Pick<Site, "host" | "apikey"> = { ...addInitialState };
+  const addInitialState = { host: "", apikey: "" };
+  let addValues: Pick<Site, "host" | "apikey"> = $state(
+    structuredClone(addInitialState)
+  );
 
-  const addMessages = messageStore();
-  const deleteMessages = messageStore();
+  const addMessages = new Messages();
+  const deleteMessages = new Messages();
 
-  let managedSites: Site[], userSites: Site[];
-  $: {
-    managedSites = [];
-    userSites = [];
-    for (const site of $sites) {
-      if (site.managed) managedSites.push(site);
-      else userSites.push(site);
-    }
-  }
+  let managedSites: Site[] = $derived(
+    sites.data.filter((site) => site.managed)
+  );
+  let userSites: Site[] = $derived(sites.data.filter((site) => !site.managed));
 
   function resetAddForm() {
-    addValues = { ...addInitialState };
+    addValues = structuredClone(addInitialState);
     addHost?.focus();
   }
 
-  function addSite(): void {
+  function addSite(e: SubmitEvent): void {
+    e.preventDefault();
     addMessages.clear();
     const { host, apikey } = addValues;
     loading.add(SITES_ADD_LOADING_ID, sites.add(host, apikey), {
@@ -48,7 +46,8 @@ SITES_REMOVE_LOADING_ID,
     });
   }
 
-  function removeSite(host: string): void {
+  function removeSite(e: SubmitEvent, host: string): void {
+    e.preventDefault();
     loading.add(SITES_REMOVE_LOADING_ID, sites.remove(host), {
       onError(error) {
         deleteMessages.add(error.message, MessageType.ERROR);
@@ -57,23 +56,8 @@ SITES_REMOVE_LOADING_ID,
   }
 </script>
 
-<style>
-  .site-entry {
-    background-color: var(--color-input-bg);
-    border-radius: var(--border-radius);
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .site-entry span {
-    padding: var(--spacing);
-  }
-</style>
-
 <section class="grid">
-  <form class="grid" on:submit|preventDefault={addSite}>
+  <form class="grid" onsubmit={addSite}>
     <Card>
       <h2>{getMessage(LocalizedMessage.OPTIONS_SITES_ADD_HEADER)}</h2>
       <label for="host">
@@ -84,8 +68,9 @@ SITES_REMOVE_LOADING_ID,
           placeholder="myvault.storedsafe.com"
           bind:this={addHost}
           bind:value={addValues.host}
-          on:input={addMessages.clear}
-          required />
+          oninput={() => addMessages.clear()}
+          required
+        />
       </label>
       <label>
         {getMessage(LocalizedMessage.OPTIONS_SITES_ADD_LABEL_APIKEY)}
@@ -94,8 +79,9 @@ SITES_REMOVE_LOADING_ID,
           id="apikey"
           placeholder="abcde12345"
           bind:value={addValues.apikey}
-          on:input={addMessages.clear}
-          required />
+          oninput={() => addMessages.clear()}
+          required
+        />
       </label>
       <button type="submit">
         {getMessage(LocalizedMessage.OPTIONS_SITES_ADD)}
@@ -110,9 +96,7 @@ SITES_REMOVE_LOADING_ID,
         {getMessage(LocalizedMessage.OPTIONS_SITES_USER_HEADER)}
       </h2>
       {#each userSites as site (site.host)}
-        <form
-          class="site-entry"
-          on:submit|preventDefault={() => removeSite(site.host)}>
+        <form class="site-entry" onsubmit={(e) => removeSite(e, site.host)}>
           <span>{site.host}</span>
           <button type="submit" class="danger">
             {getMessage(LocalizedMessage.OPTIONS_SITES_DELETE)}
@@ -134,3 +118,18 @@ SITES_REMOVE_LOADING_ID,
     </Card>
   {/if}
 </section>
+
+<style>
+  .site-entry {
+    background-color: var(--color-input-bg);
+    border-radius: var(--border-radius);
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .site-entry span {
+    padding: var(--spacing);
+  }
+</style>

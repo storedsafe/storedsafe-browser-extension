@@ -1,11 +1,19 @@
 import * as path from 'path';
 import * as fs from 'fs';
+import { fileURLToPath } from "url";
 
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const pkgPath = path.join(__dirname, '../dist/pkg');
 
 function getVersion(file: string) {
   const match = file.match(/(\d+)\.(\d+)\.(\d+)/);
-  return [match[1], match[2], match[3]].map(Number);
+  const major = match?.[1]
+  const minor = match?.[2]
+  const patch = match?.[3]
+  if (major && minor && patch) {
+    return [match[1], match[2], match[3]].map(Number);
+  }
+  throw new Error(`File is missing a valid version number: ${file}`)
 }
 
 function compareVersion(file1, file2) {
@@ -17,7 +25,11 @@ function compareVersion(file1, file2) {
   return 0;
 }
 
-const updates = []
+interface Update {
+  version: string
+  update_link: string
+}
+const updates: Update[] = []
 
 fs.readdir(pkgPath, (err, files) => {
   if (err) {

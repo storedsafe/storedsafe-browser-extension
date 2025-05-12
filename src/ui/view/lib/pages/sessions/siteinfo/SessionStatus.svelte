@@ -1,12 +1,12 @@
 <script lang="ts">
-  import {
-    getLocale,
-    getMessage,
-    LocalizedMessage,
-  } from "../../../../../../global/i18n";
-  import { time } from "../../../../../stores/time";
+  import { getLocale, getMessage, LocalizedMessage } from "@/global/i18n";
+  import { Timer } from "@/ui/stores/timer.svelte";
 
-  export let createdAt: number;
+  interface Props {
+    createdAt: number;
+  }
+
+  let { createdAt }: Props = $props();
 
   // Update timer every minute
   const interval = 6e4;
@@ -15,12 +15,13 @@
   // Generate locale-specific time string displaying time of login
   const onlineSince = new Date(createdAt).toLocaleTimeString(getLocale());
   // Start tracking the current time, aligned to whole minutes since login
-  const currentTime = time(interval, alignTimeout);
+  const timer = new Timer(interval, alignTimeout);
+  timer.start();
 
   // Time since login
-  $: onlineDuration = $currentTime - createdAt;
+  let onlineDuration = $derived(timer.now - createdAt);
   // Full minutes since login
-  $: minutes = Math.floor(onlineDuration / 6e4);
+  let minutes = $derived(Math.floor(onlineDuration / 6e4));
 </script>
 
 <section class="grid">

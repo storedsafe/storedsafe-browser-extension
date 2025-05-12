@@ -1,3 +1,4 @@
+import { LoginType } from "storedsafe";
 import {
   StoredSafeClearAddPreferencesError,
   StoredSafeClearAutoFillPreferencesError,
@@ -7,45 +8,47 @@ import {
   StoredSafeSetVaultPreferencesError,
   StoredSafeSetHostPreferencesError,
   StoredSafeSetAutoFillPreferencesError,
-  StoredSafeSetSitePreferencesError
-} from '../errors'
-import { Logger } from '../logger'
-import type { OnAreaChanged } from './StorageArea'
+  StoredSafeSetSitePreferencesError,
+} from "../errors";
+import { Logger } from "../logger";
+import type { OnAreaChanged } from "./StorageArea";
 
-const logger = new Logger('preferences')
+const logger = new Logger("preferences");
 
 export function stripURL(url: string) {
   try {
-    return new URL(url).origin ?? url
+    return new URL(url).origin ?? url;
   } catch {
-    return url
+    return url;
   }
 }
 
-const STORAGE_KEY = 'preferences'
+const STORAGE_KEY = "preferences";
 type SerializablePreferences = {
-  add: AddPreferences
-  autoFill: [string, AutoFillPreferences][]
-  sites: [string, SitePreferences][]
-}
+  add: AddPreferences;
+  autoFill: [string, AutoFillPreferences][];
+  sites: [string, SitePreferences][];
+};
 const EMPTY_STATE: SerializablePreferences = {
   add: {
     host: null,
-    vaults: {}
+    vaults: {},
   },
-  autoFill: null,
-  sites: null
-}
+  autoFill: [],
+  sites: [],
+};
 
-let listeners: OnAreaChanged<Preferences>[] = []
+let listeners: OnAreaChanged<Preferences>[] = [];
 
-function parse(preferences: SerializablePreferences): Preferences {
-  preferences = preferences ?? EMPTY_STATE
+function parse(preferences?: Partial<SerializablePreferences>): Preferences {
+  preferences = structuredClone(preferences ?? EMPTY_STATE);
   return {
-    add: preferences.add,
-    sites: new Map(preferences?.sites),
-    autoFill: new Map(preferences?.autoFill)
-  }
+    add: structuredClone(preferences.add ?? EMPTY_STATE.add),
+    sites: new Map(structuredClone(preferences.sites ?? EMPTY_STATE.sites)),
+    autoFill: new Map(
+      structuredClone(preferences.autoFill ?? EMPTY_STATE.autoFill)
+    ),
+  };
 }
 
 /**
@@ -55,26 +58,30 @@ function parse(preferences: SerializablePreferences): Preferences {
  */
 export async function get(): Promise<Preferences> {
   try {
-    const { preferences } = await browser.storage.local.get(STORAGE_KEY)
+    const { preferences } = await browser.storage.local.get(STORAGE_KEY);
     // Convert to Map from serializable format. Map objects are not serializable
     // and will result as an empty object if put in storage.
-    return parse(preferences)
+    return parse(preferences);
   } catch (error) {
-    logger.error(error)
-    throw new StoredSafeGetPreferencesError(error)
+    logger.error(error);
+    throw new StoredSafeGetPreferencesError(error as Error);
   }
 }
 
-async function set({ add, sites, autoFill }: Preferences): Promise<void> {
+async function set({
+  add,
+  sites,
+  autoFill,
+}: Partial<Preferences>): Promise<void> {
   // Convert to serializable format, using null coalescing before converting
   // to array to ensure values are not undefined (causes TypeError).
   await browser.storage.local.set({
     [STORAGE_KEY]: {
-      add,
-      sites: [...(sites ?? [])],
-      autoFill: [...(autoFill ?? [])]
-    }
-  })
+      add: structuredClone(add ?? EMPTY_STATE.add),
+      sites: structuredClone(Array.from(sites ?? EMPTY_STATE.sites)),
+      autoFill: structuredClone(Array.from(autoFill ?? EMPTY_STATE.autoFill)),
+    },
+  });
 }
 
 /**
@@ -86,8 +93,8 @@ async function set({ add, sites, autoFill }: Preferences): Promise<void> {
 export async function subscribe(
   cb: OnAreaChanged<Preferences>
 ): Promise<Preferences> {
-  listeners.push(cb)
-  return await get()
+  listeners.push(cb);
+  return await get();
 }
 
 /**
@@ -95,7 +102,7 @@ export async function subscribe(
  * @param cb Callback function to be called when storage area is updated.
  */
 export function unsubscribe(cb: OnAreaChanged<Preferences>): void {
-  listeners = listeners.filter(listener => listener !== cb)
+  listeners = listeners.filter((listener) => listener !== cb);
 }
 
 /**
@@ -106,15 +113,15 @@ export function unsubscribe(cb: OnAreaChanged<Preferences>): void {
  */
 export async function setHostPreferences(host: string) {
   try {
-    let { add, ...preferences } = await get()
+    let { add, ...preferences } = await get();
     add = {
       host: host,
-      vaults: add?.vaults ?? {}
-    }
-    await set({ ...preferences, add })
+      vaults: add?.vaults ?? {},
+    };
+    await set({ ...preferences, add });
   } catch (error) {
-    if (error instanceof StoredSafeGetPreferencesError) throw error
-    throw new StoredSafeSetHostPreferencesError(error)
+    if (error instanceof StoredSafeGetPreferencesError) throw error;
+    throw new StoredSafeSetHostPreferencesError(error as Error);
   }
 }
 
@@ -127,18 +134,18 @@ export async function setHostPreferences(host: string) {
  */
 export async function setVaultPreferences(host: string, vaultId: string) {
   try {
-    let { add, ...preferences } = await get()
+    let { add, ...preferences } = await get();
     add = {
       host: add?.host,
       vaults: {
         ...add?.vaults,
-        [host]: vaultId
-      }
-    }
-    await set({ ...preferences, add })
+        [host]: vaultId,
+      },
+    };
+    await set({ ...preferences, add });
   } catch (error) {
-    if (error instanceof StoredSafeGetPreferencesError) throw error
-    throw new StoredSafeSetVaultPreferencesError(error)
+    if (error instanceof StoredSafeGetPreferencesError) throw error;
+    throw new StoredSafeSetVaultPreferencesError(error as Error);
   }
 }
 
@@ -149,17 +156,16 @@ export async function setVaultPreferences(host: string, vaultId: string) {
  */
 export async function clearAddPreferences() {
   try {
-    const { add, ...preferences } = await get()
-    await set({ ...preferences })
+    const { add, ...preferences } = await get();
+    await set({ ...preferences });
   } catch (error) {
-    if (error instanceof StoredSafeGetPreferencesError) throw error
-    throw new StoredSafeClearAddPreferencesError(error)
+    if (error instanceof StoredSafeGetPreferencesError) throw error;
+    throw new StoredSafeClearAddPreferencesError(error as Error);
   }
 }
 
 /**
  * Update preferences for `host`.
- * Will overwrite any previous site preferences for `host`.
  * @param host StoredSafe host name.
  * @param sitePreferences New preferences associated with `host`.
  * @throws {StoredSafeGetPreferencesError}
@@ -167,15 +173,19 @@ export async function clearAddPreferences() {
  */
 export async function setSitePreferences(
   host: string,
-  sitePreferences: SitePreferences
+  sitePreferences: Partial<SitePreferences>
 ) {
   try {
-    const { sites, ...preferences } = await get()
-    sites.set(host, sitePreferences)
-    await set({ ...preferences, sites })
+    const { sites, ...preferences } = await get();
+    sites.set(host, {
+      ...{ loginType: LoginType.TOTP, username: "" }, // Default values
+      ...(sites.get(host) ?? {}), // Current values
+      ...sitePreferences, // New values
+    });
+    await set({ ...preferences, sites });
   } catch (error) {
-    if (error instanceof StoredSafeGetPreferencesError) throw error
-    throw new StoredSafeSetSitePreferencesError(host, error)
+    if (error instanceof StoredSafeGetPreferencesError) throw error;
+    throw new StoredSafeSetSitePreferencesError(host, error as Error);
   }
 }
 
@@ -186,11 +196,11 @@ export async function setSitePreferences(
  */
 export async function clearSitePreferences() {
   try {
-    const { sites, ...preferences } = await get()
-    await set({ ...preferences })
+    const { sites, ...preferences } = await get();
+    await set({ ...preferences });
   } catch (error) {
-    if (error instanceof StoredSafeGetPreferencesError) throw error
-    throw new StoredSafeClearSitePreferencesError(error)
+    if (error instanceof StoredSafeGetPreferencesError) throw error;
+    throw new StoredSafeClearSitePreferencesError(error as Error);
   }
 }
 
@@ -207,12 +217,12 @@ export async function setAutoFillPreferences(
   autoFillPreferences: AutoFillPreferences
 ) {
   try {
-    const { autoFill, ...preferences } = await get()
-    autoFill.set(url, autoFillPreferences)
-    await set({ ...preferences, autoFill })
+    const { autoFill, ...preferences } = await get();
+    autoFill?.set(url, autoFillPreferences);
+    await set({ ...preferences, autoFill });
   } catch (error) {
-    if (error instanceof StoredSafeGetPreferencesError) throw error
-    throw new StoredSafeSetAutoFillPreferencesError(url, error)
+    if (error instanceof StoredSafeGetPreferencesError) throw error;
+    throw new StoredSafeSetAutoFillPreferencesError(url, error as Error);
   }
 }
 
@@ -223,11 +233,11 @@ export async function setAutoFillPreferences(
  */
 export async function clearAutoFillPreferences() {
   try {
-    const { autoFill, ...preferences } = await get()
-    await set({ ...preferences })
+    const { autoFill, ...preferences } = await get();
+    await set({ ...preferences });
   } catch (error) {
-    if (error instanceof StoredSafeGetPreferencesError) throw error
-    throw new StoredSafeClearAutoFillPreferencesError(error)
+    if (error instanceof StoredSafeGetPreferencesError) throw error;
+    throw new StoredSafeClearAutoFillPreferencesError(error as Error);
   }
 }
 
@@ -237,20 +247,20 @@ export async function clearAutoFillPreferences() {
  */
 export async function clear() {
   try {
-    await browser.storage.local.remove(STORAGE_KEY)
+    await browser.storage.local.remove(STORAGE_KEY);
   } catch (error) {
-    throw new StoredSafeClearPreferencesError(error)
+    throw new StoredSafeClearPreferencesError(error as Error);
   }
 }
 
 /**
  * When ignore list updates in storage, notify listeners.
  */
-browser.storage.onChanged.addListener(changes => {
+browser.storage.onChanged.addListener((changes) => {
   if (!!changes[STORAGE_KEY]) {
-    const { oldValue, newValue } = changes[STORAGE_KEY]
+    const { oldValue, newValue } = changes[STORAGE_KEY];
     for (const listener of listeners) {
-      listener(parse(newValue), parse(oldValue))
+      listener(parse(newValue), parse(oldValue));
     }
   }
-})
+});

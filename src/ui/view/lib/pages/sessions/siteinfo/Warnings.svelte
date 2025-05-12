@@ -1,11 +1,17 @@
+<script lang="ts" module>
+  export interface Props {
+    warnings: string[];
+  }
+</script>
+
 <script lang="ts">
-  import { warningIcon } from "../../../../../../global/icons";
-  import { getMessage, LocalizedMessage } from "../../../../../../global/i18n";
+  import { warningIcon } from "@/global/icons";
+  import { getMessage, LocalizedMessage } from "@/global/i18n";
 
-  import Icon from "../../../layout/Icon.svelte";
-  import Card from "../../../layout/Card.svelte";
+  import Icon from "@/ui/view/lib/layout/Icon.svelte";
+  import Card from "@/ui/view/lib/layout/Card.svelte";
 
-  export let warnings: string[];
+  let { warnings }: Props = $props();
 
   const iconProps = {
     d: warningIcon,
@@ -13,6 +19,23 @@
     size: "1em",
   };
 </script>
+
+<section class="grid">
+  <h2>
+    <span class="icon"><Icon {...iconProps} /></span>
+    <span>{getMessage(LocalizedMessage.SESSIONS_WARNINGS)}</span>
+  </h2>
+  <Card
+    backgroundColor="var(--color-warning-light)"
+    color="var(--color-warning-dark)"
+  >
+    <ul class="grid">
+      {#each warnings as warning}
+        <li>{warning}</li>
+      {/each}
+    </ul>
+  </Card>
+</section>
 
 <style>
   h2 {
@@ -35,19 +58,3 @@
     align-items: center;
   }
 </style>
-
-<section class="grid">
-  <h2>
-    <span class="icon"><Icon {...iconProps} /></span>
-    <span>{getMessage(LocalizedMessage.SESSIONS_WARNINGS)}</span>
-  </h2>
-  <Card
-    backgroundColor="var(--color-warning-light)"
-    color="var(--color-warning-dark)">
-    <ul class="grid">
-      {#each warnings as warning}
-        <li>{warning}</li>
-      {/each}
-    </ul>
-  </Card>
-</section>

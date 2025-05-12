@@ -1,87 +1,81 @@
-<script lang="ts" context="module">
-  import { Logger } from "../../../global/logger";
+<script lang="ts" module>
+  import { Logger } from "@/global/logger";
   const logger = new Logger("save");
+
+  export interface Props {
+    onResize: (height: number, width: number) => void;
+    onClose: () => void;
+  }
 </script>
 
 <script lang="ts">
-  import { afterUpdate, createEventDispatcher, onMount } from "svelte";
+  import { onMount } from "svelte";
 
-  import { vault } from "../../../global/api";
-  import { getMessage, LocalizedMessage } from "../../../global/i18n";
-  import type { Message } from "../../../global/messages";
+  import { vault } from "@/global/api";
+  import { getMessage, LocalizedMessage } from "@/global/i18n";
+  import { Context, sendMessage } from "@/global/messages";
   import {
-    ignore,
-    preferences,
-    sites,
     sessions,
-    structure,
     loading,
     messages,
     MessageType,
-  } from "../../stores";
+    ignoreURLs,
+  } from "@/ui/stores";
 
-  import Card from "../lib/layout/Card.svelte";
-  import LoadingBar from "../lib/layout/LoadingBar.svelte";
-  import MessageViewer from "../lib/layout/MessageViewer.svelte";
-  import SelectHost from "../lib/pages/add/SelectHost.svelte";
-  import SelectVault from "../lib/pages/add/SelectVault.svelte";
-  import SelectTemplate from "../lib/pages/add/SelectTemplate.svelte";
-  import TemplateFields from "../lib/pages/add/TemplateFields.svelte";
-  import Initializing from "../Popup/Initializing.svelte";
+  import Card from "@/ui/view/lib/layout/Card.svelte";
+  import LoadingBar from "@/ui/view/lib/layout/LoadingBar.svelte";
+  import MessageViewer from "@/ui/view/lib/layout/MessageViewer.svelte";
+  import SelectHost from "@/ui/view/lib/pages/add/SelectHost.svelte";
+  import SelectVault from "@/ui/view/lib/pages/add/SelectVault.svelte";
+  import SelectTemplate from "@/ui/view/lib/pages/add/SelectTemplate.svelte";
+  import TemplateFields from "@/ui/view/lib/pages/add/TemplateFields.svelte";
   import QuickSave from "./QuickSave.svelte";
-  import Logo from "../lib/layout/Logo.svelte";
-import { followFocus } from "../use/followFocus";
+  import Logo from "@/ui/view/lib/layout/Logo.svelte";
 
-  const dispatch = createEventDispatcher();
-  let data: Record<string, string> = {
+  let { onResize, onClose }: Props = $props();
+
+  let data: Record<string, string> = $state({
     parentid: "0",
     templateid: "20",
-    name: "Foo",
-    username: "foobar",
-    url: "foo.bar",
-  };
-  let edit: boolean = false;
-  let success: boolean = false;
-  let isValidated: boolean = true;
-  let host: string;
+    name: "",
+    username: "",
+    url: "",
+  });
+  let edit: boolean = $state(false);
+  let success: boolean = $state(false);
+  let isValid: boolean = $state(true);
+  let host: string | undefined = $state();
 
   let frame: HTMLElement;
   let height: number;
 
-  let port: browser.runtime.Port;
-
-  $: isInitialized =
-    $preferences !== null &&
-    $sites !== null &&
-    $sessions !== null &&
-    $structure !== null;
+  function resize(height: number, width: number = 300) {
+    onResize(height, width);
+  }
 
   function close() {
-    dispatch("close", port);
-  }
-
-  function resize(height: number, width: number = 300) {
-    dispatch("resize", {
-      height,
-      width,
+    sendMessage({
+      from: Context.SAVE,
+      to: Context.BACKGROUND,
+      action: "submitdata.delete",
     });
+    onClose();
   }
 
-  afterUpdate(() => {
+  $effect(() => {
     if (!!frame && height !== frame.clientHeight) {
       height = frame?.clientHeight;
       resize(height);
     }
   });
 
-  onMount(() => {
-    port = browser.runtime.connect({ name: "save" });
-    port.onMessage.addListener((message: Message) => {
-      logger.debug("Message Received: %o", message);
-      if (message.context === "save" && message.action === "populate") {
-        data = { ...data, ...message.data };
-      }
+  onMount(async () => {
+    const submitData = await sendMessage({
+      from: Context.SAVE,
+      to: Context.BACKGROUND,
+      action: "submitdata.get",
     });
+    data = { ...data, ...submitData };
 
     // Ensure iframe gets resized (afterUpdate unreliable)
     for (let delay = 200; delay <= 1000; delay += 200) {
@@ -96,28 +90,30 @@ import { followFocus } from "../use/followFocus";
     edit = !edit;
   };
 
-  function save() {
-    loading.add(
-      `Save.add`,
-      vault.addObject(host, $sessions.get(host).token, data),
-      {
-        onError(error) {
-          messages.add(error.message, MessageType.ERROR);
-        },
-        onSuccess() {
-          success = true;
-          messages.add(
-            getMessage(LocalizedMessage.ADD_SUCCESS),
-            MessageType.INFO
-          );
-          window.setTimeout(close, 1000);
-        },
-      }
-    );
+  function save(e: SubmitEvent) {
+    e.preventDefault();
+    const hostData = sessions.data.get(host ?? "");
+    if (!host || !hostData) {
+      messages.add("Host not set, invalid state.", MessageType.ERROR);
+      return;
+    }
+    loading.add(`Save.add`, vault.addObject(host, hostData.token, data), {
+      onError(error) {
+        messages.add(error.message, MessageType.ERROR);
+      },
+      onSuccess() {
+        success = true;
+        messages.add(
+          getMessage(LocalizedMessage.ADD_SUCCESS),
+          MessageType.INFO
+        );
+        window.setTimeout(close, 1000);
+      },
+    });
   }
 
   function addToIgnore() {
-    loading.add(`Save.ignore`, ignore.add(data.url), {
+    loading.add(`Save.ignore`, ignoreURLs.add(data.url), {
       onError(error) {
         messages.add(error.message, MessageType.ERROR);
       },
@@ -131,52 +127,51 @@ import { followFocus } from "../use/followFocus";
 <article class="save grid" bind:this={frame}>
   <Logo />
   <MessageViewer {messages} />
-  <LoadingBar isLoading={$loading.isLoading} />
+  <LoadingBar isLoading={loading.isLoading} />
   {#if !success}
-    <form class="grid" use:followFocus on:submit|preventDefault={save}>
-      {#if !isInitialized}
-        <!-- Still loading -->
-        <Initializing />
-      {:else}
-        <Card>
-          {#if !edit}
-            <!-- Quick save -->
-            <QuickSave bind:host bind:data />
-          {:else}
-            <!-- Full add editor -->
-            <SelectHost bind:host />
-            {#if host !== undefined}
-              <SelectVault {host} bind:vaultid={data.groupid} />
-              <SelectTemplate {host} bind:templateid={data.templateid} />
-              {#if data.groupid !== undefined && data.templateid !== undefined}
-                <TemplateFields
-                  {host}
-                  bind:groupid={data.groupid}
-                  bind:templateid={data.templateid}
-                  bind:values={data}
-                  on:validate={(e) => (isValidated = e.detail)}
-                />
-              {/if}
+    <form class="grid" onsubmit={save}>
+      <Card>
+        {#if !edit}
+          <!-- Quick save -->
+          <QuickSave bind:host bind:data />
+        {:else}
+          <!-- Full add editor -->
+          <SelectHost bind:host />
+          {#if host}
+            <SelectVault {host} bind:vaultid={data.groupid} />
+            <SelectTemplate {host} bind:templateid={data.templateid} />
+            {#if data.groupid !== undefined && data.templateid !== undefined}
+              <TemplateFields
+                {host}
+                bind:groupid={data.groupid}
+                bind:templateid={data.templateid}
+                bind:values={data}
+                onValidate={(value) => (isValid = value)}
+              />
             {/if}
           {/if}
-        </Card>
-      {/if}
+        {/if}
+      </Card>
       <div class="sticky-buttons">
         <div class="inline-buttons">
-          <button type="submit" disabled={!isValidated}>
+          <button type="submit" disabled={!isValid}>
             {getMessage(LocalizedMessage.ADD_CREATE)}
           </button>
           {#if !edit}
-            <button type="button" class="warning" on:click={toggleEdit}>
+            <button type="button" class="warning" onclick={() => toggleEdit()}>
               {getMessage(LocalizedMessage.SEARCH_RESULT_EDIT)}
             </button>
           {/if}
         </div>
-        <button type="button" class="danger" on:click={close}>
+        <button type="button" class="danger" onclick={() => close()}>
           {getMessage(LocalizedMessage.IFRAME_CLOSE)}
         </button>
         {#if !edit}
-          <button type="button" class="danger ignore" on:click={addToIgnore}>
+          <button
+            type="button"
+            class="danger ignore"
+            onclick={() => addToIgnore()}
+          >
             {getMessage(LocalizedMessage.SAVE_IGNORE)}
           </button>
         {/if}

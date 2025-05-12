@@ -1,10 +1,23 @@
 <script lang="ts">
+  import type { ChangeEventHandler, HTMLAttributes } from "svelte/elements";
   import { getMessage, LocalizedMessage } from "../../../../global/i18n";
 
-  export let size = "1em";
-  export let altered = false;
-  export let disabled = false;
-  export let checked;
+  interface Props extends HTMLAttributes<HTMLInputElement> {
+    size?: string;
+    altered?: boolean;
+    disabled?: boolean;
+    checked?: boolean;
+    onchange?: ChangeEventHandler<HTMLInputElement>;
+  }
+
+  let {
+    size = "1em",
+    altered = false,
+    disabled = false,
+    checked = $bindable(),
+    onchange,
+    ...restProps
+  }: Props = $props();
 
   const style = [`--toggle-size: ${size}`].join(";");
 </script>
@@ -12,11 +25,11 @@
 <span class="toggle-container">
   <input
     bind:checked
-    on:change
+    {onchange}
     {disabled}
     type="checkbox"
     class="toggle-hidden"
-    {...$$restProps}
+    {...restProps}
   />
   <span
     class="toggle custom-input"
@@ -25,7 +38,8 @@
     title={checked
       ? getMessage(LocalizedMessage.SETTINGS_ON)
       : getMessage(LocalizedMessage.SETTINGS_OFF)}
-  />
+  >
+  </span>
 </span>
 
 <style>

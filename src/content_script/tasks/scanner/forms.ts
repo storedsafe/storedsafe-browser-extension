@@ -1,16 +1,20 @@
-import { Logger, LogLevel } from '../../../global/logger'
-import { FormType, InputType } from './constants'
+import { Logger, LogLevel } from "@/global/logger";
+import { FormType, InputType } from "./constants";
 import {
   formMatchers,
   matchAttributes,
   matchFields,
-  matchName
-} from './matchers'
-import type { Input } from './inputs'
+  matchName,
+} from "./matchers";
+import type { Input } from "./inputs";
 
-export type Form = [HTMLElement, FormType, Input[]]
+export interface Form {
+  root: HTMLElement;
+  type: FormType;
+  inputs: Input[];
+}
 
-const logger = new Logger('forms', true)
+const logger = new Logger("forms", true);
 
 /**
  * Map all inputs to common parents which potentially act as forms.
@@ -27,131 +31,144 @@ function mapInputContexts(
   inputs: Input[],
   root = document.body
 ): [HTMLElement, Input[]][] {
-  const forms: Map<HTMLElement, Input[]> = new Map()
+  const forms: Map<HTMLElement, Input[]> = new Map();
   for (let i = 0; i < inputs.length - 1; i++) {
-    let matchedElements: Input[] = []
-    let unmatchedElements: Input[]
-    const current: HTMLElement = inputs[i][0]
-    let others = inputs.slice(i + 1)
-    let parent = current.parentElement
-    while (others.length > 0 && parent !== root.parentElement) {
-      if (!!forms.get(parent)) break
-      unmatchedElements = []
+    let matchedElements: Input[] = [];
+    let unmatchedElements: Input[];
+    const current: HTMLElement = inputs[i].element;
+    let others = inputs.slice(i + 1);
+    let parent = current.parentElement;
+    while (
+      others.length > 0 &&
+      parent !== root.parentElement &&
+      parent != null
+    ) {
+      if (!!forms.get(parent)) break;
+      unmatchedElements = [];
       for (const other of others) {
-        if (parent.contains(other[0])) matchedElements.push(other)
-        else unmatchedElements.push(other)
+        if (parent.contains(other.element)) matchedElements.push(other);
+        else unmatchedElements.push(other);
       }
       if (matchedElements.length > 0)
-        forms.set(parent, [inputs[i], ...matchedElements])
+        forms.set(parent, [inputs[i], ...matchedElements]);
       // Parent of parent will also contain the already matched elements
-      others = unmatchedElements
-      parent = parent.parentElement
+      others = unmatchedElements;
+      parent = parent.parentElement;
     }
   }
-  return [...forms]
+  return [...forms];
 }
 
 function parseContext(form: [HTMLElement, Input[]]): Form {
-  const [parent, inputs] = form
+  const [parent, inputs] = form;
 
-  const hidden: Input[] = []
-  const submits: Input[] = []
-  const maybeSubmits: Input[] = []
-  const matchable: Input[] = []
+  const hidden: Input[] = [];
+  const submits: Input[] = [];
+  const maybeSubmits: Input[] = [];
+  const matchable: Input[] = [];
 
   // Group inputs first to reduce required number of iterations
   for (const input of inputs) {
-    const inputType = input[1]
-    if (inputType === InputType.UNKNOWN) continue
-    else if (inputType === InputType.HIDDEN) hidden.push(input)
-    else if (inputType === InputType.SUBMIT) submits.push(input)
-    else if (inputType === InputType.MAYBE_SUBMIT) maybeSubmits.push(input)
-    else matchable.push(input)
+    const inputType = input.type;
+    if (inputType === InputType.UNKNOWN) continue;
+    else if (inputType === InputType.HIDDEN) hidden.push(input);
+    else if (inputType === InputType.SUBMIT) submits.push(input);
+    else if (inputType === InputType.MAYBE_SUBMIT) maybeSubmits.push(input);
+    else matchable.push(input);
   }
 
   // Helper function to return form in proper format
   function createForm(formType: FormType, formInputs: Input[] = inputs): Form {
-    return [parent, formType, formInputs]
+    return {
+      root: parent,
+      type: formType,
+      inputs: formInputs,
+    };
   }
 
   // Helper function to return form with the correct submit elements
   function createMatchableForm(formType: FormType): Form {
-    const formInputs: Input[] = [...matchable, ...hidden]
-    if (submits.length > 0) formInputs.push(...submits)
+    const formInputs: Input[] = [...matchable, ...hidden];
+    if (submits.length > 0) formInputs.push(...submits);
     else {
-      formInputs.push(...maybeSubmits)
+      formInputs.push(...maybeSubmits);
     }
-    return createForm(formType, formInputs)
+    return createForm(formType, formInputs);
   }
 
   // Special cases
   if (hidden.length === inputs.length) {
-    logger.debug("Hidden form: %o", parent)
-    return createForm(FormType.HIDDEN)
+    logger.debug("Hidden form: %o", parent);
+    return createForm(FormType.HIDDEN);
   }
   if (
     (submits.length === 0 && maybeSubmits.length === 0) ||
     matchable.length === 0
   ) {
-    logger.debug("Incomplete form: %o", parent)
-    return createForm(FormType.INCOMPLETE)
+    logger.debug("Incomplete form: %o", parent);
+    return createForm(FormType.INCOMPLETE);
   }
 
   // 1. Check for form element name match
   for (const [formType, matcher] of formMatchers) {
-    if (matchName(parent, matcher.name)) {
-      logger.debug("%o name match: %s %o", formType, matcher.name, parent)
-      return createMatchableForm(formType)
+    if (matcher.name && matchName(parent, matcher.name)) {
+      logger.debug("%o name match: %s %o", formType, matcher.name, parent);
+      return createMatchableForm(formType);
     }
   }
 
   // 2. Check for form attributes matches
   for (const [formType, matcher] of formMatchers) {
-    if (matchAttributes(parent, matcher.attributes)) {
-      logger.debug("%o attributes match: %o %o", formType, matcher.attributes, parent)
-      return createMatchableForm(formType)
+    if (matcher.attributes && matchAttributes(parent, matcher.attributes)) {
+      logger.debug(
+        "%o attributes match: %o %o",
+        formType,
+        matcher.attributes,
+        parent
+      );
+      return createMatchableForm(formType);
     }
   }
 
   // 3. Check if the form fields match
   for (const [formType, matcher] of formMatchers) {
-    if (matchFields(inputs, matcher.fields)) {
-      logger.debug("%o fields match: %o %o", formType, matcher.fields, parent)
-      return createMatchableForm(formType)
+    if (matcher.fields && matchFields(inputs, matcher.fields)) {
+      logger.debug("%o fields match: %o %o", formType, matcher.fields, parent);
+      return createMatchableForm(formType);
     }
   }
 
-  logger.debug("Unknown form: %o", parent)
-  return createForm(FormType.UNKNOWN)
+  logger.debug("Unknown form: %o", parent);
+  return createForm(FormType.UNKNOWN);
 }
 
 export function getForms(inputs: Input[]): Form[] {
-  const contexts = mapInputContexts(inputs)
-  const forms: Form[] = []
-  logger.group("Form identification", LogLevel.DEBUG)
+  const contexts = mapInputContexts(inputs);
+  const forms: Form[] = [];
+  logger.group("Form identification", LogLevel.DEBUG);
   for (const context of contexts) {
-    const form = parseContext(context)
-    if (form[1] !== FormType.INCOMPLETE) {
-      let shouldAdd = true
+    const form = parseContext(context);
+    if (form.type !== FormType.INCOMPLETE) {
+      let shouldAdd = true;
       for (let i = 0; i < forms.length; i++) {
         // If the form is the child of another form, replace the parent form
         // Generally parent forms should only occur when multiple different
         // forms are present on the page.
-        if (forms[i][0].contains(form[0])) {
+        if (forms[i].root.contains(form.root)) {
           // Insert to replace parent form, no need to add below
-          forms[i] = form
-          shouldAdd = false
-          break
-        } else if (form[0].contains(forms[i][0])) {
+          forms[i] = form;
+          shouldAdd = false;
+          break;
+        } else if (form.root.contains(forms[i].root)) {
           // Skip if form is a parent form
-          shouldAdd = false
-          break
+          shouldAdd = false;
+          break;
         }
       }
       // Add the form to the list if it's not a parent form
-      if (shouldAdd) forms.push(form)
+      if (shouldAdd) forms.push(form);
     }
   }
-  logger.groupEnd(LogLevel.DEBUG)
-  return forms
+  logger.groupEnd(LogLevel.DEBUG);
+  return forms;
 }

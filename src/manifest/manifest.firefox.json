@@ -1,0 +1,33 @@
+{
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "{5a110dee-fb42-44a1-b64d-d0444a199f96}",
+      "update_url": "https://storedsafe.com/addons/firefox/updates.json",
+      "strict_min_version": "109.0"
+    }
+  },
+  "commands": {
+    "_execute_action": {
+      "suggested_key": {
+        "default": "Ctrl+Alt+S"
+      },
+      "description": "Open StoredSafe Popup"
+    },
+    "fill": {
+      "suggested_key": {
+        "default": "Ctrl+Alt+F"
+      },
+      "description": "Fill form on page if data is available"
+    }
+  },
+  "background": {
+    "scripts": ["background.storedsafe.js"],
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": ["http://*/*", "https://*/*"],
+      "js": ["content_script.storedsafe.js"]
+    }
+  ]
+}

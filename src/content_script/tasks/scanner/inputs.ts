@@ -1,19 +1,23 @@
-import { Logger, LogLevel } from '../../../global/logger'
-import { InputType } from './constants'
-import { matchAttributes, Matcher, matchers, matchName } from './matchers'
+import { Logger, LogLevel } from "@/global/logger";
+import { InputType } from "./constants";
+import type { Matcher } from "./matchers";
+import { matchAttributes, matchers, matchName } from "./matchers";
 
-export type Input = [HTMLElement, InputType]
+export interface Input {
+  element: HTMLElement;
+  type: InputType;
+}
 
-const logger = new Logger('input', true)
+const logger = new Logger("input", true);
 
 export const INPUT_SELECTORS: string = [
-  'input',
-  'button',
-  'a'
+  "input",
+  "button",
+  "a",
   // Leaving selectors below for reference in case they should be needed in the future.
   // 'select',
   // 'textarea'
-].join(', ')
+].join(", ");
 
 /**
  * Check if the HTML attributes of the input element correspond to the provided matcher.
@@ -23,11 +27,11 @@ export const INPUT_SELECTORS: string = [
 function isMatch(input: HTMLInputElement, matcher: Matcher): boolean {
   return (
     matchName(input, matcher.name) && matchAttributes(input, matcher.attributes)
-  )
+  );
 }
 
 function getOpeningTag(element: HTMLElement): string {
-  return element.outerHTML.match(/(<[^>]*>)/)?.[0] || ''
+  return element.outerHTML.match(/(<[^>]*>)/)?.[0] || "";
 }
 
 /**
@@ -38,9 +42,7 @@ function getOpeningTag(element: HTMLElement): string {
  * @param element HTML element to test for submit identifiers.
  */
 function testMaybeSubmit(element: HTMLElement): boolean {
-  return /login|sign|submit/.test(
-    getOpeningTag(element) + element.innerText
-  )
+  return /login|sign|submit/.test(getOpeningTag(element) + element.innerText);
 }
 
 /**
@@ -56,72 +58,70 @@ function testMaybeSubmit(element: HTMLElement): boolean {
 function getElementType(element: HTMLElement): InputType {
   // There are only three types of buttons, easier as special case
   if (element instanceof HTMLButtonElement) {
-    if (element.type === 'submit') {
-      logger.debug("Submit button: %o", element)
-      return InputType.SUBMIT
+    if (element.type === "submit") {
+      logger.debug("Submit button: %o", element);
+      return InputType.SUBMIT;
     }
-    if (element.type === 'button' && testMaybeSubmit(element)) {
-      logger.debug("Maybe submit button: %o", element)
-      return InputType.MAYBE_SUBMIT
+    if (element.type === "button" && testMaybeSubmit(element)) {
+      logger.debug("Maybe submit button: %o", element);
+      return InputType.MAYBE_SUBMIT;
     }
-    logger.debug("Discarding button: %o", element)
-    return InputType.DISCARD
+    logger.debug("Discarding button: %o", element);
+    return InputType.DISCARD;
   }
 
   // Links are sometimes used as submit elements.
   // Can be reclassified based on context.
   if (element instanceof HTMLAnchorElement) {
     if (testMaybeSubmit(element)) {
-      logger.debug("Maybe submit link: %o", element)
-      return InputType.MAYBE_SUBMIT
+      logger.debug("Maybe submit link: %o", element);
+      return InputType.MAYBE_SUBMIT;
     }
-    logger.debug("Discarding link: %o", element)
-    return InputType.DISCARD
+    logger.debug("Discarding link: %o", element);
+    return InputType.DISCARD;
   }
 
   // Handle input elements
   if (element instanceof HTMLInputElement) {
     // Handle simple type-based matchers as a special case
     if (element.type.match(/submit|image/i)) {
-      logger.debug("Submit input: %o", element)
-      return InputType.SUBMIT
+      logger.debug("Submit input: %o", element);
+      return InputType.SUBMIT;
     }
-    if (element.type === 'hidden') {
-      logger.debug("Hidden input: %o", element)
-      return InputType.HIDDEN
+    if (element.type === "hidden") {
+      logger.debug("Hidden input: %o", element);
+      return InputType.HIDDEN;
     }
 
     // Go through application matchers
     for (const [inputType, inputMatchers] of matchers) {
       for (const matcher of inputMatchers) {
         if (isMatch(element, matcher)) {
-          logger.debug("%o input: %o", inputType, element)
-          return inputType
+          logger.debug("%o input: %o", inputType, element);
+          return inputType;
         }
       }
     }
   }
 
   // Fallback if no matching type is found
-  logger.debug("Unknown input: %o", element)
-  return InputType.UNKNOWN
+  logger.debug("Unknown input: %o", element);
+  return InputType.UNKNOWN;
 }
 
 /**
  * Get and classify all elements that are relevant to the scan process.
  * @param root Root element to start search from.
  */
-export function getInputs(
-  root: HTMLElement = document.body
-): Input[] {
-  const inputs: Input[] = []
+export function getInputs(root: HTMLElement = document.body): Input[] {
+  const inputs: Input[] = [];
 
-  logger.group("Input identification", LogLevel.DEBUG)
+  logger.group("Input identification", LogLevel.DEBUG);
   // Classify all relevant elements under the root node.
-  const elements = root.querySelectorAll<HTMLElement>(INPUT_SELECTORS)
+  const elements = root.querySelectorAll<HTMLElement>(INPUT_SELECTORS);
   for (const element of elements) {
-    inputs.push([element, getElementType(element)])
+    inputs.push({ element, type: getElementType(element) });
   }
-  logger.groupEnd(LogLevel.DEBUG)
-  return inputs.filter(input => input[1] !== InputType.DISCARD)
+  logger.groupEnd(LogLevel.DEBUG);
+  return inputs.filter((input) => input.type !== InputType.DISCARD);
 }

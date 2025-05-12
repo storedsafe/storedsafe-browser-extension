@@ -1,11 +1,17 @@
 <script lang="ts">
-  import { createEventDispatcher } from "svelte";
-
-  const dispatch = createEventDispatcher();
-  function openDebug() {
-    dispatch('open-debug')
+  interface Props {
+    toggleDebug?: () => void;
   }
+
+  let { toggleDebug }: Props = $props();
 </script>
+
+<div
+  id="debug-button"
+  ondblclick={() => toggleDebug?.()}
+  role="button"
+  tabindex="-1"
+></div>
 
 <style>
   #debug-button {
@@ -16,5 +22,3 @@
     top: 0;
   }
 </style>
-
-<div id="debug-button" on:dblclick={openDebug} />

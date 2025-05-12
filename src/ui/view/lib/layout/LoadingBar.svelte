@@ -1,8 +1,22 @@
-<script lang="ts">
-  import { getMessage, LocalizedMessage } from "../../../../global/i18n";
-
-  export let isLoading: boolean = false;
+<script lang="ts" module>
+  export interface Props {
+    isLoading: boolean;
+  }
 </script>
+
+<script lang="ts">
+  import { getMessage, LocalizedMessage } from "@/global/i18n";
+
+  let { isLoading = false }: Props = $props();
+</script>
+
+{#if isLoading}
+  <div
+    aria-label={getMessage(LocalizedMessage.LOADING_TITLE)}
+    title={getMessage(LocalizedMessage.LOADING_TITLE)}
+    class="shadow"
+  ></div>
+{/if}
 
 <style>
   div {
@@ -27,10 +41,3 @@
     }
   }
 </style>
-
-{#if isLoading}
-  <div
-    aria-label={getMessage(LocalizedMessage.LOADING_TITLE)}
-    title={getMessage(LocalizedMessage.LOADING_TITLE)}
-    class="shadow" />
-{/if}
