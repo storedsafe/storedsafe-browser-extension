@@ -197,18 +197,17 @@ export async function zipFirefox() {
     path.join(ZIP_DIR, "firefox.zip")
   );
 }
+export const zip = parallel(zipChrome, zipFirefox);
 
 /* Final builds */
 export const buildChrome = series(
   cleanChrome,
   buildSvelteChrome,
-  parallel(manifestChrome, copyDepsChrome),
-  zipChrome
+  parallel(manifestChrome, copyDepsChrome)
 );
 export const buildFirefox = series(
   cleanFirefox,
   buildSvelteFirefox,
-  parallel(manifestFirefox, copyDepsFirefox),
-  zipFirefox
+  parallel(manifestFirefox, copyDepsFirefox)
 );
 export const build = parallel(buildChrome, buildFirefox);
