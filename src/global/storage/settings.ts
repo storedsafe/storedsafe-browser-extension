@@ -122,9 +122,7 @@ async function getManagedSettings(): Promise<
     return [parse(settings?.enforced, true), parse(settings?.defaults)];
   } catch (error) {
     // Log debug message if managed storage fails because of missing manifest.
-    if (!(error instanceof Error))
-      throw new StoredSafeExtensionError(error as any);
-    if (error.toString().includes("storage manifest")) {
+    if ((error as any).toString().includes("storage manifest")) {
       logger.debug("No managed storage manifest found.");
       return [new Map(), new Map()];
     } else throw error;

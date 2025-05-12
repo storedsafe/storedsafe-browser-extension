@@ -38,10 +38,8 @@ async function getManagedSites(): Promise<Site[]> {
     const { sites } = await browser.storage.managed.get(STORAGE_KEY);
     return parse(sites, true);
   } catch (error) {
-    if (!(error instanceof Error))
-      throw new StoredSafeExtensionError(error as any);
     // Log debug message if managed storage fails because of missing manifest.
-    if (error.toString().includes("storage manifest")) {
+    if ((error as any).toString().includes("storage manifest")) {
       logger.debug("No managed storage manifest found.");
       return [];
     } else throw error;
