@@ -85,6 +85,7 @@ import { stripURL } from "@/global/storage/preferences";
 import { StoredSafeExtensionError } from "@/global/errors";
 import { getTabResults } from "@/global/storage/tabresults";
 import { SettingsFields } from "@/global/storage/settings";
+import { getActiveTab } from "@/global/utils";
 
 // Stop presenting save popup after this many seconds
 const MAX_SAVE_SESSION_DURATION = 15;
@@ -759,23 +760,6 @@ async function fill(
     action: "fill",
     data: values,
   });
-}
-
-/**
- * Returns active tab if it is within the scope of the browser extension,
- * otherwise null.
- */
-async function getActiveTab(): Promise<browser.tabs.Tab | undefined> {
-  const activeTabs = await browser.tabs.query({
-    currentWindow: true,
-    active: true,
-  });
-  if (activeTabs.length <= 0) return undefined;
-  const tab = activeTabs[0];
-  if (!tab.id || !tab.url || !tab.url.match(/https?:\/\//)) return undefined;
-  if (await browser.permissions.contains({ origins: [tab.url] })) return tab;
-  // No permissions on tab url
-  return undefined;
 }
 
 /**

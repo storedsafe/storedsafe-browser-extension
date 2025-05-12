@@ -123,3 +123,20 @@ export function isPolicyMatch(
 export function copyText(text: string): Promise<void> {
   return navigator.clipboard.writeText(text);
 }
+
+/**
+ * Returns active tab if it is within the scope of the browser extension,
+ * otherwise null.
+ */
+export async function getActiveTab(): Promise<browser.tabs.Tab | undefined> {
+  const activeTabs = await browser.tabs.query({
+    currentWindow: true,
+    active: true,
+  });
+  if (activeTabs.length <= 0) return undefined;
+  const tab = activeTabs[0];
+  if (!tab.id || !tab.url || !tab.url.match(/https?:\/\//)) return undefined;
+  if (await browser.permissions.contains({ origins: [tab.url] })) return tab;
+  // No permissions on tab url
+  return undefined;
+}
