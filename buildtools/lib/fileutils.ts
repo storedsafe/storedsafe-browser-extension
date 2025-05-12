@@ -169,6 +169,7 @@ export function zipDir(source: string, dest: string) {
   const archive = archiver("zip", { zlib: { level: 9 } });
   const stream = fs.createWriteStream(dest);
 
+  logger.log("Zipping %s -> %s", source, dest);
   return new Promise<void>((resolve, reject) => {
     archive.directory(source, false);
     archive.on("error", reject);

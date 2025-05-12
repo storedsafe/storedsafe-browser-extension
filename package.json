@@ -8,13 +8,14 @@
   "scripts": {
     "validate": "svelte-check",
     "buildtools": "tsx buildtools",
+    "zip": "tsx buildtools zip",
     "build": "tsx buildtools build",
     "build:dev": "tsx buildtools build --dev",
     "build:chrome": "tsx buildtools buildChrome",
     "build:firefox": "tsx buildtools buildFirefox",
     "build:manifest": "tsx buildtools manifest",
     "build:deps": "tsx buildtools deps",
-    "build:zip": "tsx buildtools zip"
+    "build:zip": "tsx buildtools build zip"
   },
   "jest": {
     "transform": {

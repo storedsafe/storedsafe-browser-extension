@@ -34,7 +34,7 @@ async function getTasks(taskFile: string): Promise<Record<string, Function>> {
 function action(tasks: string[], opts: OptionValues, command: Command) {
   global.buildtools = { opts };
   if (opts.dev) {
-    logger.warn("RUNNING IN DEV MODE, DO NOT USE IN PRODUCTION")
+    logger.warn("RUNNING IN DEV MODE, DO NOT USE IN PRODUCTION");
   }
   if (tasks.length === 0 || opts.listTasks) {
     tasksAction(opts, command);
@@ -49,14 +49,14 @@ async function runAction(
   command: Command
 ) {
   const taskList = await getTasks(opts.tasksFile);
-  tasks.forEach((task) => {
+  for (const task of tasks) {
     const taskFunction = taskList[task];
     if (taskFunction) {
-      taskFunction();
+      await taskFunction();
     } else {
       logger.err("No such function: %s", task);
     }
-  });
+  }
 }
 
 async function tasksAction(opts: OptionValues, command: Command) {
@@ -77,7 +77,10 @@ program
   .description("Run defined build tasks.")
   .option("-t, --tasks-file <string>", "Path to tasks file", tasks_file)
   .option("-l, --list-tasks", "List exported tasks from tasks file")
-  .option("-w, --watch", "Set tasks to watch for changes and rerun where applicable.")
+  .option(
+    "-w, --watch",
+    "Set tasks to watch for changes and rerun where applicable."
+  )
   .option("-d, --dev", "Run in development mode", false)
   .option("--debug", "Run in debug mode", false)
   .argument("[tasks...]")
