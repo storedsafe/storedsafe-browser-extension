@@ -50,7 +50,7 @@
       from: Context.POPUP,
       to: Context.BACKGROUND,
       action: "fill",
-      data: result,
+      data: $state.snapshot(result),
     });
     window.close();
   }
