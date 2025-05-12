@@ -1,10 +1,10 @@
 import { vault } from "@/global/api";
 import { Context, sendMessage } from "@/global/messages";
-import { sessions } from "@/global/storage";
+import { sessions, tabresults } from "@/global/storage";
 import { loading } from "./loading.svelte";
 import { Duration, messages, MessageType } from "./messages.svelte";
-import { SvelteMap } from "svelte/reactivity";
 import { Logger } from "@/global/logger";
+import { instances } from "./instances.svelte";
 
 export const SEARCH_INIT_LOADING_ID = "search.initializing";
 export const SEARCH_LOADING_ID = "search.find";
@@ -19,58 +19,49 @@ class Search {
   isInitialized: boolean = $state(false);
   tabResults: StoredSafeObject[] = $state([]);
   results: StoredSafeObject[] = $state([]);
-  sessions: Map<string, Session> = $state(new SvelteMap());
 
   constructor() {
-    this.onSessionsChanged = this.onSessionsChanged.bind(this);
+    this.onTabResultsChanged = this.onTabResultsChanged.bind(this);
     this.search = this.search.bind(this);
     this.edit = this.edit.bind(this);
     this.delete = this.delete.bind(this);
     this.decrypt = this.decrypt.bind(this);
 
-    const tabResultsPromise = sendMessage({
+    const tabResultsPromise = tabresults.subscribe(this.onTabResultsChanged);
+    loading.add(SEARCH_INIT_LOADING_ID, tabResultsPromise, {
+      onSuccess: (tabResults) => {
+        this.onTabResultsChanged(tabResults);
+        this.isInitialized = true;
+        logger.info(`Found ${this.tabResults.length} results for current tab.`);
+      },
+    });
+  }
+
+  async onTabResultsChanged(
+    _newValue: Map<number, StoredSafeObject[]>,
+    _oldValues?: Map<number, StoredSafeObject[]>
+  ) {
+    this.tabResults = await sendMessage({
       from: Context.POPUP,
       to: Context.BACKGROUND,
       action: "tabresults.get",
     });
-    const sessionsPromise = sessions.subscribe(
-      (data) => (this.sessions = new SvelteMap(data))
-    );
-    loading.add(
-      SEARCH_INIT_LOADING_ID,
-      Promise.all([tabResultsPromise, sessionsPromise]),
-      {
-        onSuccess: ([tabResults, sessionsData]) => {
-          this.isInitialized = true;
-          this.tabResults = tabResults;
-          this.results = tabResults;
-          logger.info(`Found ${tabResults.length} results for current tab.`);
-          this.sessions = new SvelteMap(sessionsData);
-        },
-      }
-    );
-  }
-
-  onSessionsChanged(
-    newValue: Map<string, Session>,
-    _oldValues: Map<string, Session>
-  ) {
-    this.sessions = new SvelteMap(newValue);
-    this.results = this.results.filter((result) =>
-      this.sessions.has(result.host)
-    );
-    this.tabResults = this.tabResults.filter((tabResult) =>
-      this.sessions.has(tabResult.host)
-    );
+    this.results = this.tabResults;
   }
 
   async search(needle: string) {
     if (needle === "") {
       this.results = this.tabResults;
     } else {
+      const currentSessions = await sessions.get();
       this.results = [];
-      for (const [host, { token }] of this.sessions) {
-        const siteResults = await vault.search(host, token, needle);
+      const promises = [];
+      for (const [host, { token }] of currentSessions) {
+        promises.push(vault.search(host, token, needle));
+        console.log("Searching %s...", host);
+      }
+      for (const promise of promises) {
+        const siteResults = await promise;
         this.results.push(...siteResults);
       }
     }
@@ -80,7 +71,8 @@ class Search {
     result: StoredSafeObject,
     values: Record<string, string>
   ): Promise<StoredSafeObject> {
-    const session = this.sessions.get(result.host);
+    const currentSessions = await sessions.get();
+    const session = currentSessions.get(result.host);
     if (!session) {
       // shouldn't happen
       messages.add(
@@ -102,7 +94,8 @@ class Search {
   }
 
   async delete(result: StoredSafeObject): Promise<StoredSafeObject> {
-    const session = this.sessions.get(result.host);
+    const currentSessions = await sessions.get();
+    const session = currentSessions.get(result.host);
     if (!session) {
       // shouldn't happen
       messages.add(
@@ -123,7 +116,8 @@ class Search {
   }
 
   async decrypt(result: StoredSafeObject) {
-    const session = this.sessions.get(result.host);
+    const currentSessions = await sessions.get();
+    const session = currentSessions.get(result.host);
     if (!session) {
       // shouldn't happen
       messages.add(
