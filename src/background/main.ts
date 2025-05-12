@@ -456,9 +456,19 @@ async function onSessionsChanged(
     }
   }
 
-  // Update online status on badge
   if (isOnline != wasOnline) {
+    // Update online status on badge
     setIcon(isOnline);
+
+    if (isOnline) {
+      // Instruct content script to scan for forms
+      sendTabMessage({
+        from: Context.BACKGROUND,
+        to: Context.CONTENT_SCRIPT,
+        action: "scan",
+      });
+    }
+
     logger.info(`Online status changed to ${isOnline}`);
   }
 }
