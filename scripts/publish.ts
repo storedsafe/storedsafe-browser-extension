@@ -5,7 +5,9 @@ import { homedir } from "os";
 import { config, exit } from "process";
 import * as path from "path";
 import * as readline from "readline";
+import { fileURLToPath } from "url";
 
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PUBLISH_CONFIG_PATH = path.join(__dirname, "publish.json");
 
 interface PublishConfig {
@@ -84,8 +86,8 @@ async function get_conf_object(
     const res = await api.decryptObject(id);
     if (res.status === 200) {
       const obj = res.data?.["OBJECT"]?.[0];
-      if (obj) return obj
-      throw new Error(`No object found with ID ${id}`)
+      if (obj) return obj;
+      throw new Error(`No object found with ID ${id}`);
     } else if (res.status === 401 || res.status === 403) {
       throw new Error("Must be logged into StoredSafe");
     }
@@ -143,9 +145,9 @@ async function read_stdin_promise(question: string): Promise<string> {
 function parse_firefox_conf(data: StoredSafeObject): FirefoxConfig {
   const noteData = data.crypted?.["note"];
   if (noteData) {
-    return JSON.parse(noteData)
+    return JSON.parse(noteData);
   }
-  throw new Error("Data was not a valid, decrypted, StoredSafe object")
+  throw new Error("Data was not a valid, decrypted, StoredSafe object");
 }
 
 /**
@@ -160,6 +162,7 @@ function sign_firefox(conf: FirefoxConfig) {
       apiKey: conf.issuer,
       apiSecret: conf.secret,
       channel: "unlisted",
+      amoBaseUrl: "https://addons.mozilla.org/api/v5/",
     })
     .catch(console.error);
 }

@@ -15,7 +15,9 @@
     "build:firefox": "tsx buildtools buildFirefox",
     "build:manifest": "tsx buildtools manifest",
     "build:deps": "tsx buildtools deps",
-    "build:zip": "tsx buildtools build zip"
+    "build:zip": "tsx buildtools build zip",
+    "publish:firefox": "tsx scripts/publish.ts firefox && tsx scripts/firefox_updates.ts",
+    "firefox_updates": "tsx scripts/firefox_updates.ts"
   },
   "jest": {
     "transform": {

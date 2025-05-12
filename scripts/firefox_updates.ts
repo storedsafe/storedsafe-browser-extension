@@ -1,6 +1,8 @@
 import * as path from 'path';
 import * as fs from 'fs';
+import { fileURLToPath } from "url";
 
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const pkgPath = path.join(__dirname, '../dist/pkg');
 
 function getVersion(file: string) {
